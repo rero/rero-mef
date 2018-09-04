@@ -1,0 +1,123 @@
+[
+  {
+    "preferred_name_for_person": "Genty de Bonqueval, J",
+    "variant_name_for_person": [
+      "Bonqueval, J.G. de"
+    ],
+    "identifier_for_person": "000070488",
+    "authorized_access_point_representing_a_person": "Genty de Bonqueval, J"
+  },
+  {
+    "authorized_access_point_representing_a_person": "Cavalieri, Giovanni Battista,, ca.1525-1601",
+    "date_of_birth": "ca.1525-1601",
+    "biographical_information": [
+      "Graveur, dessinateur et \u00e9diteur"
+    ],
+    "variant_name_for_person": [
+      "De Cavalieri, Giovanni Battista,",
+      "Cavalleriis, Baptista de,",
+      "Cavalleriis, Giovanni Battista de,",
+      "Cavalieri, Gianbattista,"
+    ],
+    "identifier_for_person": "023655346",
+    "preferred_name_for_person": "Cavalieri, Giovanni Battista,"
+  },
+  {
+    "authorized_access_point_representing_a_person": "Arnoudt, Pierre J.,, 1811-1865",
+    "date_of_birth": "1811-1865",
+    "biographical_information": [
+      "J\u00e9suite (\u00e0 partir de 1835 ; ordonn\u00e9 pr\u00eatre en 1843) ; v\u00e9cut aux Etats-Unis \u00e0 partir de 1835, \u00e9crivit aussi en latin"
+    ],
+    "variant_name_for_person": [
+      "Aernoudt, Pierre,",
+      "Arnold, Joseph,"
+    ],
+    "identifier_for_person": "017671081",
+    "preferred_name_for_person": "Arnoudt, Pierre J.,"
+  },
+  {
+    "preferred_name_for_person": "Franchi De Cavalieri, Pio Pietro",
+    "variant_name_for_person": [
+      "Cavalieri, Pius Franchi de",
+      "Franchi De Cavalieri, Pietro Pio",
+      "Franchi De Cavalieri, Pius"
+    ],
+    "identifier_for_person": "000065776",
+    "authorized_access_point_representing_a_person": "Franchi De Cavalieri, Pio Pietro"
+  },
+  {
+    "identifier_for_person": "022480124",
+    "variant_name_for_person": [
+      "Bernard, Bayle,"
+    ],
+    "date_of_birth": "1807-1875",
+    "preferred_name_for_person": "Bernard, William Bayle,",
+    "authorized_access_point_representing_a_person": "Bernard, William Bayle,, 1807-1875"
+  },
+  {
+    "preferred_name_for_person": "Constantin,",
+    "variant_name_for_person": [
+      "Barban\u00e7on, Constantin de"
+    ],
+    "identifier_for_person": "009535178",
+    "authorized_access_point_representing_a_person": "Constantin,, de Barbanson"
+  },
+  {
+    "preferred_name_for_person": "Kouroud\u0113s, K\u014dstas",
+    "variant_name_for_person": [
+      "Kouro\u00fadi\u0332s, K\u00f3\u0332stas"
+    ],
+    "identifier_for_person": "021799923",
+    "authorized_access_point_representing_a_person": "Kouroud\u0113s, K\u014dstas"
+  },
+  {
+    "authorized_access_point_representing_a_person": "Catalani, Giuseppe,, 1698-1764",
+    "date_of_birth": "1698-1764",
+    "biographical_information": [
+      "Historien, th\u00e9ologien et juriste"
+    ],
+    "variant_name_for_person": [
+      "Catalano, Giuseppe,",
+      "Catalanus, Josephus,",
+      "Catalani, Josephus,",
+      "Catalano, Josepho,"
+    ],
+    "identifier_for_person": "017991779",
+    "preferred_name_for_person": "Catalani, Giuseppe,"
+  },
+  {
+    "preferred_name_for_person": "Guillemin, L\u00e9on",
+    "biographical_information": [
+      "L\u00e9on d'Amboise est le pseud. de L\u00e9on Guillemin"
+    ],
+    "variant_name_for_person": [
+      "Amboise, L\u00e9on d'",
+      "L\u00e9on,"
+    ],
+    "identifier_for_person": "005591402",
+    "authorized_access_point_representing_a_person": "Guillemin, L\u00e9on"
+  },
+  {
+    "identifier_for_person": "024285452",
+    "biographical_information": [
+      "Artiste lyrique (soprano)"
+    ],
+    "date_of_birth": "1983-",
+    "preferred_name_for_person": "Soyarslan, \u00c7i\u01e7dem,",
+    "authorized_access_point_representing_a_person": "Soyarslan, \u00c7i\u01e7dem,, 1983-"
+  },
+  {
+    "authorized_access_point_representing_a_person": "Arenthon d'Alex, Jean d',, 1620-1695",
+    "date_of_birth": "1620-1695",
+    "biographical_information": [
+      "Prince-\u00e9v\u00eaque de Gen\u00e8ve (1661-1695)"
+    ],
+    "variant_name_for_person": [
+      "Aranton d'Alex, Jean d',",
+      "Aranthon d'Alex, Jean d',",
+      "Alex, Jean d'Arenthon d',"
+    ],
+    "identifier_for_person": "000009346",
+    "preferred_name_for_person": "Arenthon d'Alex, Jean d',"
+  }
+]

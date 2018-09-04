@@ -59,23 +59,39 @@ setup(
         'console_scripts': [
             'rero-mef = invenio_app.cli:cli',
         ],
-        'invenio_base.apps': [
-            'flask_debugtoolbar = flask_debugtoolbar:DebugToolbarExtension',
-        ],
-        'invenio_base.blueprints': [
-            'rero_mef = rero_mef.views:blueprint',
-        ],
         'invenio_config.module': [
             'rero_mef = rero_mef.config',
         ],
-        'invenio_i18n.translations': [
-            'messages = rero_mef',
-        ]
+        'invenio_db.models': [
+            'authorities = rero_mef.authorities.models',
+        ],
+        'invenio_pidstore.minters': [
+            'auth_id = rero_mef.authorities.minters:auth_id_minter',
+            'viaf_id = rero_mef.authorities.minters:viaf_id_minter',
+            'bnf_id = rero_mef.authorities.minters:bnf_id_minter',
+            'gnd_id = rero_mef.authorities.minters:gnd_id_minter',
+            'rero_id = rero_mef.authorities.minters:rero_id_minter',
+            'mef_id = rero_mef.authorities.minters:mef_id_minter',
+        ],
+        'invenio_pidstore.fetchers': [
+            'auth_id = rero_mef.authorities.fetchers:auth_id_fetcher',
+            'viaf_id = rero_mef.authorities.fetchers:viaf_id_fetcher',
+            'bnf_id = rero_mef.authorities.fetchers:bnf_id_fetcher',
+            'gnd_id = rero_mef.authorities.fetchers:gnd_id_fetcher',
+            'rero_id = rero_mef.authorities.fetchers:rero_id_fetcher',
+            'mef_id = rero_mef.authorities.fetchers:mef_id_fetcher',
+        ],
+        'invenio_jsonschemas.schemas': [
+            'authorities = rero_mef.authorities.jsonschemas',
+        ],
+        'invenio_search.mappings': [
+            'authorities = rero_mef.authorities.mappings',
+        ],
     },
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: GPL License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
