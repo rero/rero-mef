@@ -1,0 +1,36 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "max_result_window": 20000
+  },
+  "mappings": {
+    "viaf-v0.0.1": {
+      "date_detection": false,
+      "numeric_detection": false,
+      "properties": {
+        "$schema": {
+          "type": "keyword"
+        },
+        "pid": {
+          "type": "keyword"
+        },
+        "viaf_pid": {
+          "type": "keyword"
+        },
+        "bnf_pid": {
+          "type": "keyword"
+        },
+        "dnb_pid": {
+          "type": "keyword"
+        },
+        "virtua_auth_pid": {
+          "type": "keyword"
+        },
+        "rero_pid": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}

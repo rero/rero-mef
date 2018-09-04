@@ -22,15 +22,26 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Views tests."""
+"""Persistent identifier fetchers."""
 
-# from __future__ import absolute_import, print_function
-#
-# from flask import url_for
-#
-#
-# def test_ping(client):
-#     """Test the ping view."""
-#     resp = client.get(url_for('rero_mef.ping'))
-#     assert resp.status_code == 200
-#     assert resp.get_data(as_text=True) == 'OK'
+
+from __future__ import absolute_import, print_function
+
+from collections import namedtuple
+
+FetchedPID = namedtuple('FetchedPID', ['provider', 'pid_type', 'pid_value'])
+"""A pid fetcher."""
+
+
+def id_fetcher(record_uuid, data, provider, pid_key='pid'):
+    """Fetch a Organisation record's identifiers.
+
+    :param record_uuid: The record UUID.
+    :param data: The record metadata.
+    :returns: A :data:`rero_mef.fetchers.FetchedPID` instance.
+    """
+    return FetchedPID(
+        provider=provider,
+        pid_type=provider.pid_type,
+        pid_value=data[pid_key]
+    )

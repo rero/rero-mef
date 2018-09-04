@@ -22,26 +22,19 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Blueprint used for loading templates.
+"""Persistent identifier minters."""
 
-The sole purpose of this blueprint is to ensure that Invenio can find the
-templates and static files located in the folders of the same names next to
-this file.
-"""
-
-from __future__ import absolute_import, print_function
-
-from flask import Blueprint
-
-blueprint = Blueprint(
-    'rero_mef',
-    __name__,
-    template_folder='templates',
-    static_folder='static',
-)
+from __future__ import absolute_import, print_function, unicode_literals
 
 
-@blueprint.route('/ping', methods=['HEAD', 'GET'])
-def ping():
-    """Load balancer ping view."""
-    return 'OK'
+def id_minter(record_uuid, data, provider, pid_key='pid', object_type='rec'):
+    """RERIOLS Organisationid minter."""
+    assert pid_key not in data
+    provider = provider.create(
+        object_type=object_type,
+        object_uuid=record_uuid
+    )
+    pid = provider.pid
+    data[pid_key] = pid.pid_value
+
+    return pid

@@ -22,15 +22,19 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Views tests."""
+"""Identifier minters."""
 
-# from __future__ import absolute_import, print_function
-#
-# from flask import url_for
-#
-#
-# def test_ping(client):
-#     """Test the ping view."""
-#     resp = client.get(url_for('rero_mef.ping'))
-#     assert resp.status_code == 200
-#     assert resp.get_data(as_text=True) == 'OK'
+from __future__ import absolute_import, print_function, unicode_literals
+
+from functools import partial
+
+from ..minters import id_minter
+from .providers import AuthorityProvider, BnfProvider, GndProvider, \
+    MefProvider, ReroProvider, ViafProvider
+
+auth_id_minter = partial(id_minter, provider=AuthorityProvider)
+viaf_id_minter = partial(id_minter, provider=ViafProvider)
+bnf_id_minter = partial(id_minter, provider=BnfProvider)
+gnd_id_minter = partial(id_minter, provider=GndProvider)
+mef_id_minter = partial(id_minter, provider=MefProvider)
+rero_id_minter = partial(id_minter, provider=ReroProvider)

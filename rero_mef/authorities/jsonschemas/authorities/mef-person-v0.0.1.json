@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Schema for mef authority",
+  "type": "object",
+  "required": [
+    "$schema",
+    "pid"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "title": "Schema",
+      "description": "Schema to mef authority record.",
+      "type": "string",
+      "minLength": 7
+    },
+    "pid": {
+      "title": "Mef record ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "viaf_pid": {
+      "title": "Viaf authority ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "bnf_pid": {
+      "title": "Bnf authority ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "gnd_pid": {
+      "title": "Dnb authority ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "virtua_auth_pid": {
+      "title": "Virtua authority ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "rero_auth_pid": {
+      "title": "Rero authority ID",
+      "type": "string",
+      "minLength": 1
+    }
+   }
+}

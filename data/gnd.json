@@ -1,0 +1,624 @@
+[
+  {
+    "identifier_for_person": "100000193",
+    "variant_name_for_person": [
+      "Bauer, Johanes Gottfried",
+      "Bauerus, Johannes Godofredus",
+      "Bauer, Johannes Gothofredus",
+      "Bauer, Johannes Gottofredus",
+      "Bauer, Iohannes Godofredus",
+      "Baverus, Ioan. Godofredus",
+      "Bauer, Johannes Gottfried",
+      "Bauer, Joannes Godofredus",
+      "Bauerus, Ioannes Godofredus",
+      "Bauer, Ioannes Godofredus",
+      "Bauerus, Iohannes Godofredus",
+      "Bauerus, Joannes Godofredus"
+    ],
+    "gender": "male",
+    "biographical_information": [
+      "NDB; ADB; DBA",
+      "Des Verfassers Dissertatio iuridica inauguralis de feudi consolidatione temporaria, 1752"
+    ],
+    "date_of_death": "02.03.1763",
+    "preferred_name_for_person": "Bauer, Johann Gottfried",
+    "date_of_birth": "20.02.1695",
+    "authorized_access_point_representing_a_person": "Bauer, Johann Gottfried, 1695-1763"
+  },
+  {
+    "identifier_for_person": "100000231",
+    "variant_name_for_person": [
+      "Baur, W.",
+      "Baur, Johannes Guilielmus",
+      "Baur, Wilhelm",
+      "Bauer, Wilhelm",
+      "Bauer, Johann Wilhelm",
+      "Baur, Joannes Guilielmus",
+      "Baur, Johannes Wilhelm",
+      "Bauer, Johannes Wilhelm",
+      "Bauer, Johann Wilhlem",
+      "Paur, Johann Wilhelm",
+      "Baurn, Johannes Guilelmus"
+    ],
+    "gender": "male",
+    "biographical_information": [
+      "Thieme-Becker",
+      "WBIS"
+    ],
+    "date_of_death": "XX.01.1642",
+    "preferred_name_for_person": "Baur, Johann Wilhelm",
+    "date_of_birth": "31.05.1600",
+    "authorized_access_point_representing_a_person": "Baur, Johann Wilhelm, 1607-1642"
+  },
+  {
+    "identifier_for_person": "100023754",
+    "gender": "male",
+    "biographical_information": [
+      "LCAuth",
+      "Internet, https://fr.wikipedia.org/wiki/Constantin_de_Barbanson",
+      "WBIS (uneinheitlich)"
+    ],
+    "date_of_death": "26.11.1631",
+    "preferred_name_for_person": "Constantin",
+    "variant_name_for_person": [
+      "Konstantin",
+      "Barbanson, Konstantin \u0098von\u009c",
+      "Constantine",
+      "Barbanson, Constantine",
+      "Barbanson, Constantin \u0098de\u009c",
+      "Constantinus",
+      "Barbanson, Constantinus \u0098de\u009c",
+      "Constantinus",
+      "Constantin",
+      "Barbanc\u0327on, Constantin \u0098de\u009c",
+      "Constantin",
+      "Barbenc\u0327on, Constantin \u0098de\u009c",
+      "Paunet, The\u0301odoric",
+      "Paunet, Theodoricus",
+      "Barbanc\u0327on, Konstantyn"
+    ],
+    "authorized_access_point_representing_a_person": "Constantin, de Barbanson, 1582-1631"
+  },
+  {
+    "identifier_for_person": "104189576",
+    "variant_name_for_person": [
+      "Marie Luise",
+      "Marie-Louise",
+      "Marie Louise",
+      "Marie-Louise",
+      "Mari\u0301a Luisa",
+      "Mari\u0301a Luisa",
+      "Maria Luisa",
+      "Mari\u0301a Luisa"
+    ],
+    "authorized_access_point_representing_a_person": "Maria Luisa, Spanien, Ko\u0308nigin, 1662-1689, 1662-1689",
+    "biographical_information": [
+      "Wikipedia, Stand: 09.01.2018, https://de.wikipedia.org/wiki/Marie_Louise_d%E2%80%99Orl%C3%A9ans"
+    ],
+    "preferred_name_for_person": "Maria Luisa",
+    "date_of_birth": "27.03.1662",
+    "date_of_death": "12.02.1689"
+  },
+  {
+    "identifier_for_person": "11669355X",
+    "variant_name_for_person": [
+      "Franchi de Cavalieri, Pio",
+      "Cavalieri, Pio Franchi \u0098de\u009c",
+      "Franchi De'Cavalieri, Pio P.",
+      "Franchi De'Cavalieri, Pietro",
+      "Franchi-De'Cavalieri, Pio",
+      "De'Cavalieri, Pio Franchi",
+      "DeCavalieri, Pius Franchi",
+      "De'Cavalieri, Pio F.",
+      "Cavalieri, Franchi \u0098de\u009c",
+      "Franchi de Cavalieri, Pius",
+      "Franchi de Cavallieri, Pio",
+      "Cavallieri, Pio Franchi \u0098de\u009c",
+      "Cavalieri, Pio F. \u0098de'\u009c",
+      "Cavalieri, Pio F.",
+      "Franchi di Cavalieri, Pius",
+      "Franchi de' Cavalieri, Pio",
+      "Franchi de'Cavalieri, Pius",
+      "Franchi de' Cavalieri, Pius",
+      "Cavalieri, Pio Franchi \u0098de'\u009c",
+      "Cavalieri, Pius Franchi \u0098de'\u009c",
+      "Franchi De'Cavalieri, Pio Pietro"
+    ],
+    "gender": "male",
+    "biographical_information": [
+      "Vorlage gegen LoC-NA"
+    ],
+    "date_of_death": "1960",
+    "preferred_name_for_person": "Franchi de'Cavalieri, Pio",
+    "date_of_birth": "1869",
+    "authorized_access_point_representing_a_person": "Franchi de'Cavalieri, Pio, 1869-1960"
+  },
+  {
+    "identifier_for_person": "117513601",
+    "variant_name_for_person": [
+      "Fleuriau de Belleville, Louis Benjamin",
+      "Fleuriau de Bellevue, Louis",
+      "Belleville, Louis Fleuriau \u0098de\u009c",
+      "Bellevue, Louis Benjamin Fleuriau \u0098de\u009c"
+    ],
+    "gender": "male",
+    "biographical_information": [
+      "BNF, Wikipedia"
+    ],
+    "date_of_death": "1852",
+    "preferred_name_for_person": "Fleuriau de Bellevue, Louis Benjamin",
+    "date_of_birth": "1761",
+    "authorized_access_point_representing_a_person": "Fleuriau de Bellevue, Louis Benjamin, 1761-1852"
+  },
+  {
+    "identifier_for_person": "117588768",
+    "variant_name_for_person": [
+      "Bernard, William Baile",
+      "Bernard, William B.",
+      "Bernard, William Bayle"
+    ],
+    "gender": "male",
+    "biographical_information": [
+      "IBN"
+    ],
+    "date_of_death": "1875",
+    "preferred_name_for_person": "Bernard, Bayle",
+    "date_of_birth": "1807",
+    "authorized_access_point_representing_a_person": "Bernard, Bayle, 1807-1875"
+  },
+  {
+    "variant_name_for_person": [
+      "Bagnano, Georgio Libri-",
+      "Libri Bagnano, Georgio"
+    ],
+    "gender": "male",
+    "identifier_for_person": "117671533",
+    "date_of_death": "1835",
+    "preferred_name_for_person": "Libri-Bagnano, Georgio",
+    "date_of_birth": "1780",
+    "authorized_access_point_representing_a_person": "Libri-Bagnano, Georgio, 1780-1835"
+  },
+  {
+    "identifier_for_person": "118095617",
+    "variant_name_for_person": [
+      "Ambly, Paul Boiteau \u0098d'\u009c",
+      "Boiteau, Paul",
+      "Boiteau D'Ambly, Dieudonne\u0301 Alexandre Paul",
+      "Ambly, Dieudonne\u0301 Alexandre Paul Boiteau \u0098d'\u009c",
+      "Boiteau, Dieudonne\u0301 Alexandre Paul",
+      "Boiteau, Dieudonne\u0301-Alexandre-Paul"
+    ],
+    "authorized_access_point_representing_a_person": "Boiteau D'Ambly, Paul, 1830-1886",
+    "biographical_information": [
+      "LCAuth",
+      "https://fr.wikipedia.org/wiki/Paul_Boiteau"
+    ],
+    "preferred_name_for_person": "Boiteau D'Ambly, Paul",
+    "date_of_birth": "25.11.1830",
+    "date_of_death": "11.06.1886"
+  },
+  {
+    "identifier_for_person": "118666762",
+    "variant_name_for_person": [
+      "Camerarius, Rudolf Jacob",
+      "Camerarius, Rudolph Jakob",
+      "Camerarius, Rudolph Jacob",
+      "Camerer, Rudolf Jakob",
+      "Camerer, Rudolph Jacob",
+      "Camerarius, R. J.",
+      "Camerarius, Rudolf",
+      "Camerarius, Jacob Rudolph",
+      "Camerarius, Rudolphus J.",
+      "Camerer, Rudolph Jakob",
+      "Camerarius, Rudolphus Jacobus",
+      "Camerer, Rudolf Jacob",
+      "Camerarius, R.J."
+    ],
+    "gender": "male",
+    "biographical_information": [
+      "LCAuth; ADB: NDB"
+    ],
+    "date_of_death": "11.09.1721",
+    "preferred_name_for_person": "Camerarius, Rudolf Jakob",
+    "date_of_birth": "12.02.1665",
+    "authorized_access_point_representing_a_person": "Camerarius, Rudolf Jakob, 1665-1721"
+  },
+  {
+    "identifier_for_person": "119120674",
+    "variant_name_for_person": [
+      "Elisabeth Christine",
+      "Elisabet Christine",
+      "Elisabeth Christina",
+      "Elisabeth Christine",
+      "Elisabeth Christine",
+      "Elisabetha Christinae",
+      "Elisabeth Christine",
+      "Elisabeth Christine",
+      "Elisabeth Christine",
+      "Elisabeth Christine",
+      "Elisabetha Christiana",
+      "Elisabeth"
+    ],
+    "gender": "female",
+    "biographical_information": [
+      "B 1986",
+      "LCAuth"
+    ],
+    "date_of_death": "13.01.1797",
+    "preferred_name_for_person": "Elisabeth Christine",
+    "date_of_birth": "08.11.1715",
+    "authorized_access_point_representing_a_person": "Elisabeth Christine, Preu\u00dfen, Ko\u0308nigin, 1715-1797"
+  },
+  {
+    "identifier_for_person": "119291088",
+    "language_of_person": [
+      "lat"
+    ],
+    "authorized_access_point_representing_a_person": "Claudianus, Mamertus, -474",
+    "biographical_information": [
+      "PAN"
+    ],
+    "preferred_name_for_person": "Claudianus",
+    "variant_name_for_person": [
+      "Claudianus Ecdicius",
+      "Claudianus",
+      "Mamertus",
+      "Mamertus",
+      "Claudianus",
+      "Claudianus",
+      "Claudianus",
+      "Mamertus, Claudius Ecdicius",
+      "Ecdicius Mamertus, Claudianus",
+      "Mamertus Claudianus",
+      "Mamertus Claudianus",
+      "Mamertus, Claudianus Ecdicius",
+      "Claudianus Mamertus",
+      "Claudianus Mamertus",
+      "Mam. Claud.",
+      "Claudianus",
+      "Claudianus",
+      "Mamerto",
+      "Mamertinus, Claudius",
+      "Mamertinus, ...",
+      "Mamertus, Claudianus",
+      "Claudianus Mamertus"
+    ],
+    "date_of_death": "474"
+  },
+  {
+    "identifier_for_person": "122101359",
+    "variant_name_for_person": [
+      "Chapron, Nicolas",
+      "Chapperon, Nicolas",
+      "Chappron, Nicolas",
+      "Chapron, Nicolaus"
+    ],
+    "authorized_access_point_representing_a_person": "Chaperon, Nicolas, 1612-1653",
+    "biographical_information": [
+      "AKL"
+    ],
+    "preferred_name_for_person": "Chaperon, Nicolas",
+    "date_of_birth": "1612",
+    "date_of_death": "1653"
+  },
+  {
+    "identifier_for_person": "12391664X",
+    "variant_name_for_person": [
+      "Cavaleriis, Joannes Baptista \u0098de\u009c",
+      "Cavalleris, Joannes Baptista \u0098de\u009c",
+      "Cavaleriis, Joanes Baptista \u0098de\u009c",
+      "Cavalleriis, Johannes Baptista \u0098de\u009c",
+      "Cavalerius, Johannes Battista \u0098de\u009c",
+      "Cavallerys, Johannes Baptista \u0098de\u009c",
+      "Cavaleriis, Johannes Baptista \u0098de\u009c",
+      "Cavalieri, Giovanni Battista \u0098de\u009c",
+      "Cavallieri, Giovan Battista \u0098de\u009c",
+      "Cavalleriis, Johannes Battista",
+      "Cavallerius, Johannes Baptista",
+      "Cavallerius, Joannes Baptista",
+      "Cavalleriis, Johannes Baptista",
+      "Cavallieri, Giovanni Battista",
+      "Cavaleriis, Giovanni Battista",
+      "Cavalleriis, Io. Baptista \u0098de\u009c",
+      "Cavallieri, Giovanni Battista \u0098de\u009c",
+      "Cavalerijs, Io. Baptista \u0098de\u009c",
+      "Cavallieri, Giovanni B.",
+      "Cavaleriis, Joannes B. \u0098de\u009c",
+      "Cavallerius, Jo. B. \u0098de\u009c",
+      "Cavalleriis, Joannes Baptista \u0098de\u009c",
+      "Cavallerijs, Baptista \u0098de\u009c",
+      "Cavalleriis, Giovanni Battista \u0098de\u009c",
+      "Cavallieri, Giovanbattista \u0098de\u009c",
+      "Cavallerius, Io. Bap.ta",
+      "Cavalierii, Johannes Baptista \u0098de\u009c"
+    ],
+    "authorized_access_point_representing_a_person": "Cavalieri, Giovanni Battista, 1525-1601",
+    "biographical_information": [
+      "LoC-NA",
+      "LCAuth"
+    ],
+    "preferred_name_for_person": "Cavalieri, Giovanni Battista",
+    "date_of_birth": "ca. 1525",
+    "date_of_death": "1601"
+  },
+  {
+    "identifier_for_person": "124813844",
+    "variant_name_for_person": [
+      "Catalani, Josephus",
+      "Catalano, Giuseppe",
+      "Catalanus, Josephus"
+    ],
+    "authorized_access_point_representing_a_person": "Catalani, Giuseppe, 1698-1764",
+    "biographical_information": [
+      "NUC pre 56; -Gino, Pletro: I grandi del cattolicesimo; -Internet",
+      "WBI (Archivio Biografico Italiano)"
+    ],
+    "preferred_name_for_person": "Catalani, Giuseppe",
+    "date_of_birth": "1698",
+    "date_of_death": "1764"
+  },
+  {
+    "variant_name_for_person": [
+      "Saint-Morys, Etienne Bourgevin Vialard \u0098de\u009c",
+      "Saint-Morys, E\u0301tienne Bourgelin Vialart \u0098de\u009c",
+      "Saint-Morys, Vialart",
+      "Vialart de Saint-Morys, E\u0301tienne Bourgevin",
+      "Bourgevin Vialart de Saint-Morys, E\u0301tienne",
+      "Vialard de Saint-Morys, Etienne Bourgevin",
+      "Bourgevin Vialard de Saint-Morys, Etienne",
+      "Saint-Morys, ... \u0098de\u009c",
+      "St.-Morys, ... \u0098de\u009c",
+      "Vialart-Saint-Morys, ... \u0098de\u009c",
+      "Vialart-Saint-Morys, E\u0301tienne \u0098de\u009c",
+      "Vialart de St.-Morys, ... \u0098de\u009c",
+      "Vialart de Saint-Morys, ... \u0098de\u009c",
+      "Vialart de St.-Morys, E\u0301tienne \u0098de\u009c",
+      "Vialart de Saint-Morys, E\u0301tienne \u0098de\u009c",
+      "Bourgevin Vialard, E\u0301tienne",
+      "Vialard, E\u0301tienne Bourgevin"
+    ],
+    "authorized_access_point_representing_a_person": "Saint-Morys, E\u0301tienne Bourgevin Vialart \u0098de\u009c, 1772-1817",
+    "identifier_for_person": "124981933",
+    "preferred_name_for_person": "Saint-Morys, E\u0301tienne Bourgevin Vialart \u0098de\u009c",
+    "date_of_birth": "1772",
+    "date_of_death": "1817"
+  },
+  {
+    "variant_name_for_person": [
+      "Arnoult, Alexis E\u0301tienne Pierre Henri",
+      "Arnoult, Alexis E."
+    ],
+    "authorized_access_point_representing_a_person": "Arnoult, Stephen, 1782-1860",
+    "identifier_for_person": "129943495",
+    "preferred_name_for_person": "Arnoult, Stephen",
+    "date_of_birth": "1782",
+    "date_of_death": "1860"
+  },
+  {
+    "identifier_for_person": "130672289",
+    "variant_name_for_person": [
+      "Cabannes Cauna, Bernard Augustin Henri Timothe\u0301e \u0098de\u009c",
+      "Cabannes de Cauna, Bernard Augustin Henri Timothe\u0301e",
+      "Cauna, Bernard Augustin \u0098de\u009c",
+      "Cabannes, Bernard Augustin de Cauna",
+      "Cauna, Bernard Augustin Henry Timothe\u0301e de Cabannes \u0098de\u009c"
+    ],
+    "authorized_access_point_representing_a_person": "Cauna, Bernard Augustin Henri Timothe\u0301e de Cabannes \u0098de\u009c, 1822-1883",
+    "biographical_information": [
+      "BNF"
+    ],
+    "preferred_name_for_person": "Cauna, Bernard Augustin Henri Timothe\u0301e de Cabannes \u0098de\u009c",
+    "date_of_birth": "1822",
+    "date_of_death": "1883"
+  },
+  {
+    "identifier_for_person": "131543334",
+    "variant_name_for_person": [
+      "Serge\u0304s, Manole\u0304s",
+      "Serge\u0304s, M. G.",
+      "Serge\u0304s, Manole\u0304s Geo\u0304rg.",
+      "Sergis, Manolis G.",
+      "Sergis, Manolis",
+      "Sergis, M. G."
+    ],
+    "authorized_access_point_representing_a_person": "Serge\u0304s, Manole\u0304s G., 1957-",
+    "biographical_information": [
+      "OPAC Nationalbibliothek Athen"
+    ],
+    "preferred_name_for_person": "Serge\u0304s, Manole\u0304s G.",
+    "date_of_birth": "1957",
+    "gender": "male"
+  },
+  {
+    "identifier_for_person": "143032704",
+    "authorized_access_point_representing_a_person": "Soyarslan, Cigdem, 1983-",
+    "biographical_information": [
+      "Internet"
+    ],
+    "preferred_name_for_person": "Soyarslan, Cigdem",
+    "date_of_birth": "27.03.1983",
+    "variant_name_for_person": [
+      "Soyarslan, Cig\u0306dem"
+    ]
+  },
+  {
+    "variant_name_for_person": [
+      "Arnoudt, Pierre Joseph",
+      "Arnoudt, Pierre",
+      "Arnold, Petrus",
+      "Arnoudt, P. J.",
+      "Arnoudt, P.",
+      "Arnold, P. J.",
+      "Arnold, Peter J.",
+      "Arnold, Peter Joseph",
+      "Arnold, Joseph",
+      "Arnold, J.",
+      "Arnoudt, Petrus",
+      "Aernoudt, Pierre",
+      "Arnoudt, Peter J.",
+      "Arnoudt, Pierre Jean",
+      "Arnold, Pierre",
+      "Arnold, Josef"
+    ],
+    "authorized_access_point_representing_a_person": "Arnoudt, Pierre J., 1811-1865",
+    "identifier_for_person": "172759757",
+    "preferred_name_for_person": "Arnoudt, Pierre J.",
+    "date_of_birth": "11.05.1811",
+    "date_of_death": "29.07.1865"
+  },
+  {
+    "identifier_for_person": "1019749911",
+    "variant_name_for_person": [
+      "Bourbon, Charles \u0098de\u009c",
+      "Charles"
+    ],
+    "gender": "male",
+    "biographical_information": [
+      "Mortzfeld, Peter: Katalog der graphischen Portra\u0308ts in der Herzog-August-Bibliothek Wolfenbu\u0308ttel, A 20484"
+    ],
+    "date_of_death": "01.11.1612",
+    "preferred_name_for_person": "Soissons, Charles de Bourbon \u0098de\u009c",
+    "date_of_birth": "03.11.1566",
+    "authorized_access_point_representing_a_person": "Soissons, Charles de Bourbon \u0098de\u009c, 1566-1612"
+  },
+  {
+    "identifier_for_person": "1020174943",
+    "variant_name_for_person": [
+      "Antin, Louis Antoine de Pardaillan de Gondrin \u0098d'\u009c",
+      "Gondrin d'Antin, Louis Antoine de Pardaillan \u0098de\u009c",
+      "Pardaillan de Gondrin, Louis Antoine \u0098de\u009c"
+    ],
+    "authorized_access_point_representing_a_person": "Pardaillan de Gondrin d'Antin, Louis Antoine \u0098de\u009c, 1665-1736",
+    "biographical_information": [
+      "WBI"
+    ],
+    "preferred_name_for_person": "Pardaillan de Gondrin d'Antin, Louis Antoine \u0098de\u009c",
+    "date_of_birth": "1665",
+    "date_of_death": "1736"
+  },
+  {
+    "identifier_for_person": "1034699628",
+    "variant_name_for_person": [
+      "Brockdorff, Cay Ludwig Georg Konrad \u0098von\u009c"
+    ],
+    "gender": "male",
+    "biographical_information": [
+      "BBL (1996), S. 102-103"
+    ],
+    "date_of_death": "29.01.1946",
+    "preferred_name_for_person": "Brockdorff, Cay",
+    "date_of_birth": "17.04.1874",
+    "authorized_access_point_representing_a_person": "Brockdorff, Cay, 1874-1946"
+  },
+  {
+    "variant_name_for_person": [
+      "Me\u0301rault De Bizy, Athanase Rene\u0301",
+      "De Bizy, Athanase Rene\u0301 Me\u0301rault",
+      "DeBizy, Athanase Rene\u0301 Me\u0301rault",
+      "Bizy, Athanase Rene\u0301 Me\u0301rault \u0098de\u009c"
+    ],
+    "authorized_access_point_representing_a_person": "Me\u0301rault De Bizy, Athanase-Rene\u0301, 1744-1835",
+    "identifier_for_person": "1045857424",
+    "preferred_name_for_person": "Me\u0301rault De Bizy, Athanase-Rene\u0301",
+    "date_of_birth": "1744",
+    "date_of_death": "1835"
+  },
+  {
+    "variant_name_for_person": [
+      "Alfaro Lafuente, Manuel Ibo",
+      "Alfaro y Lafuente, Manuel Ibo",
+      "Alfaro, Manuel Ibo",
+      "Ibo Alfaro y Lafuente, Manuel",
+      "Ibo Alfaro, Manuel",
+      "Ibo, Manuel"
+    ],
+    "authorized_access_point_representing_a_person": "Ibo Alfaro Lafuente, Manuel, 1828-1885",
+    "identifier_for_person": "1053083351",
+    "preferred_name_for_person": "Ibo Alfaro Lafuente, Manuel",
+    "date_of_birth": "1828",
+    "date_of_death": "1885"
+  },
+  {
+    "variant_name_for_person": [
+      "Ormonde, ... \u0098of\u009c",
+      "Ormonde, James Edward William Theobald Butler \u0098of\u009c"
+    ],
+    "authorized_access_point_representing_a_person": "Butler, James Edward William Theobald, 1844-1919",
+    "identifier_for_person": "1055101586",
+    "preferred_name_for_person": "Butler, James Edward William Theobald",
+    "date_of_birth": "1844",
+    "date_of_death": "1919"
+  },
+  {
+    "variant_name_for_person": [
+      "Aranton D'Alex, Giovanni \u0098d'\u009c",
+      "Alex, Jean d'Aranton \u0098d'\u009c",
+      "Alex, Giovanni d'Aranton \u0098d'\u009c",
+      "Arenthon d'Alex, Jean \u0098d'\u009c",
+      "Alex, Jean d'Arenthon \u0098d'\u009c",
+      "Jean"
+    ],
+    "authorized_access_point_representing_a_person": "Aranthon D'Alex, Jean \u0098d'\u009c, 1620-1695",
+    "identifier_for_person": "1056901632",
+    "preferred_name_for_person": "Aranthon D'Alex, Jean \u0098d'\u009c",
+    "date_of_birth": "1620",
+    "date_of_death": "1695"
+  },
+  {
+    "identifier_for_person": "1060580543",
+    "preferred_name_for_person": "Avesne, E. \u0098d'\u009c",
+    "authorized_access_point_representing_a_person": "Avesne, E. \u0098d'\u009c, 1851-1925",
+    "date_of_birth": "1851",
+    "date_of_death": "1925"
+  },
+  {
+    "identifier_for_person": "1073132285",
+    "gender": "male",
+    "biographical_information": [
+      "Wikipedia"
+    ],
+    "date_of_death": "17.09.1832",
+    "preferred_name_for_person": "Carelli, Francesco",
+    "date_of_birth": "8.10.1758",
+    "authorized_access_point_representing_a_person": "Carelli, Francesco, 1758-1832"
+  },
+  {
+    "identifier_for_person": "1089786255",
+    "variant_name_for_person": [
+      "Cailler, Rodolphe"
+    ],
+    "authorized_access_point_representing_a_person": "Cailler, Raoul, 1561-1620",
+    "biographical_information": [
+      "BnF"
+    ],
+    "preferred_name_for_person": "Cailler, Raoul",
+    "date_of_birth": "1561",
+    "date_of_death": "1620"
+  },
+  {
+    "identifier_for_person": "1117819884",
+    "variant_name_for_person": [
+      "Ange",
+      "Angelo",
+      "Angelus",
+      "Angelus",
+      "Angelus",
+      "Angelus",
+      "Saint-Joseph, Ange \u0098de\u009c",
+      "San Giuseppe, Angelo \u0098da\u009c",
+      "Sancto-Josepho, Angelus \u0098a\u009c",
+      "Angelo",
+      "San Giuseppe Ligure, Angelo \u0098da\u009c",
+      "Utri, Angelo \u0098da\u009c"
+    ],
+    "authorized_access_point_representing_a_person": "Angelo, da San Giuseppe, 1600-",
+    "biographical_information": [
+      "LCAuth, https://lccn.loc.gov/no99066519",
+      "Franz. Wikipedia, https://fr.wikipedia.org/wiki/Ange_de_Saint-Joseph",
+      "Archivio Biogr. Italiano I 52,194"
+    ],
+    "preferred_name_for_person": "Angelo",
+    "date_of_birth": "1600",
+    "gender": "male"
+  }
+]
