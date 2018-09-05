@@ -22,19 +22,18 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Persistent identifier fetchers."""
+
+"""Json resolvers."""
+
+from __future__ import absolute_import, print_function, unicode_literals
+
+import jsonresolver
+
+from ..api import GndRecord
+from .utils import get_host, resolve_record
 
 
-from __future__ import absolute_import, print_function
-
-from functools import partial
-
-from ..fetchers import id_fetcher
-from .providers import BnfProvider, GndProvider, MefProvider, ReroProvider, \
-    ViafProvider
-
-viaf_id_fetcher = partial(id_fetcher, provider=ViafProvider)
-gnd_id_fetcher = partial(id_fetcher, provider=GndProvider)
-mef_id_fetcher = partial(id_fetcher, provider=MefProvider)
-rero_id_fetcher = partial(id_fetcher, provider=ReroProvider)
-bnf_id_fetcher = partial(id_fetcher, provider=BnfProvider)
+@jsonresolver.route('/api/gnd/<path:path>', host=get_host())
+def resolve_gnd(path):
+    """Resolve Gnd records."""
+    return resolve_record(path, GndRecord)

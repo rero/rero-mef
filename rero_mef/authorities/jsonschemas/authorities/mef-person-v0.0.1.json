@@ -24,25 +24,22 @@
       "type": "string",
       "minLength": 1
     },
-    "bnf_pid": {
+    "bnf": {
       "title": "Bnf authority ID",
-      "type": "string",
-      "minLength": 1
+      "type": "object"
     },
-    "gnd_pid": {
+    "gnd": {
       "title": "Dnb authority ID",
-      "type": "string",
-      "minLength": 1
+      "type": "object"
     },
     "virtua_auth_pid": {
       "title": "Virtua authority ID",
       "type": "string",
       "minLength": 1
     },
-    "rero_auth_pid": {
+    "rero": {
       "title": "Rero authority ID",
-      "type": "string",
-      "minLength": 1
+      "type": "object"
     }
    }
 }

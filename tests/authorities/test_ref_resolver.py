@@ -22,19 +22,24 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Persistent identifier fetchers."""
+"""Test ref resolver."""
+
+from rero_mef.authorities.api import BnfRecord, GndRecord, MefRecord, \
+    ReroRecord
 
 
-from __future__ import absolute_import, print_function
-
-from functools import partial
-
-from ..fetchers import id_fetcher
-from .providers import BnfProvider, GndProvider, MefProvider, ReroProvider, \
-    ViafProvider
-
-viaf_id_fetcher = partial(id_fetcher, provider=ViafProvider)
-gnd_id_fetcher = partial(id_fetcher, provider=GndProvider)
-mef_id_fetcher = partial(id_fetcher, provider=MefProvider)
-rero_id_fetcher = partial(id_fetcher, provider=ReroProvider)
-bnf_id_fetcher = partial(id_fetcher, provider=BnfProvider)
+def test_ref_resolvers(db, mef_record, bnf_record, gnd_record, rero_record):
+    """Test ref resolvers."""
+    mef_rec = MefRecord.create(mef_record)
+    bnf_rec = BnfRecord.create(bnf_record)
+    bnf_ifp = bnf_rec.get('identifier_for_person')
+    gnd_rec = GndRecord.create(gnd_record)
+    gnd_ifp = gnd_rec.get('identifier_for_person')
+    rero_rec = ReroRecord.create(rero_record)
+    rero_ifp = rero_rec.get('identifier_for_person')
+    mef_rec_resolved = mef_rec.replace_refs()
+    assert mef_rec_resolved.get('bnf').get('identifier_for_person') == bnf_ifp
+    assert mef_rec_resolved.get('gnd').get('identifier_for_person') == gnd_ifp
+    assert mef_rec_resolved.get('rero').get(
+        'identifier_for_person'
+    ) == rero_ifp

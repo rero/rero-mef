@@ -49,9 +49,9 @@
       "title": "Identifier for person",
       "description": "XXX (cf. RDA)",
       "type": "string",
-      "validationMessage": "Should be digits only",
+      "validationMessage": "Could start with A rest should be digits only",
       "minLength": 8,
-      "pattern": "^\\d+$"
+      "pattern": "^A?\\d+$"
     },
     "date_of_birth": {
       "title": "Date of birth",

@@ -23,3 +23,12 @@
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
 """Common pytest fixtures and plugins."""
+
+import pytest
+from invenio_app.factory import create_ui
+
+
+@pytest.fixture(scope='module')
+def create_app():
+    """Invenio pytest init."""
+    return create_ui

@@ -34,7 +34,7 @@ from invenio_pidstore.resolver import Resolver
 from invenio_records.api import Record
 
 
-class MefRecord(Record):
+class AuthRecord(Record):
     """ILS Record class."""
 
     minter = None
@@ -52,7 +52,7 @@ class MefRecord(Record):
         if not id_:
             id_ = uuid4()
         cls.minter(id_, data)
-        record = super(MefRecord, cls).create(data=data, id_=id_, **kwargs)
+        record = super(AuthRecord, cls).create(data=data, id_=id_, **kwargs)
         if dbcommit:
             record.dbcommit(reindex)
         return record
@@ -65,7 +65,7 @@ class MefRecord(Record):
                             object_type=cls.object_type,
                             getter=cls.get_record)
         persistent_identifier, record = resolver.resolve(str(pid))
-        return super(MefRecord, cls).get_record(
+        return super(AuthRecord, cls).get_record(
             persistent_identifier.object_uuid,
             with_deleted=with_deleted
         )
@@ -79,7 +79,7 @@ class MefRecord(Record):
     @classmethod
     def get_record_by_id(cls, id, with_deleted=False):
         """Get ils record by uuid."""
-        return super(MefRecord, cls).get_record(id, with_deleted=with_deleted)
+        return super(AuthRecord, cls).get_record(id, with_deleted=with_deleted)
 
     @classmethod
     def get_persistent_identifier(cls, id):
@@ -110,15 +110,15 @@ class MefRecord(Record):
         """Delete record and persistent identifier."""
         persistent_identifier = self.get_persistent_identifier(self.id)
         persistent_identifier.delete()
-        result = super(MefRecord, self).delete(force=force)
+        result = super(AuthRecord, self).delete(force=force)
         if delindex:
             self.delete_from_index()
         return result
 
     def update(self, data, dbcommit=False, reindex=False):
         """Update data for record."""
-        super(MefRecord, self).update(data)
-        super(MefRecord, self).commit()
+        super(AuthRecord, self).update(data)
+        super(AuthRecord, self).commit()
         if dbcommit:
             self.dbcommit(reindex)
         return self

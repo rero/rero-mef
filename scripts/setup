@@ -25,6 +25,8 @@
 
 set -e
 
+data_path=$(pipenv --where)/data
+
 # Clean redis
 pipenv run invenio shell --no-term-title -c "import redis; redis.StrictRedis.from_url(app.config['CACHE_REDIS_URL']).flushall(); print('Cache cleared')"
 pipenv run invenio db destroy --yes-i-know
@@ -36,3 +38,16 @@ pipenv run invenio index queue init purge
 # Create admin role to rectict access
 pipenv run invenio roles create admin
 pipenv run invenio access allow superuser-access role admin
+
+
+RED='\033[0;31m'
+GREEN='\033[0;0;32m'
+NC='\033[0m' # No Color
+# import the records
+for SOURCE in bnf gnd rero viaf mef
+do
+    echo -e ${GREEN}Importing ${SOURCE} records:${NC}
+    pipenv run dojson -i ${data_path}/${SOURCE}.json schema http://mef.test.rero.ch/schemas/authorities/${SOURCE}-person-v0.0.1.json | pipenv run invenio records create --pid-minter ${SOURCE}
+    pipenv run invenio index reindex --yes-i-know --pid-type ${SOURCE}
+done
+pipenv run invenio index run -c 4

@@ -27,14 +27,17 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 
-def id_minter(record_uuid, data, provider, pid_key='pid', object_type='rec'):
+def id_minter(record_uuid, data, provider, pid_key='pid',
+              object_type='rec', recid_field=''):
     """RERIOLS Organisationid minter."""
     assert pid_key not in data
+    assert recid_field in data
+    pid_value = data[recid_field]
     provider = provider.create(
         object_type=object_type,
-        object_uuid=record_uuid
+        object_uuid=record_uuid,
+        pid_value=pid_value
     )
     pid = provider.pid
     data[pid_key] = pid.pid_value
-
     return pid

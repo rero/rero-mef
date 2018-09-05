@@ -4,7 +4,7 @@
     "variant_name_for_person": [
       "Bonqueval, J.G. de"
     ],
-    "identifier_for_person": "000070488",
+    "identifier_for_person": "A000070488",
     "authorized_access_point_representing_a_person": "Genty de Bonqueval, J"
   },
   {
@@ -19,7 +19,7 @@
       "Cavalleriis, Giovanni Battista de,",
       "Cavalieri, Gianbattista,"
     ],
-    "identifier_for_person": "023655346",
+    "identifier_for_person": "A023655346",
     "preferred_name_for_person": "Cavalieri, Giovanni Battista,"
   },
   {
@@ -32,7 +32,7 @@
       "Aernoudt, Pierre,",
       "Arnold, Joseph,"
     ],
-    "identifier_for_person": "017671081",
+    "identifier_for_person": "A017671081",
     "preferred_name_for_person": "Arnoudt, Pierre J.,"
   },
   {
@@ -42,11 +42,11 @@
       "Franchi De Cavalieri, Pietro Pio",
       "Franchi De Cavalieri, Pius"
     ],
-    "identifier_for_person": "000065776",
+    "identifier_for_person": "A000065776",
     "authorized_access_point_representing_a_person": "Franchi De Cavalieri, Pio Pietro"
   },
   {
-    "identifier_for_person": "022480124",
+    "identifier_for_person": "A022480124",
     "variant_name_for_person": [
       "Bernard, Bayle,"
     ],
@@ -59,7 +59,7 @@
     "variant_name_for_person": [
       "Barban\u00e7on, Constantin de"
     ],
-    "identifier_for_person": "009535178",
+    "identifier_for_person": "A009535178",
     "authorized_access_point_representing_a_person": "Constantin,, de Barbanson"
   },
   {
@@ -67,7 +67,7 @@
     "variant_name_for_person": [
       "Kouro\u00fadi\u0332s, K\u00f3\u0332stas"
     ],
-    "identifier_for_person": "021799923",
+    "identifier_for_person": "A021799923",
     "authorized_access_point_representing_a_person": "Kouroud\u0113s, K\u014dstas"
   },
   {
@@ -82,7 +82,7 @@
       "Catalani, Josephus,",
       "Catalano, Josepho,"
     ],
-    "identifier_for_person": "017991779",
+    "identifier_for_person": "A017991779",
     "preferred_name_for_person": "Catalani, Giuseppe,"
   },
   {
@@ -94,11 +94,11 @@
       "Amboise, L\u00e9on d'",
       "L\u00e9on,"
     ],
-    "identifier_for_person": "005591402",
+    "identifier_for_person": "A005591402",
     "authorized_access_point_representing_a_person": "Guillemin, L\u00e9on"
   },
   {
-    "identifier_for_person": "024285452",
+    "identifier_for_person": "A024285452",
     "biographical_information": [
       "Artiste lyrique (soprano)"
     ],
@@ -117,7 +117,7 @@
       "Aranthon d'Alex, Jean d',",
       "Alex, Jean d'Arenthon d',"
     ],
-    "identifier_for_person": "000009346",
+    "identifier_for_person": "A000009346",
     "preferred_name_for_person": "Arenthon d'Alex, Jean d',"
   }
 ]
