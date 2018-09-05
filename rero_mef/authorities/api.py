@@ -26,13 +26,13 @@
 
 from invenio_search.api import RecordsSearch
 
-from ..api import MefRecord
-from .fetchers import auth_id_fetcher, bnf_id_fetcher, gnd_id_fetcher, \
-    mef_id_fetcher, rero_id_fetcher, viaf_id_fetcher
-from .minters import auth_id_minter, bnf_id_minter, gnd_id_minter, \
-    mef_id_minter, rero_id_minter, viaf_id_minter
-from .providers import AuthorityProvider, BnfProvider, GndProvider, \
-    MefProvider, ReroProvider, ViafProvider
+from ..api import AuthRecord
+from .fetchers import bnf_id_fetcher, gnd_id_fetcher, mef_id_fetcher, \
+    rero_id_fetcher, viaf_id_fetcher
+from .minters import bnf_id_minter, gnd_id_minter, mef_id_minter, \
+    rero_id_minter, viaf_id_minter
+from .providers import BnfProvider, GndProvider, MefProvider, ReroProvider, \
+    ViafProvider
 
 
 class ViafSearch(RecordsSearch):
@@ -80,15 +80,7 @@ class MefSearch(RecordsSearch):
         index = 'authorities-mef-person-v0.0.1'
 
 
-class Authority(MefRecord):
-    """Authority class."""
-
-    minter = auth_id_minter
-    fetcher = auth_id_fetcher
-    provider = AuthorityProvider
-
-
-class Mef(MefRecord):
+class MefRecord(AuthRecord):
     """Mef Authority class."""
 
     minter = mef_id_minter
@@ -96,7 +88,7 @@ class Mef(MefRecord):
     provider = MefProvider
 
 
-class Gnd(MefRecord):
+class GndRecord(AuthRecord):
     """Gnd Authority class."""
 
     minter = gnd_id_minter
@@ -104,7 +96,7 @@ class Gnd(MefRecord):
     provider = GndProvider
 
 
-class Rero(MefRecord):
+class ReroRecord(AuthRecord):
     """Rero Authority class."""
 
     minter = rero_id_minter
@@ -112,7 +104,7 @@ class Rero(MefRecord):
     provider = ReroProvider
 
 
-class Bnf(MefRecord):
+class BnfRecord(AuthRecord):
     """Bnf Authority class."""
 
     minter = bnf_id_minter
@@ -120,7 +112,7 @@ class Bnf(MefRecord):
     provider = BnfProvider
 
 
-class Viaf(MefRecord):
+class ViafRecord(AuthRecord):
     """Viaf Authority class."""
 
     minter = viaf_id_minter

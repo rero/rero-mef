@@ -80,9 +80,9 @@
       "title": "Identifier for person",
       "description": "XXX (cf. RDA)",
       "type": "string",
-      "validationMessage": "Should be digits only",
+      "validationMessage": "Should be digits with maybe a X at end",
       "minLength": 8,
-      "pattern": "^\\d+$"
+      "pattern": "^\\d+X?$"
     },
     "date_of_birth": {
       "title": "Date of birth",

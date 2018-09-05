@@ -29,12 +29,28 @@ from __future__ import absolute_import, print_function, unicode_literals
 from functools import partial
 
 from ..minters import id_minter
-from .providers import AuthorityProvider, BnfProvider, GndProvider, \
-    MefProvider, ReroProvider, ViafProvider
+from .providers import BnfProvider, GndProvider, MefProvider, ReroProvider, \
+    ViafProvider
 
-auth_id_minter = partial(id_minter, provider=AuthorityProvider)
-viaf_id_minter = partial(id_minter, provider=ViafProvider)
-bnf_id_minter = partial(id_minter, provider=BnfProvider)
-gnd_id_minter = partial(id_minter, provider=GndProvider)
-mef_id_minter = partial(id_minter, provider=MefProvider)
-rero_id_minter = partial(id_minter, provider=ReroProvider)
+viaf_id_minter = partial(id_minter, provider=ViafProvider,
+                         recid_field='viaf_pid')
+bnf_id_minter = partial(id_minter, provider=BnfProvider,
+                        recid_field='identifier_for_person')
+gnd_id_minter = partial(id_minter, provider=GndProvider,
+                        recid_field='identifier_for_person')
+rero_id_minter = partial(id_minter, provider=ReroProvider,
+                         recid_field='identifier_for_person')
+
+
+def mef_id_minter(record_uuid, data, provider=MefProvider,
+                  pid_key='pid', object_type='rec'):
+    """RERIOLS Organisationid minter."""
+    assert pid_key not in data
+    provider = provider.create(
+        object_type=object_type,
+        object_uuid=record_uuid
+    )
+    pid = provider.pid
+    data[pid_key] = pid.pid_value
+
+    return pid

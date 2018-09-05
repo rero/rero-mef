@@ -22,7 +22,10 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""MEF (Multilingual Entity File) server with records for persons, works, etc. for reuse in integrated library systems (ILS)."""
+"""
+MEF (Multilingual Entity File) server with records for persons, works, etc.
+for reuse in integrated library systems (ILS).
+"""
 
 import os
 
@@ -47,7 +50,7 @@ setup(
     description=__doc__,
     long_description=readme,
     keywords='rero-mef Invenio',
-    license='MIT',
+    license='GPL',
     author='RERO',
     author_email='software@rero.ch',
     url='https://github.com/rero/rero-mef',
@@ -66,20 +69,18 @@ setup(
             'authorities = rero_mef.authorities.models',
         ],
         'invenio_pidstore.minters': [
-            'auth_id = rero_mef.authorities.minters:auth_id_minter',
-            'viaf_id = rero_mef.authorities.minters:viaf_id_minter',
-            'bnf_id = rero_mef.authorities.minters:bnf_id_minter',
-            'gnd_id = rero_mef.authorities.minters:gnd_id_minter',
-            'rero_id = rero_mef.authorities.minters:rero_id_minter',
-            'mef_id = rero_mef.authorities.minters:mef_id_minter',
+            'viaf = rero_mef.authorities.minters:viaf_id_minter',
+            'bnf = rero_mef.authorities.minters:bnf_id_minter',
+            'gnd = rero_mef.authorities.minters:gnd_id_minter',
+            'rero = rero_mef.authorities.minters:rero_id_minter',
+            'mef = rero_mef.authorities.minters:mef_id_minter',
         ],
         'invenio_pidstore.fetchers': [
-            'auth_id = rero_mef.authorities.fetchers:auth_id_fetcher',
-            'viaf_id = rero_mef.authorities.fetchers:viaf_id_fetcher',
-            'bnf_id = rero_mef.authorities.fetchers:bnf_id_fetcher',
-            'gnd_id = rero_mef.authorities.fetchers:gnd_id_fetcher',
-            'rero_id = rero_mef.authorities.fetchers:rero_id_fetcher',
-            'mef_id = rero_mef.authorities.fetchers:mef_id_fetcher',
+            'viaf = rero_mef.authorities.fetchers:viaf_id_fetcher',
+            'bnf = rero_mef.authorities.fetchers:bnf_id_fetcher',
+            'gnd = rero_mef.authorities.fetchers:gnd_id_fetcher',
+            'rero = rero_mef.authorities.fetchers:rero_id_fetcher',
+            'mef = rero_mef.authorities.fetchers:mef_id_fetcher',
         ],
         'invenio_jsonschemas.schemas': [
             'authorities = rero_mef.authorities.jsonschemas',
@@ -87,6 +88,12 @@ setup(
         'invenio_search.mappings': [
             'authorities = rero_mef.authorities.mappings',
         ],
+        'invenio_records.jsonresolver': [
+            'bnf = rero_mef.authorities.jsonresolvers.bnf_resolver',
+            'gnd = rero_mef.authorities.jsonresolvers.gnd_resolver',
+            'rero = rero_mef.authorities.jsonresolvers.rero_resolver',
+            'mef = rero_mef.authorities.jsonresolvers.mef_resolver'
+        ]
     },
     classifiers=[
         'Environment :: Web Environment',

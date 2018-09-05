@@ -30,18 +30,6 @@ from invenio_db import db
 from invenio_pidstore.models import RecordIdentifier
 
 
-class AuthorityIdentifier(RecordIdentifier):
-    """Sequence generator for Authority identifiers."""
-
-    __tablename__ = 'auth_id'
-    __mapper_args__ = {'concrete': True}
-
-    recid = db.Column(
-        db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True, autoincrement=True,
-    )
-
-
 class ViafIdentifier(RecordIdentifier):
     """Sequence generator for Viaf Authority identifiers."""
 

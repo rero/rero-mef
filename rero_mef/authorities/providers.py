@@ -29,8 +29,8 @@ from __future__ import absolute_import, print_function
 from invenio_pidstore.models import PIDStatus
 from invenio_pidstore.providers.base import BaseProvider
 
-from .models import AuthorityIdentifier, BnfIdentifier, GndIdentifier, \
-    MefIdentifier, ReroIdentifier, ViafIdentifier
+from .models import BnfIdentifier, GndIdentifier, MefIdentifier, \
+    ReroIdentifier, ViafIdentifier
 
 
 class MefProvider(BaseProvider):
@@ -83,17 +83,6 @@ class ReroProvider(BaseProvider):
     default_status = PIDStatus.REGISTERED
     """Rero IDs are by default registered immediately."""
 
-    @classmethod
-    def create(cls, object_type=None, object_uuid=None, **kwargs):
-        """Create a new Rero Authority identifier."""
-        assert 'pid_value' not in kwargs
-        kwargs['pid_value'] = str(ReroIdentifier.next())
-        kwargs.setdefault('status', cls.default_status)
-        if object_type and object_uuid:
-            kwargs['status'] = PIDStatus.REGISTERED
-        return super(ReroProvider, cls).create(
-            object_type=object_type, object_uuid=object_uuid, **kwargs)
-
 
 class GndProvider(BaseProvider):
     """Gnd identifier provider."""
@@ -113,17 +102,6 @@ class GndProvider(BaseProvider):
 
     default_status = PIDStatus.REGISTERED
     """Gnd IDs are by default registered immediately."""
-
-    @classmethod
-    def create(cls, object_type=None, object_uuid=None, **kwargs):
-        """Create a new Gnd Authority identifier."""
-        assert 'pid_value' not in kwargs
-        kwargs['pid_value'] = str(GndIdentifier.next())
-        kwargs.setdefault('status', cls.default_status)
-        if object_type and object_uuid:
-            kwargs['status'] = PIDStatus.REGISTERED
-        return super(GndProvider, cls).create(
-            object_type=object_type, object_uuid=object_uuid, **kwargs)
 
 
 class BnfProvider(BaseProvider):
@@ -145,17 +123,6 @@ class BnfProvider(BaseProvider):
     default_status = PIDStatus.REGISTERED
     """Bnf IDs are by default registered immediately."""
 
-    @classmethod
-    def create(cls, object_type=None, object_uuid=None, **kwargs):
-        """Create a new Bnf Authority identifier."""
-        assert 'pid_value' not in kwargs
-        kwargs['pid_value'] = str(BnfIdentifier.next())
-        kwargs.setdefault('status', cls.default_status)
-        if object_type and object_uuid:
-            kwargs['status'] = PIDStatus.REGISTERED
-        return super(BnfProvider, cls).create(
-            object_type=object_type, object_uuid=object_uuid, **kwargs)
-
 
 class ViafProvider(BaseProvider):
     """Viaf identifier provider."""
@@ -175,45 +142,3 @@ class ViafProvider(BaseProvider):
 
     default_status = PIDStatus.REGISTERED
     """Viaf IDs are by default registered immediately."""
-
-    @classmethod
-    def create(cls, object_type=None, object_uuid=None, **kwargs):
-        """Create a new Viaf Authority identifier."""
-        assert 'pid_value' not in kwargs
-        kwargs['pid_value'] = str(ViafIdentifier.next())
-        kwargs.setdefault('status', cls.default_status)
-        if object_type and object_uuid:
-            kwargs['status'] = PIDStatus.REGISTERED
-        return super(ViafProvider, cls).create(
-            object_type=object_type, object_uuid=object_uuid, **kwargs)
-
-
-class AuthorityProvider(BaseProvider):
-    """Authority identifier provider."""
-
-    pid_type = 'auth'
-    """Type of persistent identifier."""
-
-    pid_identifier = AuthorityIdentifier.__tablename__
-    """Identifier for table name"""
-
-    pid_provider = None
-    """Provider name.
-
-    The provider name is not recorded in the PID since the provider does not
-    provide any additional features besides creation of Document ids.
-    """
-
-    default_status = PIDStatus.REGISTERED
-    """Authority IDs are by default registered immediately."""
-
-    @classmethod
-    def create(cls, object_type=None, object_uuid=None, **kwargs):
-        """Create a new Authority identifier."""
-        assert 'pid_value' not in kwargs
-        kwargs['pid_value'] = str(AuthorityIdentifier.next())
-        kwargs.setdefault('status', cls.default_status)
-        if object_type and object_uuid:
-            kwargs['status'] = PIDStatus.REGISTERED
-        return super(AuthorityProvider, cls).create(
-            object_type=object_type, object_uuid=object_uuid, **kwargs)
