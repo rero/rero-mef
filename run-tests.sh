@@ -23,11 +23,13 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-pipenv check && \
-pipenv run pydocstyle rero_mef tests docs && \
-pipenv run isort -rc -c -df && \
-pipenv run check-manifest --ignore ".travis-*,docs/_build*" && \
-pipenv run sphinx-build -qnNW docs docs/_build/html && \
+set -e
+
+pipenv check -i 36437
+pipenv run pydocstyle rero_mef tests docs
+pipenv run isort -rc -c -df
+pipenv run check-manifest --ignore ".travis-*,docs/_build*"
+pipenv run sphinx-build -qnNW docs docs/_build/html
 # workaround see: https://github.com/inveniosoftware/invenio-app/issues/31
 FLASK_DEBUG=False pipenv run test
 # pipenv run test
