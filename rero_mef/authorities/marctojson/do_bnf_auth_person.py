@@ -140,7 +140,7 @@ class Transformation(object):
         fields_200 = self.marc.get_fields('200')
         if fields_103 and fields_103[0].get_subfields('a'):
             subfields_a = fields_103[0].get_subfields('a')
-            dates_string = re.sub('\s+', ' ', subfields_a[0]).strip()
+            dates_string = re.sub(r'\s+', ' ', subfields_a[0]).strip()
             dates = dates_string.split()
             birth_date = format_103_date(dates[0])
             if len(dates) > 1:
