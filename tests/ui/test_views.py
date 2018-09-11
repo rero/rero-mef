@@ -24,12 +24,11 @@
 
 """Views tests."""
 
-# from __future__ import absolute_import, print_function
-#
-# from flask import url_for
-#
-#
-# def test_ping(client):
+from __future__ import absolute_import, print_function
+
+from flask import url_for
+
+# def test_ping(client, base_app):
 #     """Test the ping view."""
 #     resp = client.get(url_for('rero_mef.ping'))
 #     assert resp.status_code == 200

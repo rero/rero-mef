@@ -27,6 +27,13 @@
 import pytest
 
 
+@pytest.fixture(scope='module')
+def create_app(instance_path):
+    """Create test app."""
+    from invenio_app.factory import create_app as create_ui_api
+    return create_ui_api
+
+
 @pytest.fixture(scope='session')
 def empty_mef_record():
     """Empty MEF record."""
@@ -54,7 +61,7 @@ def bnf_record():
         "gender": "male",
         "date_of_birth": "1525",
         "language_of_person": [
-          "lat"
+            "lat"
         ],
         "authorized_access_point_representing_a_person":
             "Cavalieri, Giovanni-Battista, 1525?-1601",

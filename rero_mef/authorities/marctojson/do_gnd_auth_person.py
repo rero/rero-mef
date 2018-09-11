@@ -123,7 +123,7 @@ class Transformation(object):
         fields_100 = self.marc.get_fields('100')
         if fields_100 and fields_100[0].get_subfields('d'):
             subfields_d = fields_100[0].get_subfields('d')
-            dates_string = re.sub('\s+', ' ', subfields_d[0]).strip()
+            dates_string = re.sub(r'\s+', ' ', subfields_d[0]).strip()
             dates = dates_string.split('-')
             birth_date = format_100_date(dates[0])
             dates_per_tag['100'] = {}

@@ -25,10 +25,10 @@
 """Common pytest fixtures and plugins."""
 
 import pytest
-from invenio_app.factory import create_ui
 
 
 @pytest.fixture(scope='module')
-def create_app():
-    """Invenio pytest init."""
-    return create_ui
+def app_config(app_config):
+    """Create temporary instance dir for each test."""
+    app_config['RATELIMIT_STORAGE_URL'] = 'memory://'
+    return app_config

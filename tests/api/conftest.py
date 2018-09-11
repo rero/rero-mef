@@ -27,10 +27,10 @@
 from __future__ import absolute_import, print_function
 
 import pytest
-from invenio_app.factory import create_api
 
 
 @pytest.fixture(scope='module')
-def create_app():
+def create_app(instance_path):
     """Create test app."""
+    from invenio_app.factory import create_api
     return create_api
