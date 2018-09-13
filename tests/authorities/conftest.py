@@ -45,7 +45,9 @@ def empty_mef_record():
 def mef_record():
     """MEF record."""
     record = {
-        "bnf": {"$ref": "http://mef.test.rero.ch/api/bnf/10008312"},
+        "$schema":
+        "http://mef.test.rero.ch/schemas/authorities/mef-person-v0.0.1.json",
+        "bnf": {"$ref": "http://mef.test.rero.ch/api/bnf/10000690"},
         "gnd": {"$ref": "http://mef.test.rero.ch/api/gnd/12391664X"},
         "rero": {"$ref": "http://mef.test.rero.ch/api/rero/A023655346"},
         "viaf_pid": "66739143"
@@ -54,34 +56,33 @@ def mef_record():
 
 
 @pytest.fixture(scope='session')
+def viaf_record():
+    """VIAF record."""
+    record = {
+        "$schema":
+        "http://mef.test.rero.ch/schemas/authorities/viaf-person-v0.0.1.json",
+        "viaf_pid": "66739143",
+        "bnf_pid": "10000690",
+        "gnd_pid": "12391664X",
+        "rero_auth_pid": "A023655346",
+    }
+    return record
+
+
+@pytest.fixture(scope='session')
 def bnf_record():
     """BNF record."""
     record = {
-        "preferred_name_for_person": "Cavalieri, Giovanni-Battista",
+        "preferred_name_for_person": "Aldo, Dr",
         "gender": "male",
-        "date_of_birth": "1525",
-        "language_of_person": [
-            "lat"
-        ],
-        "authorized_access_point_representing_a_person":
-            "Cavalieri, Giovanni-Battista, 1525?-1601",
-        "variant_name_for_person": [
-            "Cavaleriis, Joannes-Baptista de",
-            "Cavalieri, Giovanni-Battista de'",
-            "Cavalleri, Giovanni-Battista de",
-            "Cavalleriis, Giovanni-Battista de",
-            "Cavalleriis, Joannes-Baptista de",
-            "De Cavaleriis, Giovanni-Battista",
-            "De' Cavalieri, Giovanni-Battista",
-            "De' Cavalleri, Giovanni-Battista",
-            "De Cavalleriis, Giovanni-Battista"
-        ],
-        "biographical_information": [
-            "Graveur, dessinateur et \u00e9diteur"
-        ],
-        "date_of_death": "?",
-        "md5": "5103006dfbe6d9579856cfdd495e8d98",
-        "identifier_for_person": "10008312"
+        "date_of_birth": "1813-03-15",
+        "language_of_person": ["fre"],
+        "authorized_access_point_representing_a_person": "Aldo, Dr, 1813-1875",
+        "md5": "ba876f4e0e78e408ed02dba4cc3f32ed",
+        "date_of_death": "1875-12-21",
+        "identifier_for_person": "10000690",
+        "$schema":
+        "http://mef.test.rero.ch/schemas/authorities/bnf-person-v0.0.1.json"
     }
     return record
 
@@ -90,6 +91,8 @@ def bnf_record():
 def gnd_record():
     """GND record."""
     record = {
+        "$schema":
+        "http://mef.test.rero.ch/schemas/authorities/gnd-person-v0.0.1.json",
         "identifier_for_person": "12391664X",
         "variant_name_for_person": [
             "Cavaleriis, Joannes Baptista \u0098de\u009c",
@@ -137,6 +140,8 @@ def gnd_record():
 def rero_record():
     """RERO record."""
     record = {
+        "$schema":
+        "http://mef.test.rero.ch/schemas/authorities/rero-person-v0.0.1.json",
         "authorized_access_point_representing_a_person":
             "Cavalieri, Giovanni Battista,, ca.1525-1601",
         "date_of_birth": "ca.1525-1601",

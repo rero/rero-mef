@@ -21,13 +21,13 @@
         "bnf_pid": {
           "type": "keyword"
         },
-        "dnb_pid": {
+        "gnd_pid": {
           "type": "keyword"
         },
         "virtua_auth_pid": {
           "type": "keyword"
         },
-        "rero_pid": {
+        "rero_auth_pid": {
           "type": "keyword"
         },
         "_created": {

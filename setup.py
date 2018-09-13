@@ -93,7 +93,10 @@ setup(
             'gnd = rero_mef.authorities.jsonresolvers.gnd_resolver',
             'rero = rero_mef.authorities.jsonresolvers.rero_resolver',
             'mef = rero_mef.authorities.jsonresolvers.mef_resolver'
-        ]
+        ],
+        'flask.commands': [
+            'fixtures = rero_mef.cli:fixtures',
+        ],
     },
     classifiers=[
         'Environment :: Web Environment',

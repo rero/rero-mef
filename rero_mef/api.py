@@ -29,18 +29,23 @@ from uuid import uuid4
 from elasticsearch.exceptions import NotFoundError
 from invenio_db import db
 from invenio_indexer.api import RecordIndexer
+from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PersistentIdentifier
 from invenio_pidstore.resolver import Resolver
 from invenio_records.api import Record
 
+from .authorities.models import AgencyAction, MefAction
+
 
 class AuthRecord(Record):
-    """ILS Record class."""
+    """Authority Record class."""
 
     minter = None
     fetcher = None
     provider = None
     object_type = 'rec'
+    agency = None
+    agency_pid_type = None
 
     @classmethod
     def create(cls, data, id_=None, delete_pid=True,
@@ -58,17 +63,74 @@ class AuthRecord(Record):
         return record
 
     @classmethod
-    def get_record_by_pid(cls, pid, with_deleted=False):
+    def create_or_update(
+        cls,
+        data,
+        id_=None,
+        delete_pid=True,
+        dbcommit=False,
+        reindex=False,
+        **kwargs
+    ):
+        """Create or update agency record."""
+        pid = data.get('identifier_for_person')
+        agency_record = cls.get_record_by_pid(pid)
+
+        from .authorities.api import ViafRecord
+        viaf_record = ViafRecord.get_viaf_by_agency_pid(
+            pid, pid_type=cls.agency_pid_type
+        )
+        mef_action = agency_action = None
+        return_record = {}
+        if agency_record:
+            if viaf_record:
+                agency_record.update(data, dbcommit=dbcommit, reindex=reindex)
+                mef_action = MefAction.UPDATE
+                return_record = agency_record
+                agency_action = AgencyAction.UPDATE
+            else:
+                mef_action = MefAction.DELETE
+                agency_action = AgencyAction.DISCARD
+        elif viaf_record:
+            created_record = cls.create(
+                data,
+                id_=None,
+                delete_pid=True,
+                dbcommit=dbcommit,
+                reindex=reindex,
+            )
+            mef_action = MefAction.UPDATE
+            agency_action = AgencyAction.CREATE
+            return_record = created_record
+        else:
+            mef_action = MefAction.DELETE
+            agency_action = AgencyAction.DISCARD
+
+        from .authorities.api import MefRecord
+        MefRecord.create_or_update(
+            agency=cls.agency,
+            agency_pid=pid,
+            viaf_record=viaf_record,
+            action=mef_action,
+            dbcommit=dbcommit,
+            reindex=reindex,
+        )
+        return return_record, agency_action
+
+    @classmethod
+    def get_record_by_pid(cls, pid):
         """Get ils record by pid value."""
         assert cls.provider
         resolver = Resolver(pid_type=cls.provider.pid_type,
                             object_type=cls.object_type,
                             getter=cls.get_record)
-        persistent_identifier, record = resolver.resolve(str(pid))
-        return super(AuthRecord, cls).get_record(
-            persistent_identifier.object_uuid,
-            with_deleted=with_deleted
-        )
+        try:
+            persistent_identifier, record = resolver.resolve(str(pid))
+            return super(AuthRecord, cls).get_record(
+                persistent_identifier.object_uuid
+            )
+        except PIDDoesNotExistError:
+            return None
 
     @classmethod
     def get_pid_by_id(cls, id):
@@ -77,9 +139,9 @@ class AuthRecord(Record):
         return str(persistent_identifier.pid_value)
 
     @classmethod
-    def get_record_by_id(cls, id, with_deleted=False):
-        """Get ils record by uuid."""
-        return super(AuthRecord, cls).get_record(id, with_deleted=with_deleted)
+    def get_record_by_id(cls, id):
+        """Get record by uuid."""
+        return super(AuthRecord, cls).get_record(id)
 
     @classmethod
     def get_persistent_identifier(cls, id):
@@ -132,7 +194,7 @@ class AuthRecord(Record):
     def reindex(self, forceindex=False):
         """Reindex record."""
         if forceindex:
-            RecordIndexer(version_type="external_gte").index(self)
+            RecordIndexer(version_type='external_gte').index(self)
         else:
             RecordIndexer().index(self)
 

@@ -45,6 +45,11 @@
       "type": "string",
       "minLength": 1
     },
+    "md5": {
+      "title": "Md5",
+      "type": "string",
+      "minLength": 1
+    },
     "identifier_for_person": {
       "title": "Identifier for person",
       "description": "XXX (cf. RDA)",

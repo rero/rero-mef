@@ -45,6 +45,11 @@
       "type": "string",
       "minLength": 1
     },
+    "md5": {
+      "title": "Md5",
+      "type": "string",
+      "minLength": 1
+    },
     "language_of_person": {
       "title": "Language of person",
       "description": "A language a person uses when writing for publication, broadcasting, etc. (cf. RDA)",

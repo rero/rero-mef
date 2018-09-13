@@ -88,3 +88,21 @@ class ReroIdentifier(RecordIdentifier):
         db.BigInteger().with_variant(db.Integer, 'sqlite'),
         primary_key=True, autoincrement=True,
     )
+
+
+class MefAction(object):
+    """Class holding all availabe Mef record creation actions."""
+
+    CREATE = 'create'
+    UPDATE = 'update'
+    DISCARD = 'discard'
+    DELETE = 'delete'
+
+
+class AgencyAction(object):
+    """Class holding all availabe agency record creation actions."""
+
+    CREATE = 'create'
+    UPDATE = 'update'
+    DISCARD = 'discard'
+    DELETE = 'delete'
