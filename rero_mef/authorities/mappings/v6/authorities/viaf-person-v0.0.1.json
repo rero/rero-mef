@@ -29,6 +29,12 @@
         },
         "rero_pid": {
           "type": "keyword"
+        },
+        "_created": {
+          "type": "date"
+        },
+        "_updated": {
+          "type": "date"
         }
       }
     }
