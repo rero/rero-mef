@@ -24,22 +24,62 @@
 
 """Test ref resolver."""
 
+from invenio_search import current_search
+
 from rero_mef.authorities.api import BnfRecord, GndRecord, MefRecord, \
-    ReroRecord
+    ReroRecord, ViafRecord
 
 
-def test_ref_resolvers(db, mef_record, bnf_record, gnd_record, rero_record):
+def test_ref_resolvers(
+        app, bnf_record, gnd_record, rero_record, viaf_record):
     """Test ref resolvers."""
-    mef_rec = MefRecord.create(mef_record)
-    bnf_rec = BnfRecord.create(bnf_record)
-    bnf_ifp = bnf_rec.get('identifier_for_person')
-    gnd_rec = GndRecord.create(gnd_record)
-    gnd_ifp = gnd_rec.get('identifier_for_person')
-    rero_rec = ReroRecord.create(rero_record)
-    rero_ifp = rero_rec.get('identifier_for_person')
-    mef_rec_resolved = mef_rec.replace_refs()
-    assert mef_rec_resolved.get('bnf').get('identifier_for_person') == bnf_ifp
-    assert mef_rec_resolved.get('gnd').get('identifier_for_person') == gnd_ifp
+
+    """VIAF record."""
+    viaf_rec, status = ViafRecord.create_or_update(
+        viaf_record, agency='viaf', dbcommit=True, reindex=True
+    )
+    viaf_pid = viaf_rec['viaf_pid']
+    current_search.flush_and_refresh(
+        index='authorities-viaf-person-v0.0.1')
+    current_search.flush_and_refresh(
+        index='authorities-mef-person-v0.0.1')
+
+    """BNF record."""
+    bnf_rec, status = BnfRecord.create_or_update(
+        bnf_record, agency='bnf', dbcommit=True, reindex=True
+    )
+    current_search.flush_and_refresh(
+        index='authorities-bnf-person-v0.0.1')
+    current_search.flush_and_refresh(
+        index='authorities-mef-person-v0.0.1')
+    bnf_pid = bnf_rec['identifier_for_person']
+
+    """GND record."""
+    gnd_rec, status = GndRecord.create_or_update(
+        gnd_record, agency='gnd', dbcommit=True, reindex=True
+    )
+    current_search.flush_and_refresh(
+        index='authorities-gnd-person-v0.0.1')
+    current_search.flush_and_refresh(
+        index='authorities-mef-person-v0.0.1')
+    gnd_pid = gnd_rec.get('identifier_for_person')
+
+    """RERO record."""
+    rero_rec, status = ReroRecord.create_or_update(
+        rero_record, agency='rero', dbcommit=True, reindex=True
+    )
+    current_search.flush_and_refresh(
+        index='authorities-rero-person-v0.0.1')
+    rero_pid = rero_rec.get('identifier_for_person')
+    current_search.flush_and_refresh(
+        index='authorities-mef-person-v0.0.1')
+
+    """MEF record."""
+    mef_rec_resolved = MefRecord.get_mef_by_viaf_pid(
+        viaf_pid=viaf_pid
+    )
+    mef_rec_resolved = mef_rec_resolved.replace_refs()
+    assert mef_rec_resolved.get('bnf').get('identifier_for_person') == bnf_pid
+    assert mef_rec_resolved.get('gnd').get('identifier_for_person') == gnd_pid
     assert mef_rec_resolved.get('rero').get(
-        'identifier_for_person'
-    ) == rero_ifp
+        'identifier_for_person') == rero_pid

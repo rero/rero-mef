@@ -20,22 +20,6 @@
         "viaf_pid": {
           "type": "string",
           "index": "not_analyzed"
-        },
-        "bnf_pid": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "gnd_pid": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "virtua_auth_pid": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "rero_auth_pid": {
-          "type": "string",
-          "index": "not_analyzed"
         }
       }
     }

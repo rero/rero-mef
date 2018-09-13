@@ -1,8 +1,0 @@
-[
-  {
-    "bnf": {"$ref": "http://mef.test.rero.ch/api/bnf/10008312"},
-    "gnd": {"$ref": "http://mef.test.rero.ch/api/gnd/12391664X"},
-    "rero": {"$ref": "http://mef.test.rero.ch/api/rero/A023655346"},
-    "viaf_pid": "66739143"
-  }
-]

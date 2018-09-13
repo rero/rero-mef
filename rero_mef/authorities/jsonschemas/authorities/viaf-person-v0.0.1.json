@@ -29,8 +29,8 @@
       "type": "string",
       "minLength": 1
     },
-    "dnb_pid": {
-      "title": "Dnb authority ID",
+    "gnd_pid": {
+      "title": "Gnd authority ID",
       "type": "string",
       "minLength": 1
     },

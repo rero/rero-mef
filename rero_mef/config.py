@@ -258,4 +258,26 @@ RECORDS_REST_ENDPOINTS = dict(
         max_result_window=10000,
         error_handlers=dict(),
     ),
+    viaf=dict(
+        pid_type='viaf',
+        pid_minter='viaf',
+        pid_fetcher='viaf',
+        search_class=RecordsSearch,
+        indexer_class=RecordIndexer,
+        search_index='authorities-viaf-person-v0.0.1',
+        search_type='viaf-person-v0.0.1',
+        record_serializers={
+            'application/json': ('invenio_records_rest.serializers'
+                                 ':json_v1_response'),
+        },
+        search_serializers={
+            'application/json': ('invenio_records_rest.serializers'
+                                 ':json_v1_search'),
+        },
+        list_route='/viaf/',
+        item_route='/viaf/<pid(viaf):pid_value>',
+        default_media_type='application/json',
+        max_result_window=10000,
+        error_handlers=dict(),
+    ),
 )

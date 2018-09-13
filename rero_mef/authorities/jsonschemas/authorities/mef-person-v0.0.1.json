@@ -29,13 +29,8 @@
       "type": "object"
     },
     "gnd": {
-      "title": "Dnb authority ID",
+      "title": "Gnd authority ID",
       "type": "object"
-    },
-    "virtua_auth_pid": {
-      "title": "Virtua authority ID",
-      "type": "string",
-      "minLength": 1
     },
     "rero": {
       "title": "Rero authority ID",

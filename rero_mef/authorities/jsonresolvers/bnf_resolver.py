@@ -34,6 +34,6 @@ from .utils import get_host, resolve_record
 
 
 @jsonresolver.route('/api/bnf/<path:path>', host=get_host())
-def resolve_gnd(path):
+def resolve_bnf(path):
     """Resolve Bnf records."""
     return resolve_record(path, BnfRecord)
