@@ -89,19 +89,6 @@ class MefRecord(AuthRecord):
     fetcher = mef_id_fetcher
     provider = MefProvider
 
-    def dumps(self, **kwargs):
-        """Return pure Python dictionary with record metadata."""
-        data = super(MefRecord, self).dumps(**kwargs)
-        sources = []
-        if 'rero' in data:
-            sources.append('rero')
-        if 'gnd' in data:
-            sources.append('gnd')
-        if 'bnf' in data:
-            sources.append('bnf')
-        data['sources'] = sources
-        return data
-
     @classmethod
     def build_ref_string(cls, agency_pid, agency):
         """Buid url for agency's api."""

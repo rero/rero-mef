@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of RERO MEF.
-# Copyright (C) 2018 RERO.
+# Copyright (C) 2017 RERO.
 #
 # RERO MEF is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -22,10 +22,26 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""RERO MEF."""
+"""RERO MEF invenio module declaration."""
 
 from __future__ import absolute_import, print_function
-from .version import __version__
-from .ext import REROMEFAPP
 
-__all__ = ('__version__', 'REROMEFAPP')
+
+class REROMEFAPP(object):
+    """rero-mef extension."""
+
+    def __init__(self, app=None):
+        """RERO MEF App module."""
+        if app:
+            self.init_app(app)
+            self.register_signals()
+
+    def init_app(self, app):
+        """Flask application initialization."""
+        app.extensions['rero-mef'] = self
+
+    def register_signals(app):
+        """Register signals."""
+        from .receivers import extend_mef_record
+        from invenio_indexer.signals import before_record_index
+        before_record_index.connect(extend_mef_record, weak=False)

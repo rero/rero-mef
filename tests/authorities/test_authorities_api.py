@@ -137,7 +137,7 @@ def test_update_agency_record_with_viaf_links(
     assert returned_rero_record['pid'] == 'A023655346'
 
 
-def test_mef_record_with(app, viaf_record):
+def test_mef_record(app, viaf_record):
     """Test MEF record."""
     viaf_pid = viaf_record['viaf_pid']
     mef_rec = MefRecord.get_mef_by_viaf_pid(
