@@ -62,6 +62,9 @@ setup(
         'console_scripts': [
             'rero-mef = invenio_app.cli:cli',
         ],
+        'invenio_base.apps': [
+            'rero-mef = rero_mef.ext:REROMEFAPP'
+        ],
         'invenio_config.module': [
             'rero_mef = rero_mef.config',
         ],
