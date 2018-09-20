@@ -4,6 +4,7 @@
   "type": "object",
   "required": [
     "$schema",
+    "pid",
     "identifier_for_person",
     "preferred_name_for_person",
     "authorized_access_point_representing_a_person"
@@ -85,9 +86,7 @@
       "title": "Identifier for person",
       "description": "XXX (cf. RDA)",
       "type": "string",
-      "validationMessage": "Should be digits only",
-      "minLength": 8,
-      "pattern": "^\\d+$"
+      "format": "uri"
     },
     "date_of_birth": {
       "title": "Date of birth",

@@ -141,15 +141,18 @@ def build_string_list_from_fields(record, tag, subfields, separator):
     the given separator is used as subfields delimitor.
     """
     fields = record.get_fields(tag)
-    filed_string_list = []
+    field_string_list = []
     for field in fields:
         subfield_list = []
         for code, data in field:
             if re.match('[' + subfields + ']', code):
                 subfield_list.append(data)
         string_from_field = separator.join(subfield_list)
-        filed_string_list.append(string_from_field)
-    return filed_string_list
+        string_from_field = string_from_field.replace('\x98', '')
+        string_from_field = string_from_field.replace('\x9C', '')
+        string_from_field = re.sub(r'[,:;]$', '', string_from_field.strip())
+        field_string_list.append(string_from_field.strip())
+    return field_string_list
 
 
 def as_marc(field):

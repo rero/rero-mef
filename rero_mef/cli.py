@@ -73,8 +73,8 @@ def create_or_update(agency, source, verbose):
                 id_type = ' record uuid: '
                 id = returned_record.id
             else:
-                id = record['identifier_for_person']
-                id_type = ' record identifier_for_person : '
+                id = record['pid']
+                id_type = ' record pid : '
 
             message_str = {
                 'agency': agency,

@@ -22,10 +22,7 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Marctojsons transformer gnd."""
-
-# ---------------------------- Modules ----------------------------------------
-# import of standard modules
+"""Marctojsons transformer for Gnd records."""
 
 import re
 
@@ -34,7 +31,7 @@ from rero_mef.authorities.marctojson.helper import \
 
 
 class Transformation(object):
-    """Transformation unimarc to json for gnd autority person."""
+    """Transformation marc21 to json for gnd autority person."""
 
     def __init__(self, marc, logger=None, verbose=False, transform=True):
         """Constructor."""
@@ -76,7 +73,7 @@ class Transformation(object):
             self.json_dict['gender'] = gender
 
     def trans_gnd_language_of_person(self):
-        """Transformation language_of_person 101 $a."""
+        """Transformation language_of_person 377 $a."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_gnd_language_of_person')
         fields_377 = self.marc.get_fields('377')
@@ -96,36 +93,60 @@ class Transformation(object):
         fields_001 = self.marc.get_fields('001')
         if fields_001 and fields_001[0]:
             identifier_for_person = fields_001[0].data
-            self.json_dict['identifier_for_person'] = identifier_for_person
+            pid = identifier_for_person
+            self.json_dict['pid'] = pid
+
+        fields_024 = self.marc.get_fields('024')
+        if fields_024:
+            if (
+                fields_024[0].get_subfields('a') and
+                fields_024[0].get_subfields('2')
+            ):
+                subfields_a = fields_024[0].get_subfields('a')[0]
+                subfields_2 = fields_024[0].get_subfields('2')[0]
+                if subfields_2 == 'uri':
+                    self.json_dict['identifier_for_person'] = subfields_a
 
     def trans_gnd_birth_and_death_dates(self):
         """Transformation birth_date and death_date."""
         def format_100_date(date_str):
-            """DocString."""
+            """Format date from field 100."""
             date_formated = date_str
             if len(date_str) == 8:
-                date_formated = \
-                    date_str[0:4] + '-' + date_str[4:6] + '-' + date_str[6:8]
+                date_data = {
+                    'year': date_str[0:4],
+                    'month': date_str[4:6],
+                    'day': date_str[6:8]
+                }
+                date_formated = '{year}-{month}-{day}'.format(**date_data)
             elif len(date_str) == 4:
                 date_formated = date_str[0:4]
             return date_formated
 
         def format_548_date(date_str):
-            """DocString."""
+            """Format date from field 548."""
             date_formated = date_str
             if len(date_str) == 4:
                 date_formated = date_str[0:4]
             return date_formated
 
+        def get_date(dates_per_tag, selector):
+            """Get date base on selector ('birth_date' or 'death_date')."""
+            if 'datx' in dates_per_tag and selector in dates_per_tag['datx']:
+                return dates_per_tag['datx'][selector]
+            elif 'datl' in dates_per_tag and selector in dates_per_tag['datl']:
+                return dates_per_tag['datl'][selector]
+            elif '100' in dates_per_tag and selector in dates_per_tag['100']:
+                return dates_per_tag['100'][selector]
+            else:
+                return None
+
         dates_per_tag = {}
-        birth_date = ''
-        death_date = ''
         fields_100 = self.marc.get_fields('100')
         if fields_100 and fields_100[0].get_subfields('d'):
             subfields_d = fields_100[0].get_subfields('d')
             dates_string = re.sub(r'\s+', ' ', subfields_d[0]).strip()
             dates = dates_string.split('-')
-            birth_date = format_100_date(dates[0])
             dates_per_tag['100'] = {}
             dates_per_tag['100']['birth_date'] = format_100_date(dates[0])
             if len(dates) > 1:
@@ -141,31 +162,30 @@ class Transformation(object):
                     dates = subfields_a.split('-')
                     birth_date = format_548_date(dates[0])
                     dates_per_tag[subfields_4] = {}
-                    dates_per_tag[subfields_4]['birth_date'] = birth_date
+                    if birth_date:
+                        dates_per_tag[subfields_4]['birth_date'] = birth_date
                     if len(dates) > 1:
                         death_date = format_548_date(dates[1])
-                        dates_per_tag[subfields_4]['death_date'] = death_date
-        result = {}
-        if 'datx' in dates_per_tag:
-            result = dates_per_tag['datx']
-        elif 'datl' in dates_per_tag:
-            result = dates_per_tag['datl']
-        elif '100' in dates_per_tag:
-            result = dates_per_tag['100']
+                        if death_date:
+                            dates_per_tag[subfields_4]['death_date'] \
+                                = death_date
 
-        if 'birth_date' in result and result['birth_date']:
-            self.json_dict['date_of_birth'] = result['birth_date']
-        if 'death_date' in result and result['death_date']:
-            self.json_dict['date_of_death'] = result['death_date']
+        birth_date = get_date(dates_per_tag, 'birth_date')
+        if birth_date:
+            self.json_dict['date_of_birth'] = birth_date
+
+        death_date = get_date(dates_per_tag, 'death_date')
+        if death_date:
+            self.json_dict['date_of_death'] = death_date
 
     def trans_gnd_biographical_information(self):
-        """Transformation biographical_information 670 $abu."""
+        """Transformation biographical_information 678 $abu."""
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function',
                 'trans_gnd_biographical_information')
         biographical_information = []
-        for tag in [670]:
+        for tag in [678]:
             biographical_information += \
                 build_string_list_from_fields(self.marc, str(tag), 'abu', ', ')
         if biographical_information:
@@ -192,20 +212,21 @@ class Transformation(object):
                 'trans_gnd_variant_name_for_person')
         variant_name_for_person = \
             build_string_list_from_fields(self.marc, '400', 'a', ', ')
+
         if variant_name_for_person:
             self.json_dict['variant_name_for_person'] = variant_name_for_person
 
     def trans_gnd_authorized_access_point_representing_a_person(self):
         """Transformation authorized_access_point_representing_a_person.
 
-        100 $abcdgt
+        100 $abcd
         """
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function',
                 'trans_gnd_authorized_access_point_representing_a_person')
         authorized_access_point_representing_a_person = \
-            build_string_list_from_fields(self.marc, '100', 'abcdgt', ', ')
+            build_string_list_from_fields(self.marc, '100', 'abcd', ', ')
         if authorized_access_point_representing_a_person:
             self.json_dict['authorized_access_point_representing_a_person'] = \
                 authorized_access_point_representing_a_person[0]

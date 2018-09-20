@@ -52,7 +52,7 @@ def test_ref_resolvers(
         index='authorities-bnf-person-v0.0.1')
     current_search.flush_and_refresh(
         index='authorities-mef-person-v0.0.1')
-    bnf_pid = bnf_rec['identifier_for_person']
+    bnf_pid = bnf_rec['pid']
 
     """GND record."""
     gnd_rec, status = GndRecord.create_or_update(
@@ -62,7 +62,7 @@ def test_ref_resolvers(
         index='authorities-gnd-person-v0.0.1')
     current_search.flush_and_refresh(
         index='authorities-mef-person-v0.0.1')
-    gnd_pid = gnd_rec.get('identifier_for_person')
+    gnd_pid = gnd_rec.get('pid')
 
     """RERO record."""
     rero_rec, status = ReroRecord.create_or_update(
@@ -70,7 +70,7 @@ def test_ref_resolvers(
     )
     current_search.flush_and_refresh(
         index='authorities-rero-person-v0.0.1')
-    rero_pid = rero_rec.get('identifier_for_person')
+    rero_pid = rero_rec.get('pid')
     current_search.flush_and_refresh(
         index='authorities-mef-person-v0.0.1')
 
@@ -79,7 +79,6 @@ def test_ref_resolvers(
         viaf_pid=viaf_pid
     )
     mef_rec_resolved = mef_rec_resolved.replace_refs()
-    assert mef_rec_resolved.get('bnf').get('identifier_for_person') == bnf_pid
-    assert mef_rec_resolved.get('gnd').get('identifier_for_person') == gnd_pid
-    assert mef_rec_resolved.get('rero').get(
-        'identifier_for_person') == rero_pid
+    assert mef_rec_resolved.get('bnf').get('pid') == bnf_pid
+    assert mef_rec_resolved.get('gnd').get('pid') == gnd_pid
+    assert mef_rec_resolved.get('rero').get('pid') == rero_pid

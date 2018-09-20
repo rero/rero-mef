@@ -22,31 +22,15 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Marctojsons transformer skeleton."""
+"""Marctojsons transformer for Rero records."""
 
-
-# ---------------------------- Modules ----------------------------------------
-# import of standard modules
 
 import re
 
 from rero_mef.authorities.marctojson.helper import \
     build_string_list_from_fields
 
-# third party modules
 
-# local modules
-
-
-__author__ = "Gianni Pante <Gianni Pante@rero.ch>"
-__version__ = "0.0.1"
-__copyright__ = "Copyright (c) 2009-2018 Rero, Gianni Pante"
-__license__ = "Internal Use Only"
-
-
-# ----------------------------------- Classes ---------------------------------
-
-# MrcIterator ----
 class Transformation(object):
     """Transformation marc21 to json for RERO autority person."""
 
@@ -72,14 +56,17 @@ class Transformation(object):
         return self.json_dict
 
     def trans_rero_identifier_for_person(self):
-        """Transformation identifier_for_person from field 001."""
+        """Transformation identifier_for_person from field 035."""
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function',
                 'trans_rero_identifier_for_person')
-        fields_001 = self.marc.get_fields('001')
-        if fields_001 and fields_001[0]:
-            identifier_for_person = fields_001[0].data[4:]
+        fields_035 = self.marc.get_fields('035')
+        if fields_035 and fields_035[0].get_subfields('a'):
+            pid = fields_035[0].get_subfields('a')[0]
+            identifier_for_person = 'http://data.rero.ch/02-{pid}'.format(
+                pid=pid)
+            self.json_dict['pid'] = pid
             self.json_dict['identifier_for_person'] = identifier_for_person
 
     def trans_rero_birth_and_death_dates(self):
@@ -92,8 +79,12 @@ class Transformation(object):
             """DocString."""
             date_formated = date_str
             if len(date_str) == 8:
-                date_formated = \
-                    date_str[0:4] + '-' + date_str[4:6] + '-' + date_str[6:8]
+                    date_data = {
+                        'year': date_str[0:4],
+                        'month': date_str[4:6],
+                        'day': date_str[6:8]
+                    }
+                    date_formated = '{year}-{month}-{day}'.format(**date_data)
             elif len(date_str) == 4:
                 date_formated = date_str[0:4]
             return date_formated
@@ -106,12 +97,14 @@ class Transformation(object):
         death_date = ''
         fields_100 = self.marc.get_fields('100')
         if fields_100 and fields_100[0].get_subfields('d'):
-            subfields_a = fields_100[0].get_subfields('d')
-            dates_string = re.sub(r'\s+', ' ', subfields_a[0]).strip()
-            dates = dates_string.split()
-            birth_date = format_100_date(dates[0])
+            subfields_d = fields_100[0].get_subfields('d')
+            dates_string = re.sub(r'\s+', ' ', subfields_d[0]).strip()
+            dates = dates_string.split('-')
+            birth_date = dates[0]
+            # birth_date = format_100_date(dates[0])
             if len(dates) > 1:
-                death_date = format_100_date(dates[1])
+                death_date = dates[1]
+                # death_date = format_100_date(dates[1])
         if birth_date:
             self.json_dict['date_of_birth'] = birth_date
         if death_date:
@@ -136,7 +129,7 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function',
-                "trans_rero_preferred_name_for_person")
+                'trans_rero_preferred_name_for_person')
         preferred_name_for_person = \
             build_string_list_from_fields(self.marc, '100', 'a', ', ')
         if preferred_name_for_person:
@@ -155,13 +148,13 @@ class Transformation(object):
             self.json_dict['variant_name_for_person'] = variant_name_for_person
 
     def trans_rero_authorized_access_point_representing_a_person(self):
-        """Trans authorized_access_point_representing_a_person 100 acd."""
+        """Trans authorized_access_point_representing_a_person 100 abcd."""
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function',
                 'trans_rero_authorized_access_point_representing_a_person')
         authorized_access_point_representing_a_person = \
-            build_string_list_from_fields(self.marc, '100', 'acd', ', ')
+            build_string_list_from_fields(self.marc, '100', 'abcd', ', ')
         if authorized_access_point_representing_a_person:
             self.json_dict['authorized_access_point_representing_a_person'] = \
                 authorized_access_point_representing_a_person[0]

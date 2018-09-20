@@ -35,11 +35,11 @@ from .providers import BnfProvider, GndProvider, MefProvider, ReroProvider, \
 viaf_id_minter = partial(id_minter, provider=ViafProvider,
                          recid_field='viaf_pid')
 bnf_id_minter = partial(id_minter, provider=BnfProvider,
-                        recid_field='identifier_for_person')
+                        recid_field='pid')
 gnd_id_minter = partial(id_minter, provider=GndProvider,
-                        recid_field='identifier_for_person')
+                        recid_field='pid')
 rero_id_minter = partial(id_minter, provider=ReroProvider,
-                         recid_field='identifier_for_person')
+                         recid_field='pid')
 
 
 def mef_id_minter(record_uuid, data, provider=MefProvider,

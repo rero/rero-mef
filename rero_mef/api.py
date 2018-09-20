@@ -48,7 +48,7 @@ class AuthRecord(Record):
     agency_pid_type = None
 
     @classmethod
-    def create(cls, data, id_=None, delete_pid=True,
+    def create(cls, data, id_=None, delete_pid=False,
                dbcommit=False, reindex=False, **kwargs):
         """Create a new ils record."""
         assert cls.minter
@@ -73,7 +73,7 @@ class AuthRecord(Record):
         **kwargs
     ):
         """Create or update agency record."""
-        pid = data.get('identifier_for_person')
+        pid = data.get('pid')
         agency_record = cls.get_record_by_pid(pid)
 
         from .authorities.api import ViafRecord
@@ -95,7 +95,7 @@ class AuthRecord(Record):
             created_record = cls.create(
                 data,
                 id_=None,
-                delete_pid=True,
+                delete_pid=False,
                 dbcommit=dbcommit,
                 reindex=reindex,
             )
