@@ -37,7 +37,7 @@ def test_bnf_gender_female():
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_gender()
     assert trans.json == {
-        "gender": "female"
+        'gender': 'female'
     }
 
 
@@ -51,7 +51,7 @@ def test_bnf_gender_male():
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_gender()
     assert trans.json == {
-        "gender": "male"
+        'gender': 'male'
     }
 
 
@@ -74,9 +74,9 @@ def test_bnf_language_of_person():
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_language_of_person()
     assert trans.json == {
-        "language_of_person": [
-            "fre",
-            "eng"
+        'language_of_person': [
+            'fre',
+            'eng'
         ]
     }
 
@@ -90,14 +90,17 @@ def test_bnf_language_of_perso__missing():
 
 
 def test_bnf_identifier_for_person():
-    """Test identifier for person 001"""
+    """Test identifier for person"""
     xml_part_to_add = """
-        <controlfield tag="001">FRBNF170842162</controlfield>
+        <controlfield
+        tag="003">http://catalogue.bnf.fr/ark:/12148/cb13615969g</controlfield>
      """
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_identifier_for_person()
     assert trans.json == {
-        "identifier_for_person": "17084216"
+        'identifier_for_person':
+            'http://catalogue.bnf.fr/ark:/12148/cb13615969g',
+        'pid': '13615969'
     }
 
 
@@ -109,36 +112,95 @@ def test_bnf_identifier_for_person_missing():
     assert trans.json == {}
 
 
-def test_bnf_birth_and_death_dates_birth_death():
+def test_bnf_birth_and_death_from_filed_103():
     """Test date of birth 103 $a pos. 1-8 YYYYMMDD"""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="103">
-            <subfield code="a">18160421 18550331</subfield>
+            <subfield code="a">18160421  18550331 </subfield>
         </datafield>
      """
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_birth_and_death_dates()
     assert trans.json == {
-        "date_of_birth": "1816-04-21",
-        "date_of_death": "1855-03-31"
+        'date_of_birth': '1816-04-21',
+        'date_of_death': '1855-03-31'
     }
+
+    #  format: "XXXXXXXX  XXXX    ?"
+    xml_part_to_add = """
+        <datafield ind1=" " ind2=" " tag="103">
+            <subfield code="a">18160421  1855    ?</subfield>
+        </datafield>
+     """
+    trans = trans_prep('bnf', xml_part_to_add)
+    trans.trans_bnf_birth_and_death_dates()
+    assert trans.json == {
+        'date_of_birth': '1816-04-21',
+        'date_of_death': '1855?'
+    }
+
+    #  format: "XXX.      XXXX    ?"
+    xml_part_to_add = """
+        <datafield ind1=" " ind2=" " tag="103">
+            <subfield code="a">181.      1855    ?</subfield>
+        </datafield>
+     """
+    trans = trans_prep('bnf', xml_part_to_add)
+    trans.trans_bnf_birth_and_death_dates()
+    assert trans.json == {
+        'date_of_birth': '181.',
+        'date_of_death': '1855?'
+    }
+
+    #  format: "XX..      XXX.XXXX "
+    xml_part_to_add = """
+        <datafield ind1=" " ind2=" " tag="103">
+            <subfield code="a">18..      185.0625 </subfield>
+        </datafield>
+     """
+    trans = trans_prep('bnf', xml_part_to_add)
+    trans.trans_bnf_birth_and_death_dates()
+    assert trans.json == {
+        'date_of_birth': '18..',
+        'date_of_death': '185.-06-25'
+    }
+
+    #  format: "XX..     !XXX.XXXX "  with bad separator
+    xml_part_to_add = """
+        <datafield ind1=" " ind2=" " tag="103">
+            <subfield code="a">18..     !185.0625 </subfield>
+        </datafield>
+     """
+    trans = trans_prep('bnf', xml_part_to_add)
+    trans.trans_bnf_birth_and_death_dates()
+    assert trans.json == {}
+
+    #  format: "XX..      XXX.XXXX XX"  with bad suffix
+    xml_part_to_add = """
+        <datafield ind1=" " ind2=" " tag="103">
+            <subfield code="a">18..      185.0625 12</subfield>
+        </datafield>
+     """
+    trans = trans_prep('bnf', xml_part_to_add)
+    trans.trans_bnf_birth_and_death_dates()
+    assert trans.json == {}
 
 
 def test_bnf_birth_and_death_dates_year_birth():
     """Test date of birth 103 $a pos. 1-8 YYYYMMDD"""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="103">
-            <subfield code="a">1816           </subfield>
+            <subfield code="a">1816               </subfield>
         </datafield>
      """
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_birth_and_death_dates()
     assert trans.json == {
-        "date_of_birth": "1816"
+        'date_of_birth': '1816'
     }
 
 
-def test_bnf_birth_and_death_dates_year_birth_date():
+def test_bnf_birth_and_death_from_filed_200():
     """Test date of birth 200 $f pos. 1-4"""
     xml_part_to_add = """
           <datafield ind1=" " ind2=" " tag="200">
@@ -148,16 +210,91 @@ def test_bnf_birth_and_death_dates_year_birth_date():
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_birth_and_death_dates()
     assert trans.json == {
-        "date_of_birth": "1816",
-        "date_of_death": "1855"
+        'date_of_birth': '1816',
+        'date_of_death': '1855'
+    }
+
+    #  format: "XX.. ?-XX.. ?"
+    xml_part_to_add = """
+          <datafield ind1=" " ind2=" " tag="200">
+            <subfield code="f">18.. ?-19.. ?</subfield>
+        </datafield>
+     """
+    trans = trans_prep('bnf', xml_part_to_add)
+    trans.trans_bnf_birth_and_death_dates()
+    assert trans.json == {
+        'date_of_birth': '18..?',
+        'date_of_death': '19..?'
+    }
+
+    #  format: "XXXX-XXXX?"
+    xml_part_to_add = """
+          <datafield ind1=" " ind2=" " tag="200">
+            <subfield code="f">1812-1918?</subfield>
+        </datafield>
+     """
+    trans = trans_prep('bnf', xml_part_to_add)
+    trans.trans_bnf_birth_and_death_dates()
+    assert trans.json == {
+        'date_of_birth': '1812',
+        'date_of_death': '1918?'
+    }
+
+    #  format: "XX..-XXXX?"
+    xml_part_to_add = """
+          <datafield ind1=" " ind2=" " tag="200">
+            <subfield code="f">18..-1918?</subfield>
+        </datafield>
+     """
+    trans = trans_prep('bnf', xml_part_to_add)
+    trans.trans_bnf_birth_and_death_dates()
+    assert trans.json == {
+        'date_of_birth': '18..',
+        'date_of_death': '1918?'
+    }
+
+    #  format: "XX..-"
+    xml_part_to_add = """
+          <datafield ind1=" " ind2=" " tag="200">
+            <subfield code="f">18..-</subfield>
+        </datafield>
+     """
+    trans = trans_prep('bnf', xml_part_to_add)
+    trans.trans_bnf_birth_and_death_dates()
+    assert trans.json == {
+        'date_of_birth': '18..'
+    }
+
+    #  format: "-XXXX?"
+    xml_part_to_add = """
+          <datafield ind1=" " ind2=" " tag="200">
+            <subfield code="f">-1961?</subfield>
+        </datafield>
+     """
+    trans = trans_prep('bnf', xml_part_to_add)
+    trans.trans_bnf_birth_and_death_dates()
+    assert trans.json == {
+        'date_of_death': '1961?'
+    }
+
+    #  format: "XXXX"
+    xml_part_to_add = """
+          <datafield ind1=" " ind2=" " tag="200">
+            <subfield code="f">1961</subfield>
+        </datafield>
+     """
+    trans = trans_prep('bnf', xml_part_to_add)
+    trans.trans_bnf_birth_and_death_dates()
+    assert trans.json == {
+        'date_of_birth': '1961'
     }
 
 
-def test_bnf_birth_and_death_dates_birth_death():
+def test_bnf_birth_and_death_dates_in_two_fields():
     """Test date of birth 103 $a pos. 1-8 YYYYMMDD AND 200 $f pos. 1-4"""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="103">
-            <subfield code="a">18160421 18550331</subfield>
+            <subfield code="a">18160421  18550331 </subfield>
         </datafield>
           <datafield ind1=" " ind2=" " tag="200">
             <subfield code="f">1816-1855</subfield>
@@ -166,8 +303,8 @@ def test_bnf_birth_and_death_dates_birth_death():
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_birth_and_death_dates()
     assert trans.json == {
-        "date_of_birth": "1816-04-21",
-        "date_of_death": "1855-03-31"
+        'date_of_birth': '1816-04-21',
+        'date_of_death': '1855-03-31'
     }
 
 
@@ -196,9 +333,9 @@ def test_bnf_biographical_information():
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_biographical_information()
     assert trans.json == {
-        "biographical_information": [
-            "Giacomo Nicolini da Sabbio.",
-            "Venezia, Italia"
+        'biographical_information': [
+            'Giacomo Nicolini da Sabbio.',
+            'Venezia, Italia'
         ]
     }
 
@@ -222,8 +359,8 @@ def test_bnf_preferred_name_for_person_1():
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_preferred_name_for_person()
     assert trans.json == {
-        "preferred_name_for_person":
-            "Brontë, Charlotte"
+        'preferred_name_for_person':
+            'Brontë, Charlotte'
     }
 
 
@@ -250,9 +387,9 @@ def test_bnf_variant_name_for_person():
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_variant_name_for_person()
     assert trans.json == {
-        "variant_name_for_person": [
-            "Bell, Currer",
-            "Brontë, Carlotta"
+        'variant_name_for_person': [
+            'Bell, Currer',
+            'Brontë, Carlotta'
         ]
     }
 
@@ -280,8 +417,8 @@ def test_bnf_authorized_access_point_representing_a_person():
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_authorized_access_point_representing_a_person()
     assert trans.json == {
-        "authorized_access_point_representing_a_person":
-            "Brontë, Charlotte, écrivain, biographe, 1816-1855"
+        'authorized_access_point_representing_a_person':
+            'Brontë, Charlotte, écrivain, biographe, 1816-1855'
     }
 
 
@@ -307,8 +444,8 @@ def test_authorized_access_point_representing_a_person_diff_order():
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_authorized_access_point_representing_a_person()
     assert trans.json == {
-        "authorized_access_point_representing_a_person":
-            "1816-1855, Charlotte, Brontë, écrivain"
+        'authorized_access_point_representing_a_person':
+            '1816-1855, Charlotte, Brontë, écrivain'
     }
 
 
@@ -326,6 +463,6 @@ def test_authorized_access_point_representing_a_person_general_order():
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_authorized_access_point_representing_a_person()
     assert trans.json == {
-        "authorized_access_point_representing_a_person":
-            "Brontë, Charlotte, 1816-1855, écrivain"
+        'authorized_access_point_representing_a_person':
+            'Brontë, Charlotte, 1816-1855, écrivain'
     }

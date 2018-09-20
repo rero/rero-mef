@@ -81,6 +81,7 @@ def bnf_record():
         "md5": "ba876f4e0e78e408ed02dba4cc3f32ed",
         "date_of_death": "1875-12-21",
         "identifier_for_person": "10000690",
+        "pid": "10000690",
         "$schema":
         "http://mef.test.rero.ch/schemas/authorities/bnf-person-v0.0.1.json"
     }
@@ -94,6 +95,7 @@ def gnd_record():
         "$schema":
         "http://mef.test.rero.ch/schemas/authorities/gnd-person-v0.0.1.json",
         "identifier_for_person": "12391664X",
+        "pid": "12391664X",
         "variant_name_for_person": [
             "Cavaleriis, Joannes Baptista \u0098de\u009c",
             "Cavalleris, Joannes Baptista \u0098de\u009c",
@@ -155,6 +157,7 @@ def rero_record():
             "Cavalieri, Gianbattista,"
         ],
         "identifier_for_person": "A023655346",
+        "pid": "A023655346",
         "preferred_name_for_person": "Cavalieri, Giovanni Battista,"
     }
     return record
