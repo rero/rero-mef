@@ -62,8 +62,14 @@ setup(
         'console_scripts': [
             'rero-mef = invenio_app.cli:cli',
         ],
+        'invenio_assets.bundles': [
+            'rero_mef_css = rero_mef.bundles:mef_css',
+        ],
         'invenio_base.apps': [
             'rero-mef = rero_mef.ext:REROMEFAPP'
+        ],
+        'invenio_base.blueprints': [
+            'rero_mef = rero_mef.views:blueprint',
         ],
         'invenio_config.module': [
             'rero_mef = rero_mef.config',

@@ -1,0 +1,50 @@
+h1,h2,h3,h4,h5,h6 {
+    color: #1A4162;
+}
+
+header {
+    height: 60px;
+    background-color: #1A4162;
+    margin-bottom: 40px;
+}
+
+footer {
+    margin-top: 40px;
+}
+
+#header-logo {
+    margin-top: 14px;
+}
+
+.mef-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.margin-top-remove {
+    margin-top: 0;
+}
+
+.margin-top-large {
+    margin-top: 20px;
+}
+
+.margin-top-extra-large {
+    margin-top: 40px;
+}
+
+
+.service {
+    background-color: #204b73;
+    padding: 5px 20px;
+    margin-top: 4px;
+    margin-right: 6px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.service img {
+    height: 44px;
+    margin: 4px;
+}

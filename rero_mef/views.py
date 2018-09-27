@@ -22,12 +22,24 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Version information for RERO MEF.
 
-This file is imported by ``rero_mef.__init__``,
-and parsed by ``setup.py``.
-"""
+"""Blueprint used for loading templates."""
 
 from __future__ import absolute_import, print_function
 
-__version__ = '0.0.1a1'
+from flask import Blueprint, render_template
+
+from .version import __version__
+
+blueprint = Blueprint(
+    'rero_mef',
+    __name__,
+    template_folder='templates',
+    static_folder='static',
+)
+
+
+@blueprint.route('/')
+def index():
+    """Home Page."""
+    return render_template('rero_mef/frontpage.html', version=__version__)

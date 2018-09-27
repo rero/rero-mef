@@ -22,12 +22,20 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Version information for RERO MEF.
-
-This file is imported by ``rero_mef.__init__``,
-and parsed by ``setup.py``.
-"""
+"""JS/CSS bundles for theme."""
 
 from __future__ import absolute_import, print_function
 
-__version__ = '0.0.1a1'
+from invenio_assets import NpmBundle
+
+mef_css = NpmBundle(
+    'css/rero_mef/mef.scss',
+    filters='node-scss,cleancssurl',
+    output='gen/mef.%(version)s.css',
+    npm={
+        'almond': '~0.3.1',
+        'bootstrap-sass': '~3.3.5',
+        'font-awesome': '~4.4.0',
+        'jquery': '~1.9.1',
+    }
+)

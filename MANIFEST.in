@@ -65,3 +65,8 @@ recursive-include rero_mef *.json
 recursive-include rero_mef *.py
 recursive-include tests *.py
 recursive-include tests *.xml
+
+# Mef
+recursive-include rero_mef *.html
+recursive-include rero_mef *.png
+recursive-include rero_mef *.scss
