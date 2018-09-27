@@ -1,0 +1,64 @@
+{%- extends config.BASE_TEMPLATE %}
+
+{%- block page_header %}
+{% include('rero_mef/header.html') %}
+{%- endblock page_header %}
+
+{%- block page_body %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>MEF (Multilingual Entity File)</h1>
+      <em>Version {{ version }}</em>
+    </div>
+  </div>
+  <div class="row margin-top-large">
+    <div class="col-md-8">
+      <p>
+        MEF is a prototype server under development, with records for persons, organisations, works, expressions, places, time spans and common names for reuse in integrated library systems (ILS). The metadata model relies on various library entity files, creating multilingualism in the data. Alignments are realized automatically based on existing relations.
+      </p>
+      <p class="margin-top-large">
+        <a href="https://github.com/rero/rero-mef/wiki/Project-context-and-info" target="_blank">Project context & info</a>
+      </p>
+      <p>
+        <a href="https://github.com/rero/rero-mef/wiki/How-to-use-and-test-MEF-prototype" target="_blank">How to test this prototype ?</a>
+      </p>
+
+      <h3 class="margin-top-extra-large">Other RERO products</h3>
+      <a href="https://ils.test.rero.ch" target="_blank">
+        <div class="service">
+          <img src="{{ url_for('static', filename='images/logo_rero_ils.png')}}" alt="RERO ILS" />
+        </div>
+      </a>
+      <a href="https://explore.rero.ch" target="_blank">
+        <div class="service">
+          <img src="{{ url_for('static', filename='images/logo_explore.png')}}" alt="RERO Explore" />
+        </div>
+      </a>
+      <a href="https://doc.rero.ch" target="_blank">
+        <div class="service">
+          <img src="{{ url_for('static', filename='images/logo_rerodoc.png')}}" alt="RERO Doc" />
+        </div>
+      </a>
+    </div>
+    <div class="col-md-4">
+      <h4 class="margin-top-remove">Links</h4>
+      <ul class="mef-list">
+        <li><a href="https://github.com/rero/rero-mef" target="_blank">Source code on Github</a></li>
+        <li><a href="https://www.rero.ch" target="_blank">Site web RERO</a></li>
+        <li><a href="https://twitter.com/rero_centrale" target="_blank">RERO on Twitter</a></li>
+        <li><a href="https://www.rero.ch/mail.php" target="_blank">Contact us</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+{%- endblock %}
+
+{%- block page_footer %}
+{% include 'rero_mef/footer.html' %}
+{%- endblock page_footer %}
+
+{%- block css %}
+{{ super() }}
+{% assets "rero_mef_css" %}<link href="{{ ASSET_URL }}" rel="stylesheet">{% endassets %}
+{%- endblock css %}

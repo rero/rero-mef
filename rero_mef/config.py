@@ -66,9 +66,9 @@ BASE_TEMPLATE = 'invenio_theme/page.html'
 #: Cover page base template (used for e.g. login/sign-up).
 COVER_TEMPLATE = 'invenio_theme/page_cover.html'
 #: Footer base template.
-FOOTER_TEMPLATE = 'invenio_theme/footer.html'
+FOOTER_TEMPLATE = 'rero_mef/footer.html'
 #: Header base template.
-HEADER_TEMPLATE = 'invenio_theme/header.html'
+HEADER_TEMPLATE = 'rero_mef/header.html'
 #: Settings base template.
 SETTINGS_TEMPLATE = 'invenio_theme/page_settings.html'
 
@@ -77,11 +77,11 @@ SETTINGS_TEMPLATE = 'invenio_theme/page_settings.html'
 #: Site name
 THEME_SITENAME = _('RERO MEF')
 #: Use default frontpage.
-THEME_FRONTPAGE = True
+THEME_FRONTPAGE = False
 #: Frontpage title.
 THEME_FRONTPAGE_TITLE = _('RERO MEF')
 #: Frontpage template.
-THEME_FRONTPAGE_TEMPLATE = 'invenio_theme/frontpage.html'
+THEME_FRONTPAGE_TEMPLATE = 'rero_mef/frontpage.html'
 
 # Email configuration
 # ===================
@@ -93,7 +93,7 @@ MAIL_SUPPRESS_SEND = True
 # Assets
 # ======
 #: Static files collection method (defaults to copying files).
-COLLECT_STORAGE = 'flask_collect.storage.file'
+# COLLECT_STORAGE = 'flask_collect.storage.file'
 
 # Accounts
 # ========
