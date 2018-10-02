@@ -29,10 +29,6 @@
           "type": "string",
           "index": "not_analyzed"
         },
-        "virtua_auth_pid": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
         "rero_pid": {
           "type": "string",
           "index": "not_analyzed"

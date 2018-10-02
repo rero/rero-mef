@@ -6,8 +6,7 @@
   },
   {
     "viaf_pid": "121668467",
-    "rero_auth_pid": "A000070488",
-    "virtua_auth_pid": "000070488",
+    "rero_pid": "A000070488",
     "bnf_pid": "10005298"
   },
   {
@@ -17,9 +16,8 @@
   },
   {
     "viaf_pid": "66739143",
-    "rero_auth_pid": "A023655346",
+    "rero_pid": "A023655346",
     "gnd_pid": "12391664X",
-    "virtua_auth_pid": "023655346",
     "bnf_pid": "10008312"
   },
   {
@@ -29,9 +27,8 @@
   },
   {
     "viaf_pid": "56597999",
-    "rero_auth_pid": "A017671081",
+    "rero_pid": "A017671081",
     "gnd_pid": "172759757",
-    "virtua_auth_pid": "017671081",
     "bnf_pid": "10001899"
   },
   {
@@ -96,9 +93,8 @@
   },
   {
     "viaf_pid": "45060571",
-    "rero_auth_pid": "A000065776",
+    "rero_pid": "A000065776",
     "gnd_pid": "11669355X",
-    "virtua_auth_pid": "000065776",
     "bnf_pid": "10008311"
   },
   {
@@ -135,9 +131,8 @@
   },
   {
     "viaf_pid": "50006920",
-    "rero_auth_pid": "A022480124",
+    "rero_pid": "A022480124",
     "gnd_pid": "117588768",
-    "virtua_auth_pid": "022480124",
     "bnf_pid": "10004100"
   },
   {
@@ -182,9 +177,8 @@
   },
   {
     "viaf_pid": "280249934",
-    "rero_auth_pid": "A009535178",
+    "rero_pid": "A009535178",
     "gnd_pid": "100023754",
-    "virtua_auth_pid": "009535178",
     "bnf_pid": "10002868"
   },
   {
@@ -241,8 +235,7 @@
   },
   {
     "viaf_pid": "56496818",
-    "rero_auth_pid": "A021799923",
-    "virtua_auth_pid": "021799923",
+    "rero_pid": "A021799923",
     "bnf_pid": "10007259"
   },
   {
@@ -256,9 +249,8 @@
   },
   {
     "viaf_pid": "100195656",
-    "rero_auth_pid": "A017991779",
+    "rero_pid": "A017991779",
     "gnd_pid": "124813844",
-    "virtua_auth_pid": "017991779",
     "bnf_pid": "10008209"
   },
   {
@@ -276,9 +268,8 @@
   },
   {
     "viaf_pid": "100261763",
-    "rero_auth_pid": "A005591402",
+    "rero_pid": "A005591402",
     "gnd_pid": "102955298",
-    "virtua_auth_pid": "005591402",
     "bnf_pid": "10001062"
   },
   {
@@ -323,9 +314,8 @@
   },
   {
     "viaf_pid": "161080324",
-    "rero_auth_pid": "A024285452",
+    "rero_pid": "A024285452",
     "gnd_pid": "143032704",
-    "virtua_auth_pid": "024285452",
     "bnf_pid": "10006251"
   },
   {
@@ -354,9 +344,8 @@
   },
   {
     "viaf_pid": "59071074",
-    "rero_auth_pid": "A000009346",
+    "rero_pid": "A000009346",
     "gnd_pid": "1056901632",
-    "virtua_auth_pid": "000009346",
     "bnf_pid": "10001604"
   },
   {

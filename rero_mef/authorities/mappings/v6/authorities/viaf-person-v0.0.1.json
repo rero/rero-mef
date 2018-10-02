@@ -24,10 +24,7 @@
         "gnd_pid": {
           "type": "keyword"
         },
-        "virtua_auth_pid": {
-          "type": "keyword"
-        },
-        "rero_auth_pid": {
+        "rero_pid": {
           "type": "keyword"
         },
         "_created": {

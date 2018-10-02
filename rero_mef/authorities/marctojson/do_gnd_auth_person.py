@@ -155,8 +155,11 @@ class Transformation(object):
 
         fields_548 = self.marc.get_fields('548')
         for field_548 in fields_548:
-            subfields_a = field_548.get_subfields('a')[0]
-            subfields_4 = field_548.get_subfields('4')[0]
+            subfields_a = subfields_4 = None
+            if field_548.get_subfields('a'):
+                subfields_a = field_548.get_subfields('a')[0]
+            if field_548.get_subfields('4'):
+                subfields_4 = field_548.get_subfields('4')[0]
             if subfields_a and subfields_4:
                 if subfields_4 in ('datl', 'datx'):
                     dates = subfields_a.split('-')

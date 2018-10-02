@@ -1,36 +1,40 @@
 [
 {
   "authorized_access_point_representing_a_person": "Aldo, Dr, 1813-1875",
-  "date_of_birth": "1813031",
-  "date_of_death": "1875122",
+  "date_of_birth": "1813-03-15",
+  "date_of_death": "1875-12-21",
   "gender": "male",
   "pid": "10000690",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10000690m",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Aldo, Dr"
+  "preferred_name_for_person": "Aldo, Dr",
+  "md5": "1a3534eab3c425f6bd27181d2e2ef09d"
 },
 {
   "authorized_access_point_representing_a_person": "Aléthocrite, V.***, 1803-1884",
   "biographical_information": [
     "Pseudonyme de Vincent Gâche"
   ],
-  "date_of_birth": "1803072",
-  "date_of_death": "1884021",
+  "date_of_birth": "1803-07-24",
+  "date_of_death": "1884-02-11",
   "gender": "male",
   "pid": "10000728",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10000728g",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Aléthocrite, V.***"
+  "preferred_name_for_person": "Aléthocrite, V.***",
+  "md5": "676ab090bf79ba7fdb6a998eebdc3380"
 },
 {
   "authorized_access_point_representing_a_person": "Arnoult, Stéphen, 1782-1860?",
   "biographical_information": [
     "Poète, chansonnier, auteur dramatique, romancier"
   ],
+  "date_of_birth": "1782-02-22",
+  "date_of_death": "1860?",
   "gender": "male",
   "pid": "10000780",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10000780k",
@@ -43,7 +47,8 @@
     "Alexis, M.",
     "Arnoux, Stéphen",
     "Stephen"
-  ]
+  ],
+  "md5": "4e2a42a6116c6e03eb10fc5c6d36b909"
 },
 {
   "authorized_access_point_representing_a_person": "Alfaro, Manuel Ibo, 1828-1885",
@@ -62,15 +67,16 @@
   "variant_name_for_person": [
     "Alfaro y Lafuente, Manuel Ibo",
     "Lafuente, Manuel Ibo Alfaro y"
-  ]
+  ],
+  "md5": "6b51edc2cbf1a71299ab4d8a5429a62e"
 },
 {
   "authorized_access_point_representing_a_person": "Quarré d'Aligny, Gaspard, 1605-1659",
   "biographical_information": [
     "Avocat général au Parlement de Bourgogne. - Baron d'Aligny"
   ],
-  "date_of_birth": "1605122",
-  "date_of_death": "1659010",
+  "date_of_birth": "1605-12-27",
+  "date_of_death": "1659-01-07",
   "gender": "male",
   "pid": "10000849",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10000849q",
@@ -81,28 +87,32 @@
   "variant_name_for_person": [
     "Aligny, Gaspard Quarré d'",
     "Quarré, Gaspard"
-  ]
+  ],
+  "md5": "10bd34046d9ccbe49110a4ccebbcd667"
 },
 {
   "authorized_access_point_representing_a_person": "Ambel, Charles-Henri d', 1800-1869",
   "biographical_information": [
     "Pseudonyme de l'administrateur Henri Flour de Saint-Genis. - A également publié sous son patronyme"
   ],
-  "date_of_birth": "1800082",
-  "date_of_death": "1869031",
+  "date_of_birth": "1800-08-20",
+  "date_of_death": "1869-03-15",
   "gender": "male",
   "pid": "10001058",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10001058q",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Ambel, Charles-Henri d'"
+  "preferred_name_for_person": "Ambel, Charles-Henri d'",
+  "md5": "8716cdc2a789628727d1a6a0d6aab40a"
 },
 {
   "authorized_access_point_representing_a_person": "Guillemin, Léon, 18..?-18.., auteur dramatique",
   "biographical_information": [
     "Auteur dramatique et satirique"
   ],
+  "date_of_birth": "18..?",
+  "date_of_death": "18..",
   "gender": "male",
   "pid": "10001062",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10001062z",
@@ -120,15 +130,16 @@
     "Léon d'Amboise",
     "Chaumont, Léon de",
     "Juvénal, L.-C."
-  ]
+  ],
+  "md5": "293a1b45ae14f2c89b8b45658d95acdf"
 },
 {
   "authorized_access_point_representing_a_person": "Roustan, Philippe-Amédée, 1785-1847",
   "biographical_information": [
     "Acteur. - Vaudevilliste. - A utilisé les pseudonymes d'Amédée et de Philippe"
   ],
-  "date_of_birth": "1785022",
-  "date_of_death": "1847092",
+  "date_of_birth": "1785-02-25",
+  "date_of_death": "1847-09-26",
   "gender": "male",
   "pid": "10001083",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10001083x",
@@ -139,7 +150,8 @@
   "variant_name_for_person": [
     "Philippe",
     "Amédée"
-  ]
+  ],
+  "md5": "dd2faf6cb8f11348bc6f6e1e11f92805"
 },
 {
   "authorized_access_point_representing_a_person": "Zedekiah ben Abraham Anaw",
@@ -159,7 +171,8 @@
     "Zidkyia Anav",
     "Anav, Zidkyia",
     "Sédécias ben Abraham Anaw"
-  ]
+  ],
+  "md5": "e5118f64f4ed2382e557efe79d6079b1"
 },
 {
   "authorized_access_point_representing_a_person": "Angelo da San Giuseppe, carme, 1...-16..",
@@ -181,28 +194,32 @@
     "Ange de Saint-Joseph",
     "Angelo da Utri",
     "Musus, Pantaleo"
-  ]
+  ],
+  "md5": "f8fff8e166191051b4a0638948e9a703"
 },
 {
   "authorized_access_point_representing_a_person": "Anselme d'Alexandrie, 12..-1295?",
   "biographical_information": [
     "Dominicain. - Inquisiteur en Lombardie et dans la marche de Gênes (1267-1279). - Mort après le 2 juillet 1295"
   ],
+  "date_of_birth": "12..",
+  "date_of_death": "1295?",
   "gender": "male",
   "pid": "10001392",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10001392q",
   "language_of_person": [
     "lat"
   ],
-  "preferred_name_for_person": "Anselme d'Alexandrie"
+  "preferred_name_for_person": "Anselme d'Alexandrie",
+  "md5": "21ae2d61cf67580eede643158c6dcc57"
 },
 {
   "authorized_access_point_representing_a_person": "Gondrin de Pardaillan de Montespan, Louis-Antoine de, 1665-1736",
   "biographical_information": [
     "Duc d'Antin. - Surintendant des Bâtiments du roi (1708)"
   ],
-  "date_of_birth": "1665090",
-  "date_of_death": "1736110",
+  "date_of_birth": "1665-09-05",
+  "date_of_death": "1736-11-02",
   "gender": "male",
   "pid": "10001433",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10001433g",
@@ -214,7 +231,8 @@
     "Antin, Louis-Antoine de Gondrin de Pardaillan de Montespan d'",
     "Pardaillan de Montespan, Louis-Antoine de Gondrin",
     "Montespan, Louis-Antoine de Pardaillan de Gondrin de"
-  ]
+  ],
+  "md5": "ab8304f46ccd8fcd6ec6b352f3950eea"
 },
 {
   "authorized_access_point_representing_a_person": "Estrany-Grau, Mirela",
@@ -224,22 +242,24 @@
   "gender": "female",
   "pid": "10001463",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10001463d",
-  "preferred_name_for_person": "Estrany-Grau, Mirela"
+  "preferred_name_for_person": "Estrany-Grau, Mirela",
+  "md5": "f3b144aa32a22a987f04fd986c7366fb"
 },
 {
   "authorized_access_point_representing_a_person": "Costes, Jean-Joseph, 1852-1934",
   "biographical_information": [
     "Prêtre du Diocèse de Rodez (ordonné en 1878). - Membre de la Société des missionnaires diocésains de Rodez (1878-1906 ; supérieur de 1890 à 1906). - Curé-doyen de Ceignac (1906-1933). - Membre de la Société des Prêtres de Saint-François de Sales"
   ],
-  "date_of_birth": "1852102",
-  "date_of_death": "1934010",
+  "date_of_birth": "1852-10-26",
+  "date_of_death": "1934-01-08",
   "gender": "male",
   "pid": "10001495",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100014951",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Costes, Jean-Joseph"
+  "preferred_name_for_person": "Costes, Jean-Joseph",
+  "md5": "fb996895daa51693d113e094c75e3a24"
 },
 {
   "authorized_access_point_representing_a_person": "Apicius a Vindemiis, Le chevalier",
@@ -254,15 +274,16 @@
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Apicius a Vindemiis, Le chevalier"
+  "preferred_name_for_person": "Apicius a Vindemiis, Le chevalier",
+  "md5": "f4ac7b8d22c14f107fe8b901e79f0392"
 },
 {
   "authorized_access_point_representing_a_person": "Arenthon d'Alex, Jean d', 1620-1695",
   "biographical_information": [
     "Prince-évêque de Genève (1661-1695)"
   ],
-  "date_of_birth": "1620092",
-  "date_of_death": "1695070",
+  "date_of_birth": "1620-09-25",
+  "date_of_death": "1695-07-04",
   "gender": "male",
   "pid": "10001604",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10001604f",
@@ -274,7 +295,8 @@
     "Aranthon d'Alex, Jean d'",
     "Alex, Jean d'Arenthon d'",
     "Alex, Jean d'Aranthon d'"
-  ]
+  ],
+  "md5": "028196fd0c6d9a5cd8f6a3e2e1cd6613"
 },
 {
   "authorized_access_point_representing_a_person": "Arbois, Simone",
@@ -288,7 +310,8 @@
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Arbois, Simone"
+  "preferred_name_for_person": "Arbois, Simone",
+  "md5": "8207ca202b114d6af2d1a99e5c1c418d"
 },
 {
   "authorized_access_point_representing_a_person": "Aernoudt, Pierre, 1811-1865",
@@ -297,8 +320,8 @@
     "Jésuite (à partir de 1835 ; ordonné prêtre en 1843)",
     "Vécut aux États-Unis à partir de 1835"
   ],
-  "date_of_birth": "1811051",
-  "date_of_death": "1865072",
+  "date_of_birth": "1811-05-17",
+  "date_of_death": "1865-07-29",
   "gender": "male",
   "pid": "10001899",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10001899h",
@@ -313,15 +336,16 @@
     "Arnoldus, Petrus",
     "Arnoldo, Pierre",
     "Arnold, J."
-  ]
+  ],
+  "md5": "ecc9695462cd840462e3d0af39386fa3"
 },
 {
   "authorized_access_point_representing_a_person": "Arros, Jean d', 1860-1933",
   "biographical_information": [
     "Pseudonyme de Fernand Laudet"
   ],
-  "date_of_birth": "1860030",
-  "date_of_death": "1933111",
+  "date_of_birth": "1860-03-03",
+  "date_of_death": "1933-11-12",
   "gender": "male",
   "pid": "10001964",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100019644",
@@ -331,7 +355,8 @@
   "preferred_name_for_person": "Arros, Jean d'",
   "variant_name_for_person": [
     "Jean d'Arros"
-  ]
+  ],
+  "md5": "9cf4f9ecdbb3d74a04c2f9b35d95fc96"
 },
 {
   "authorized_access_point_representing_a_person": "Conte, Xavier, 18..-18..",
@@ -346,14 +371,15 @@
   "preferred_name_for_person": "Conte, Xavier",
   "variant_name_for_person": [
     "Atxem, H."
-  ]
+  ],
+  "md5": "0d0cd3e15f843d91e19fe338a4deb677"
 },
 {
   "authorized_access_point_representing_a_person": "Richard d'Aulnay, Gaston, 1865-19..",
   "biographical_information": [
     "Médecin"
   ],
-  "date_of_birth": "1865120",
+  "date_of_birth": "1865-12-08",
   "date_of_death": "19..",
   "gender": "male",
   "pid": "10002296",
@@ -364,7 +390,8 @@
   "preferred_name_for_person": "Richard d'Aulnay, Gaston",
   "variant_name_for_person": [
     "Aulnay, Gaston Richard d'"
-  ]
+  ],
+  "md5": "ee4b69098da8ba1582978aecce2c2d78"
 },
 {
   "authorized_access_point_representing_a_person": "Aunay, Alfred d', 1837-1883",
@@ -382,7 +409,8 @@
   "preferred_name_for_person": "Aunay, Alfred d'",
   "variant_name_for_person": [
     "Descudier, Alfred"
-  ]
+  ],
+  "md5": "b55ca39c50971a340de118196e20f566"
 },
 {
   "authorized_access_point_representing_a_person": "Aveline, Alfred d', 1806-1874",
@@ -390,22 +418,23 @@
     "A traduit de l'allemand en français",
     "Docteur en droit, écrivain et poète. - Membre de l'Académie royale de Belgique"
   ],
-  "date_of_birth": "1806010",
-  "date_of_death": "1874120",
+  "date_of_birth": "1806-01-05",
+  "date_of_death": "1874-12-01",
   "gender": "male",
   "pid": "10002423",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10002423d",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Aveline, Alfred d'"
+  "preferred_name_for_person": "Aveline, Alfred d'",
+  "md5": "ec2bd2555a5d2dac19e811c4d9d01e2b"
 },
 {
   "authorized_access_point_representing_a_person": "Avesne, E. d', 1851-1925",
   "biographical_information": [
     "Pseudonymes utilisés par Frédéric Rouvier, jésuite"
   ],
-  "date_of_birth": "1851032",
+  "date_of_birth": "1851-03-21",
   "date_of_death": "1925",
   "gender": "male",
   "pid": "10002451",
@@ -417,27 +446,29 @@
   "variant_name_for_person": [
     "A., E. d'",
     "E. d'A."
-  ]
+  ],
+  "md5": "2d3e9404354976f8fd3d9d0a9d9e6140"
 },
 {
   "authorized_access_point_representing_a_person": "Bagnolet, Pierre, 1734-1780",
   "biographical_information": [
     "Pseudonyme de Claude-Joseph Dorat"
   ],
-  "date_of_birth": "1734123",
-  "date_of_death": "1780042",
+  "date_of_birth": "1734-12-31",
+  "date_of_death": "1780-04-29",
   "gender": "male",
   "pid": "10002647",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10002647z",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Bagnolet, Pierre"
+  "preferred_name_for_person": "Bagnolet, Pierre",
+  "md5": "2bf9bde6d7d012b8ac199d99058aa79b"
 },
 {
   "authorized_access_point_representing_a_person": "Bailly de Barberey, Maurice, 1818-1899",
-  "date_of_birth": "1818043",
-  "date_of_death": "1899072",
+  "date_of_birth": "1818-04-30",
+  "date_of_death": "1899-07-24",
   "gender": "male",
   "pid": "10002677",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10002677w",
@@ -447,7 +478,8 @@
   "preferred_name_for_person": "Bailly de Barberey, Maurice",
   "variant_name_for_person": [
     "Barberey, Maurice Bailly de"
-  ]
+  ],
+  "md5": "f4239e5bf947323fba74ec0b2dbfefe5"
 },
 {
   "authorized_access_point_representing_a_person": "Baudry, Paul, 18..-19.., officier",
@@ -462,7 +494,8 @@
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Baudry, Paul"
+  "preferred_name_for_person": "Baudry, Paul",
+  "md5": "85fc5603f3df38c2fd7db868f251d0a6"
 },
 {
   "authorized_access_point_representing_a_person": "Constantin de Barbanson, 1582-1631",
@@ -470,7 +503,7 @@
     "Religieux, auteur mystique de l'école franciscaine. - Frère de l'Ordre des Capucins de Bruxelles (à partir de 1600). - Il exerça surtout son apostolat en Rhénanie (à partir de 1611), où il fut gardien des couvents de Cologne et de Münster-Eiffel"
   ],
   "date_of_birth": "1582",
-  "date_of_death": "1631112",
+  "date_of_death": "1631-11-26",
   "gender": "male",
   "pid": "10002868",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10002868g",
@@ -480,7 +513,8 @@
   "preferred_name_for_person": "Constantin de Barbanson",
   "variant_name_for_person": [
     "Barbanson, Constantin de"
-  ]
+  ],
+  "md5": "3f1afaa401c3265b476f9a078461e916"
 },
 {
   "authorized_access_point_representing_a_person": "Béziers, Martin",
@@ -493,20 +527,24 @@
   "language_of_person": [
     "und"
   ],
-  "preferred_name_for_person": "Béziers, Martin"
+  "preferred_name_for_person": "Béziers, Martin",
+  "md5": "7f0282f5f4fb1c0840334cb0d12c7c76"
 },
 {
   "authorized_access_point_representing_a_person": "Barrême, Gabriel, 1663-1711?",
   "biographical_information": [
     "Fils de François Barrême. - Arithméticien. - Censeur royal"
   ],
+  "date_of_birth": "1663",
+  "date_of_death": "1711?",
   "gender": "male",
   "pid": "10002948",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100029484",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Barrême, Gabriel"
+  "preferred_name_for_person": "Barrême, Gabriel",
+  "md5": "fc63b9268ce628952b2fab78e1f5f8ec"
 },
 {
   "authorized_access_point_representing_a_person": "Barimborough, Lord",
@@ -521,7 +559,8 @@
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Barimborough, Lord"
+  "preferred_name_for_person": "Barimborough, Lord",
+  "md5": "88ffa11c7edb062ced0203343ec96949"
 },
 {
   "authorized_access_point_representing_a_person": "Baudrillard, 19.. ?-19.. ?, directeur d'un bulletin électoral",
@@ -532,12 +571,13 @@
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Baudrillard"
+  "preferred_name_for_person": "Baudrillard",
+  "md5": "7c53b0a5da5a1a300b5617061ce02b16"
 },
 {
   "authorized_access_point_representing_a_person": "Fontaines, Edmée de, 1890-1966",
-  "date_of_birth": "1890102",
-  "date_of_death": "1966072",
+  "date_of_birth": "1890-10-20",
+  "date_of_death": "1966-07-24",
   "gender": "female",
   "pid": "10003371",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100033717",
@@ -551,14 +591,15 @@
     "Regnault de Beaucaron, Edmée Clotilde Azéma",
     "Beaucaron, Edmée Regnault de",
     "Beaucaron, Edmée Clotilde Azéma Regnault de"
-  ]
+  ],
+  "md5": "df218dbdad42063a744282c63add78ce"
 },
 {
   "authorized_access_point_representing_a_person": "Beaurepaire de Louvagny, Alexandre de, 1783-1862",
   "biographical_information": [
     "Secrétaire d'ambassade à Dresde, Londres, Madrid puis Constantinople. - Ministre plénipotentiaire près de l'électeur Hesse-Cassel. - Comte"
   ],
-  "date_of_birth": "1783100",
+  "date_of_birth": "1783-10-01",
   "date_of_death": "186212",
   "gender": "male",
   "pid": "10003493",
@@ -570,13 +611,16 @@
   "variant_name_for_person": [
     "Beaurepaire, Alexandre de",
     "Louvagny, Alexandre Beaurepaire de"
-  ]
+  ],
+  "md5": "6a28542977fa62b11d0ef94564c46b39"
 },
 {
   "authorized_access_point_representing_a_person": "Amphoux de Belleval, Stanislas, 1796-1872",
   "biographical_information": [
     "Propriétaire. - Maire d'Istres (1831-1832), de Miramas (1833-1838 et 1858-1860) et de Saint-Chamas (1851-1852)"
   ],
+  "date_of_birth": "1796-04-09?",
+  "date_of_death": "1872-10-16",
   "gender": "male",
   "pid": "10003728",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100037286",
@@ -586,15 +630,16 @@
   "preferred_name_for_person": "Amphoux de Belleval, Stanislas",
   "variant_name_for_person": [
     "Belleval, Stanislas Amphoux de"
-  ]
+  ],
+  "md5": "65f3c93218e7e874e3b65b66c4a1045c"
 },
 {
   "authorized_access_point_representing_a_person": "Fleuriau de Bellevue, Louis Benjamin, 1761-1852",
   "biographical_information": [
     "Savant géologue, naturaliste. - Ses collections sont la base du muséum de La Rochelle"
   ],
-  "date_of_birth": "1761022",
-  "date_of_death": "1852021",
+  "date_of_birth": "1761-02-23",
+  "date_of_death": "1852-02-11",
   "gender": "male",
   "pid": "10003733",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10003733s",
@@ -604,7 +649,8 @@
   "preferred_name_for_person": "Fleuriau de Bellevue, Louis Benjamin",
   "variant_name_for_person": [
     "Bellevue, Louis Benjamin Fleuriau de"
-  ]
+  ],
+  "md5": "be4f03afe0f1cb93e416a5653441373f"
 },
 {
   "authorized_access_point_representing_a_person": "Barbieri, Matteo, 17..-18.., médecin",
@@ -619,7 +665,8 @@
   "language_of_person": [
     "ita"
   ],
-  "preferred_name_for_person": "Barbieri, Matteo"
+  "preferred_name_for_person": "Barbieri, Matteo",
+  "md5": "60c4c4009563bba48924e4ae2f74f134"
 },
 {
   "authorized_access_point_representing_a_person": "Béranger, 18..-18.., balancier mécanicien",
@@ -634,15 +681,16 @@
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Béranger"
+  "preferred_name_for_person": "Béranger",
+  "md5": "b347ebb363adf1e37f474c7c6a2789cd"
 },
 {
   "authorized_access_point_representing_a_person": "Bernard, William Bayle, 1807-1875",
   "biographical_information": [
     "Dramaturge et critique dramatique"
   ],
-  "date_of_birth": "1807112",
-  "date_of_death": "1875080",
+  "date_of_birth": "1807-11-27",
+  "date_of_death": "1875-08-05",
   "gender": "male",
   "pid": "10004100",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10004100d",
@@ -652,33 +700,36 @@
   "preferred_name_for_person": "Bernard, William Bayle",
   "variant_name_for_person": [
     "Bernard, Bayle"
-  ]
+  ],
+  "md5": "fb4fc28843a86933d231ffbf1fee273b"
 },
 {
   "authorized_access_point_representing_a_person": "Beroalde, 1895-1975",
   "biographical_information": [
     "Pseudonyme utilisé par Michel Simon de 1920 à 1922"
   ],
-  "date_of_birth": "1895040",
-  "date_of_death": "1975053",
+  "date_of_birth": "1895-04-09",
+  "date_of_death": "1975-05-30",
   "gender": "male",
   "pid": "10004210",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100042100",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Beroalde"
+  "preferred_name_for_person": "Beroalde",
+  "md5": "4ce80815ae77f8747f691e15355be547"
 },
 {
   "authorized_access_point_representing_a_person": "Bert, François, 1976-....",
-  "date_of_birth": "1976061",
+  "date_of_birth": "1976-06-18",
   "gender": "male",
   "pid": "10004235",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10004235b",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Bert, François"
+  "preferred_name_for_person": "Bert, François",
+  "md5": "20d653c667650d32f226d40e13b3e1f3"
 },
 {
   "authorized_access_point_representing_a_person": "Yvelin de Béville, Amable",
@@ -691,7 +742,8 @@
   "preferred_name_for_person": "Yvelin de Béville, Amable",
   "variant_name_for_person": [
     "Amable Yvelin de Béville"
-  ]
+  ],
+  "md5": "093ed21aec3b1ebec5914a3f066ec93f"
 },
 {
   "authorized_access_point_representing_a_person": "Merault de Bizy, Athanase-René, 1744-1835",
@@ -699,7 +751,7 @@
     "Abbé. - Evêque d'Orléans en 1802"
   ],
   "date_of_birth": "1744",
-  "date_of_death": "1835061",
+  "date_of_death": "1835-06-13",
   "gender": "male",
   "pid": "10004647",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10004647f",
@@ -709,15 +761,16 @@
   "preferred_name_for_person": "Merault de Bizy, Athanase-René",
   "variant_name_for_person": [
     "Bizy, Athanase-René Mérault de"
-  ]
+  ],
+  "md5": "77c4eaeb88de12a493b353313e9ff6de"
 },
 {
   "authorized_access_point_representing_a_person": "Bohusz-Siestrzeńcewicz, Stanisław Piotr, 1869-1927",
   "biographical_information": [
     "Peintre. - Professeur à l'Université Stefan Batory, Vilnius. - A étudié à l'Académie Julian, Paris"
   ],
-  "date_of_birth": "1869111",
-  "date_of_death": "1927052",
+  "date_of_birth": "1869-11-11",
+  "date_of_death": "1927-05-24",
   "gender": "male",
   "pid": "10004942",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10004942j",
@@ -729,15 +782,16 @@
     "Bohušas-Sestšencevičius, Stanislovas Petras",
     "Siestrzeńcewicz Bohusz, Stanisław Piotr",
     "Sestšencevičius, Stanislovas Petras Bohušas"
-  ]
+  ],
+  "md5": "77f44fcb3ee2cbe5466b777ad5bbd725"
 },
 {
   "authorized_access_point_representing_a_person": "Boiteau, Paul, 1830-1886",
   "biographical_information": [
     "Économiste, maître des requêtes au Conseil d'État. - Ami de Béranger. - A collaboré à plusieurs journaux d'économie. - Littérateur et poète. - Éditeur de livres pour enfants. - Chevalier de la Légion d'honneur (1882)"
   ],
-  "date_of_birth": "1830112",
-  "date_of_death": "1886061",
+  "date_of_birth": "1830-11-25",
+  "date_of_death": "1886-06-11",
   "gender": "male",
   "pid": "10005051",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100050518",
@@ -749,35 +803,40 @@
     "Boiteau, Dieudonné Alexandre Paul",
     "Ambly, Paul d'",
     "Boiteau d'Ambly, Paul"
-  ]
+  ],
+  "md5": "11473b297565ec50dc6c8fa8bbff613f"
 },
 {
   "authorized_access_point_representing_a_person": "Boncham, 1855?-1930",
   "biographical_information": [
     "Anagramme d'Octave Chambon"
   ],
+  "date_of_birth": "1855?",
+  "date_of_death": "193005",
   "gender": "male",
   "pid": "10005130",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10005130k",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Boncham"
+  "preferred_name_for_person": "Boncham",
+  "md5": "91803bdaf4d2ad3c2fd8ab7b9e538122"
 },
 {
   "authorized_access_point_representing_a_person": "Bonnin, Blaise, 1804-1876",
   "biographical_information": [
     "Pseudonyme de George Sand"
   ],
-  "date_of_birth": "1804070",
-  "date_of_death": "1876060",
+  "date_of_birth": "1804-07-01",
+  "date_of_death": "1876-06-08",
   "gender": "female",
   "pid": "10005280",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10005280d",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Bonnin, Blaise"
+  "preferred_name_for_person": "Bonnin, Blaise",
+  "md5": "bdfeceb41c63155124c2bfc6d725c4f2"
 },
 {
   "authorized_access_point_representing_a_person": "Genty de Bonqueval, J., 1837-19..",
@@ -795,7 +854,8 @@
   "preferred_name_for_person": "Genty de Bonqueval, J.",
   "variant_name_for_person": [
     "Bonqueval, J. Genty de"
-  ]
+  ],
+  "md5": "18a23026fd2cd748c9c10113ab7c40cb"
 },
 {
   "authorized_access_point_representing_a_person": "Libri-Bagnano, Georges, 1780-1836",
@@ -803,7 +863,7 @@
     "Publiciste. - Noble toscan, s'engagea dans les armées napoléoniennes et s'exila en Belgique et aux Pays-Bas"
   ],
   "date_of_birth": "1780",
-  "date_of_death": "1836010",
+  "date_of_death": "1836-01-01",
   "gender": "male",
   "pid": "10005333",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100053335",
@@ -814,15 +874,16 @@
   "variant_name_for_person": [
     "Bagnano, Georges Libri-",
     "Books-Nabonag"
-  ]
+  ],
+  "md5": "bc50db2521c0b68fbab3bbfd1374d954"
 },
 {
   "authorized_access_point_representing_a_person": "Mutel de Boucheville, Jacques-François, 1730-1814",
   "biographical_information": [
     "Magistrat et écrivain. Maire de Bernay de 1791 à 1793. Rédacteur du \"Journal des campagnes\""
   ],
-  "date_of_birth": "1730032",
-  "date_of_death": "1814020",
+  "date_of_birth": "1730-03-25",
+  "date_of_death": "1814-02-04",
   "gender": "male",
   "pid": "10005617",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10005617r",
@@ -832,15 +893,16 @@
   "preferred_name_for_person": "Mutel de Boucheville, Jacques-François",
   "variant_name_for_person": [
     "Boucheville, Jacques-François Mutel de"
-  ]
+  ],
+  "md5": "44a3ba86b67b7e417a679aafc3bba7ca"
 },
 {
   "authorized_access_point_representing_a_person": "Montalant-Bougleux, Louis-Auguste, 1794-1873",
   "biographical_information": [
     "Imprimeur (Versailles, Yvelines). - Fut d'abord sous-lieutenant. - Auteur du quatrain qui figure sur la fontaine Saint-Louis à Versailles"
   ],
-  "date_of_birth": "1794040",
-  "date_of_death": "1873012",
+  "date_of_birth": "1794-04-08",
+  "date_of_death": "1873-01-22",
   "gender": "male",
   "pid": "10005642",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10005642z",
@@ -852,7 +914,8 @@
     "Montalant, L.-A.",
     "Bougleux, Montalant",
     "Bougleux, Louis Auguste Montalant"
-  ]
+  ],
+  "md5": "bfbf47a0776a9378896b5cccecb32673"
 },
 {
   "authorized_access_point_representing_a_person": "Sérgīs, Manólīs G., 1957-....",
@@ -866,7 +929,8 @@
   "language_of_person": [
     "gre"
   ],
-  "preferred_name_for_person": "Sérgīs, Manólīs G."
+  "preferred_name_for_person": "Sérgīs, Manólīs G.",
+  "md5": "ac8636c76090306a9f05c0279807708c"
 },
 {
   "authorized_access_point_representing_a_person": "Soissons, Charles de Bourbon, 1566-1612, comte de",
@@ -884,15 +948,16 @@
   "preferred_name_for_person": "Soissons, Charles de Bourbon",
   "variant_name_for_person": [
     "Bourbon, Charles de"
-  ]
+  ],
+  "md5": "cf6d4c721cd049de1db166eb7989ec9d"
 },
 {
   "authorized_access_point_representing_a_person": "Borbón, Francisco de Paula de, 1853-1942",
   "biographical_information": [
     "Aîné des régnicoles à la mort de son frère Henri, duc de Séville (1848-1894)"
   ],
-  "date_of_birth": "1853032",
-  "date_of_death": "1942032",
+  "date_of_birth": "1853-03-29",
+  "date_of_death": "1942-03-28",
   "gender": "male",
   "pid": "10005701",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10005701n",
@@ -904,15 +969,16 @@
     "Anjou, Duc d'",
     "Anjou, François de Paule de Bourbon",
     "Anjou, Francisco de Paula de Borbón"
-  ]
+  ],
+  "md5": "37e6dd6de9cfefc3c507a28cb3ad7605"
 },
 {
   "authorized_access_point_representing_a_person": "Marie-Louise d'Orléans, reine d'Espagne, 1662-1689",
   "biographical_information": [
     "Fille de Philippe Ier, duc d'Orléans et d'Henriette d'Angleterre, elle épouse en 1679 Charles II d'Espagne"
   ],
-  "date_of_birth": "1662032",
-  "date_of_death": "1689021",
+  "date_of_birth": "1662-03-27",
+  "date_of_death": "1689-02-12",
   "gender": "female",
   "pid": "10005722",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10005722m",
@@ -923,15 +989,16 @@
   "variant_name_for_person": [
     "Orléans, Marie-Louise d'",
     "Marie-Louise"
-  ]
+  ],
+  "md5": "0ef794a3abce4c7e6283e8b467710862"
 },
 {
   "authorized_access_point_representing_a_person": "Saint-Morys, Étienne Bourgevin Vialart, 1772-1817, comte de",
   "biographical_information": [
     "Emigre en 1791. - Maréchal de camp (en 1814)"
   ],
-  "date_of_birth": "1772011",
-  "date_of_death": "1817072",
+  "date_of_birth": "1772-01-17",
+  "date_of_death": "1817-07-21",
   "gender": "male",
   "pid": "10005761",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10005761h",
@@ -946,7 +1013,8 @@
     "Saint-Morys, Vialart de",
     "Vialart de Saint-Morys, Étienne Bourgevin",
     "Vialart Saint-Morys, Étienne de"
-  ]
+  ],
+  "md5": "6b9cdbaa296936c29fd658184477b8e2"
 },
 {
   "authorized_access_point_representing_a_person": "Mesuré, Fortuné, Pseud.",
@@ -960,7 +1028,8 @@
   "preferred_name_for_person": "Mesuré, Fortuné",
   "variant_name_for_person": [
     "Boutru, Pierre"
-  ]
+  ],
+  "md5": "5a0cde1e5182b5863131be2b696bd5b0"
 },
 {
   "authorized_access_point_representing_a_person": "Enon, Amélie",
@@ -973,7 +1042,8 @@
   "language_of_person": [
     "und"
   ],
-  "preferred_name_for_person": "Enon, Amélie"
+  "preferred_name_for_person": "Enon, Amélie",
+  "md5": "55b9f83156da236dcc823a16bdad8f90"
 },
 {
   "authorized_access_point_representing_a_person": "Soyarslan, Çiğdem",
@@ -983,7 +1053,8 @@
   "gender": "female",
   "pid": "10006251",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100062512",
-  "preferred_name_for_person": "Soyarslan, Çiğdem"
+  "preferred_name_for_person": "Soyarslan, Çiğdem",
+  "md5": "e519fe9081def2c4795b8635f49feba5"
 },
 {
   "authorized_access_point_representing_a_person": "Brissé, Nicolas, 1...-1540",
@@ -1003,7 +1074,8 @@
     "Brisset, Nicolas",
     "Brissaeus, Nicolaus",
     "Brissaeus, Nicolaus Montivillarius"
-  ]
+  ],
+  "md5": "f52cf3364f78603d1045a33fb49be79b"
 },
 {
   "authorized_access_point_representing_a_person": "Cay von Brockdorff, 1874-1946",
@@ -1021,7 +1093,8 @@
   "preferred_name_for_person": "Cay von Brockdorff",
   "variant_name_for_person": [
     "Brockdorff, Cay von"
-  ]
+  ],
+  "md5": "74b78f2d0b2b0f0c5a8b5bcc4a9b105c"
 },
 {
   "authorized_access_point_representing_a_person": "Jégun de Marans, Antoine-Louis-Georges, 1794-1859",
@@ -1039,13 +1112,16 @@
   "preferred_name_for_person": "Jégun de Marans, Antoine-Louis-Georges",
   "variant_name_for_person": [
     "Brondeau, Louis de"
-  ]
+  ],
+  "md5": "544f163094337bf10961536af3b7ab32"
 },
 {
   "authorized_access_point_representing_a_person": "Paglicci Brozzi, Antonio",
   "biographical_information": [
     "Historien du théâtre"
   ],
+  "date_of_birth": "18..",
+  "date_of_death": "19..?",
   "gender": "male",
   "pid": "10006453",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100064539",
@@ -1055,7 +1131,8 @@
   "preferred_name_for_person": "Paglicci Brozzi, Antonio",
   "variant_name_for_person": [
     "Brozzi, Antonio Paglicci"
-  ]
+  ],
+  "md5": "b4b1c9b9fcd37959a881b3d4c5da49da"
 },
 {
   "authorized_access_point_representing_a_person": "Brunati, Giuseppe, 17..-18.., traducteur",
@@ -1070,15 +1147,16 @@
   "language_of_person": [
     "ita"
   ],
-  "preferred_name_for_person": "Brunati, Giuseppe"
+  "preferred_name_for_person": "Brunati, Giuseppe",
+  "md5": "737b6568671ba314b11fafe8923b2283"
 },
 {
   "authorized_access_point_representing_a_person": "Entrecasteaux, Jean-Baptiste d', 1758-1785",
   "biographical_information": [
     "Premier président à mortier au Parlement de Provence. - Marié le 10 novembre 1776 à Angélique de Castellane (1757-1784), il l'assassine dans la nuit du 30 au 31 mai 1784 car il est follement épris de Sylvie de Saint-Simon et s'enfuit au Portugal où il meurt en prison"
   ],
-  "date_of_birth": "1758071",
-  "date_of_death": "1785061",
+  "date_of_birth": "1758-07-19",
+  "date_of_death": "1785-06-16",
   "gender": "male",
   "pid": "10006555",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100065558",
@@ -1090,30 +1168,32 @@
     "Bruny d'Entrecasteaux, Jean-Baptiste",
     "Bruno d'Entrecasteaux, Jean-Baptiste",
     "Entrecasteaux, Marquis d'"
-  ]
+  ],
+  "md5": "fbaf035ec01a6c349b7064de2fd41bd0"
 },
 {
   "authorized_access_point_representing_a_person": "Languillat, Adrien Hippolyte, 1808-1878",
   "biographical_information": [
     "Évêque titulaire de Sergiopolis (à partir de 1856-1857). - Vicaire apostolique du Tchély sud-est (1856-1864), puis du Kiangnan. - Chanoine d'honneur de Châlons-en-Champagne"
   ],
-  "date_of_birth": "1808092",
-  "date_of_death": "1878113",
+  "date_of_birth": "1808-09-28",
+  "date_of_death": "1878-11-30",
   "gender": "male",
   "pid": "10006589",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10006589k",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Languillat, Adrien Hippolyte"
+  "preferred_name_for_person": "Languillat, Adrien Hippolyte",
+  "md5": "6a9acdcb331d2f68252c0a2d67f7a3fd"
 },
 {
   "authorized_access_point_representing_a_person": "Élisabeth-Christine, reine de Prusse, 1715-1797",
   "biographical_information": [
     "Fille du duc Ferdinand Albert II de Brunswick-Wolfenbüttel, et nièce de Charles VI du Saint-Empire. - Épouse Frédéric II de Prusse, en 1733"
   ],
-  "date_of_birth": "1715110",
-  "date_of_death": "1797011",
+  "date_of_birth": "1715-11-08",
+  "date_of_death": "1797-01-13",
   "gender": "female",
   "pid": "10006590",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10006590s",
@@ -1126,10 +1206,13 @@
     "Brunswick-Wolfenbuttel, Élisabeth-Christine de",
     "Elisabeth-Christine von Braunschweig-Bevern",
     "Braunschweig-Bevern, Elisabeth-Christine von"
-  ]
+  ],
+  "md5": "1926e0076aa06e6aa195aec03d10347b"
 },
 {
   "authorized_access_point_representing_a_person": "Buchère de Lépinois, Eugène Louis Ernest de",
+  "date_of_birth": "18..",
+  "date_of_death": "18..?",
   "gender": "male",
   "pid": "10006658",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10006658k",
@@ -1139,7 +1222,8 @@
   "preferred_name_for_person": "Buchère de Lépinois, Eugène Louis Ernest de",
   "variant_name_for_person": [
     "Lépinois, Eugène Louis Ernest de Buchère de"
-  ]
+  ],
+  "md5": "03e2670f939d0edc79a3ea976e7c0556"
 },
 {
   "authorized_access_point_representing_a_person": "Butler, James Edward William Theobald, Marquis of Ormonde, 1844-1919",
@@ -1154,12 +1238,13 @@
   "preferred_name_for_person": "Butler, James Edward William Theobald, Marquis of Ormonde",
   "variant_name_for_person": [
     "Butler, James"
-  ]
+  ],
+  "md5": "8b86bfa43a9e32a1e71cd6dee225c0db"
 },
 {
   "authorized_access_point_representing_a_person": "Cauna, Bernard-Augustin-Henri-Timothée de Cabannes, 1822-1883, baron de",
   "date_of_birth": "1822",
-  "date_of_death": "1883102",
+  "date_of_death": "1883-10-22",
   "gender": "male",
   "pid": "10007004",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100070047",
@@ -1171,7 +1256,8 @@
     "Cauna, Bernard-Augustin de Cabannes",
     "Cabannes, Bernard-Augustin-Henri-Timothée",
     "Cabannes, Bernard-Augustin de"
-  ]
+  ],
+  "md5": "351a177070b81611a335883b9b3975b5"
 },
 {
   "authorized_access_point_representing_a_person": "Cailler, Raoul, 15..-1620",
@@ -1191,7 +1277,8 @@
     "Caillier, Raoul",
     "Caillier, Rodolphe",
     "Cailler, Rodolphe"
-  ]
+  ],
+  "md5": "2eea35bd8aca3547ffdd4d8d8f8ac129"
 },
 {
   "authorized_access_point_representing_a_person": "Kouroúdīs, Kṓstas",
@@ -1208,15 +1295,16 @@
   "preferred_name_for_person": "Kouroúdīs, Kṓstas",
   "variant_name_for_person": [
     "Couroúdis, Cóstas"
-  ]
+  ],
+  "md5": "1131048bf6809b4c4e784d525352aaca"
 },
 {
   "authorized_access_point_representing_a_person": "Camerarius, Rudolf Jacob, 1665-1721",
   "biographical_information": [
     "Botaniste. - A été professeur à l'Université de Tübingen, Allemagne"
   ],
-  "date_of_birth": "1665021",
-  "date_of_death": "1721092",
+  "date_of_birth": "1665-02-17",
+  "date_of_death": "1721-09-21",
   "gender": "male",
   "pid": "10007302",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10007302c",
@@ -1229,7 +1317,8 @@
     "Camerer, Rudolf Jacob",
     "Camerer, Rudolf Jakob",
     "Camerer, Rudolphus Jacobus"
-  ]
+  ],
+  "md5": "915f91e33fc97fc592d3d2a0d8d1c0db"
 },
 {
   "authorized_access_point_representing_a_person": "Boufflers, Marie-Charlotte-Hippolyte Campet de Saujon, Ctesse Edouard de, 1724-1800",
@@ -1245,7 +1334,8 @@
   "variant_name_for_person": [
     "Campet de Saujon, Mlle",
     "Campet de Saujon, Marie-Charlotte-Hippolyte de"
-  ]
+  ],
+  "md5": "a8f4a6d4f340af1a05423bd8e584df99"
 },
 {
   "authorized_access_point_representing_a_person": "Carelli, Francesco",
@@ -1259,7 +1349,8 @@
   "variant_name_for_person": [
     "Carellius, Franciscus",
     "Carellii, Francisci"
-  ]
+  ],
+  "md5": "20078595d7daac1078770eb9a5880a8e"
 },
 {
   "authorized_access_point_representing_a_person": "Carola, 18..-18..",
@@ -1274,7 +1365,8 @@
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Carola"
+  "preferred_name_for_person": "Carola",
+  "md5": "fa23cfb35783f1e17a93cbb04165c781"
 },
 {
   "authorized_access_point_representing_a_person": "Guillaume de Casale, 13..-1442",
@@ -1283,7 +1375,7 @@
     "Les Constitutions de sainte Colette (qui définissent, avec la Règle de sainte Claire de 1253, l'observance des Clarisses colettines) ont été approuvées le 23 ou le 28 septembre 1434 par Guillaume de Casale et par deux cardinaux, légats au Concile de Bâle. On admet que Guillaume de Casale a mis au point le texte de ces constitutions"
   ],
   "date_of_birth": "13..",
-  "date_of_death": "1442021",
+  "date_of_death": "1442-02-11",
   "gender": "male",
   "pid": "10007910",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10007910n",
@@ -1299,7 +1391,8 @@
     "Casal, Guillaume de",
     "Casale, Guglielmo",
     "Casal, Guillem de"
-  ]
+  ],
+  "md5": "5cbd7ede27df556015da8947a417bfc3"
 },
 {
   "authorized_access_point_representing_a_person": "Saint-Cyr Cassagne, J.",
@@ -1318,7 +1411,8 @@
   "variant_name_for_person": [
     "Cassagne, J. Saint-Cyr",
     "Cassagne, J."
-  ]
+  ],
+  "md5": "942fbedd8abebc2f2e5488501fe42235"
 },
 {
   "authorized_access_point_representing_a_person": "Catalani, Giuseppe, 1698-1764",
@@ -1326,8 +1420,8 @@
     "A aussi écrit en latin",
     "Historien, théologien et juriste"
   ],
-  "date_of_birth": "1698061",
-  "date_of_death": "1764081",
+  "date_of_birth": "1698-06-14",
+  "date_of_death": "1764-08-10",
   "gender": "male",
   "pid": "10008209",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10008209r",
@@ -1338,15 +1432,16 @@
   "variant_name_for_person": [
     "Catalano, Giuseppe",
     "Catalanus, Josephus"
-  ]
+  ],
+  "md5": "3cd5b4bfbbb272b58f70e731776d3d82"
 },
 {
   "authorized_access_point_representing_a_person": "Franchi de' Cavalieri, Pio, 1869-1960",
   "biographical_information": [
     "Archéologue. - Président de l'Académie pontificale romaine d'archéologique. - Conservateur de la bibliothèque vaticane"
   ],
-  "date_of_birth": "1869083",
-  "date_of_death": "1960080",
+  "date_of_birth": "1869-08-31",
+  "date_of_death": "1960-08-06",
   "gender": "male",
   "pid": "10008311",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10008311k",
@@ -1356,13 +1451,16 @@
   "preferred_name_for_person": "Franchi de' Cavalieri, Pio",
   "variant_name_for_person": [
     "Cavalieri, Pio Franchi de'"
-  ]
+  ],
+  "md5": "15c8d4444d63c9d595e9be2725b454d8"
 },
 {
   "authorized_access_point_representing_a_person": "Cavalieri, Giovanni-Battista, 1525?-1601",
   "biographical_information": [
     "Graveur, dessinateur et éditeur"
   ],
+  "date_of_birth": "1525?",
+  "date_of_death": "1601-07-23",
   "gender": "male",
   "pid": "10008312",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10008312x",
@@ -1380,7 +1478,8 @@
     "De' Cavalieri, Giovanni-Battista",
     "De' Cavalleri, Giovanni-Battista",
     "De Cavalleriis, Giovanni-Battista"
-  ]
+  ],
+  "md5": "4832791893165585f0a2e0712ba61473"
 },
 {
   "authorized_access_point_representing_a_person": "Rynne, Davog",
@@ -1393,7 +1492,8 @@
   "language_of_person": [
     "und"
   ],
-  "preferred_name_for_person": "Rynne, Davog"
+  "preferred_name_for_person": "Rynne, Davog",
+  "md5": "a0ad7e6ab220eb6769e75a3b42848af0"
 },
 {
   "authorized_access_point_representing_a_person": "Chamilly, Vicomtesse de",
@@ -1408,15 +1508,16 @@
   "preferred_name_for_person": "Chamilly, Vicomtesse de",
   "variant_name_for_person": [
     "Vicomtesse de Chamilly"
-  ]
+  ],
+  "md5": "4c8fb3814d24546ec9c6db472ca96b11"
 },
 {
   "authorized_access_point_representing_a_person": "Levrier Champ-Rion, Guillaume-Denis-Thomas, 1749-1825",
   "biographical_information": [
     "Auteur dramatique. - Librettiste de l'Opéra-Bouffe"
   ],
-  "date_of_birth": "1749122",
-  "date_of_death": "1825031",
+  "date_of_birth": "1749-12-21",
+  "date_of_death": "1825-03-10",
   "gender": "male",
   "pid": "10008626",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10008626f",
@@ -1426,15 +1527,16 @@
   "preferred_name_for_person": "Levrier Champ-Rion, Guillaume-Denis-Thomas",
   "variant_name_for_person": [
     "Champ-Rion, Guillaume-Denis-Thomas Levrier"
-  ]
+  ],
+  "md5": "903cbccfee4ec197a668b76d343b8d30"
 },
 {
   "authorized_access_point_representing_a_person": "Guigue de Champvans, Jean-Chrysogone, 1813-1900",
   "biographical_information": [
     "Député de l'Ain (1848-1849). - Préfet du Gard (1871-1876). - Inspecteur des enfants assistés de la Seine (à partir de 1876)"
   ],
-  "date_of_birth": "1813122",
-  "date_of_death": "1900021",
+  "date_of_birth": "1813-12-21",
+  "date_of_death": "1900-02-16",
   "gender": "male",
   "pid": "10008670",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10008670x",
@@ -1444,22 +1546,24 @@
   "preferred_name_for_person": "Guigue de Champvans, Jean-Chrysogone",
   "variant_name_for_person": [
     "Champvans, Jean-Chrysogone Guigue de"
-  ]
+  ],
+  "md5": "d4c905c2e9269d68dc926dfe2bd47d73"
 },
 {
   "authorized_access_point_representing_a_person": "Chapelle, François, 1809-1873",
   "biographical_information": [
     "Prêtre du Diocèse de Limoges (ordonné en 1832), chanoine honoraire (1872). - Curé d'Aixe-sur-Vienne (à partir de 1856). - Restaurateur du sanctuaire Notre-Dame d'Arliquet, à Aixe-sur-Vienne"
   ],
-  "date_of_birth": "1809081",
-  "date_of_death": "1873121",
+  "date_of_birth": "1809-08-17",
+  "date_of_death": "1873-12-16",
   "gender": "male",
   "pid": "10008721",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100087210",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Chapelle, François"
+  "preferred_name_for_person": "Chapelle, François",
+  "md5": "19b63626c5fa58bab5de42bf3023699f"
 },
 {
   "authorized_access_point_representing_a_person": "Chapron, Nicolas, 1612-1656?",
@@ -1467,6 +1571,8 @@
     "Peintre, copiste, dessinateur et graveur. - Auteur d'une série de gravures intitulée \"La Bible de Raphaël\"",
     "peintre, dessinateur, graveur"
   ],
+  "date_of_birth": "1612-10-19",
+  "date_of_death": "1656?",
   "gender": "male",
   "pid": "10008723",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10008723p",
@@ -1478,13 +1584,16 @@
     "Chaperon, Nicolas",
     "Chappron, Nicolas",
     "Chapron, Nicolaus"
-  ]
+  ],
+  "md5": "124e0007d62e8cbf838add677d2e277b"
 },
 {
   "authorized_access_point_representing_a_person": "Hermonyme, Georges, 1452-1508?",
   "biographical_information": [
     "Professeur de grec à Paris. - Copiste et traducteur de grec"
   ],
+  "date_of_birth": "1452",
+  "date_of_death": "1508?",
   "gender": "male",
   "pid": "10008762",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10008762k",
@@ -1497,28 +1606,32 @@
     "Hermonyme de Sparte, Georges",
     "Hermonyme de Sparte",
     "Hermonimus, George"
-  ]
+  ],
+  "md5": "6b973e2a9e7b0cdd9f9231ce5e05da7c"
 },
 {
   "authorized_access_point_representing_a_person": "Cirbeau, Marie, 1880-1959",
   "biographical_information": [
     "Directrice du Pensionnat Saint-Bernard de Châtillon-sur-Seine, Côte-d'Or (1910)"
   ],
-  "date_of_birth": "1880050",
-  "date_of_death": "1959102",
+  "date_of_birth": "1880-05-04",
+  "date_of_death": "1959-10-20",
   "gender": "female",
   "pid": "10009403",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10009403g",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Cirbeau, Marie"
+  "preferred_name_for_person": "Cirbeau, Marie",
+  "md5": "4c4e96e7370c84605c15e1549f6ba81e"
 },
 {
   "authorized_access_point_representing_a_person": "Mamert, Claudien, 04..-0473?",
   "biographical_information": [
     "Philosophe et théologien gallo-romain"
   ],
+  "date_of_birth": "04..",
+  "date_of_death": "0473?",
   "gender": "male",
   "pid": "10009496",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100094969",
@@ -1530,7 +1643,8 @@
     "Mamertus, Claudianus Ecdidius",
     "Mamertus, Claudianus Sedicius",
     "Claudianus Mamertus"
-  ]
+  ],
+  "md5": "0bb103eb8b212667075c5dd2020a6301"
 },
 {
   "authorized_access_point_representing_a_person": "Dénéchaud, Henri, 1820-1897",
@@ -1538,14 +1652,15 @@
     "Prêtre du Diocèse de Bordeaux (ordonné en 1845), chanoine honoraire, vicaire général (1892). - Supérieur du Petit séminaire de Bordeaux (en 1895)"
   ],
   "date_of_birth": "1820",
-  "date_of_death": "1897112",
+  "date_of_death": "1897-11-26",
   "gender": "male",
   "pid": "10009624",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100096240",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Dénéchaud, Henri"
+  "preferred_name_for_person": "Dénéchaud, Henri",
+  "md5": "86dafc4bbc64bf711693060244b9a314"
 },
 {
   "authorized_access_point_representing_a_person": "Comperat, B., 1530-1593",
@@ -1560,7 +1675,8 @@
   "language_of_person": [
     "frm"
   ],
-  "preferred_name_for_person": "Comperat, B."
+  "preferred_name_for_person": "Comperat, B.",
+  "md5": "93781adc4933dbe042497d4999d897f6"
 },
 {
   "authorized_access_point_representing_a_person": "Jacob, Émile, 1867-1953",
@@ -1568,15 +1684,16 @@
     "Prêtre du Diocèse de Bourges (ordonné en 1891), chanoine honoraire (1947). - Curé de Saint-Chartier (Indre ; 1912-1950). - Membre de la Société des antiquaires du Centre",
     "Écrivit aussi sous le pseudonyme Hector de Corlay"
   ],
-  "date_of_birth": "1867112",
-  "date_of_death": "1953081",
+  "date_of_birth": "1867-11-21",
+  "date_of_death": "1953-08-14",
   "gender": "male",
   "pid": "10010210",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100102107",
   "language_of_person": [
     "fre"
   ],
-  "preferred_name_for_person": "Jacob, Émile"
+  "preferred_name_for_person": "Jacob, Émile",
+  "md5": "320dd2ef4f69061c554558f60b235cba"
 },
 {
   "authorized_access_point_representing_a_person": "Corneille Saint-Marc, 18..-1..., médecin",
@@ -1594,7 +1711,8 @@
   "preferred_name_for_person": "Corneille Saint-Marc",
   "variant_name_for_person": [
     "Saint-Marc, Corneille"
-  ]
+  ],
+  "md5": "6eabe5ce467858a1fc288bfa83524cfd"
 },
 {
   "authorized_access_point_representing_a_person": "Dóikos, Panagiṓtīs O., 1957-....",
@@ -1614,7 +1732,8 @@
     "Δόϊκος, Παναγιώτης Ο.",
     "Dóicos, Panagiótis O.",
     "Dóïcos, Panagiótis O."
-  ]
+  ],
+  "md5": "d69fceaf2a1b02f87d7fefa00b41b955"
 },
 {
   "authorized_access_point_representing_a_person": "Rogkákos, Megaklī́s, 1972-....",
@@ -1633,14 +1752,15 @@
   "variant_name_for_person": [
     "Rongákos, Megaklís",
     "Rongácos, Megaclís"
-  ]
+  ],
+  "md5": "25ba3ef91e5af7906041c414854c6828"
 },
 {
   "authorized_access_point_representing_a_person": "Cours de Labarthe, Alexandre de, 1817-....",
   "biographical_information": [
     "Prénoms complets : Louis Alexandre Robert. - Inspecteur général de l'enseignement primaire"
   ],
-  "date_of_birth": "1817031",
+  "date_of_birth": "1817-03-10",
   "gender": "male",
   "pid": "10010490",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb100104908",
@@ -1652,15 +1772,16 @@
     "Cours, Alexandre de Labarthe de",
     "Cours, de",
     "Robert de Labarthe de, Cours"
-  ]
+  ],
+  "md5": "6d037ac622f105906784bf61173ba8d9"
 },
 {
   "authorized_access_point_representing_a_person": "Cremutius Cordus, 1811-1876",
   "biographical_information": [
     "Pseudonyme de Marc Dufraisse"
   ],
-  "date_of_birth": "1811050",
-  "date_of_death": "1876012",
+  "date_of_birth": "1811-05-02",
+  "date_of_death": "1876-01-22",
   "gender": "male",
   "pid": "10010614",
   "identifier_for_person": "http://catalogue.bnf.fr/ark:/12148/cb10010614q",
@@ -1670,7 +1791,8 @@
   "preferred_name_for_person": "Cremutius Cordus",
   "variant_name_for_person": [
     "Cordus, Cremutius"
-  ]
+  ],
+  "md5": "7018c96738e51db80b5392d33994c4ee"
 },
 {
   "authorized_access_point_representing_a_person": "Cros de Vour, F. E., 18..-1928",
@@ -1685,6 +1807,7 @@
   "preferred_name_for_person": "Cros de Vour, F. E.",
   "variant_name_for_person": [
     "Vour, F. E. Cros de"
-  ]
+  ],
+  "md5": "21517fab8f2d13090684f3615e216782"
 }
 ]
