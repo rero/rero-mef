@@ -78,7 +78,7 @@ def test_create_viaf_record(app, viaf_record):
     assert returned_record['viaf_pid'] == '66739143'
     assert returned_record['bnf_pid'] == '10000690'
     assert returned_record['gnd_pid'] == '12391664X'
-    assert returned_record['rero_auth_pid'] == 'A023655346'
+    assert returned_record['rero_pid'] == 'A023655346'
 
 
 def test_create_agency_record_with_viaf_links(

@@ -151,7 +151,7 @@ def test_rero_authorized_access_point_representing_a_person():
     """Test Authorized access point representing a person 100 $adc"""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
-            <subfield code="a">Brontë, Charlotte</subfield>
+            <subfield code="a">Brontë, Charlotte,</subfield>
             <subfield code="d">1816-1855</subfield>
             <subfield code="c">écrivain</subfield>
         </datafield>

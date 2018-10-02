@@ -34,12 +34,7 @@
       "type": "string",
       "minLength": 1
     },
-    "virtua_auth_pid": {
-      "title": "Virtua authority ID",
-      "type": "string",
-      "minLength": 1
-    },
-    "rero_auth_pid": {
+    "rero_pid": {
       "title": "Rero authority ID",
       "type": "string",
       "minLength": 1

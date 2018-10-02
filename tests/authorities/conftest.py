@@ -64,7 +64,7 @@ def viaf_record():
         "viaf_pid": "66739143",
         "bnf_pid": "10000690",
         "gnd_pid": "12391664X",
-        "rero_auth_pid": "A023655346",
+        "rero_pid": "A023655346",
     }
     return record
 

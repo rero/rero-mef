@@ -6,10 +6,11 @@
   "preferred_name_for_person": "Genty de Bonqueval, J",
   "variant_name_for_person": [
     "Bonqueval, J.G. de"
-  ]
+  ],
+  "md5": "e583d9ad6f02b8ad118fd4a898d947da"
 },
 {
-  "authorized_access_point_representing_a_person": "Cavalieri, Giovanni Battista,, ca.1525-1601",
+  "authorized_access_point_representing_a_person": "Cavalieri, Giovanni Battista, ca.1525-1601",
   "biographical_information": [
     "Graveur, dessinateur et éditeur"
   ],
@@ -23,10 +24,11 @@
     "Cavalleriis, Baptista de",
     "Cavalleriis, Giovanni Battista de",
     "Cavalieri, Gianbattista"
-  ]
+  ],
+  "md5": "331762326ee0288548d0ffdb1cf56fb9"
 },
 {
-  "authorized_access_point_representing_a_person": "Arnoudt, Pierre J.,, 1811-1865",
+  "authorized_access_point_representing_a_person": "Arnoudt, Pierre J., 1811-1865",
   "biographical_information": [
     "Jésuite (à partir de 1835 ; ordonné prêtre en 1843) ; vécut aux Etats-Unis à partir de 1835, écrivit aussi en latin"
   ],
@@ -38,7 +40,8 @@
   "variant_name_for_person": [
     "Aernoudt, Pierre",
     "Arnold, Joseph"
-  ]
+  ],
+  "md5": "a33cbda21ed35959bcac921de5523b5c"
 },
 {
   "authorized_access_point_representing_a_person": "Franchi De Cavalieri, Pio Pietro",
@@ -49,10 +52,11 @@
     "Cavalieri, Pius Franchi de",
     "Franchi De Cavalieri, Pietro Pio",
     "Franchi De Cavalieri, Pius"
-  ]
+  ],
+  "md5": "6cdd1ffc9fa4a361b94715357292d07b"
 },
 {
-  "authorized_access_point_representing_a_person": "Bernard, William Bayle,, 1807-1875",
+  "authorized_access_point_representing_a_person": "Bernard, William Bayle, 1807-1875",
   "date_of_birth": "1807",
   "date_of_death": "1875",
   "pid": "A022480124",
@@ -60,16 +64,18 @@
   "preferred_name_for_person": "Bernard, William Bayle",
   "variant_name_for_person": [
     "Bernard, Bayle"
-  ]
+  ],
+  "md5": "bd0c77ca4c61dd68a645deea0dfe0331"
 },
 {
-  "authorized_access_point_representing_a_person": "Constantin,, de Barbanson",
+  "authorized_access_point_representing_a_person": "Constantin, de Barbanson",
   "pid": "A009535178",
   "identifier_for_person": "http://data.rero.ch/02-A009535178",
   "preferred_name_for_person": "Constantin",
   "variant_name_for_person": [
     "Barbançon, Constantin de"
-  ]
+  ],
+  "md5": "cabacb428ac2d73a2700a791987bd6c6"
 },
 {
   "authorized_access_point_representing_a_person": "Kouroudēs, Kōstas",
@@ -78,10 +84,11 @@
   "preferred_name_for_person": "Kouroudēs, Kōstas",
   "variant_name_for_person": [
     "Kouroúdi̲s, Kó̲stas"
-  ]
+  ],
+  "md5": "9fddc78706ccbb10dd31c6e76d0912b7"
 },
 {
-  "authorized_access_point_representing_a_person": "Catalani, Giuseppe,, 1698-1764",
+  "authorized_access_point_representing_a_person": "Catalani, Giuseppe, 1698-1764",
   "biographical_information": [
     "Historien, théologien et juriste"
   ],
@@ -95,7 +102,8 @@
     "Catalanus, Josephus",
     "Catalani, Josephus",
     "Catalano, Josepho"
-  ]
+  ],
+  "md5": "6130737046c74ddebc170b6b44340c0c"
 },
 {
   "authorized_access_point_representing_a_person": "Guillemin, Léon",
@@ -108,20 +116,22 @@
   "variant_name_for_person": [
     "Amboise, Léon d'",
     "Léon"
-  ]
+  ],
+  "md5": "d6ef37ebcfa7e5e686e8852fc2285614"
 },
 {
-  "authorized_access_point_representing_a_person": "Soyarslan, Çiǧdem,, 1983-",
+  "authorized_access_point_representing_a_person": "Soyarslan, Çiǧdem, 1983-",
   "biographical_information": [
     "Artiste lyrique (soprano)"
   ],
   "date_of_birth": "1983",
   "pid": "A024285452",
   "identifier_for_person": "http://data.rero.ch/02-A024285452",
-  "preferred_name_for_person": "Soyarslan, Çiǧdem"
+  "preferred_name_for_person": "Soyarslan, Çiǧdem",
+  "md5": "5b6abbd6c350b38bf01aec7f5c071f1f"
 },
 {
-  "authorized_access_point_representing_a_person": "Arenthon d'Alex, Jean d',, 1620-1695",
+  "authorized_access_point_representing_a_person": "Arenthon d'Alex, Jean d', 1620-1695",
   "biographical_information": [
     "Prince-évêque de Genève (1661-1695)"
   ],
@@ -134,6 +144,7 @@
     "Aranton d'Alex, Jean d'",
     "Aranthon d'Alex, Jean d'",
     "Alex, Jean d'Arenthon d'"
-  ]
+  ],
+  "md5": "559b817d1aaae0ee30ca190c5db961fd"
 }
 ]

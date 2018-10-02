@@ -150,6 +150,7 @@ def build_string_list_from_fields(record, tag, subfields, separator):
         string_from_field = separator.join(subfield_list)
         string_from_field = string_from_field.replace('\x98', '')
         string_from_field = string_from_field.replace('\x9C', '')
+        string_from_field = string_from_field.replace(',,', ',')
         string_from_field = re.sub(r'[,:;]$', '', string_from_field.strip())
         field_string_list.append(string_from_field.strip())
     return field_string_list

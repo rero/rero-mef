@@ -112,11 +112,11 @@ def test_bnf_identifier_for_person_missing():
     assert trans.json == {}
 
 
-def test_bnf_birth_and_death_from_filed_103():
+def test_bnf_birth_and_death_from_field_103():
     """Test date of birth 103 $a pos. 1-8 YYYYMMDD"""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="103">
-            <subfield code="a">18160421  18550331 </subfield>
+            <subfield code="a"> 18160421  18550331 </subfield>
         </datafield>
      """
     trans = trans_prep('bnf', xml_part_to_add)
@@ -129,7 +129,7 @@ def test_bnf_birth_and_death_from_filed_103():
     #  format: "XXXXXXXX  XXXX    ?"
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="103">
-            <subfield code="a">18160421  1855    ?</subfield>
+            <subfield code="a"> 18160421  1855    ?</subfield>
         </datafield>
      """
     trans = trans_prep('bnf', xml_part_to_add)
@@ -142,7 +142,7 @@ def test_bnf_birth_and_death_from_filed_103():
     #  format: "XXX.      XXXX    ?"
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="103">
-            <subfield code="a">181.      1855    ?</subfield>
+            <subfield code="a"> 181.      1855    ?</subfield>
         </datafield>
      """
     trans = trans_prep('bnf', xml_part_to_add)
@@ -155,7 +155,7 @@ def test_bnf_birth_and_death_from_filed_103():
     #  format: "XX..      XXX.XXXX "
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="103">
-            <subfield code="a">18..      185.0625 </subfield>
+            <subfield code="a"> 18..      185.0625 </subfield>
         </datafield>
      """
     trans = trans_prep('bnf', xml_part_to_add)
@@ -165,20 +165,10 @@ def test_bnf_birth_and_death_from_filed_103():
         'date_of_death': '185.-06-25'
     }
 
-    #  format: "XX..     !XXX.XXXX "  with bad separator
-    xml_part_to_add = """
-        <datafield ind1=" " ind2=" " tag="103">
-            <subfield code="a">18..     !185.0625 </subfield>
-        </datafield>
-     """
-    trans = trans_prep('bnf', xml_part_to_add)
-    trans.trans_bnf_birth_and_death_dates()
-    assert trans.json == {}
-
     #  format: "XX..      XXX.XXXX XX"  with bad suffix
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="103">
-            <subfield code="a">18..      185.0625 12</subfield>
+            <subfield code="a"> 18..      185.0625 12</subfield>
         </datafield>
      """
     trans = trans_prep('bnf', xml_part_to_add)
@@ -190,7 +180,7 @@ def test_bnf_birth_and_death_dates_year_birth():
     """Test date of birth 103 $a pos. 1-8 YYYYMMDD"""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="103">
-            <subfield code="a">1816               </subfield>
+            <subfield code="a"> 1816               </subfield>
         </datafield>
      """
     trans = trans_prep('bnf', xml_part_to_add)
@@ -200,7 +190,7 @@ def test_bnf_birth_and_death_dates_year_birth():
     }
 
 
-def test_bnf_birth_and_death_from_filed_200():
+def test_bnf_birth_and_death_from_field_200():
     """Test date of birth 200 $f pos. 1-4"""
     xml_part_to_add = """
           <datafield ind1=" " ind2=" " tag="200">
@@ -294,7 +284,7 @@ def test_bnf_birth_and_death_dates_in_two_fields():
     """Test date of birth 103 $a pos. 1-8 YYYYMMDD AND 200 $f pos. 1-4"""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="103">
-            <subfield code="a">18160421  18550331 </subfield>
+            <subfield code="a"> 18160421  18550331 </subfield>
         </datafield>
           <datafield ind1=" " ind2=" " tag="200">
             <subfield code="f">1816-1855</subfield>
@@ -305,6 +295,21 @@ def test_bnf_birth_and_death_dates_in_two_fields():
     assert trans.json == {
         'date_of_birth': '1816-04-21',
         'date_of_death': '1855-03-31'
+    }
+
+    xml_part_to_add = """
+        <datafield ind1=" " ind2=" " tag="103">
+            <subfield code="a"> 1525    ? 16010723 </subfield>
+        </datafield>
+          <datafield ind1=" " ind2=" " tag="200">
+            <subfield code="f">1525?-1601</subfield>
+        </datafield>
+     """
+    trans = trans_prep('bnf', xml_part_to_add)
+    trans.trans_bnf_birth_and_death_dates()
+    assert trans.json == {
+        'date_of_birth': '1525?',
+        'date_of_death': '1601-07-23'
     }
 
 

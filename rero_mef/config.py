@@ -37,6 +37,15 @@ from datetime import timedelta
 from invenio_indexer.api import RecordIndexer
 from invenio_search.api import RecordsSearch
 
+from .authorities.api import BnfRecord, GndRecord, MefRecord, ReroRecord, \
+    ViafRecord
+from .authorities.marctojson.do_bnf_auth_person import \
+    Transformation as Bnf_transformation
+from .authorities.marctojson.do_gnd_auth_person import \
+    Transformation as Gnd_transformation
+from .authorities.marctojson.do_rero_auth_person import \
+    Transformation as Rero_transformation
+
 
 def _(x):
     """Identity function used to trigger string extraction."""
@@ -166,6 +175,24 @@ OAISERVER_ID_PREFIX = 'oai:mef.test.rero.ch:'
 
 #: Switches off incept of redirects by Flask-DebugToolbar.
 DEBUG_TB_INTERCEPT_REDIRECTS = False
+
+# AGENCIES LIST
+# ========
+#: List of agencies
+AGENCIES = {
+    'gnd': GndRecord,
+    'rero': ReroRecord,
+    'bnf': BnfRecord,
+    'viaf': ViafRecord,
+    'mef': MefRecord
+}
+
+TRANSFORMATION = {
+    'gnd': Gnd_transformation,
+    'rero': Rero_transformation,
+    'bnf': Bnf_transformation
+}
+
 
 # REST API Configuration
 # ======================

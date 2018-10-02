@@ -221,7 +221,7 @@ class ReroRecord(AuthRecord):
     fetcher = rero_id_fetcher
     provider = ReroProvider
     agency = 'rero'
-    agency_pid_type = 'rero_auth_pid'
+    agency_pid_type = 'rero_pid'
 
 
 class BnfRecord(AuthRecord):

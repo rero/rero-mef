@@ -24,40 +24,129 @@
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
 set -e
-
-data_path=$(pipenv --where)/data
-
-
-# Clean redis
-pipenv run invenio shell --no-term-title -c "import redis; redis.StrictRedis.from_url(app.config['CACHE_REDIS_URL']).flushall(); print('Cache cleared')"
-pipenv run invenio db destroy --yes-i-know
-pipenv run invenio db init create
-pipenv run invenio index destroy --force --yes-i-know
-pipenv run invenio index init --force
-pipenv run invenio index queue init purge
-
-# Create admin role to rectict access
-pipenv run invenio roles create admin
-pipenv run invenio access allow superuser-access role admin
-
-
 RED='\033[0;31m'
 GREEN='\033[0;0;32m'
 NC='\033[0m' # No Color
 
+function db_init () {
+    # Clean redis
+    pipenv run invenio shell --no-term-title -c "import redis; redis.StrictRedis.from_url(app.config['CACHE_REDIS_URL']).flushall(); print('Cache cleared')"
+    pipenv run invenio db destroy --yes-i-know || true
+    pipenv run invenio db init create
+    pipenv run invenio index destroy --force --yes-i-know || true
+    pipenv run invenio index init --force
+    pipenv run invenio index queue init purge
 
-# import the records,
+    # Create admin role to rectict access
+    pipenv run invenio roles create admin
+    pipenv run invenio access allow superuser-access role admin
+}
 
-# Attention: viaf must be loaded first
+function sample_load () {
+    data_path=$(pipenv --where)/data
+    # Attention: Must load viaf first
 
-# Note: to import all the records of one resource
-#        execute the dojson and the reindex for that source
-#        and make sure to change the input file to have the full set
+    for AGENCY in viaf bnf gnd rero
+    do
+       echo -e ${GREEN}Importing ${AGENCY} records:${NC}
+       pipenv run dojson -i ${data_path}/${AGENCY}.json schema http://mef.test.rero.ch/schemas/authorities/${AGENCY}-person-v0.0.1.json | pipenv run invenio records create_or_update ${AGENCY}
+       pipenv run invenio index reindex --yes-i-know --pid-type ${AGENCY}
+    done
+    pipenv run invenio index run -c 4
+}
 
-for SOURCE in viaf bnf gnd rero
-do
-   echo -e ${GREEN}Importing ${SOURCE} records:${NC}
-   pipenv run dojson -i ${data_path}/${SOURCE}.json schema http://mef.test.rero.ch/schemas/authorities/${SOURCE}-person-v0.0.1.json | pipenv run invenio records create_or_update ${SOURCE}
-   pipenv run invenio index reindex --yes-i-know --pid-type ${SOURCE}
-done
-pipenv run invenio index run -c 4
+function bulk_load () {
+    INPUT_DIR=$1
+    OUTPUT_DIR=$2
+    # Transform marc files to json
+    for AGENCY in rero bnf gnd
+    do
+        pipenv run invenio records bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --marc_file ${AGENCY}.mrc --json_file ${AGENCY}.json
+    done
+    # Create CSV files from json
+    for AGENCY in rero bnf gnd
+    do
+        pipenv run invenio records bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file ${AGENCY}.json --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
+    done
+    # Load CSV files to db
+    for AGENCY in rero bnf gnd
+    do
+        pipenv run invenio records bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
+    done
+    # Create CSV files from json
+    for AGENCY in viaf mef
+    do
+        pipenv run invenio records bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --json_file viaf.txt --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --rero_pids rero.pids
+    done
+    # Load CSV files to db
+    for AGENCY in viaf mef
+    do
+        pipenv run invenio records bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
+    done
+    # Indexing all records
+    for AGENCY in rero bnf gnd viaf mef
+    do
+        pipenv run invenio index reindex --yes-i-know --pid-type ${AGENCY}
+        pipenv run invenio index run -c 2 -d
+    done
+}
+function deploy () {
+    INPUT_DIR=$1
+    # Load agencies CSV files to db
+    for AGENCY in rero bnf gnd viaf mef
+    do
+        pipenv run invenio records bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
+        pipenv run invenio index reindex --yes-i-know --pid-type ${AGENCY}
+        pipenv run invenio index run -c 4 -d
+    done
+}
+
+function usage () {
+    echo "Usage: "
+    echo " [./scripts/setup]                    Load prepared json files available in git/data"
+    echo " "
+    echo " [./scripts/setup --deploy INPUT_DIR]"
+    echo "                                       INPUT_DIR where csv files are found. "
+    echo " "
+    echo " [./scripts/setup --bulk_load INPUT_DIR OUTPUT_DIR]"
+    echo "                                       INPUT_DIR where marc files are found. "
+    echo "                                       OUTPUT_DIR directory for output file"
+}
+
+if [[ $# -eq 0 ]] ; then
+echo "Start sample loading of all types of agencies"
+db_init
+sample_load
+fi
+
+case $1 in
+    '--deploy')
+        echo "Start loading CSV records to database for all agencies"
+        if [ -z "$2" ]; then
+            echo "Invalid input arguments. "
+            usage
+            exit
+        else
+            db_init
+            deploy $2
+        fi
+        ;;
+    '--bulk_load')
+        echo "Start bulk loading of all types of agencies"
+        if [ -z "$2" ] || [ -z "$3" ]; then
+            echo "Invalid input arguments. "
+            usage
+            exit
+        else
+            db_init
+            bulk_load $2 $3
+        fi
+        ;;
+    '--help')
+            usage
+        ;;
+    *)
+        echo "Invalid input arguments. "
+        usage
+        ;;
+esac

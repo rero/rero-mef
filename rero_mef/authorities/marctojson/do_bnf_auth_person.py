@@ -139,11 +139,10 @@ class Transformation(object):
         if fields_103 and fields_103[0].get_subfields('a'):
             subfields_a = fields_103[0].get_subfields('a')
             dates_string = subfields_a[0]
-            separator = dates_string[9]
-            extra = dates_string[19:].strip()
-            if separator == ' ' and not extra:
-                birth_date = dates_string[:9]
-                death_date = dates_string[10:19]
+            extra = dates_string[20:].strip()
+            if not extra:
+                birth_date = dates_string[1:10]
+                death_date = dates_string[11:20]
                 birth_date = format_103_date(birth_date)
                 if death_date:
                     death_date = format_103_date(death_date)
