@@ -22,12 +22,11 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
+FROM python:3.6-slim-stretch
 
 LABEL maintainer="software@rero.ch"
 
 LABEL description="MEF (Multilingual Entity File) server with records for persons, works, etc. for reuse in integrated library systems (ILS)."
-
-FROM python:3.6-slim-stretch
 
 # require debian packages
 RUN apt-get update -y && apt-get upgrade -y
@@ -63,5 +62,5 @@ RUN useradd invenio --uid 1000  --home ${WORKING_DIR} && \
     chmod -R go+w ${WORKING_DIR}
 
 USER 1000
-
+ENV INVENIO_COLLECT_STORAGE='flask_collect.storage.file'
 RUN ./scripts/bootstrap

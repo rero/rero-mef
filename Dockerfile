@@ -21,13 +21,11 @@
 # In applying this license, RERO does not
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
-
+FROM rero-mef-base:latest
 
 LABEL maintainer="software@rero.ch"
 
 LABEL description="MEF (Multilingual Entity File) server with records for persons, works, etc. for reuse in integrated library systems (ILS)."
-
-FROM rero-mef-base:latest
 
 USER 0
 
@@ -42,5 +40,5 @@ USER 1000
 # workaround
 RUN npm uninstall --prefix `pipenv --venv` --silent -g node-sass clean-css uglify-js requirejs
 
+ENV INVENIO_COLLECT_STORAGE='flask_collect.storage.file'
 RUN ./scripts/bootstrap --deploy
-
