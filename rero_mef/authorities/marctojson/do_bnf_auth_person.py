@@ -24,7 +24,6 @@
 
 """Marctojsons transformer for Bnf records."""
 
-import re
 
 from rero_mef.authorities.marctojson.helper import \
     build_string_list_from_fields
