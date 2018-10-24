@@ -108,12 +108,19 @@ def marc_to_json(agency, marc_file, json_file, verbose):
 
         json_file.write('[\n')
         for record, count in records:
-            if count > 1:
-                json_file.write(',\n')
+            if (
+                (agency == 'bnf' and not record.get_fields('200')) or
+                (agency == 'gnd' and not record.get_fields('100')) or
+                (agency == 'rero' and not record.get_fields('100'))
+            ):
+                pass
+            else:
+                if count > 1:
+                    json_file.write(',\n')
 
-            data = transformation[agency](marc=record)
-            add_md5_to_json(data.json)
-            json.dump(data.json, json_file, ensure_ascii=False, indent=2)
+                data = transformation[agency](marc=record)
+                add_md5_to_json(data.json)
+                json.dump(data.json, json_file, ensure_ascii=False, indent=2)
         json_file.write('\n]\n')
 
 

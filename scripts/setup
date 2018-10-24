@@ -114,39 +114,39 @@ function usage () {
 }
 
 if [[ $# -eq 0 ]] ; then
-echo "Start sample loading of all types of agencies"
-db_init
-sample_load
+    echo "Start sample loading of all types of agencies"
+    db_init
+    sample_load
+else
+    case $1 in
+        '--deploy')
+            echo "Start loading CSV records to database for all agencies"
+            if [ -z "$2" ]; then
+                echo "Invalid input arguments. "
+                usage
+                exit
+            else
+                db_init
+                deploy $2
+            fi
+            ;;
+        '--bulk_load')
+            echo "Start bulk loading of all types of agencies"
+            if [ -z "$2" ] || [ -z "$3" ]; then
+                echo "Invalid input arguments. "
+                usage
+                exit
+            else
+                db_init
+                bulk_load $2 $3
+            fi
+            ;;
+        '--help')
+                usage
+            ;;
+        *)
+            echo "Invalid input arguments. "
+            usage
+            ;;
+    esac
 fi
-
-case $1 in
-    '--deploy')
-        echo "Start loading CSV records to database for all agencies"
-        if [ -z "$2" ]; then
-            echo "Invalid input arguments. "
-            usage
-            exit
-        else
-            db_init
-            deploy $2
-        fi
-        ;;
-    '--bulk_load')
-        echo "Start bulk loading of all types of agencies"
-        if [ -z "$2" ] || [ -z "$3" ]; then
-            echo "Invalid input arguments. "
-            usage
-            exit
-        else
-            db_init
-            bulk_load $2 $3
-        fi
-        ;;
-    '--help')
-            usage
-        ;;
-    *)
-        echo "Invalid input arguments. "
-        usage
-        ;;
-esac
