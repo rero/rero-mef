@@ -27,10 +27,10 @@
 import hashlib
 import json
 import os
-import re
 from datetime import datetime
 from uuid import uuid4
 
+import click
 import ijson
 import psycopg2
 from flask import current_app
@@ -234,7 +234,11 @@ def create_agency_csv_file(input_file, agency, pidstore, metadata):
 
 
 def create_csv_agency_file(
-    agency_input_file, agency, pidstore_file, metadata_file
+    agency_input_file,
+    agency,
+    pidstore_file,
+    metadata_file,
+    verbose=False
 ):
     """Create agency csv file to load."""
     agency_key = '{agency}_pid'.format(agency=agency)
@@ -303,18 +307,15 @@ def write_link_json(
     """Write a json record into file."""
     json_data = {}
     key_per_catalog_id = {
-        'BNF|': 'bnf_pid',
-        'BNF@': 'bnf_uri',
-        'DNB|': 'gnd_pid',
-        'DNB@': 'gnd_uri',
+        'BNF': 'bnf_pid',
+        'DNB': 'gnd_pid',
         'RERO': 'rero_pid',
     }
     json_data['viaf_pid'] = viaf_pid
     for catalog_id in corresponding_data:
-        if catalog_id != 'BNF@' and catalog_id != 'DNB@':
-            json_data[key_per_catalog_id[catalog_id]] = corresponding_data[
-                catalog_id
-            ]
+        json_data[key_per_catalog_id[catalog_id]] = corresponding_data[
+            catalog_id
+        ]
     write_to_file = False
     json_dump = json_data
     if agency == 'mef':
@@ -343,6 +344,7 @@ def create_viaf_mef_files(
     viaf_input_file,
     agency_pidstore_file_name,
     agency_metadata_file_name,
+    verbose=False
 ):
     """Create agency csv file to load."""
     with open(rero_pids_file, 'r', encoding='utf-8') as rero_pids:
@@ -351,7 +353,6 @@ def create_viaf_mef_files(
             parts = line.rstrip().split('\t')
             rero_id_control_number[parts[0]] = parts[1]
 
-    previous_viaf_pid = None
     agency_pid = 0
     corresponding_data = {}
     with open(
@@ -363,12 +364,26 @@ def create_viaf_mef_files(
             with open(
                 str(viaf_input_file), 'r', encoding='utf-8'
             ) as viaf_in_file:
+                # get first viaf_pid
+                row = viaf_in_file.readline()
+                fields = row.rstrip().split('\t')
+                assert len(fields) == 2
+                previous_viaf_pid = fields[0]
+                viaf_in_file.seek(0)
                 for row in viaf_in_file:
-                    agency_pid += 1
-                    fields = re.split('\t', row.rstrip())
+                    fields = row.rstrip().split('\t')
                     assert len(fields) == 2
                     viaf_pid = fields[0]
-                    if viaf_pid != previous_viaf_pid and previous_viaf_pid:
+                    if viaf_pid != previous_viaf_pid:
+                        agency_pid += 1
+                        if verbose:
+                            click.echo(
+                                '{pid}: {viaf_pid} {corresponding}'.format(
+                                    pid=agency_pid,
+                                    viaf_pid=previous_viaf_pid,
+                                    corresponding=corresponding_data
+                                )
+                            )
                         write_link_json(
                             agency,
                             agency_pidstore,
@@ -378,20 +393,17 @@ def create_viaf_mef_files(
                             str(agency_pid)
                         )
                         corresponding_data = {}
-                    corresponding_str = fields[1]
-                    if re.match('BNF|DNB', corresponding_str):
-                        corresponding_data[
-                            corresponding_str[0:4]
-                        ] = corresponding_str[4:]
-                    elif re.match('RERO', corresponding_str):
-                        virtua_auth_id = corresponding_str[5:]
-                        corresponding_data['VIRTUA'] = virtua_auth_id
-                        corresponding_data = {}
-                        if virtua_auth_id in rero_id_control_number:
+                        previous_viaf_pid = viaf_pid
+                    corresponding = fields[1].split('|')
+                    assert len(corresponding) == 2
+                    if corresponding[0] in ['BNF', 'DNB']:
+                        corresponding_data[corresponding[0]] = corresponding[1]
+                    elif corresponding[0] == 'RERO':
+                        # corresponding_data['VIRTUA'] = corresponding[1]
+                        if corresponding[1] in rero_id_control_number:
                             corresponding_data[
                                 'RERO'
-                            ] = rero_id_control_number[virtua_auth_id]
-                    previous_viaf_pid = viaf_pid
+                            ] = rero_id_control_number[corresponding[1]]
                 write_link_json(
                     agency,
                     agency_pidstore,

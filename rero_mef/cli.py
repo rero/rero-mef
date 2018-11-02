@@ -291,8 +291,8 @@ def bulk_load(
         else:
             rero_pids = '{dir}/{file}'.format(
                 dir=input_directory, file=params['rero_pids'])
-            create_viaf_mef_files(agency,
-                                  rero_pids, json_file, pidstore, metadata)
+            create_viaf_mef_files(agency, rero_pids, json_file, pidstore,
+                                  metadata, verbose)
 
         message = '  Number of records created in pidstore: {number}. '.format(
             number=number_records_in_file(pidstore, 'csv'))
