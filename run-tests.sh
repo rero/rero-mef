@@ -26,7 +26,7 @@
 set -e
 
 # TO remove when it will solved
-pipenv check -i 36437
+pipenv check -i 36437 -i 36759
 pipenv run pydocstyle rero_mef tests docs
 pipenv run isort -rc -c -df
 pipenv run check-manifest --ignore ".travis-*,docs/_build*"
