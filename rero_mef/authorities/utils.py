@@ -404,6 +404,16 @@ def create_viaf_mef_files(
                             corresponding_data[
                                 'RERO'
                             ] = rero_id_control_number[corresponding[1]]
+                # save the last record
+                agency_pid += 1
+                if verbose:
+                    click.echo(
+                        '{pid}: {viaf_pid} {corresponding}'.format(
+                            pid=agency_pid,
+                            viaf_pid=previous_viaf_pid,
+                            corresponding=corresponding_data
+                        )
+                    )
                 write_link_json(
                     agency,
                     agency_pidstore,
