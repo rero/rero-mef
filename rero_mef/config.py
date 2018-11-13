@@ -187,6 +187,8 @@ AGENCIES = {
     'mef': MefRecord
 }
 
+BULK_CHUNK_COUNT = 100000
+
 TRANSFORMATION = {
     'gnd': Gnd_transformation,
     'rero': Rero_transformation,
@@ -216,7 +218,7 @@ RECORDS_REST_ENDPOINTS = dict(
         list_route='/mef/',
         item_route='/mef/<pid(mef):pid_value>',
         default_media_type='application/json',
-        max_result_window=10000,
+        max_result_window=10000000,
         error_handlers=dict(),
     ),
     gnd=dict(
@@ -238,7 +240,7 @@ RECORDS_REST_ENDPOINTS = dict(
         list_route='/gnd/',
         item_route='/gnd/<pid(gnd):pid_value>',
         default_media_type='application/json',
-        max_result_window=10000,
+        max_result_window=10000000,
         error_handlers=dict(),
     ),
     bnf=dict(
@@ -260,7 +262,7 @@ RECORDS_REST_ENDPOINTS = dict(
         list_route='/bnf/',
         item_route='/bnf/<pid(bnf):pid_value>',
         default_media_type='application/json',
-        max_result_window=10000,
+        max_result_window=10000000,
         error_handlers=dict(),
     ),
     rero=dict(
@@ -282,7 +284,7 @@ RECORDS_REST_ENDPOINTS = dict(
         list_route='/rero/',
         item_route='/rero/<pid(rero):pid_value>',
         default_media_type='application/json',
-        max_result_window=10000,
+        max_result_window=10000000,
         error_handlers=dict(),
     ),
     viaf=dict(
@@ -304,7 +306,7 @@ RECORDS_REST_ENDPOINTS = dict(
         list_route='/viaf/',
         item_route='/viaf/<pid(viaf):pid_value>',
         default_media_type='application/json',
-        max_result_window=10000,
+        max_result_window=10000000,
         error_handlers=dict(),
     ),
 )

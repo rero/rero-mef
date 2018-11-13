@@ -24,16 +24,21 @@
 
 """Utils for authorities."""
 
+import gc
 import hashlib
 import json
 import os
 from datetime import datetime
+from io import StringIO
 from uuid import uuid4
 
 import click
 import ijson
+import psutil
 import psycopg2
 from flask import current_app
+from invenio_indexer.api import BulkRecordIndexer
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from sqlalchemy import create_engine
 
 from .api import MefRecord, ViafRecord
@@ -125,57 +130,177 @@ def raw_connection():
         engine = create_engine(URI)
         # conn = engine.connect()
         connection = engine.raw_connection()
+        connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         return connection
 
 
-def bulk_load_agency_metadata(agency, metadata):
-    """Bulk load agency data to metadata table."""
-    connection = raw_connection()
-    cur = connection.cursor()
-    with open(metadata, 'r', encoding='utf-8') as input_file:
-        try:
-            cur.copy_from(
-                file=input_file,
-                table='records_metadata',
-                columns=('created', 'updated', 'id', 'json', 'version_id'),
-                sep='\t',
-            )
-            connection.commit()
-        except psycopg2.DataError as error:
-            current_app.logger.error(
-                'data load error: {0}'.format(error)
-            )
-    cur.close()
-    connection.close()
+def db_copy_from(connection, buffer, table, columns):
+    """Copy data from file to db."""
+    cursor = connection.cursor()
+    try:
+        cursor.copy_from(
+            file=buffer,
+            table=table,
+            columns=columns,
+            sep='\t'
+        )
+        cursor.connection.commit()
+    except psycopg2.DataError as error:
+        current_app.logger.error(
+            'data load error: {0}'.format(error)
+        )
+    cursor.execute('VACUUM ANALYSE {table}'.format(table=table))
+    cursor.close()
 
 
-def bulk_load_agency_pids(agency, pidstore):
-    """Bulk load agency data to pidstore table."""
+def bulk_index(uuids, process=False, verbose=False):
+    """Bulk index records."""
+    if verbose:
+        click.echo(' add to index: {count}'.format(count=len(uuids)))
+    indexer = BulkRecordIndexer()
+    indexer.bulk_index(uuids)
+    if process:
+        indexer.process_bulk_queue()
+
+
+def print_memory(verbose, message):
+    """Print memory usage."""
+    if verbose:
+        process = psutil.Process(os.getpid())
+        click.echo(
+            '{message} memory: {memory:.2f} MB {count}'.format(
+                message=message,
+                memory=process.memory_info().rss / 1024 / 1024,
+                count=gc.get_count()
+            )
+        )
+
+
+def bulk_load_agency(agency, data, table, columns,
+                     bulk_count=0, verbose=False,
+                     reindex=False, process=False):
+    """Bulk load agency data to table."""
+    # print_memory(verbose, 'Start {agency}'.format(agency=agency))
     connection = raw_connection()
-    cur = connection.cursor()
-    with open(pidstore, 'r', encoding='utf-8') as input_file:
-        try:
-            cur.copy_from(
-                file=input_file,
-                table='pidstore_pid',
-                columns=(
-                    'created',
-                    'updated',
-                    'pid_type',
-                    'pid_value',
-                    'status',
-                    'object_type',
-                    'object_uuid',
+    if bulk_count <= 0:
+        bulk_count = current_app.config.get('BULK_CHUNK_COUNT', 100000)
+    count = 0
+    buffer = StringIO()
+    buffer_uuid = []
+    if 'id' in columns:
+        index = columns.index('id')
+    else:
+        index = -1
+    with open(data, 'r', encoding='utf-8', buffering=1) as input_file:
+        for line in input_file:
+            count += 1
+            buffer.write(line)
+            if index >= 0 and reindex:
+                buffer_uuid.append(line.split('\t')[index])
+            if count % bulk_count == 0:
+                buffer.flush()
+                buffer.seek(0)
+                if verbose:
+                    click.echo(
+                        '{agency} copy from file: {count}'.format(
+                            agency=agency,
+                            count=count
+                        ),
+                        nl=False
+                    )
+                db_copy_from(
+                    connection=connection,
+                    buffer=buffer,
+                    table=table,
+                    columns=columns
+                )
+                buffer.close()
+
+                if index >= 0 and reindex:
+                    bulk_index(buffer_uuid, process=process, verbose=verbose)
+                else:
+                    click.echo()
+                buffer_uuid.clear()
+                # force the Garbage Collector to release unreferenced memory
+                gc.collect()
+                # new buffer
+                buffer = StringIO()
+
+        if verbose:
+            click.echo(
+                '{agency} copy from file: {count}'.format(
+                    agency=agency,
+                    count=count
                 ),
-                sep='\t',
+                nl=False
             )
-            connection.commit()
-        except psycopg2.DataError as error:
-            current_app.logger.error(
-                'data load error: {0}'.format(error)
-            )
-    cur.close()
+        buffer.flush()
+        buffer.seek(0)
+        db_copy_from(
+            connection=connection,
+            buffer=buffer,
+            table=table,
+            columns=columns
+        )
+        buffer.close()
+        if index >= 0 and reindex:
+            bulk_index(buffer_uuid, process=process, verbose=verbose)
+        else:
+            click.echo()
+        buffer_uuid.clear()
+
     connection.close()
+    # force the Garbage Collector to release unreferenced memory
+    gc.collect()
+    # print_memory(verbose, 'End {agency}'.format(agency=agency))
+
+
+def bulk_load_agency_metadata(agency, metadata, bulk_count=0,
+                              verbose=True, reindex=False, process=False):
+    """Bulk load agency data to metadata table."""
+    table = 'records_metadata'
+    columns = (
+        'created',
+        'updated',
+        'id',
+        'json',
+        'version_id'
+    )
+    bulk_load_agency(
+        agency=agency,
+        data=metadata,
+        table=table,
+        columns=columns,
+        bulk_count=bulk_count,
+        verbose=verbose,
+        reindex=reindex,
+        process=process
+    )
+
+
+def bulk_load_agency_pids(agency, pidstore, bulk_count=0,
+                          verbose=True, reindex=False, process=False):
+    """Bulk load agency data to metadata table."""
+    table = 'pidstore_pid'
+    columns = (
+        'created',
+        'updated',
+        'pid_type',
+        'pid_value',
+        'status',
+        'object_type',
+        'object_uuid',
+    )
+    bulk_load_agency(
+        agency=agency,
+        data=pidstore,
+        table=table,
+        columns=columns,
+        bulk_count=bulk_count,
+        verbose=verbose,
+        reindex=reindex,
+        process=process
+    )
 
 
 def add_md5_to_json(record):
@@ -347,7 +472,7 @@ def create_viaf_mef_files(
     verbose=False
 ):
     """Create agency csv file to load."""
-    with open(rero_pids_file, 'r', encoding='utf-8') as rero_pids:
+    with open(rero_pids_file, 'r', encoding='utf-8', buffering=1) as rero_pids:
         rero_id_control_number = {}
         for line in rero_pids:
             parts = line.rstrip().split('\t')

@@ -1,0 +1,159 @@
+# -*- coding: utf-8 -*-
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mef-frontend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mef
+        tier: frontend
+    spec:
+      volumes:
+      - name: invenio-static
+        emptyDir: {}
+      initContainers:
+      - name: copy-assets
+        image: rero/rero-mef:>>VERSION<<
+        command: ["sh", "-c", "cp -r /invenio/var/instance/* ${INVENIO_INSTANCE_PATH}"]
+        imagePullPolicy: Always
+        env:
+        - name: INVENIO_INSTANCE_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: mef
+              key: INVENIO_INSTANCE_PATH
+        volumeMounts:
+        - mountPath: /invenio/instance
+          name: invenio-static
+      containers:
+      - name: frontend
+        image: rero/rero-mef-nginx:>>VERSION<<
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+        volumeMounts:
+        - mountPath: /invenio/instance
+          readOnly: true
+          name: invenio-static
+      - name: ui
+        image: rero/rero-mef:>>VERSION<<
+        command: ["pipenv", "run", "uwsgi", "/invenio/var/instance/uwsgi_ui.ini"]
+        imagePullPolicy: Always
+        env:
+        - name: INVENIO_ACCOUNTS_SESSION_REDIS_URL
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/1
+        - name: INVENIO_BROKER_URL
+          value: amqp://$(RABBITMQ_DEFAULT_USER):$(RABBITMQ_DEFAULT_PASS)@mef-mq:$(MEF_MQ_SERVICE_PORT_WORKER)//
+        - name: INVENIO_CACHE_REDIS_URL
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/0
+        - name: INVENIO_CELERY_BROKER_URL
+          value: amqp://$(RABBITMQ_DEFAULT_USER):$(RABBITMQ_DEFAULT_PASS)@mef-mq:$(MEF_MQ_SERVICE_PORT_WORKER)//
+        - name: INVENIO_CELERY_RESULT_BACKEND
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/2
+        - name: INVENIO_SEARCH_ELASTIC_HOSTS
+          value: mef-indexer:$(MEF_INDEXER_SERVICE_PORT_API)
+        - name: INVENIO_SQLALCHEMY_DATABASE_URI
+          value: postgresql+psycopg2://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@mef-db:$(MEF_DB_SERVICE_PORT_DB)/$(POSTGRES_DB)
+        - name: INVENIO_RATELIMIT_STORAGE_URL
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/3
+        envFrom:
+         - configMapRef:
+             name: mef
+         - secretRef:
+             name: mef
+        volumeMounts:
+        - mountPath: /invenio/instance
+          name: invenio-static
+      - name: rest
+        image: rero/rero-mef:>>VERSION<<
+        command: ["pipenv", "run", "uwsgi", "/invenio/var/instance/uwsgi_rest.ini"]
+        imagePullPolicy: Always
+        env:
+        - name: INVENIO_ACCOUNTS_SESSION_REDIS_URL
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/1
+        - name: INVENIO_BROKER_URL
+          value: amqp://$(RABBITMQ_DEFAULT_USER):$(RABBITMQ_DEFAULT_PASS)@mef-mq:$(MEF_MQ_SERVICE_PORT_WORKER)//
+        - name: INVENIO_CACHE_REDIS_URL
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/0
+        - name: INVENIO_CELERY_BROKER_URL
+          value: amqp://$(RABBITMQ_DEFAULT_USER):$(RABBITMQ_DEFAULT_PASS)@mef-mq:$(MEF_MQ_SERVICE_PORT_WORKER)//
+        - name: INVENIO_CELERY_RESULT_BACKEND
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/2
+        - name: INVENIO_SEARCH_ELASTIC_HOSTS
+          value: mef-indexer:$(MEF_INDEXER_SERVICE_PORT_API)
+        - name: INVENIO_SQLALCHEMY_DATABASE_URI
+          value: postgresql+psycopg2://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@mef-db:$(MEF_DB_SERVICE_PORT_DB)/$(POSTGRES_DB)
+        - name: INVENIO_RATELIMIT_STORAGE_URL
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/3
+        envFrom:
+         - configMapRef:
+             name: mef
+         - secretRef:
+             name: mef
+        volumeMounts:
+        - mountPath: /invenio/instance
+          name: invenio-static
+      - name: worker
+        image: rero/rero-mef:>>VERSION<<
+        command: ["pipenv", "run", "celery", "worker", "-A", "invenio_app.celery", "--loglevel=INFO"]
+        imagePullPolicy: Always
+        env:
+        - name: INVENIO_ACCOUNTS_SESSION_REDIS_URL
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/1
+        - name: INVENIO_BROKER_URL
+          value: amqp://$(RABBITMQ_DEFAULT_USER):$(RABBITMQ_DEFAULT_PASS)@mef-mq:$(MEF_MQ_SERVICE_PORT_WORKER)//
+        - name: INVENIO_CACHE_REDIS_URL
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/0
+        - name: INVENIO_CELERY_BROKER_URL
+          value: amqp://$(RABBITMQ_DEFAULT_USER):$(RABBITMQ_DEFAULT_PASS)@mef-mq:$(MEF_MQ_SERVICE_PORT_WORKER)//
+        - name: INVENIO_CELERY_RESULT_BACKEND
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/2
+        - name: INVENIO_SEARCH_ELASTIC_HOSTS
+          value: mef-indexer:$(MEF_INDEXER_SERVICE_PORT_API)
+        - name: INVENIO_SQLALCHEMY_DATABASE_URI
+          value: postgresql+psycopg2://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@mef-db:$(MEF_DB_SERVICE_PORT_DB)/$(POSTGRES_DB)
+        - name: INVENIO_RATELIMIT_STORAGE_URL
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/3
+        envFrom:
+         - configMapRef:
+             name: mef
+         - secretRef:
+             name: mef
+        volumeMounts:
+        - mountPath: /invenio/instance
+          name: invenio-static
+      - name: scheduler
+        image: rero/rero-mef:>>VERSION<<
+        command: ["pipenv", "run", "celery", "beat", "-A", "invenio_app.celery", "--loglevel=INFO"]
+        imagePullPolicy: Always
+        env:
+        - name: INVENIO_ACCOUNTS_SESSION_REDIS_URL
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/1
+        - name: INVENIO_BROKER_URL
+          value: amqp://$(RABBITMQ_DEFAULT_USER):$(RABBITMQ_DEFAULT_PASS)@mef-mq:$(MEF_MQ_SERVICE_PORT_WORKER)//
+        - name: INVENIO_CACHE_REDIS_URL
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/0
+        - name: INVENIO_CELERY_BROKER_URL
+          value: amqp://$(RABBITMQ_DEFAULT_USER):$(RABBITMQ_DEFAULT_PASS)@mef-mq:$(MEF_MQ_SERVICE_PORT_WORKER)//
+        - name: INVENIO_CELERY_RESULT_BACKEND
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/2
+        - name: INVENIO_SEARCH_ELASTIC_HOSTS
+          value: mef-indexer:$(MEF_INDEXER_SERVICE_PORT_API)
+        - name: INVENIO_SQLALCHEMY_DATABASE_URI
+          value: postgresql+psycopg2://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@mef-db:$(MEF_DB_SERVICE_PORT_DB)/$(POSTGRES_DB)
+        - name: INVENIO_RATELIMIT_STORAGE_URL
+          value: redis://mef-cache:$(MEF_CACHE_SERVICE_PORT_CACHE)/3
+        envFrom:
+         - configMapRef:
+             name: mef
+         - secretRef:
+             name: mef
+        volumeMounts:
+        - mountPath: /invenio/instance
+          name: invenio-static

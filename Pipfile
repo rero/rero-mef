@@ -5,12 +5,19 @@ name = "pypi"
 
 [packages]
 Babel = ">=2.4.0"
-Flask-Admin = ">=1.5.2"
 Flask-BabelEx = ">=0.9.3"
-invenio = { version = "~=3.0.0", extras = ["base", "metadata", "postgresql", "auth", "elasticsearch6" ]}
-rero-mef = {editable = true, path = "."}
-uwsgi = ">=2.0"
 ijson = ">=2.3"
+invenio = {version = "~=3.0.0",extras = ["base", "metadata", "postgresql", "auth", "elasticsearch6" ]}
+pipenv = "==2018.10.9"
+rero-mef = {editable = true,path = "."}
+uwsgi = ">=2.0"
+pymarc = "*"
+prompt-toolkit = "*"
+pip = "*"
+psutil = "*"
+invenio-admin = "*"
+idna = "==2.7"
+lxml = "==4.2.5"
 
 [dev-packages]
 Flask-Debugtoolbar = ">=0.10.1"

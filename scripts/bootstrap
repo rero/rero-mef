@@ -45,9 +45,13 @@ while test $# -gt 0; do
     esac
 done
 if [ ${#flags[0]} -eq 0 ]; then
+    #flags=("--dev" "--skip-lock")
     flags=("--dev" "--skip-lock")
 fi
 
+echo "-----------------------------------"
+pipenv --version
+pip --version
 pipenv install ${flags[@]}
 
 npm update --prefix `pipenv --venv` && npm install --prefix `pipenv --venv` --silent -g node-sass@4.9.0 clean-css@3.4.19 uglify-js@2.7.3 requirejs@2.2.0

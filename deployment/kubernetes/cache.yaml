@@ -1,0 +1,23 @@
+# -*- coding: utf-8 -*-
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mef-cache
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mef
+        tier: cache
+    spec:
+      containers:
+      - name: mef-cache
+        image: redis
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+        ports:
+        - containerPort: 6379
+          name: cache

@@ -70,3 +70,7 @@ recursive-include tests *.xml
 recursive-include rero_mef *.html
 recursive-include rero_mef *.png
 recursive-include rero_mef *.scss
+recursive-include deployment *.sh
+recursive-include deployment *.yaml
+recursive-include deployment *.yml
+recursive-include deployment *.tmpl
