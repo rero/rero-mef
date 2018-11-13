@@ -21,10 +21,11 @@
 # In applying this license, RERO does not
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
-FROM rero-mef-base:latest
+
+ARG VERSION=latest
+FROM rero/rero-mef-base:${VERSION}
 
 LABEL maintainer="software@rero.ch"
-
 LABEL description="MEF (Multilingual Entity File) server with records for persons, works, etc. for reuse in integrated library systems (ILS)."
 
 USER 0

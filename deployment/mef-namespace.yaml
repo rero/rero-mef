@@ -1,0 +1,7 @@
+# -*- coding: utf-8 -*-
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: mef
+  labels:
+    name: mef

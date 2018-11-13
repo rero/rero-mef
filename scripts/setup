@@ -87,19 +87,36 @@ function bulk_load () {
     for AGENCY in rero bnf gnd viaf mef
     do
         pipenv run invenio index reindex --yes-i-know --pid-type ${AGENCY}
-        pipenv run invenio index run -c 2 -d
-    done
-}
-function deploy () {
-    INPUT_DIR=$1
-    # Load agencies CSV files to db
-    for AGENCY in rero bnf gnd viaf mef
-    do
-        pipenv run invenio records bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
-        pipenv run invenio index reindex --yes-i-know --pid-type ${AGENCY}
         pipenv run invenio index run -c 4 -d
     done
 }
+
+function deploy () {
+    INPUT_DIR=$1
+    # Load agencies CSV files to db
+    for AGENCY in rero bnf gnd mef
+    do
+        pipenv run invenio records bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --reindex --verbose
+    done
+    pipenv run invenio index run -c 4 -d
+    echo -e ${GREEN}"For faster indexing disable ES auto refresh:"${NC}
+    echo "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d '{\"index\" : {\"refresh_interval\" : \"-1\"}}'"
+    echo -e ${GREEN}"After indexing reenable ES auto refresh:"${NC}
+    echo "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d'{\"index\" : {\"refresh_interval\" : null}}'"
+}
+
+function deploy-viaf () {
+    INPUT_DIR=$1
+    # Load viaf CSV files to db
+    AGENCY=viaf
+    pipenv run invenio records bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --reindex --verbose
+    pipenv run invenio index run -c 4 -d
+    echo -e ${GREEN}"For faster indexing disable ES auto refresh:"${NC}
+    echo "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d '{\"index\" : {\"refresh_interval\" : \"-1\"}}'"
+    echo -e ${GREEN}"After indexing reenable ES auto refresh:"${NC}
+    echo "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d'{\"index\" : {\"refresh_interval\" : null}}'"
+}
+
 
 function usage () {
     echo "Usage: "
@@ -107,6 +124,8 @@ function usage () {
     echo " "
     echo " [./scripts/setup --deploy INPUT_DIR]"
     echo "                                       INPUT_DIR where csv files are found. "
+    echo " [./scripts/setup --deploy-viaf INPUT_DIR]"
+    echo "                                       INPUT_DIR where viaf csv files are found. "
     echo " "
     echo " [./scripts/setup --bulk_load INPUT_DIR OUTPUT_DIR]"
     echo "                                       INPUT_DIR where marc files are found. "
@@ -130,6 +149,17 @@ else
                 deploy $2
             fi
             ;;
+        '--deploy-viaf')
+            echo "Start loading CSV records to database for viaf agencie"
+            if [ -z "$2" ]; then
+                echo "Invalid input arguments. "
+                usage
+                exit
+            else
+                deploy-viaf $2
+            fi
+            ;;
+
         '--bulk_load')
             echo "Start bulk loading of all types of agencies"
             if [ -z "$2" ] || [ -z "$3" ]; then

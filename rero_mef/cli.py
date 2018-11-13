@@ -195,8 +195,8 @@ def valid_agency(params):
 def number_records_in_file(json_file, type):
     """Get number of records per file."""
     count = 0
-    with open(json_file, 'r') as file:
-        for line in file.readlines():
+    with open(json_file, 'r',  buffering=1) as file:
+        for line in file:
             if type == 'json':
                 if '"pid"' in line:
                     count += 1
@@ -233,11 +233,23 @@ def number_records_in_file(json_file, type):
     '-l',
     '--load_records',
     'load_records',
-    help='To load csv files to database',
+    help='To load csv files to database.',
     is_flag=True, default=False
 )
 @click.argument('input_directory')
 @click.argument('output_directory')
+@click.option(
+    '-c',
+    '--bulk_count',
+    'bulkcount',
+    help='Set the bulk load chunk size.',
+    default=0,
+    type=int
+)
+@click.option('-r', '--reindex', 'reindex', help='add record to reindex.',
+              is_flag=True, default=False)
+@click.option('-P', '--process', 'process', help='process reindex.',
+              is_flag=True, default=False)
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @with_appcontext
 def bulk_load(
@@ -252,8 +264,16 @@ def bulk_load(
     db_action(params)
     agency = params['agency']
     verbose = params['verbose']
+    reindex = params['reindex']
+    process = params['process']
+    if params['bulkcount'] > 0:
+        bulk_count = params['bulkcount']
+    else:
+        bulk_count = current_app.config.get('BULK_CHUNK_COUNT', 100000)
+
     input_directory = params['input_directory']
     output_directory = params['output_directory']
+
     message = ' Tasks for agency: {agency}'.format(agency=agency)
     click.secho(message, err=True)
 
@@ -311,14 +331,18 @@ def bulk_load(
         message = '  CSV input files: {pidstore}|{metadata} '.format(
             pidstore=pidstore, metadata=metadata)
         click.secho(message, err=True)
+
         message = '  Number of records in pidstore to load: {number}. '.format(
             number=number_records_in_file(pidstore, 'csv'))
         click.secho(message, fg='green', err=True)
 
-        bulk_load_agency_pids(agency, pidstore)
+        bulk_load_agency_pids(agency, pidstore,  bulk_count=bulk_count,
+                              verbose=verbose)
 
         message = '  Number of records in metadata to load: {number}. '.format(
             number=number_records_in_file(metadata, 'csv'))
         click.secho(message, fg='green', err=True)
 
-        bulk_load_agency_metadata(agency, metadata)
+        bulk_load_agency_metadata(agency, metadata, bulk_count=bulk_count,
+                                  verbose=verbose,
+                                  reindex=reindex,  process=process)
