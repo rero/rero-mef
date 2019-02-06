@@ -3,6 +3,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mef-cache
+  labels:
+    app: mef
+    tier: cache
 spec:
   type: NodePort
   ports:
@@ -17,6 +20,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mef-db
+  labels:
+    app: mef
+    tier: db
 spec:
   type: NodePort
   ports:
@@ -31,6 +37,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mef-indexer
+  labels:
+    app: mef
+    tier: indexer
 spec:
   type: NodePort
   ports:
@@ -48,6 +57,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mef-mq
+  labels:
+    app: mef
+    tier: mq
 spec:
   type: NodePort
   ports:
@@ -65,6 +77,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mef-tasksui
+  labels:
+    app: mef
+    tier: tasksui
 spec:
   type: NodePort
   ports:
@@ -78,6 +93,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mef-frontend
+  labels:
+    app: mef
+    tier: frontend
 spec:
   type: NodePort
   ports:
