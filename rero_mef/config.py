@@ -56,6 +56,8 @@ def _(x):
 # =============
 #: Storage for ratelimiter.
 RATELIMIT_STORAGE_URL = 'redis://localhost:6379/3'
+RATELIMIT_DEFAULT = '5000/second'
+RATELIMIT_ENABLED = False
 
 # I18N
 # ====
@@ -208,7 +210,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_index='authorities-mef-person-v0.0.1',
         search_type='mef-person-v0.0.1',
         record_serializers={
-            'application/json': ('invenio_records_rest.serializers'
+            'application/json': ('rero_mef.serializers'
                                  ':json_v1_response'),
         },
         search_serializers={
