@@ -18,6 +18,7 @@ psutil = "*"
 invenio-admin = "*"
 idna = "==2.7"
 lxml = "==4.2.5"
+amqp = "*"
 
 [dev-packages]
 Flask-Debugtoolbar = ">=0.10.1"

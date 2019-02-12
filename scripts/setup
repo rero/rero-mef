@@ -29,6 +29,8 @@ GREEN='\033[0;0;32m'
 NC='\033[0m' # No Color
 
 function db_init () {
+    # Purge celery
+    pipenv run celery purge -A invenio_app.celery -f
     # Clean redis
     pipenv run invenio shell --no-term-title -c "import redis; redis.StrictRedis.from_url(app.config['CACHE_REDIS_URL']).flushall(); print('Cache cleared')"
     pipenv run invenio db destroy --yes-i-know || true
@@ -97,8 +99,8 @@ function deploy () {
     for AGENCY in rero bnf gnd mef
     do
         pipenv run invenio records bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --reindex --verbose
+        pipenv run invenio index run -c 4 -d
     done
-    pipenv run invenio index run -c 4 -d
     echo -e ${GREEN}"For faster indexing disable ES auto refresh:"${NC}
     echo "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d '{\"index\" : {\"refresh_interval\" : \"-1\"}}'"
     echo -e ${GREEN}"After indexing reenable ES auto refresh:"${NC}
