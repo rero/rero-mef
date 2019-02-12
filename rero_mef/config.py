@@ -134,6 +134,7 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(minutes=60),
     },
 }
+CELERY_BROKER_HEARTBEAT = 0
 
 # Database
 # ========

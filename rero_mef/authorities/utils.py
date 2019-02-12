@@ -30,6 +30,7 @@ import json
 import os
 from datetime import datetime
 from io import StringIO
+from time import sleep
 from uuid import uuid4
 
 import click
@@ -134,8 +135,9 @@ def raw_connection():
         return connection
 
 
-def db_copy_from(connection, buffer, table, columns):
+def db_copy_from(buffer, table, columns):
     """Copy data from file to db."""
+    connection = raw_connection()
     cursor = connection.cursor()
     try:
         cursor.copy_from(
@@ -151,6 +153,7 @@ def db_copy_from(connection, buffer, table, columns):
         )
     cursor.execute('VACUUM ANALYSE {table}'.format(table=table))
     cursor.close()
+    connection.close()
 
 
 def bulk_index(uuids, process=False, verbose=False):
@@ -158,7 +161,23 @@ def bulk_index(uuids, process=False, verbose=False):
     if verbose:
         click.echo(' add to index: {count}'.format(count=len(uuids)))
     indexer = BulkRecordIndexer()
-    indexer.bulk_index(uuids)
+    retry = True
+    minutes = 1
+    while retry:
+        try:
+            indexer.bulk_index(uuids)
+            retry = False
+        except Exception as exc:
+            msg = 'Bulk Index Error: retry in {minutes} min {exc}'.format(
+                exc=exc,
+                minutes=minutes
+            )
+            current_app.logger.error(msg)
+            if verbose:
+                click.secho(msg, fg='red')
+            sleep(minutes * 60)
+            retry = True
+            minutes *= 2
     if process:
         indexer.process_bulk_queue()
 
@@ -181,7 +200,6 @@ def bulk_load_agency(agency, data, table, columns,
                      reindex=False, process=False):
     """Bulk load agency data to table."""
     # print_memory(verbose, 'Start {agency}'.format(agency=agency))
-    connection = raw_connection()
     if bulk_count <= 0:
         bulk_count = current_app.config.get('BULK_CHUNK_COUNT', 100000)
     count = 0
@@ -209,7 +227,6 @@ def bulk_load_agency(agency, data, table, columns,
                         nl=False
                     )
                 db_copy_from(
-                    connection=connection,
                     buffer=buffer,
                     table=table,
                     columns=columns
@@ -237,7 +254,6 @@ def bulk_load_agency(agency, data, table, columns,
         buffer.flush()
         buffer.seek(0)
         db_copy_from(
-            connection=connection,
             buffer=buffer,
             table=table,
             columns=columns
@@ -249,7 +265,6 @@ def bulk_load_agency(agency, data, table, columns,
             click.echo()
         buffer_uuid.clear()
 
-    connection.close()
     # force the Garbage Collector to release unreferenced memory
     gc.collect()
     # print_memory(verbose, 'End {agency}'.format(agency=agency))
