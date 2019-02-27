@@ -73,22 +73,18 @@ function bulk_load () {
     # Load CSV files to db
     for AGENCY in rero bnf gnd
     do
-        pipenv run invenio records bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
+        pipenv run invenio records bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv  --reindex --verbose
+        pipenv run invenio index run -c 4 -d
     done
     # Create CSV files from json
-    for AGENCY in viaf mef
+    for AGENCY in mef viaf
     do
         pipenv run invenio records bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --json_file viaf.txt --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --rero_pids rero.pids
     done
     # Load CSV files to db
-    for AGENCY in viaf mef
+    for AGENCY in mef viaf
     do
-        pipenv run invenio records bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
-    done
-    # Indexing all records
-    for AGENCY in rero bnf gnd viaf mef
-    do
-        pipenv run invenio index reindex --yes-i-know --pid-type ${AGENCY}
+        pipenv run invenio records bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv  --reindex --verbose
         pipenv run invenio index run -c 4 -d
     done
 }

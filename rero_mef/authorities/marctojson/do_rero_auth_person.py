@@ -131,7 +131,7 @@ class Transformation(object):
                 'Call Function',
                 'trans_rero_preferred_name_for_person')
         preferred_name_for_person = \
-            build_string_list_from_fields(self.marc, '100', 'a', ', ')
+            build_string_list_from_fields(self.marc, '100', 'ab', ' ')
         if preferred_name_for_person:
             self.json_dict['preferred_name_for_person'] = \
                 preferred_name_for_person[0]
