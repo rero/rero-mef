@@ -179,9 +179,14 @@ class Transformation(object):
                 'trans_preferred_name_for_person')
         preferred_name_for_person = \
             build_string_list_from_fields(self.marc, '200', 'ab', ', ')
+        numbers = \
+            build_string_list_from_fields(self.marc, '200', 'd', ', ')
         if preferred_name_for_person:
             self.json_dict['preferred_name_for_person'] = \
-                preferred_name_for_person[0]
+                '{name} {number}'.format(
+                    name=preferred_name_for_person[0],
+                    number=numbers[0]
+                ).strip()
 
     def trans_bnf_variant_name_for_person(self):
         """Transformation variant_name_for_person 400 $a $b."""
