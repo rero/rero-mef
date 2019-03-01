@@ -29,9 +29,9 @@ from __future__ import absolute_import, print_function
 
 from functools import partial
 
-from ..fetchers import id_fetcher
 from .providers import BnfProvider, GndProvider, MefProvider, ReroProvider, \
     ViafProvider
+from ..fetchers import id_fetcher
 
 viaf_id_fetcher = partial(id_fetcher, provider=ViafProvider)
 gnd_id_fetcher = partial(id_fetcher, provider=GndProvider)

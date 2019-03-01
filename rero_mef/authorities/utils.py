@@ -209,7 +209,7 @@ def bulk_load_agency(agency, data, table, columns,
         index = columns.index('id')
     else:
         index = -1
-    with open(data, 'r', encoding='utf-8', buffering=1) as input_file:
+    with open(data, 'r', encoding='utf-8') as input_file:
         for line in input_file:
             count += 1
             buffer.write(line)
@@ -487,7 +487,7 @@ def create_viaf_mef_files(
     verbose=False
 ):
     """Create agency csv file to load."""
-    with open(rero_pids_file, 'r', encoding='utf-8', buffering=1) as rero_pids:
+    with open(rero_pids_file, 'r', encoding='utf-8') as rero_pids:
         rero_id_control_number = {}
         for line in rero_pids:
             parts = line.rstrip().split('\t')

@@ -46,6 +46,11 @@
       "type": "string",
       "minLength": 1
     },
+    "rero_pid": {
+      "title": "Rero record ID",
+      "type": "string",
+      "minLength": 1
+    },
     "md5": {
       "title": "Md5",
       "type": "string",

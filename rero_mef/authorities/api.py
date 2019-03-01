@@ -27,7 +27,6 @@
 from flask import current_app
 from invenio_search.api import RecordsSearch
 
-from ..api import AuthRecord
 from .fetchers import bnf_id_fetcher, gnd_id_fetcher, mef_id_fetcher, \
     rero_id_fetcher, viaf_id_fetcher
 from .minters import bnf_id_minter, gnd_id_minter, mef_id_minter, \
@@ -35,6 +34,7 @@ from .minters import bnf_id_minter, gnd_id_minter, mef_id_minter, \
 from .models import AgencyAction, MefAction
 from .providers import BnfProvider, GndProvider, MefProvider, ReroProvider, \
     ViafProvider
+from ..api import AuthRecord
 
 
 class ViafSearch(RecordsSearch):
@@ -278,3 +278,12 @@ class ViafRecord(AuthRecord):
                 reindex=reindex,
             )
             return created_record, AgencyAction.CREATE
+
+
+record_class = {
+    'VIAF': ViafRecord,
+    'MEF': MefRecord,
+    'BNF': BnfRecord,
+    'GND': GndRecord,
+    'RERO': ReroRecord
+}

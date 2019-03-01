@@ -46,6 +46,11 @@
       "type": "string",
       "minLength": 1
     },
+    "bnf_pid": {
+      "title": "Bnf record ID",
+      "type": "string",
+      "minLength": 1
+    },
     "md5": {
       "title": "Md5",
       "type": "string",

@@ -195,7 +195,7 @@ def valid_agency(params):
 def number_records_in_file(json_file, type):
     """Get number of records per file."""
     count = 0
-    with open(json_file, 'r',  buffering=1) as file:
+    with open(json_file, 'r') as file:
         for line in file:
             if type == 'json':
                 if '"pid"' in line:
@@ -346,3 +346,28 @@ def bulk_load(
         bulk_load_agency_metadata(agency, metadata, bulk_count=bulk_count,
                                   verbose=verbose,
                                   reindex=reindex,  process=process)
+
+
+@records.command('update')
+@click.argument('agency')
+@click.argument('json_file')
+@click.option('-r', '--reindex', 'reindex', help='add record to reindex.',
+              is_flag=True, default=False)
+@click.option('-P', '--process', 'process', help='process reindex.',
+              is_flag=True, default=False)
+@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@with_appcontext
+def update(agency, json_file, reindex, process, verbose):
+    """Update records."""
+    Record = current_app.config['AGENCIES'][agency]
+    with open(json_file, 'r', encoding='utf-8') as f:
+        for data in json.load(f):
+            if verbose:
+                click.echo(
+                    'Update {agency}: {pid}'.format(
+                        agency=agency,
+                        pid=data['pid']
+                    )
+                )
+            record = Record.get_record_by_pid(data['pid'])
+            record.update(data, dbcommit=True, reindex=reindex)

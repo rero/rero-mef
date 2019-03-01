@@ -46,6 +46,11 @@
       "type": "string",
       "minLength": 1
     },
+    "gnd_pid": {
+      "title": "Gnd record ID",
+      "type": "string",
+      "minLength": 1
+    },
     "md5": {
       "title": "Md5",
       "type": "string",
