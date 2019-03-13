@@ -36,5 +36,20 @@
       "title": "Rero authority ID",
       "type": "object"
     }
-   }
+  },
+  "sources": {
+    "title": "Source authorities list",
+    "type": "array",
+    "uniqueItems": true,
+    "minItems": 1,
+    "maxItems": 3,
+    "items": {
+      "type": "string",
+      "enum": [
+        "rero",
+        "gnd",
+        "bnf"
+      ]
+    }
+  }
 }

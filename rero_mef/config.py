@@ -93,6 +93,8 @@ THEME_FRONTPAGE = False
 THEME_FRONTPAGE_TITLE = _('RERO MEF')
 #: Frontpage template.
 THEME_FRONTPAGE_TEMPLATE = 'rero_mef/frontpage.html'
+#: Template for error pages.
+THEME_ERROR_TEMPLATE = 'rero_mef/page_error.html'
 
 # Email configuration
 # ===================

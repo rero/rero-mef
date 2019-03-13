@@ -29,8 +29,8 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import jsonresolver
 
-from ..api import GndRecord
 from .utils import get_host, resolve_record
+from ..api import GndRecord
 
 
 @jsonresolver.route('/api/gnd/<path:path>', host=get_host())

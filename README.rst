@@ -38,4 +38,3 @@ MEF (Multilingual Entity File) server with records for persons, works, etc. for 
 
 Further documentation is available on
 https://rero-mef.readthedocs.io/
-

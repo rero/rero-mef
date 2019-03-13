@@ -21,7 +21,7 @@
         "sources": {
           "type": "keyword"
         },
-       "_created": {
+        "_created": {
           "type": "date"
         },
         "_updated": {

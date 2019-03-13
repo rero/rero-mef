@@ -42,6 +42,16 @@ class ReroMefSerializer(JSONSerializer):
         """
         if request and request.args.get('resolve'):
             record = record.replace_refs()
+        if request and request.args.get('sources'):
+            sources = []
+            # TODO: add the list of sources into the current_app.config
+            if 'rero' in record:
+                sources.append('rero')
+            if 'gnd' in record:
+                sources.append('gnd')
+            if 'bnf' in record:
+                sources.append('bnf')
+            record['sources'] = sources
         return super(
             ReroMefSerializer, self).serialize(
                 pid, record, links_factory, **kwargs)

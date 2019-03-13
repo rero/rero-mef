@@ -29,8 +29,8 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import jsonresolver
 
-from ..api import BnfRecord
 from .utils import get_host, resolve_record
+from ..api import BnfRecord
 
 
 @jsonresolver.route('/api/bnf/<path:path>', host=get_host())
