@@ -1206,10 +1206,17 @@
         },
         "werkzeug": {
             "hashes": [
+<<<<<<< HEAD
                 "sha256:96da23fa8ccecbc3ae832a83df5c722c11547d021637faacb0bec4dd2f4666c8",
                 "sha256:ca5c2dcd367d6c0df87185b9082929d255358f5391923269335782b213d52655"
             ],
             "version": "==0.15.1"
+=======
+                "sha256:590abe38f8be026d78457fe3b5200895b3543e58ac3fc1dd792c6333ea11af64",
+                "sha256:ee11b0f0640c56fb491b43b38356c4b588b3202b415a1e03eacf1c5561c961cf"
+            ],
+            "version": "==0.15.0"
+>>>>>>> FIX: mapping
         },
         "whichcraft": {
             "hashes": [
@@ -1394,11 +1401,19 @@
         },
         "isort": {
             "hashes": [
+<<<<<<< HEAD
                 "sha256:08f8e3f0f0b7249e9fad7e5c41e2113aba44969798a26452ee790c06f155d4ec",
                 "sha256:4e9e9c4bd1acd66cf6c36973f29b031ec752cbfd991c69695e4e259f9a756927"
             ],
             "index": "pypi",
             "version": "==4.3.16"
+=======
+                "sha256:18c796c2cd35eb1a1d3f012a214a542790a1aed95e29768bdcb9f2197eccbd0b",
+                "sha256:96151fca2c6e736503981896495d344781b60d18bfda78dc11b290c6125ebdb6"
+            ],
+            "index": "pypi",
+            "version": "==4.3.15"
+>>>>>>> FIX: mapping
         },
         "itsdangerous": {
             "hashes": [
@@ -1655,10 +1670,17 @@
         },
         "werkzeug": {
             "hashes": [
+<<<<<<< HEAD
                 "sha256:96da23fa8ccecbc3ae832a83df5c722c11547d021637faacb0bec4dd2f4666c8",
                 "sha256:ca5c2dcd367d6c0df87185b9082929d255358f5391923269335782b213d52655"
             ],
             "version": "==0.15.1"
+=======
+                "sha256:590abe38f8be026d78457fe3b5200895b3543e58ac3fc1dd792c6333ea11af64",
+                "sha256:ee11b0f0640c56fb491b43b38356c4b588b3202b415a1e03eacf1c5561c961cf"
+            ],
+            "version": "==0.15.0"
+>>>>>>> FIX: mapping
         }
     }
 }
