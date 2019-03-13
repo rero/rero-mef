@@ -73,8 +73,7 @@ function bulk_load () {
     # Load CSV files to db
     for AGENCY in rero bnf gnd
     do
-        pipenv run invenio records bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv  --reindex --verbose
-        pipenv run invenio index run -c 4 -d
+        pipenv run invenio records bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose
     done
     # Create CSV files from json
     for AGENCY in mef viaf
@@ -84,8 +83,14 @@ function bulk_load () {
     # Load CSV files to db
     for AGENCY in mef viaf
     do
-        pipenv run invenio records bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv  --reindex --verbose
-        pipenv run invenio index run -c 4 -d
+        pipenv run invenio records bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv  --verbose
+    done
+    # Indexing all records
+    for AGENCY in rero bnf gnd mef viaf
+    do
+        echo -e ${GREEN}"Indexing:"${NC} ${AGENCY}
+        pipenv run invenio index reindex --yes-i-know --pid-type ${AGENCY}
+        pipenv run invenio index run -c 4
     done
 }
 
@@ -95,7 +100,7 @@ function deploy () {
     for AGENCY in rero bnf gnd mef
     do
         pipenv run invenio records bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --reindex --verbose
-        pipenv run invenio index run -c 4 -d
+        pipenv run invenio index run -c 4
     done
     echo -e ${GREEN}"For faster indexing disable ES auto refresh:"${NC}
     echo "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d '{\"index\" : {\"refresh_interval\" : \"-1\"}}'"
@@ -108,7 +113,7 @@ function deploy-viaf () {
     # Load viaf CSV files to db
     AGENCY=viaf
     pipenv run invenio records bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --reindex --verbose
-    pipenv run invenio index run -c 4 -d
+    pipenv run invenio index run -c 4
     echo -e ${GREEN}"For faster indexing disable ES auto refresh:"${NC}
     echo "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d '{\"index\" : {\"refresh_interval\" : \"-1\"}}'"
     echo -e ${GREEN}"After indexing reenable ES auto refresh:"${NC}

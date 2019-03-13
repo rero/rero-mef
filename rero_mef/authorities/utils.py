@@ -236,7 +236,8 @@ def bulk_load_agency(agency, data, table, columns,
                 if index >= 0 and reindex:
                     bulk_index(buffer_uuid, process=process, verbose=verbose)
                 else:
-                    click.echo()
+                    if verbose:
+                        click.echo()
                 buffer_uuid.clear()
                 # force the Garbage Collector to release unreferenced memory
                 gc.collect()
@@ -262,7 +263,8 @@ def bulk_load_agency(agency, data, table, columns,
         if index >= 0 and reindex:
             bulk_index(buffer_uuid, process=process, verbose=verbose)
         else:
-            click.echo()
+            if verbose:
+                click.echo()
         buffer_uuid.clear()
 
     # force the Garbage Collector to release unreferenced memory
@@ -508,12 +510,12 @@ def create_viaf_mef_files(
                 row = viaf_in_file.readline()
                 fields = row.rstrip().split('\t')
                 assert len(fields) == 2
-                previous_viaf_pid = fields[0]
+                previous_viaf_pid = fields[0].split('/')[-1]
                 viaf_in_file.seek(0)
                 for row in viaf_in_file:
                     fields = row.rstrip().split('\t')
                     assert len(fields) == 2
-                    viaf_pid = fields[0]
+                    viaf_pid = fields[0].split('/')[-1]
                     if viaf_pid != previous_viaf_pid:
                         agency_pid += 1
                         if verbose:
@@ -535,15 +537,16 @@ def create_viaf_mef_files(
                         corresponding_data = {}
                         previous_viaf_pid = viaf_pid
                     corresponding = fields[1].split('|')
-                    assert len(corresponding) == 2
-                    if corresponding[0] in ['BNF', 'DNB']:
-                        corresponding_data[corresponding[0]] = corresponding[1]
-                    elif corresponding[0] == 'RERO':
-                        # corresponding_data['VIRTUA'] = corresponding[1]
-                        if corresponding[1] in rero_id_control_number:
-                            corresponding_data[
-                                'RERO'
-                            ] = rero_id_control_number[corresponding[1]]
+                    if len(corresponding) == 2:
+                        if corresponding[0] in ['BNF', 'DNB']:
+                            corresponding_data[corresponding[0]] = \
+                                corresponding[1]
+                        elif corresponding[0] == 'RERO':
+                            # corresponding_data['VIRTUA'] = corresponding[1]
+                            if corresponding[1] in rero_id_control_number:
+                                corresponding_data[
+                                    'RERO'
+                                ] = rero_id_control_number[corresponding[1]]
                 # save the last record
                 agency_pid += 1
                 if verbose:

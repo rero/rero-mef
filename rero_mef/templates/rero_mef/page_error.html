@@ -1,0 +1,27 @@
+{%- extends config.BASE_TEMPLATE %}
+
+{%- block page_header %}
+{% include('rero_mef/header.html') %}
+{%- endblock page_header %}
+
+{%- block page_body %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>
+        <i class="fa fa-flash"></i> Page not found
+      </h1>
+      <p>The page you are looking for could not be found.</p>
+    </div>
+  </div>
+</div>
+{%- endblock %}
+
+{%- block page_footer %}
+{% include 'rero_mef/footer.html' %}
+{%- endblock page_footer %}
+
+{%- block css %}
+{{ super() }}
+{% assets "rero_mef_css" %}<link href="{{ ASSET_URL }}" rel="stylesheet">{% endassets %}
+{%- endblock css %}

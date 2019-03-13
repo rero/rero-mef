@@ -29,8 +29,8 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import jsonresolver
 
-from ..api import ReroRecord
 from .utils import get_host, resolve_record
+from ..api import ReroRecord
 
 
 @jsonresolver.route('/api/rero/<path:path>', host=get_host())
