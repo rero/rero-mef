@@ -36,6 +36,7 @@ pytest-random-order = ">=0.5.4"
 pytest-runner = ">=3.0.0,<5"
 pymarc = ">=3.1.10"
 
+
 [requires]
 python_version = "3.6"
 
