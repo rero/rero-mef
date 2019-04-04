@@ -35,10 +35,9 @@ from __future__ import absolute_import, print_function
 from datetime import timedelta
 
 from invenio_indexer.api import RecordIndexer
-from invenio_search.api import RecordsSearch
 
-from .authorities.api import BnfRecord, GndRecord, MefRecord, ReroRecord, \
-    ViafRecord
+from .authorities.api import BnfRecord, BnfSearch, GndRecord, GndSearch, \
+    MefRecord, MefSearch, ReroRecord, ReroSearch, ViafRecord, ViafSearch
 from .authorities.marctojson.do_bnf_auth_person import \
     Transformation as Bnf_transformation
 from .authorities.marctojson.do_gnd_auth_person import \
@@ -127,16 +126,17 @@ CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/2'
 #: Scheduled tasks configuration (aka cronjobs).
 CELERY_BEAT_SCHEDULE = {
-    'indexer': {
-        'task': 'invenio_indexer.tasks.process_bulk_queue',
-        'schedule': timedelta(minutes=5),
-    },
+    # 'indexer': {
+    #     'task': 'invenio_indexer.tasks.process_bulk_queue',
+    #     'schedule': timedelta(minutes=5),
+    # },
     'accounts': {
         'task': 'invenio_accounts.tasks.clean_session_table',
         'schedule': timedelta(minutes=60),
     },
 }
 CELERY_BROKER_HEARTBEAT = 0
+INDEXER_BULK_REQUEST_TIMEOUT = 60
 
 # Database
 # ========
@@ -208,7 +208,7 @@ RECORDS_REST_ENDPOINTS = dict(
         pid_type='mef',
         pid_minter='mef',
         pid_fetcher='mef',
-        search_class=RecordsSearch,
+        search_class=MefSearch,
         indexer_class=RecordIndexer,
         search_index='authorities-mef-person-v0.0.1',
         search_type='mef-person-v0.0.1',
@@ -222,7 +222,7 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/mef/',
-        item_route='/mef/<pid(mef):pid_value>',
+        item_route='/mef/<pid(mef, record_class="rero_mef.authorities.api:MefRecord"):pid_value>',
         default_media_type='application/json',
         max_result_window=10000000,
         error_handlers=dict(),
@@ -231,7 +231,7 @@ RECORDS_REST_ENDPOINTS = dict(
         pid_type='gnd',
         pid_minter='gnd',
         pid_fetcher='gnd',
-        search_class=RecordsSearch,
+        search_class=GndSearch,
         indexer_class=RecordIndexer,
         search_index='authorities-gnd-person-v0.0.1',
         search_type='gnd-person-v0.0.1',
@@ -245,7 +245,7 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/gnd/',
-        item_route='/gnd/<pid(gnd):pid_value>',
+        item_route='/gnd/<pid(gnd, record_class="rero_mef.authorities.api:GndRecord"):pid_value>',
         default_media_type='application/json',
         max_result_window=10000000,
         error_handlers=dict(),
@@ -254,7 +254,7 @@ RECORDS_REST_ENDPOINTS = dict(
         pid_type='bnf',
         pid_minter='bnf',
         pid_fetcher='bnf',
-        search_class=RecordsSearch,
+        search_class=BnfSearch,
         indexer_class=RecordIndexer,
         search_index='authorities-bnf-person-v0.0.1',
         search_type='bnf-person-v0.0.1',
@@ -268,7 +268,7 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/bnf/',
-        item_route='/bnf/<pid(bnf):pid_value>',
+        item_route='/bnf/<pid(bnf, record_class="rero_mef.authorities.api:BnfRecord"):pid_value>',
         default_media_type='application/json',
         max_result_window=10000000,
         error_handlers=dict(),
@@ -277,7 +277,7 @@ RECORDS_REST_ENDPOINTS = dict(
         pid_type='rero',
         pid_minter='rero',
         pid_fetcher='rero',
-        search_class=RecordsSearch,
+        search_class=ReroSearch,
         indexer_class=RecordIndexer,
         search_index='authorities-rero-person-v0.0.1',
         search_type='rero-person-v0.0.1',
@@ -291,7 +291,7 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/rero/',
-        item_route='/rero/<pid(rero):pid_value>',
+        item_route='/rero/<pid(rero, record_class="rero_mef.authorities.api:ReroRecord"):pid_value>',
         default_media_type='application/json',
         max_result_window=10000000,
         error_handlers=dict(),
@@ -300,7 +300,7 @@ RECORDS_REST_ENDPOINTS = dict(
         pid_type='viaf',
         pid_minter='viaf',
         pid_fetcher='viaf',
-        search_class=RecordsSearch,
+        search_class=ViafSearch,
         indexer_class=RecordIndexer,
         search_index='authorities-viaf-person-v0.0.1',
         search_type='viaf-person-v0.0.1',
@@ -314,7 +314,7 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/viaf/',
-        item_route='/viaf/<pid(viaf):pid_value>',
+        item_route='/viaf/<pid(viaf, record_class="rero_mef.authorities.api:ViafRecord"):pid_value>',
         default_media_type='application/json',
         max_result_window=10000000,
         error_handlers=dict(),

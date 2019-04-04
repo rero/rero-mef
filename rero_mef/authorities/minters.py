@@ -33,7 +33,7 @@ from .providers import BnfProvider, GndProvider, MefProvider, ReroProvider, \
 from ..minters import id_minter
 
 viaf_id_minter = partial(id_minter, provider=ViafProvider,
-                         recid_field='viaf_pid')
+                         recid_field='pid')
 bnf_id_minter = partial(id_minter, provider=BnfProvider,
                         recid_field='pid')
 gnd_id_minter = partial(id_minter, provider=GndProvider,

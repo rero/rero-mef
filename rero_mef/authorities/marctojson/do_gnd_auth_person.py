@@ -214,7 +214,7 @@ class Transformation(object):
                 'Call Function',
                 'trans_gnd_variant_name_for_person')
         variant_name_for_person = \
-            build_string_list_from_fields(self.marc, '400', 'a', ', ')
+            build_string_list_from_fields(self.marc, '400', 'ac', ', ')
 
         if variant_name_for_person:
             self.json_dict['variant_name_for_person'] = variant_name_for_person

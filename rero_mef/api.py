@@ -31,7 +31,6 @@ from invenio_db import db
 from invenio_indexer.api import RecordIndexer
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PersistentIdentifier
-from invenio_pidstore.resolver import Resolver
 from invenio_records.api import Record
 
 from .authorities.models import AgencyAction, MefAction
@@ -121,11 +120,11 @@ class AuthRecord(Record):
     def get_record_by_pid(cls, pid):
         """Get ils record by pid value."""
         assert cls.provider
-        resolver = Resolver(pid_type=cls.provider.pid_type,
-                            object_type=cls.object_type,
-                            getter=cls.get_record)
         try:
-            persistent_identifier, record = resolver.resolve(str(pid))
+            persistent_identifier = PersistentIdentifier.get(
+                cls.provider.pid_type,
+                pid
+            )
             return super(AuthRecord, cls).get_record(
                 persistent_identifier.object_uuid
             )
@@ -155,18 +154,29 @@ class AuthRecord(Record):
     @classmethod
     def get_all_pids(cls):
         """Get all records pids."""
-        pids = [n.pid_value for n in PersistentIdentifier.query.filter_by(
-            pid_type=cls.provider.pid_type
-        )]
-        return pids
+        for persistent_identifier in PersistentIdentifier.query.filter_by(
+                pid_type=cls.provider.pid_type):
+            yield persistent_identifier.pid_value
 
     @classmethod
     def get_all_ids(cls):
         """Get all records uuids."""
-        uuids = [n.object_uuid for n in PersistentIdentifier.query.filter_by(
-            pid_type=cls.provider.pid_type
-        )]
-        return uuids
+        for persistent_identifier in PersistentIdentifier.query.filter_by(
+                pid_type=cls.provider.pid_type):
+            yield str(persistent_identifier.object_uuid)
+
+    @classmethod
+    def index_all(cls):
+        """Index all records."""
+        ids = cls.get_all_ids()
+        cls.index_ids(ids)
+        return len(ids)
+
+    @classmethod
+    def index_ids(cls, ids):
+        """Index ids."""
+        for uuid in ids:
+            RecordIndexer().index(cls.get_record_by_id(uuid))
 
     def delete(self, force=False, delindex=False):
         """Delete record and persistent identifier."""
