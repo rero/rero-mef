@@ -27,8 +27,6 @@ FROM python:3.6-slim-stretch
 LABEL maintainer="software@rero.ch"
 LABEL description="MEF (Multilingual Entity File) server with records for persons, works, etc. for reuse in integrated library systems (ILS)."
 
-ENV DEBIAN_FRONTED=noninteractive
-
 # require debian packages
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install --no-install-recommends -y git vim-tiny curl gcc gnupg libc6-dev && rm -rf /var/lib/apt/lists/*
@@ -39,6 +37,8 @@ RUN pip install --upgrade setuptools wheel pip pipenv
 # Install Node
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get install --no-install-recommends -y nodejs && rm -rf /var/lib/apt/lists/*
+RUN npm install --silent node-sass@4.9.0 clean-css@3.4.19 uglify-js@2.7.3 requirejs@2.2.0 @angular/cli@7.0.4
+
 # RUN npm update
 
 # RUN python -m site
@@ -63,5 +63,3 @@ RUN useradd invenio --uid 1000  --home ${WORKING_DIR} && \
     chmod -R go+w ${WORKING_DIR}
 
 USER 1000
-ENV INVENIO_COLLECT_STORAGE='flask_collect.storage.file'
-RUN ./scripts/bootstrap

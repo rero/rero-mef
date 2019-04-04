@@ -33,7 +33,6 @@ import sys
 import click
 from flask import current_app
 from flask.cli import with_appcontext
-from invenio_records.cli import records
 
 from .authorities.marctojson.records import RecordsCount
 from .authorities.models import AgencyAction
@@ -46,7 +45,7 @@ def fixtures():
     """Fixtures management commands."""
 
 
-@records.command('create_or_update')
+@fixtures.command('create_or_update')
 @click.argument('agency')
 @click.argument('source', type=click.File('r'), default=sys.stdin)
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
@@ -205,7 +204,7 @@ def number_records_in_file(json_file, type):
     return count
 
 
-@records.command('bulk_load')
+@fixtures.command('bulk_load')
 @click.argument('agency')
 @click.option(
     '-m', '--marc_file', 'marc_file', help='MARC file to transform to JSON .'
@@ -302,7 +301,7 @@ def bulk_load(
             dir=output_directory, file=params['csv_metadata_file'])
         message = '  JSON input file: {file} '.format(file=json_file)
         click.secho(message, err=True)
-        message = '  CSV output files: {pidstore} , {metadata} '.format(
+        message = '  CSV output files: {pidstore}, {metadata} '.format(
             pidstore=pidstore, metadata=metadata)
         click.secho(message, err=True)
 

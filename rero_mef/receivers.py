@@ -32,7 +32,9 @@ def extend_mef_record(
     json=None,
     record=None,
     index=None,
-    doc_type=None
+    doc_type=None,
+    *args,
+    **kwargs
 ):
     """Extend MEF record with list of sources."""
     mef_doc_type = current_app.config.get(

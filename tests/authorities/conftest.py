@@ -61,7 +61,7 @@ def viaf_record():
     record = {
         "$schema":
         "http://mef.test.rero.ch/schemas/authorities/viaf-person-v0.0.1.json",
-        "viaf_pid": "66739143",
+        "pid": "66739143",
         "bnf_pid": "10000690",
         "gnd_pid": "12391664X",
         "rero_pid": "A023655346",

@@ -38,11 +38,11 @@ import ijson
 import psutil
 import psycopg2
 from flask import current_app
-from invenio_indexer.api import BulkRecordIndexer
+from invenio_indexer.api import RecordIndexer
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from sqlalchemy import create_engine
 
-from .api import MefRecord, ViafRecord
+from .api import MefRecord
 
 
 def metadata_csv_line(record, record_uuid, date):
@@ -85,45 +85,6 @@ def add_agency_to_json(mef_record, agency, agency_pid):
     mef_record[agency] = {'$ref': ref_string}
 
 
-def create_mef_csv_file(pidstore, metadata):
-    """Create CSV MEF file."""
-    mef_pid = 0
-    with open(metadata, 'w', encoding='utf-8') as agency_metadata_file, \
-            open(pidstore, 'w', encoding='utf-8') as agency_pids_file:
-
-        for viaf_pid in ViafRecord.get_all_pids():
-            viaf_record = ViafRecord.get_record_by_pid(viaf_pid)
-            mef_record = {}
-            with current_app.app_context():
-                agencies = current_app.config.get('AGENCIES')
-                for agency in agencies:
-                    agency_pid = '{agency}_pid'.format(agency=agency)
-                    agency_viaf_pid = viaf_record.get(agency_pid, '')
-                    if agency_viaf_pid:
-                        agency_record = agencies[agency].get_record_by_pid(
-                            agency_viaf_pid
-                        )
-                        if agency_record:
-                            add_agency_to_json(
-                                mef_record, agency, agency_viaf_pid)
-
-            if len(mef_record):
-                mef_pid = mef_pid + 1
-                mef_record['pid'] = mef_pid
-                mef_record['viaf_pid'] = viaf_pid
-                add_schema(mef_record, 'mef')
-
-                record_uuid = str(uuid4())
-                date = str(datetime.utcnow())
-
-                agency_metadata_file.write(
-                    metadata_csv_line(mef_record, record_uuid, date)
-                )
-                agency_pids_file.write(
-                    pidstore_csv_line('mef', str(mef_pid), record_uuid, date)
-                )
-
-
 def raw_connection():
     """Return a raw connection to the database."""
     with current_app.app_context():
@@ -156,11 +117,11 @@ def db_copy_from(buffer, table, columns):
     connection.close()
 
 
-def bulk_index(uuids, process=False, verbose=False):
+def bulk_index(uuids, agency, process=False, verbose=False):
     """Bulk index records."""
     if verbose:
         click.echo(' add to index: {count}'.format(count=len(uuids)))
-    indexer = BulkRecordIndexer()
+    indexer = RecordIndexer()
     retry = True
     minutes = 1
     while retry:
@@ -234,7 +195,12 @@ def bulk_load_agency(agency, data, table, columns,
                 buffer.close()
 
                 if index >= 0 and reindex:
-                    bulk_index(buffer_uuid, process=process, verbose=verbose)
+                    bulk_index(
+                        agency=agency,
+                        uuids=buffer_uuid,
+                        process=process,
+                        verbose=verbose
+                    )
                 else:
                     if verbose:
                         click.echo()
@@ -261,7 +227,12 @@ def bulk_load_agency(agency, data, table, columns,
         )
         buffer.close()
         if index >= 0 and reindex:
-            bulk_index(buffer_uuid, process=process, verbose=verbose)
+            bulk_index(
+                agency=agency,
+                uuids=buffer_uuid,
+                process=process,
+                verbose=verbose
+            )
         else:
             if verbose:
                 click.echo()
@@ -350,15 +321,9 @@ def create_agency_csv_file(input_file, agency, pidstore, metadata):
             open(metadata, 'w', encoding='utf-8') as agency_metadata_file, \
             open(pidstore, 'w', encoding='utf-8') as agency_pids_file:
 
-        agency_key = '{agency}_pid'.format(agency=agency)
-
         for record in ijson.items(agency_file, "item"):
             if agency == 'viaf':
-                record['pid'] = record[agency_key]
-            else:
-                record[agency_key] = record['pid']
-
-            agency_pid = record[agency_key]
+                record['pid'] = record['viaf_pid']
 
             ordered_record = add_md5_to_json(record)
             add_schema(ordered_record, agency)
@@ -371,54 +336,8 @@ def create_agency_csv_file(input_file, agency, pidstore, metadata):
             )
 
             agency_pids_file.write(
-                pidstore_csv_line(agency, agency_pid, record_uuid, date)
+                pidstore_csv_line(agency, record['pid'], record_uuid, date)
             )
-
-
-def create_csv_agency_file(
-    agency_input_file,
-    agency,
-    pidstore_file,
-    metadata_file,
-    verbose=False
-):
-    """Create agency csv file to load."""
-    agency_key = '{agency}_pid'.format(agency=agency)
-    with open(metadata_file, 'w', encoding='utf-8') as agency_metadata_file:
-
-        with open(
-            pidstore_file, 'w', encoding='utf-8'
-        ) as agency_pidstore_file:
-
-            with open(
-                str(agency_input_file), 'r', encoding='utf-8'
-            ) as agency_file:
-                mef_pid = 0
-                for record in ijson.items(agency_file, 'item'):
-                    # TODO: make sure pid, agnecy_pid exist in all input files
-                    if agency == 'viaf':
-                        record['pid'] = record[agency_key]
-                    elif agency == 'mef':
-                        # record['pid'] = record[agency_key]
-                        record['pid'] = record['viaf_pid']
-                        mef_pid += 1
-                        record[agency_key] = mef_pid
-                    else:
-                        record[agency_key] = record['pid']
-                    agency_pid = record[agency_key]
-                    sorted_record = add_md5_to_json(record)
-                    add_schema(sorted_record, agency)
-                    record_uuid = str(uuid4())
-                    date = str(datetime.utcnow())
-
-                    agency_metadata_file.write(
-                        metadata_csv_line(sorted_record, record_uuid, date)
-                    )
-                    agency_pidstore_file.write(
-                        pidstore_csv_line(
-                            agency, str(agency_pid), record_uuid, date
-                        )
-                    )
 
 
 def viaf_to_mef(viaf_record):
@@ -469,6 +388,7 @@ def write_link_json(
         agency_pid = viaf_pid
         add_schema(json_dump, 'viaf')
         json_dump['pid'] = agency_pid
+        del(json_dump['viaf_pid'])
         write_to_file = True
 
     if write_to_file:
@@ -490,10 +410,16 @@ def create_viaf_mef_files(
 ):
     """Create agency csv file to load."""
     with open(rero_pids_file, 'r', encoding='utf-8', buffering=1) as rero_pids:
+        if verbose:
+            click.echo(
+                'Read from file: {filename}'.format(filename=rero_pids_file)
+            )
         rero_id_control_number = {}
         for line in rero_pids:
             parts = line.rstrip().split('\t')
             rero_id_control_number[parts[0]] = parts[1]
+    if verbose:
+        click.echo('Start ***')
 
     agency_pid = 0
     corresponding_data = {}

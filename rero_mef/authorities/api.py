@@ -263,7 +263,7 @@ class ViafRecord(AuthRecord):
         **kwargs
     ):
         """Create or update viaf record."""
-        pid = data['viaf_pid']
+        pid = data['pid']
         record = cls.get_record_by_pid(pid)
         if record:
             data['$schema'] = record['$schema']

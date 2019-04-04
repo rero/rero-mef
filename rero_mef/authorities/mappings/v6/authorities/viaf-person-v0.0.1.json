@@ -15,9 +15,6 @@
         "pid": {
           "type": "keyword"
         },
-        "viaf_pid": {
-          "type": "keyword"
-        },
         "bnf_pid": {
           "type": "keyword"
         },

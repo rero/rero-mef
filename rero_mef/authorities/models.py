@@ -38,7 +38,8 @@ class ViafIdentifier(RecordIdentifier):
 
     recid = db.Column(
         db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True, autoincrement=True,
+        primary_key=True,
+        autoincrement=True,
     )
 
 
@@ -50,7 +51,8 @@ class BnfIdentifier(RecordIdentifier):
 
     recid = db.Column(
         db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True, autoincrement=True,
+        primary_key=True,
+        autoincrement=True,
     )
 
 
@@ -62,7 +64,8 @@ class GndIdentifier(RecordIdentifier):
 
     recid = db.Column(
         db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True, autoincrement=True,
+        primary_key=True,
+        autoincrement=True,
     )
 
 
@@ -74,7 +77,8 @@ class MefIdentifier(RecordIdentifier):
 
     recid = db.Column(
         db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True, autoincrement=True,
+        primary_key=True,
+        autoincrement=True,
     )
 
 
@@ -86,7 +90,8 @@ class ReroIdentifier(RecordIdentifier):
 
     recid = db.Column(
         db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True, autoincrement=True,
+        primary_key=True,
+        autoincrement=True,
     )
 
 
