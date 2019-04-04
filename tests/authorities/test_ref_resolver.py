@@ -38,7 +38,7 @@ def test_ref_resolvers(
     viaf_rec, status = ViafRecord.create_or_update(
         viaf_record, agency='viaf', dbcommit=True, reindex=True
     )
-    viaf_pid = viaf_rec['viaf_pid']
+    viaf_pid = viaf_rec['pid']
     current_search.flush_and_refresh(
         index='authorities-viaf-person-v0.0.1')
     current_search.flush_and_refresh(

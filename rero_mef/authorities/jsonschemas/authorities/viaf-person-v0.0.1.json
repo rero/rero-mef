@@ -4,7 +4,7 @@
   "type": "object",
   "required": [
     "$schema",
-    "viaf_pid"
+    "pid"
   ],
   "additionalProperties": false,
   "properties": {
@@ -16,11 +16,6 @@
     },
     "pid": {
       "title": "Viaf record ID",
-      "type": "string",
-      "minLength": 1
-    },
-    "viaf_pid": {
-      "title": "Viaf authority ID",
       "type": "string",
       "minLength": 1
     },

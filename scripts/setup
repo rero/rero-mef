@@ -51,10 +51,8 @@ function sample_load () {
     for AGENCY in viaf bnf gnd rero
     do
        echo -e ${GREEN}Importing ${AGENCY} records:${NC}
-       pipenv run dojson -i ${data_path}/${AGENCY}.json schema http://mef.test.rero.ch/schemas/authorities/${AGENCY}-person-v0.0.1.json | pipenv run invenio records create_or_update ${AGENCY}
-       pipenv run invenio index reindex --yes-i-know --pid-type ${AGENCY}
+       pipenv run dojson -i ${data_path}/${AGENCY}.json schema http://mef.test.rero.ch/schemas/authorities/${AGENCY}-person-v0.0.1.json | pipenv run invenio fixtures create_or_update ${AGENCY}
     done
-    pipenv run invenio index run -c 4
 }
 
 function bulk_load () {
@@ -63,35 +61,30 @@ function bulk_load () {
     # Transform marc files to json
     for AGENCY in rero bnf gnd
     do
-        pipenv run invenio records bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --marc_file ${AGENCY}.mrc --json_file ${AGENCY}.json
+        pipenv run invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --marc_file ${AGENCY}.mrc --json_file ${AGENCY}.json
     done
     # Create CSV files from json
     for AGENCY in rero bnf gnd
     do
-        pipenv run invenio records bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file ${AGENCY}.json --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
+        pipenv run invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file ${AGENCY}.json --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
     done
     # Load CSV files to db
     for AGENCY in rero bnf gnd
     do
-        pipenv run invenio records bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose
+        pipenv run invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose  --reindex
     done
     # Create CSV files from json
     for AGENCY in mef viaf
     do
-        pipenv run invenio records bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --json_file viaf.txt --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --rero_pids rero.pids
+        pipenv run invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --json_file viaf.txt --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --rero_pids rero.pids
     done
     # Load CSV files to db
     for AGENCY in mef viaf
     do
-        pipenv run invenio records bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv  --verbose
+        pipenv run invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv  --verbose  --reindex
     done
-    # Indexing all records
-    for AGENCY in rero bnf gnd mef viaf
-    do
-        echo -e ${GREEN}"Indexing:"${NC} ${AGENCY}
-        pipenv run invenio index reindex --yes-i-know --pid-type ${AGENCY}
-        pipenv run invenio index run -c 4
-    done
+    # Index agency records
+    pipenv run invenio index run --raise-on-error --concurrency 8
 }
 
 function deploy () {
@@ -99,11 +92,12 @@ function deploy () {
     # Load agencies CSV files to db
     for AGENCY in rero bnf gnd mef
     do
-        pipenv run invenio records bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --reindex --verbose
-        pipenv run invenio index run -c 4
+        pipenv run invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose --reindex
     done
+    # Index agency records
     echo -e ${GREEN}"For faster indexing disable ES auto refresh:"${NC}
     echo "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d '{\"index\" : {\"refresh_interval\" : \"-1\"}}'"
+    pipenv run invenio index run --raise-on-error --concurrency 8
     echo -e ${GREEN}"After indexing reenable ES auto refresh:"${NC}
     echo "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d'{\"index\" : {\"refresh_interval\" : null}}'"
 }
@@ -112,10 +106,11 @@ function deploy-viaf () {
     INPUT_DIR=$1
     # Load viaf CSV files to db
     AGENCY=viaf
-    pipenv run invenio records bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --reindex --verbose
-    pipenv run invenio index run -c 4
+    pipenv run invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose  --reindex
+    # Index agency records
     echo -e ${GREEN}"For faster indexing disable ES auto refresh:"${NC}
     echo "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d '{\"index\" : {\"refresh_interval\" : \"-1\"}}'"
+    pipenv run invenio index run --raise-on-error --concurrency 8
     echo -e ${GREEN}"After indexing reenable ES auto refresh:"${NC}
     echo "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d'{\"index\" : {\"refresh_interval\" : null}}'"
 }

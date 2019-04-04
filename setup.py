@@ -33,7 +33,7 @@ from setuptools import find_packages, setup
 
 readme = open('README.rst').read()
 
-INVENIO_VERSION = "3.0.0"
+INVENIO_VERSION = "3.1.1"
 
 packages = find_packages()
 

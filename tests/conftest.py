@@ -31,4 +31,10 @@ import pytest
 def app_config(app_config):
     """Create temporary instance dir for each test."""
     app_config['RATELIMIT_STORAGE_URL'] = 'memory://'
+    app_config['CACHE_TYPE'] = 'simple'
+    app_config['SEARCH_ELASTIC_HOSTS'] = None
+    app_config['CELERY_CACHE_BACKEND'] = "memory"
+    app_config['CELERY_RESULT_BACKEND'] = "cache"
+    app_config['CELERY_TASK_ALWAYS_EAGER'] = True
+    app_config['CELERY_TASK_EAGER_PROPAGATES'] = True
     return app_config

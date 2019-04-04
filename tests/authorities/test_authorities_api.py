@@ -75,7 +75,7 @@ def test_create_viaf_record(app, viaf_record):
     )
     update_indexes('viaf')
     assert status == 'create'
-    assert returned_record['viaf_pid'] == '66739143'
+    assert returned_record['pid'] == '66739143'
     assert returned_record['bnf_pid'] == '10000690'
     assert returned_record['gnd_pid'] == '12391664X'
     assert returned_record['rero_pid'] == 'A023655346'
@@ -139,7 +139,7 @@ def test_update_agency_record_with_viaf_links(
 
 def test_mef_record(app, viaf_record):
     """Test MEF record."""
-    viaf_pid = viaf_record['viaf_pid']
+    viaf_pid = viaf_record['pid']
     mef_rec = MefRecord.get_mef_by_viaf_pid(
         viaf_pid=viaf_pid
     )
