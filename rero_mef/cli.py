@@ -33,12 +33,13 @@ import sys
 import click
 from flask import current_app
 from flask.cli import with_appcontext
-from invenio_records.cli import records
+from invenio_indexer.cli import index
 
 from .authorities.marctojson.records import RecordsCount
 from .authorities.models import AgencyAction
 from .authorities.utils import add_md5_to_json, bulk_load_agency_metadata, \
-    bulk_load_agency_pids, create_agency_csv_file, create_viaf_mef_files
+    bulk_load_agency_pids, create_agency_csv_file, create_viaf_mef_files, \
+    index_agency
 
 
 @click.group()
@@ -46,7 +47,7 @@ def fixtures():
     """Fixtures management commands."""
 
 
-@records.command('create_or_update')
+@fixtures.command('create_or_update')
 @click.argument('agency')
 @click.argument('source', type=click.File('r'), default=sys.stdin)
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
@@ -205,7 +206,7 @@ def number_records_in_file(json_file, type):
     return count
 
 
-@records.command('bulk_load')
+@fixtures.command('bulk_load')
 @click.argument('agency')
 @click.option(
     '-m', '--marc_file', 'marc_file', help='MARC file to transform to JSON .'
@@ -302,7 +303,7 @@ def bulk_load(
             dir=output_directory, file=params['csv_metadata_file'])
         message = '  JSON input file: {file} '.format(file=json_file)
         click.secho(message, err=True)
-        message = '  CSV output files: {pidstore} , {metadata} '.format(
+        message = '  CSV output files: {pidstore}, {metadata} '.format(
             pidstore=pidstore, metadata=metadata)
         click.secho(message, err=True)
 
@@ -346,3 +347,21 @@ def bulk_load(
         bulk_load_agency_metadata(agency, metadata, bulk_count=bulk_count,
                                   verbose=verbose,
                                   reindex=reindex,  process=process)
+
+
+@index.command('agency')
+@click.argument('agency')
+@click.option('-k', '--enqueue', is_flag=True, default=False,
+              help='Enqueue indexing and return immediately.')
+@click.option('-c', '--chunksize', 'chunksize', help='Set the chunk size.',
+              default=100000, type=int)
+@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@with_appcontext
+def indexagency(agency, chunksize, enqueue, verbose):
+    """Index agency records."""
+    message = 'Index records: {agency}'.format(
+        agency=agency
+    )
+    click.secho(message, fg='green')
+    index_agency(agency=agency, chunksize=chunksize,
+                 enqueue=enqueue, verbose=verbose)

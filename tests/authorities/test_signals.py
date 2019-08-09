@@ -31,6 +31,7 @@ from rero_mef.authorities.api import BnfRecord, GndRecord, MefSearch, \
 
 
 def update_indexes(agency):
+    """Update indexes."""
     data = {
         'auth': 'authorities-',
         'agency': agency,
@@ -48,7 +49,7 @@ def test_create_mef_from_agency_with_viaf_links(
     )
     update_indexes('viaf')
     assert status == 'create'
-    assert returned_record['viaf_pid'] == '66739143'
+    assert returned_record['pid'] == '66739143'
     assert returned_record['bnf_pid'] == '10000690'
     assert returned_record['gnd_pid'] == '12391664X'
     assert returned_record['rero_pid'] == 'A023655346'

@@ -37,6 +37,9 @@ from datetime import timedelta
 from invenio_indexer.api import RecordIndexer
 from invenio_search.api import RecordsSearch
 
+# needed by celery
+from rero_mef.authorities.tasks import index
+
 from .authorities.api import BnfRecord, GndRecord, MefRecord, ReroRecord, \
     ViafRecord
 from .authorities.marctojson.do_bnf_auth_person import \
@@ -222,7 +225,7 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/mef/',
-        item_route='/mef/<pid(mef):pid_value>',
+        item_route='/mef/<pid(mef, record_class="rero_mef.authorities.api:MefRecord"):pid_value>',
         default_media_type='application/json',
         max_result_window=10000000,
         error_handlers=dict(),
@@ -245,7 +248,7 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/gnd/',
-        item_route='/gnd/<pid(gnd):pid_value>',
+        item_route='/gnd/<pid(gnd, record_class="rero_mef.authorities.api:GndRecord"):pid_value>',
         default_media_type='application/json',
         max_result_window=10000000,
         error_handlers=dict(),
@@ -268,7 +271,7 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/bnf/',
-        item_route='/bnf/<pid(bnf):pid_value>',
+        item_route='/bnf/<pid(bnf, record_class="rero_mef.authorities.api:BnfRecord"):pid_value>',
         default_media_type='application/json',
         max_result_window=10000000,
         error_handlers=dict(),
@@ -291,7 +294,7 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/rero/',
-        item_route='/rero/<pid(rero):pid_value>',
+        item_route='/rero/<pid(rero, record_class="rero_mef.authorities.api:ReroRecord"):pid_value>',
         default_media_type='application/json',
         max_result_window=10000000,
         error_handlers=dict(),
@@ -314,7 +317,7 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/viaf/',
-        item_route='/viaf/<pid(viaf):pid_value>',
+        item_route='/viaf/<pid(viaf, record_class="rero_mef.authorities.api:ViafRecord"):pid_value>',
         default_media_type='application/json',
         max_result_window=10000000,
         error_handlers=dict(),

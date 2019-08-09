@@ -300,10 +300,12 @@ def test_gnd_variant_name_for_person():
     """Test Variant Name for Person 400 $a"""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="400">
-            <subfield code="a">Barbanson, Konstantin \u0098von\u009c</subfield>
+            <subfield code="a">Barbanson</subfield>
+            <subfield code="c">Konstantin \u0098von\u009c</subfield>
         </datafield>
          <datafield ind1=" " ind2=" " tag="400">
-            <subfield code="a">Barbanc\u0327on, Konstantyn</subfield>
+            <subfield code="a">Barbanc\u0327on</subfield>
+            <subfield code="c">Konstantyn</subfield>
         </datafield>
      """
     trans = trans_prep('gnd', xml_part_to_add)

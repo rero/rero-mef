@@ -7,8 +7,18 @@ name = "pypi"
 Babel = ">=2.4.0"
 Flask-BabelEx = ">=0.9.3"
 ijson = ">=2.3"
-invenio = {version = "~=3.1.0",extras = ["base", "metadata", "postgresql", "auth", "elasticsearch6" ]}
-rero-mef = {editable = true,path = "."}
+rero-mef = {editable = true, path = "."}
+invenio = {version = "~=3.1.0",extras = ["base", "postgresql", "auth"]}
+# get rid of invenio-search-ui from invenio ["metadata"]
+invenio-indexer = ">=1.0.1,<1.1.0"
+invenio-jsonschemas = ">=1.0.0,<1.1.0"
+invenio-oaiserver = ">=1.0.3,<1.1.0"
+invenio-pidstore = ">=1.0.0,<1.1.0"
+invenio-records-rest = ">=1.4.0,<1.5.0"
+invenio-records-ui = ">=1.0.1,<1.1.0"
+invenio-records = ">=1.3.0"
+# issue: inveniosoftware/invenio-indexer#109
+invenio-search = {version = ">=1.2.0",extras = ["elasticsearch6"]}
 uwsgi = ">=2.0"
 pymarc = "*"
 prompt-toolkit = "*"
@@ -18,6 +28,8 @@ invenio-admin = "*"
 idna = "==2.7"
 lxml = "==4.2.5"
 amqp = "*"
+# TODO: causes datetime serialize error
+celery = "<4.3.0"
 
 [dev-packages]
 Flask-Debugtoolbar = ">=0.10.1"
@@ -35,7 +47,8 @@ pytest-pep8 = ">=1.0.6"
 pytest-random-order = ">=0.5.4"
 pytest-runner = ">=3.0.0,<5"
 pymarc = ">=3.1.10"
-
+rero-mef = {editable = true, path = "."}
+urllib3 = "<1.25,>=1.21.1"
 
 [requires]
 python_version = "3.6"

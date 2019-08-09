@@ -52,7 +52,9 @@ fi
 # install the application and all the dependencies
 pipenv install ${flags[@]}
 
+# install assets utils
+npm i npm@latest -g --prefix `pipenv --venv` && pipenv run npm install --prefix `pipenv --venv` --silent -g node-sass@4.9.0 clean-css@3.4.19 uglify-js@2.7.3 requirejs@2.2.0 @angular/cli@7.0.4
+
 # build the web assets
 pipenv run invenio collect -v
-
 pipenv run invenio webpack buildall

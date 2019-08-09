@@ -28,6 +28,7 @@ from __future__ import absolute_import
 
 from invenio_db import db
 from invenio_pidstore.models import RecordIdentifier
+from invenio_records.models import RecordMetadataBase
 
 
 class ViafIdentifier(RecordIdentifier):
@@ -38,8 +39,15 @@ class ViafIdentifier(RecordIdentifier):
 
     recid = db.Column(
         db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True, autoincrement=True,
+        primary_key=True,
+        autoincrement=True,
     )
+
+
+class ViafMetadata(db.Model, RecordMetadataBase):
+    """Viaf record metadata."""
+
+    __tablename__ = 'viaf_metadata'
 
 
 class BnfIdentifier(RecordIdentifier):
@@ -50,8 +58,15 @@ class BnfIdentifier(RecordIdentifier):
 
     recid = db.Column(
         db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True, autoincrement=True,
+        primary_key=True,
+        autoincrement=True,
     )
+
+
+class BnfMetadata(db.Model, RecordMetadataBase):
+    """Bnf record metadata."""
+
+    __tablename__ = 'bnf_metadata'
 
 
 class GndIdentifier(RecordIdentifier):
@@ -62,8 +77,15 @@ class GndIdentifier(RecordIdentifier):
 
     recid = db.Column(
         db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True, autoincrement=True,
+        primary_key=True,
+        autoincrement=True,
     )
+
+
+class GndMetadata(db.Model, RecordMetadataBase):
+    """Gnd record metadata."""
+
+    __tablename__ = 'gnd_metadata'
 
 
 class MefIdentifier(RecordIdentifier):
@@ -74,8 +96,15 @@ class MefIdentifier(RecordIdentifier):
 
     recid = db.Column(
         db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True, autoincrement=True,
+        primary_key=True,
+        autoincrement=True,
     )
+
+
+class MefMetadata(db.Model, RecordMetadataBase):
+    """Mef record metadata."""
+
+    __tablename__ = 'mef_metadata'
 
 
 class ReroIdentifier(RecordIdentifier):
@@ -86,8 +115,15 @@ class ReroIdentifier(RecordIdentifier):
 
     recid = db.Column(
         db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True, autoincrement=True,
+        primary_key=True,
+        autoincrement=True,
     )
+
+
+class ReroMetadata(db.Model, RecordMetadataBase):
+    """Rero record metadata."""
+
+    __tablename__ = 'rero_metadata'
 
 
 class MefAction(object):

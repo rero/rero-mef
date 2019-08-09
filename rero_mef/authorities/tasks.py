@@ -22,32 +22,15 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Signals connections for RERO-MEF."""
+"""Authorities tasks."""
 
+from celery import shared_task
 from flask import current_app
 
 
-def extend_mef_record(
-    sender=None,
-    json=None,
-    record=None,
-    index=None,
-    doc_type=None,
-    *args,
-    **kwargs
-):
-    """Extend MEF record with list of sources."""
-    mef_doc_type = current_app.config.get(
-        'RECORDS_REST_ENDPOINTS', {}).get(
-        'mef', {}
-    ).get('search_type', '')
-    if doc_type == mef_doc_type:
-        sources = []
-        # TODO: add the list of sources into the current_app.config
-        if 'rero' in json:
-            sources.append('rero')
-        if 'gnd' in json:
-            sources.append('gnd')
-        if 'bnf' in json:
-            sources.append('bnf')
-        json['sources'] = sources
+@shared_task
+def index(agency, ids):
+    """Index ids for agency."""
+    with current_app.app_context():
+        agencies = current_app.config.get('AGENCIES')
+        agencies[agency].index_ids(ids)

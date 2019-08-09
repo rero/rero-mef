@@ -31,7 +31,8 @@ from .fetchers import bnf_id_fetcher, gnd_id_fetcher, mef_id_fetcher, \
     rero_id_fetcher, viaf_id_fetcher
 from .minters import bnf_id_minter, gnd_id_minter, mef_id_minter, \
     rero_id_minter, viaf_id_minter
-from .models import AgencyAction, MefAction
+from .models import AgencyAction, BnfMetadata, GndMetadata, MefAction, \
+    MefMetadata, ReroMetadata, ViafMetadata
 from .providers import BnfProvider, GndProvider, MefProvider, ReroProvider, \
     ViafProvider
 from ..api import AuthRecord
@@ -88,6 +89,7 @@ class MefRecord(AuthRecord):
     minter = mef_id_minter
     fetcher = mef_id_fetcher
     provider = MefProvider
+    model_cls = MefMetadata
 
     @classmethod
     def build_ref_string(cls, agency_pid, agency):
@@ -210,6 +212,7 @@ class GndRecord(AuthRecord):
     minter = gnd_id_minter
     fetcher = gnd_id_fetcher
     provider = GndProvider
+    model_cls = GndMetadata
     agency = 'gnd'
     agency_pid_type = 'gnd_pid'
 
@@ -220,6 +223,7 @@ class ReroRecord(AuthRecord):
     minter = rero_id_minter
     fetcher = rero_id_fetcher
     provider = ReroProvider
+    model_cls = ReroMetadata
     agency = 'rero'
     agency_pid_type = 'rero_pid'
 
@@ -230,6 +234,7 @@ class BnfRecord(AuthRecord):
     minter = bnf_id_minter
     fetcher = bnf_id_fetcher
     provider = BnfProvider
+    model_cls = BnfMetadata
     agency = 'bnf'
     agency_pid_type = 'bnf_pid'
 
@@ -240,6 +245,7 @@ class ViafRecord(AuthRecord):
     minter = viaf_id_minter
     fetcher = viaf_id_fetcher
     provider = ViafProvider
+    model_cls = ViafMetadata
 
     @classmethod
     def get_viaf_by_agency_pid(cls, pid, pid_type):
@@ -263,7 +269,7 @@ class ViafRecord(AuthRecord):
         **kwargs
     ):
         """Create or update viaf record."""
-        pid = data['viaf_pid']
+        pid = data['pid']
         record = cls.get_record_by_pid(pid)
         if record:
             data['$schema'] = record['$schema']
