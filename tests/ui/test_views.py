@@ -26,10 +26,15 @@
 
 from __future__ import absolute_import, print_function
 
-from flask import url_for
+# from flask import url_for
 
-# def test_ping(client, base_app):
-#     """Test the ping view."""
-#     resp = client.get(url_for('rero_mef.ping'))
-#     assert resp.status_code == 200
-#     assert resp.get_data(as_text=True) == 'OK'
+
+def test_ping(live_server, browser):
+    """Test the ping view."""
+    # TODO: write E"E tests
+    # browser.get(url_for('rero_mef.index', _external=True))
+    # assert (
+    #     'Get into your library' ==
+    #     browser.find_element_by_tag_name('h1')
+    #     .text
+    # )

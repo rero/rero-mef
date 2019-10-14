@@ -92,10 +92,10 @@ def test_gnd_language_of_person_missing():
 def test_gnd_identifier_for_person():
     """Test identifier for person 001"""
     xml_part_to_add = """
-       <controlfield tag="001">118577166</controlfield>
+        <controlfield tag="001">118577166</controlfield>
         <datafield ind1=" " ind2=" " tag="024">
-            <subfield code="a">http://d-nb.info/gnd/100000193</subfield>
-            <subfield code="2">uri</subfield>
+            <subfield code="0">http://d-nb.info/gnd/100000193</subfield>
+            <subfield code="2">gnd</subfield>
         </datafield>
      """
     trans = trans_prep('gnd', xml_part_to_add)
