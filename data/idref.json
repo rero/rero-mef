@@ -1,0 +1,535 @@
+[
+  {
+    "pid": "033967776",
+    "date_of_birth": "1829-11-25",
+    "date_of_death": "1886-06-11",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/033967776",
+    "biographical_information": [
+      "\u00c9conomiste. - \u00c9diteur de livres pour enfants. - Ami de B\u00e9ranger"
+    ],
+    "preferred_name_for_person": "Boiteau, Paul",
+    "authorized_access_point_representing_a_person": "Boiteau, Paul, 1829-1886"
+  },
+  {
+    "pid": "057286752",
+    "date_of_birth": "18XX",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/057286752",
+    "biographical_information": [
+      "Professeur au lyc\u00e9e Louis-le-Grand  (en 1885)"
+    ],
+    "preferred_name_for_person": "Jacob, \u00c9mile",
+    "authorized_access_point_representing_a_person": "Jacob, \u00c9mile"
+  },
+  {
+    "pid": "068979401",
+    "date_of_birth": "1525",
+    "date_of_death": "1601",
+    "language_of_person": [
+      "ita"
+    ],
+    "identifier_for_person": "http://www.idref.fr/068979401",
+    "biographical_information": [
+      "Graveur italien, n\u00e9 \u00e0 Lagertale (Trentin) en 1525, mort \u00e0 Rome en 1597 ou 1601. Il s'inspira de la mani\u00e8re d'Aeneas Vico, mais il lui demeura inf\u00e9rieur. Son oeuvre, tr\u00e8s important, comprend plus de 380 planches, dont la plupart reproduisent les ouvrages des grands ma\u00eetres italiens et portent le monogramme CB."
+    ],
+    "preferred_name_for_person": "Cavalieri, Giovanni Battista",
+    "authorized_access_point_representing_a_person": "Cavalieri, Giovanni Battista, 1525-1601?"
+  },
+  {
+    "pid": "069774331",
+    "date_of_death": "1540",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/069774331",
+    "biographical_information": [
+      "Grammairien"
+    ],
+    "preferred_name_for_person": "Briss\u00e9, Nicolas, grammairien",
+    "authorized_access_point_representing_a_person": "Briss\u00e9, Nicolas, -1540, grammairien"
+  },
+  {
+    "pid": "070483981",
+    "date_of_death": "0474",
+    "language_of_person": [
+      "lat"
+    ],
+    "identifier_for_person": "http://www.idref.fr/070483981",
+    "biographical_information": [
+      "Pr\u00eatre de Vienne en Dauphin\u00e9 et po\u00e8te philosophe chr\u00e9tien. Auteur de \"De statu animae\" (De l'\u00e9tat d'\u00e2me). Fr\u00e8re de saint Mamert."
+    ],
+    "preferred_name_for_person": "Mamert, Claudien",
+    "authorized_access_point_representing_a_person": "Mamert, Claudien, -0474"
+  },
+  {
+    "pid": "073462012",
+    "date_of_birth": "1869",
+    "date_of_death": "1960",
+    "language_of_person": [
+      "ita"
+    ],
+    "identifier_for_person": "http://www.idref.fr/073462012",
+    "preferred_name_for_person": "Franchi de' Cavalieri, Pio Petro",
+    "authorized_access_point_representing_a_person": "Franchi de' Cavalieri, Pio Petro, 1869-1960"
+  },
+  {
+    "pid": "074087061",
+    "date_of_birth": "1851",
+    "date_of_death": "1925",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/074087061",
+    "preferred_name_for_person": "Avesne, E. d'",
+    "authorized_access_point_representing_a_person": "Avesne, E. d', 1851-1925"
+  },
+  {
+    "pid": "076133915",
+    "date_of_birth": "1561",
+    "date_of_death": "1620?",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/076133915",
+    "biographical_information": [
+      "Po\u00e8te"
+    ],
+    "preferred_name_for_person": "Cailler, Raoul",
+    "authorized_access_point_representing_a_person": "Cailler, Raoul, 1561-1620?"
+  },
+  {
+    "pid": "078633907",
+    "date_of_birth": "1782-02-22",
+    "date_of_death": "1860?",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/078633907",
+    "biographical_information": [
+      "Auteur dramatique du 19e si\u00e8cle, po\u00e8te, chansonnier, romancier"
+    ],
+    "preferred_name_for_person": "Arnoult, St\u00e9phen",
+    "authorized_access_point_representing_a_person": "Arnoult, St\u00e9phen, 1782-1860?"
+  },
+  {
+    "pid": "081589093",
+    "date_of_birth": "1665-09-05",
+    "date_of_death": "1736-11-02",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/081589093",
+    "biographical_information": [
+      "Fils l\u00e9gitime de Louis-Henri de Pardaillan de Gondrin, marquis de Montespan, et d\u2019Ath\u00e9na\u00efs de Montespan. Marquis d'Antin, de Gondrin et de Montespan (1701) ; premier duc d'Antin (1711), titre auquel il renonce en 1722 au profit de son petit-fils. - Gouverneur d'Orl\u00e9ans (1707). Surintendant des B\u00e2timents du Roi (1708). Lieutenant g\u00e9n\u00e9ral et gouverneur de la province d'Alsace"
+    ],
+    "preferred_name_for_person": "Antin, Louis-Antoine de Pardaillan, duc d'",
+    "authorized_access_point_representing_a_person": "Antin, Louis-Antoine de Pardaillan, 1665-1736, duc d'"
+  },
+  {
+    "pid": "081780931",
+    "date_of_birth": "1874-04-17",
+    "date_of_death": "1946-01-29",
+    "language_of_person": [
+      "ger"
+    ],
+    "identifier_for_person": "http://www.idref.fr/081780931",
+    "biographical_information": [
+      "Philosophe et sociologue"
+    ],
+    "preferred_name_for_person": "Brockdorff, Cay",
+    "authorized_access_point_representing_a_person": "Brockdorff, Cay, 1874-1946"
+  },
+  {
+    "pid": "081816529",
+    "date_of_birth": "1715-11-08",
+    "date_of_death": "1797-01-13",
+    "language_of_person": [
+      "ger"
+    ],
+    "identifier_for_person": "http://www.idref.fr/081816529",
+    "biographical_information": [
+      "Fille du duc Ferdinand Albert II de Brunswick-Wolfenb\u00fcttel, et ni\u00e8ce de Charles VI du Saint-Empire. - \u00c9pouse Fr\u00e9d\u00e9ric II de Prusse en 1733"
+    ],
+    "preferred_name_for_person": "Elisabeth Christine, reine de Prusse",
+    "authorized_access_point_representing_a_person": "Elisabeth Christine, 1715-1797, reine de Prusse"
+  },
+  {
+    "pid": "085209910",
+    "date_of_birth": "1665-02-12",
+    "date_of_death": "1721-09-11",
+    "language_of_person": [
+      "lat"
+    ],
+    "identifier_for_person": "http://www.idref.fr/085209910",
+    "biographical_information": [
+      "Botaniste et m\u00e9decin"
+    ],
+    "preferred_name_for_person": "Camerarius, Rudolf Jakob",
+    "authorized_access_point_representing_a_person": "Camerarius, Rudolf Jakob, 1665-1721"
+  },
+  {
+    "pid": "087876035",
+    "date_of_birth": "1822",
+    "date_of_death": "1883-10-22",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/087876035",
+    "preferred_name_for_person": "Cauna, Bernard-Augustin-Henri-Timoth\u00e9e de Cabannes, baron de",
+    "authorized_access_point_representing_a_person": "Cauna, Bernard-Augustin-Henri-Timoth\u00e9e de Cabannes, 1822-1883, baron de"
+  },
+  {
+    "pid": "088356809",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/088356809",
+    "preferred_name_for_person": "Montalant-Bougleux, Louis-Auguste",
+    "authorized_access_point_representing_a_person": "Montalant-Bougleux, Louis-Auguste"
+  },
+  {
+    "pid": "095116672",
+    "date_of_birth": "1662-03-27",
+    "date_of_death": "1689-02-12",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/095116672",
+    "biographical_information": [
+      "N\u00e9e \u00e0 Paris, morte \u00e0 Madrid",
+      "Fille de Philippe Ier, duc d'Orl\u00e9ans et d'Henriette d'Angleterre, elle \u00e9pouse en 1679 Charles II roi d'Espagne"
+    ],
+    "preferred_name_for_person": "Marie Louise d'Orl\u00e9ans, reine d'Espagne",
+    "authorized_access_point_representing_a_person": "Marie Louise d'Orl\u00e9ans, 1662-1689, reine d'Espagne"
+  },
+  {
+    "pid": "097556505",
+    "date_of_birth": "1761-02-23",
+    "date_of_death": "1852-02-09",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/097556505",
+    "biographical_information": [
+      "Homme politique charentais. G\u00e9ologue, membre de l'Acad\u00e9mie des Sciences en 1816."
+    ],
+    "preferred_name_for_person": "Fleuriau de Bellevue, Louis Benjamin",
+    "authorized_access_point_representing_a_person": "Fleuriau de Bellevue, Louis Benjamin, 1761-1852"
+  },
+  {
+    "pid": "098326635",
+    "date_of_birth": "1620-09-25",
+    "date_of_death": "1695-07-04",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/098326635",
+    "biographical_information": [
+      "Prince-\u00e9v\u00eaque de Gen\u00e8ve (1661-1695)",
+      "N\u00e9 \u00e0 Ch\u00e2teau d'Alex (Haute-Savoie) et mort \u00e0 Abbaye d'Abondance (Haute-Savoie). Il fut Prince-\u00e9v\u00eaque de Gen\u00e8ve de 1661 \u00e0 1695"
+    ],
+    "preferred_name_for_person": "Arenthon d'Alex, Jean d'",
+    "authorized_access_point_representing_a_person": "Arenthon d'Alex, Jean d', 1620-1695"
+  },
+  {
+    "pid": "104547677",
+    "date_of_birth": "1582",
+    "date_of_death": "1631",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/104547677",
+    "biographical_information": [
+      "Pr\u00e9dicateur capucin et gardien du couvent de Cologne"
+    ],
+    "preferred_name_for_person": "Constantin de Barbanson, Le P\u00e8re",
+    "authorized_access_point_representing_a_person": "Constantin de Barbanson, Le P\u00e8re"
+  },
+  {
+    "pid": "106993542",
+    "language_of_person": [
+      "eng"
+    ],
+    "identifier_for_person": "http://www.idref.fr/106993542",
+    "preferred_name_for_person": "Butler, James Edward William Theobald, Marquis of Ormonde",
+    "authorized_access_point_representing_a_person": "Butler, James Edward William Theobald, Marquis of Ormonde"
+  },
+  {
+    "pid": "112244424",
+    "date_of_birth": "1612",
+    "date_of_death": "1656",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/112244424",
+    "biographical_information": [
+      "Peintre, copiste, dessinateur et graveur"
+    ],
+    "preferred_name_for_person": "Chapron, Nicolas",
+    "authorized_access_point_representing_a_person": "Chapron, Nicolas, 1612-1656?"
+  },
+  {
+    "pid": "124563627",
+    "date_of_birth": "17",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/124563627",
+    "biographical_information": [
+      "Auteur et chansonnier fran\u00e7ais"
+    ],
+    "preferred_name_for_person": "L\u00e9vrier-Champrion",
+    "authorized_access_point_representing_a_person": "L\u00e9vrier-Champrion"
+  },
+  {
+    "pid": "130990221",
+    "date_of_birth": "1837",
+    "date_of_death": "1883",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/130990221",
+    "biographical_information": [
+      "Journaliste, auteur dramatique"
+    ],
+    "preferred_name_for_person": "Aunay, Alfred d'",
+    "authorized_access_point_representing_a_person": "Aunay, Alfred d', 1837-1883"
+  },
+  {
+    "pid": "131513168",
+    "date_of_birth": "1566",
+    "date_of_death": "1612",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/131513168",
+    "biographical_information": [
+      "Comte de Soissons. Fils de Louis Ier, prince de Cond\u00e9",
+      "Lieu de naissance Nogent-le-Rotrou (Eure-et-Loir). Lieu de d\u00e9c\u00e8s Blandy"
+    ],
+    "preferred_name_for_person": "Soissons, Charles de Bourbon, comte de",
+    "authorized_access_point_representing_a_person": "Soissons, Charles de Bourbon, 1566-1612, comte de"
+  },
+  {
+    "pid": "147013283",
+    "date_of_birth": "1785-02-25",
+    "date_of_death": "1847-09-26",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/147013283",
+    "biographical_information": [
+      "Acteur, vaudevilliste. A utilis\u00e9 les pseudonymes d'Am\u00e9d\u00e9e et de Philippe. On le trouve au Vaudeville de 1815 \u00e0 1825, aux Nouveaut\u00e9s (1827), au Palais-Royal (1831-1841) et aux Folies-Dramatiques. Il avait \u00e9pous\u00e9 Mlle Volnais de la Com\u00e9die-Fran\u00e7aise"
+    ],
+    "preferred_name_for_person": "Roustan, Philippe-Am\u00e9d\u00e9e",
+    "authorized_access_point_representing_a_person": "Roustan, Philippe-Am\u00e9d\u00e9e, 1785-1847"
+  },
+  {
+    "pid": "149367430",
+    "date_of_birth": "1452",
+    "date_of_death": "1508",
+    "language_of_person": [
+      "grc",
+      "lat"
+    ],
+    "identifier_for_person": "http://www.idref.fr/149367430",
+    "biographical_information": [
+      "Homme de Lettres d'origine grecque, ma\u00eetre de grec \u00e0 Paris"
+    ],
+    "preferred_name_for_person": "Hermonymus, Georgius",
+    "authorized_access_point_representing_a_person": "Hermonymus, Georgius, 1452-1508"
+  },
+  {
+    "pid": "154079693",
+    "date_of_birth": "1783",
+    "date_of_death": "1862-11-17",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/154079693",
+    "biographical_information": [
+      "Membre fondateur de l'association normande et de la soci\u00e9t\u00e9 fran\u00e7aise d'arch\u00e9ologie."
+    ],
+    "preferred_name_for_person": "Beaurepaire de Louvagny, Alexandre, Comte",
+    "authorized_access_point_representing_a_person": "Beaurepaire de Louvagny, Alexandre, 1783-1862, Comte"
+  },
+  {
+    "pid": "156591324",
+    "date_of_birth": "1663",
+    "date_of_death": "1711",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/156591324",
+    "biographical_information": [
+      "Fils de Fran\u00e7ois Barr\u00eame. Arithm\u00e9ticien. Censeur royal"
+    ],
+    "preferred_name_for_person": "Barr\u00eame, Gabriel",
+    "authorized_access_point_representing_a_person": "Barr\u00eame, Gabriel, 1663-1711?"
+  },
+  {
+    "pid": "165617845",
+    "date_of_birth": "1758-10-07",
+    "date_of_death": "1832-09-17",
+    "language_of_person": [
+      "ita"
+    ],
+    "identifier_for_person": "http://www.idref.fr/165617845",
+    "biographical_information": [
+      "Segretario perpetuo della R. Accademia Ercolanese . Collezionista di monete antiche magna Grecia"
+    ],
+    "preferred_name_for_person": "Carelli, Francesco",
+    "authorized_access_point_representing_a_person": "Carelli, Francesco, 1758-1832"
+  },
+  {
+    "pid": "16777154X",
+    "date_of_birth": "1862-07-15",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/16777154X",
+    "biographical_information": [
+      "Docteur en m\u00e9decine (Paris, 1887). Fondateur du Th\u00e9\u00e2tre Populaire Poitevin"
+    ],
+    "preferred_name_for_person": "Corneille Saint-Marc, Pierre-Urbain",
+    "authorized_access_point_representing_a_person": "Corneille Saint-Marc, Pierre-Urbain, 1862-"
+  },
+  {
+    "pid": "172347343",
+    "date_of_birth": "1809",
+    "date_of_death": "1873-12-16",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/172347343",
+    "biographical_information": [
+      "N\u00e9 \u00e0 Villefoueix, commune de Rempnat (Haute-Vienne)",
+      "Professeur de philiosphie au Coll\u00e8ge de Felletin (Creuse) : 1832-1852",
+      "Cur\u00e9 d'Aixe-sur-Vienne (Haute-Vienne)"
+    ],
+    "preferred_name_for_person": "Chapelle, Fran\u00e7ois, cur\u00e9",
+    "authorized_access_point_representing_a_person": "Chapelle, Fran\u00e7ois, 1809-1873, cur\u00e9"
+  },
+  {
+    "pid": "177081430",
+    "date_of_birth": "18",
+    "date_of_death": "18",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/177081430",
+    "preferred_name_for_person": "Conte, Xavier",
+    "authorized_access_point_representing_a_person": "Conte, Xavier, 18..-18.."
+  },
+  {
+    "pid": "179863436",
+    "date_of_birth": "1972",
+    "language_of_person": [
+      "gre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/179863436",
+    "biographical_information": [
+      "Art historian and curator"
+    ],
+    "preferred_name_for_person": "Rogakos, Megakles",
+    "authorized_access_point_representing_a_person": "Rogakos, Megakles, 1972-"
+  },
+  {
+    "pid": "183349199",
+    "date_of_birth": "1698",
+    "date_of_death": "1764",
+    "language_of_person": [
+      "ita",
+      "lat"
+    ],
+    "identifier_for_person": "http://www.idref.fr/183349199",
+    "biographical_information": [
+      "Historien, th\u00e9ologien et juriste"
+    ],
+    "preferred_name_for_person": "Catalani, Giuseppe",
+    "authorized_access_point_representing_a_person": "Catalani, Giuseppe, 1698-1764"
+  },
+  {
+    "pid": "189341793",
+    "date_of_birth": "1772-01-17",
+    "date_of_death": "1817-07-21",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/189341793",
+    "preferred_name_for_person": "Saint-Morys, Etienne Bourgevin Vialart , comte de",
+    "authorized_access_point_representing_a_person": "Saint-Morys, Etienne Bourgevin Vialart , 1772-1817, comte de"
+  },
+  {
+    "pid": "192777475",
+    "date_of_birth": "1744",
+    "date_of_death": "1835",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/192777475",
+    "biographical_information": [
+      "Abb\u00e9. Litt\u00e9rateur"
+    ],
+    "preferred_name_for_person": "M\u00e9rault de Bizy, Athanase-Ren\u00e9",
+    "authorized_access_point_representing_a_person": "M\u00e9rault de Bizy, Athanase-Ren\u00e9, 1744-1835"
+  },
+  {
+    "pid": "196562643",
+    "date_of_birth": "1794",
+    "date_of_death": "1859",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/196562643",
+    "biographical_information": [
+      "Mycologue, membre de plusieurs soci\u00e9t\u00e9s savantes"
+    ],
+    "preferred_name_for_person": "Brondeau, Louis de",
+    "authorized_access_point_representing_a_person": "Brondeau, Louis de, 1794-1859"
+  },
+  {
+    "pid": "197394787",
+    "date_of_birth": "1957",
+    "language_of_person": [
+      "gre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/197394787",
+    "biographical_information": [
+      "N\u00e9o-hell\u00e9niste"
+    ],
+    "preferred_name_for_person": "S\u00e9rg\u012bs, Man\u00f3l\u012bs G., n\u00e9o-hell\u00e9niste",
+    "authorized_access_point_representing_a_person": "S\u00e9rg\u012bs, Man\u00f3l\u012bs G., 1957-, n\u00e9o-hell\u00e9niste"
+  },
+  {
+    "pid": "223404543",
+    "date_of_birth": "18..",
+    "date_of_death": "18..?",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/223404543",
+    "preferred_name_for_person": "Buch\u00e8re de L\u00e9pinois, Eug\u00e8ne Louis Ernest de",
+    "authorized_access_point_representing_a_person": "Buch\u00e8re de L\u00e9pinois, Eug\u00e8ne Louis Ernest de"
+  },
+  {
+    "pid": "233021523",
+    "date_of_birth": "1780",
+    "date_of_death": "1836-01-01",
+    "language_of_person": [
+      "fre"
+    ],
+    "identifier_for_person": "http://www.idref.fr/233021523",
+    "biographical_information": [
+      "Publiciste. - Noble toscan, s'engagea dans les arm\u00e9es napol\u00e9oniennes et s'exila en Belgique et aux Pays-Bas",
+      "Lieu de naissance Florence, Italie. Lieu de d\u00e9c\u00e8s Amsterdam, Pays-Bas"
+    ],
+    "preferred_name_for_person": "Libri-Bagnano, Georges",
+    "authorized_access_point_representing_a_person": "Libri-Bagnano, Georges, 1780-1836"
+  }
+]

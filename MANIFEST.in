@@ -56,6 +56,7 @@ include Pipfile
 include babel.ini
 include pytest.ini
 recursive-include data *.json
+recursive-include data *.yml
 recursive-include docs *.bat
 recursive-include docs *.py
 recursive-include docs *.rst
@@ -70,4 +71,3 @@ recursive-include tests *.xml
 recursive-include rero_mef *.html
 recursive-include rero_mef *.png
 recursive-include rero_mef *.scss
-

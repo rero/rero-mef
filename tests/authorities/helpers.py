@@ -34,6 +34,8 @@ from rero_mef.authorities.marctojson.do_bnf_auth_person import \
     Transformation as Transformation_bnf
 from rero_mef.authorities.marctojson.do_gnd_auth_person import \
     Transformation as Transformation_gnd
+from rero_mef.authorities.marctojson.do_idref_auth_person import \
+    Transformation as Transformation_idref
 from rero_mef.authorities.marctojson.do_rero_auth_person import \
     Transformation as Transformation_rero
 
@@ -46,28 +48,17 @@ def trans_prep(source, xml_part_to_add):
         current_dir, 'examples/xml_minimal_record.xml')
     records = marcxml.parse_xml_to_array(
         file_name, strict=False, normalize_form=None)
-    if source == 'bnf':
-        trans = Transformation_bnf(
-            marc=records[0],
-            logger=None,
-            verbose=False,
-            transform=False
-        )
-    elif source == 'gnd':
-        trans = Transformation_gnd(
-            marc=records[0],
-            logger=None,
-            verbose=False,
-            transform=False
-        )
-    elif source == 'rero':
-        trans = Transformation_rero(
-            marc=records[0],
-            logger=None,
-            verbose=False,
-            transform=False
-        )
-    return trans
+    trans = {
+        'bnf': Transformation_bnf(marc=records[0], logger=None,
+                                  verbose=False, transform=False),
+        'gnd': Transformation_gnd(marc=records[0], logger=None,
+                                  verbose=False, transform=False),
+        'idref': Transformation_idref(marc=records[0], logger=None,
+                                      verbose=False, transform=False),
+        'rero': Transformation_rero(marc=records[0], logger=None,
+                                    verbose=False, transform=False)
+    }
+    return trans.get(source)
 
 
 def build_xml_record_file(xml_part_to_add):

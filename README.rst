@@ -37,7 +37,7 @@
 MEF (Multilingual Entity File) server with records for persons, works, etc. for reuse in integrated library systems (ILS).
 
 A demo webservice is available on
-https://mef.test.rero.ch.
+https://mef.rero.ch.
 
 Further documentation is available on
 https://github.com/rero/rero-mef/wiki.

@@ -40,8 +40,6 @@ class LoggerError:
     class InvalidileName(Exception):
         """The given file name is not correct."""
 
-        pass
-
 
 # Logger ---
 class Logger:

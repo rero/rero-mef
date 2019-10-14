@@ -38,6 +38,11 @@ blueprint = Blueprint(
     static_folder='static',
 )
 
+api_blueprint = Blueprint(
+    'api_rero_mef',
+    __name__
+)
+
 
 @blueprint.route('/')
 def index():

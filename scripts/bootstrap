@@ -23,38 +23,110 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
+NC='\033[0m'                    # Default color
+INFO_COLOR='\033[1;97;44m'      # Bold + white + blue background
+SUCCESS_COLOR='\033[1;97;42m'   # Bold + white + green background
+ERROR_COLOR='\033[1;97;41m'     # Bold + white + red background
+
+PROGRAM=`basename $0`
+
 set -e
 
+# MESSAGES
+msg() {
+  echo -e "${1}" 1>&2
+}
+# Display a colored message
+# More info: https://misc.flogisoft.com/bash/tip_colors_and_formatting
+# $1: choosen color
+# $2: title
+# $3: the message
+colored_msg() {
+  msg "${1}[${2}]: ${3}${NC}"
+}
+
+info_msg() {
+  colored_msg "${INFO_COLOR}" "INFO" "${1}"
+}
+
+error_msg() {
+  colored_msg "${ERROR_COLOR}" "ERROR" "${1}"
+}
+
+error_msg+exit() {
+    error_msg "${1}" && exit 1
+}
+
+success_msg() {
+  colored_msg "${SUCCESS_COLOR}" "SUCCESS" "${1}"
+}
+
+set -e
+
+# Displays program name
+msg "PROGRAM: ${PROGRAM}"
+
+if ! options=$(getopt -o dsb -l -t deploy,ci -- "$@")
+then
+    # something went wrong, getopt will put out an error message for us
+    exit 1
+fi
 
 # The real bootstrap script starts 20 lines below ;-)
 flags=()
-while test $# -gt 0; do
+deploy=false
+cmd="pipenv sync"
+ci=false
+while test $# -gt 0
+do
     case "$1" in
-        --ci)
-            # We are probably inside travis, check for env variables
-            if [ "$REQUIREMENTS" == "prod" ]; then
-                flags=("--dev" "--ignore-pipfile")
-            fi
-            shift
-            ;;
-        *)
-            # Use the flags that are passed to the script directly to install
-            flags+=("$1")
-            shift
-            ;;
+      -d|--deploy)
+        # We are probably inside travis, check for env variables
+        deploy=true ;;
+      -c|--ci)
+        # We are probably inside travis, check for env variables
+        ci=true ;;
+      (--) shift; break;;
+      (-*) flags+=("$1") ;;
+      (*) break;;
     esac
+    shift
 done
-if [ ${#flags[0]} -eq 0 ]; then
-    #flags=("--dev" "--skip-lock")
-    flags=("--dev" "--skip-lock")
+if ! $deploy || $ci ; then
+    flags=("--dev")
 fi
 
+if ! $deploy ; then
+    if $ci ; then
+        cmd="pipenv install --skip-lock --sequential"
+    fi
+fi
+
+# go generate a clean lock file
+# pipenv --rm; pipenv install --sequential
+# !!! delete appnope from Pipfile.lock !!!
+
+# BOOTSTRAP START
 # install the application and all the dependencies
-pipenv install ${flags[@]}
+info_msg "Install with command: ${cmd} ${flags[@]}"
+${cmd} ${flags[@]}
+
+# to avoid IPython dependency problem on Mac OS X
+if [ "$(uname -s)" == "Darwin" ]; then
+  info_msg "Install 'appnope' for Mac OS X"
+  pipenv run pip install appnope
+fi
 
 # install assets utils
+virtualenv_path=`pipenv --venv`
+info_msg "Install npm assets utils in: ${virtualenv_path}"
 npm i npm@latest -g --prefix `pipenv --venv` && pipenv run npm install --prefix `pipenv --venv` --silent -g node-sass@4.9.0 clean-css@3.4.19 uglify-js@2.7.3 requirejs@2.2.0 @angular/cli@7.0.4
 
 # build the web assets
-pipenv run invenio collect -v
+info_msg "Build web assets: collect"
+pipenv run invenio collect
+info_msg "Build web assets: check (build command)"
 pipenv run invenio webpack buildall
+
+success_msg "${PROGRAM} finished!"
+exit 0

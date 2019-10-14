@@ -46,10 +46,11 @@ def mef_record():
     """MEF record."""
     record = {
         "$schema":
-        "http://mef.test.rero.ch/schemas/authorities/mef-person-v0.0.1.json",
-        "bnf": {"$ref": "http://mef.test.rero.ch/api/bnf/10000690"},
-        "gnd": {"$ref": "http://mef.test.rero.ch/api/gnd/12391664X"},
-        "rero": {"$ref": "http://mef.test.rero.ch/api/rero/A023655346"},
+        "http://mef.rero.ch/schemas/mef/mef-person-v0.0.1.json",
+        "bnf": {"$ref": "http://mef.rero.ch/api/bnf/10000690"},
+        "gnd": {"$ref": "http://mef.rero.ch/api/gnd/12391664X"},
+        "rero": {"$ref": "http://mef.rero.ch/api/rero/A023655346"},
+        "idref": {"$ref": "http://mef.rero.ch/api/idref/069774331"},
         "viaf_pid": "66739143"
     }
     return record
@@ -60,11 +61,12 @@ def viaf_record():
     """VIAF record."""
     record = {
         "$schema":
-        "http://mef.test.rero.ch/schemas/authorities/viaf-person-v0.0.1.json",
+        "http://mef.rero.ch/schemas/viaf/viaf-person-v0.0.1.json",
         "pid": "66739143",
         "bnf_pid": "10000690",
         "gnd_pid": "12391664X",
         "rero_pid": "A023655346",
+        "idref_pid": "069774331"
     }
     return record
 
@@ -83,7 +85,7 @@ def bnf_record():
         "identifier_for_person": "10000690",
         "pid": "10000690",
         "$schema":
-        "http://mef.test.rero.ch/schemas/authorities/bnf-person-v0.0.1.json"
+        "http://mef.rero.ch/schemas/bnf/bnf-person-v0.0.1.json"
     }
     return record
 
@@ -93,7 +95,7 @@ def gnd_record():
     """GND record."""
     record = {
         "$schema":
-        "http://mef.test.rero.ch/schemas/authorities/gnd-person-v0.0.1.json",
+        "http://mef.rero.ch/schemas/gnd/gnd-person-v0.0.1.json",
         "identifier_for_person": "12391664X",
         "pid": "12391664X",
         "variant_name_for_person": [
@@ -143,7 +145,7 @@ def rero_record():
     """RERO record."""
     record = {
         "$schema":
-        "http://mef.test.rero.ch/schemas/authorities/rero-person-v0.0.1.json",
+        "http://mef.rero.ch/schemas/rero/rero-person-v0.0.1.json",
         "authorized_access_point_representing_a_person":
             "Cavalieri, Giovanni Battista,, ca.1525-1601",
         "date_of_birth": "ca.1525-1601",
@@ -159,5 +161,27 @@ def rero_record():
         "identifier_for_person": "A023655346",
         "pid": "A023655346",
         "preferred_name_for_person": "Cavalieri, Giovanni Battista,"
+    }
+    return record
+
+
+@pytest.fixture(scope='session')
+def idref_record():
+    """IDREF record."""
+    record = {
+        "pid": "069774331",
+        "date_of_birth": "....",
+        "date_of_death": "1540",
+        "language_of_person": ["fre"],
+        "identifier_for_person": "http://www.idref.fr/069774331",
+        "biographical_information": [
+          "Grammairien"
+        ],
+        "preferred_name_for_person": "Briss\u00e9, Nicolas, grammairien",
+        "authorized_access_point_representing_a_person":
+            "Briss\u00e9, Nicolas, ....-1540, grammairien",
+        "gender": "male",
+        "$schema":
+            "http://mef.rero.ch/schemas/idref/idref-person-v0.0.1.json"
     }
     return record

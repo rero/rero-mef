@@ -131,7 +131,7 @@ def test_rero_variant_name_for_person():
     """Test Variant Name for Person 400 $a"""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="400">
-            <subfield code="a">Bell, Currer:</subfield>
+            <subfield code="a">Bell, Currer :</subfield>
         </datafield>
          <datafield ind1=" " ind2=" " tag="400">
             <subfield code="a">Brontë, Carlotta ,</subfield>

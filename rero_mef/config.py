@@ -32,18 +32,20 @@ You overwrite and set instance-specific configuration by either:
 
 from __future__ import absolute_import, print_function
 
-from datetime import timedelta
-
-from invenio_indexer.api import RecordIndexer
-
-from .authorities.api import BnfRecord, BnfSearch, GndRecord, GndSearch, \
-    MefRecord, MefSearch, ReroRecord, ReroSearch, ViafRecord, ViafSearch
+from .authorities.bnf.models import BnfIdentifier
+from .authorities.gnd.models import GndIdentifier
+from .authorities.idref.models import IdrefIdentifier
 from .authorities.marctojson.do_bnf_auth_person import \
     Transformation as Bnf_transformation
 from .authorities.marctojson.do_gnd_auth_person import \
     Transformation as Gnd_transformation
+from .authorities.marctojson.do_idref_auth_person import \
+    Transformation as Idref_transformation
 from .authorities.marctojson.do_rero_auth_person import \
     Transformation as Rero_transformation
+from .authorities.mef.models import MefIdentifier
+from .authorities.rero.models import ReroIdentifier
+from .authorities.viaf.models import ViafIdentifier
 
 
 def _(x):
@@ -126,14 +128,22 @@ CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/2'
 #: Scheduled tasks configuration (aka cronjobs).
 CELERY_BEAT_SCHEDULE = {
+    # We can not run scheduled bulk indexing during initial setup.
     # 'indexer': {
-    #     'task': 'invenio_indexer.tasks.process_bulk_queue',
+    #     'task': 'rero_mef.tasks.process_bulk_queue',
     #     'schedule': timedelta(minutes=5),
     # },
-    'accounts': {
-        'task': 'invenio_accounts.tasks.clean_session_table',
-        'schedule': timedelta(minutes=60),
-    },
+    # We dont't have accounts to clean.
+    # 'accounts': {
+    #     'task': 'invenio_accounts.tasks.clean_session_table',
+    #     'schedule': timedelta(minutes=60),
+    # },
+    # We will harvest with a kubernetes cron job.
+    # 'idref-harvester': {
+    #     'task': 'rero_mef.authorities.idref.tasks.process_records_from_dates',
+    #     'schedule': timedelta(minutes=360),
+    #     'kwargs': dict(name='idref'),
+    # }
 }
 CELERY_BROKER_HEARTBEAT = 0
 INDEXER_BULK_REQUEST_TIMEOUT = 60
@@ -147,7 +157,7 @@ SQLALCHEMY_DATABASE_URI = \
 # JSONSchemas
 # ===========
 #: Hostname used in URLs for local JSONSchemas.
-JSONSCHEMAS_HOST = 'mef.test.rero.ch'
+JSONSCHEMAS_HOST = 'mef.rero.ch'
 # JSONSchemas
 
 # Flask configuration
@@ -170,7 +180,7 @@ APP_ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # OAI-PMH
 # =======
-OAISERVER_ID_PREFIX = 'oai:mef.test.rero.ch:'
+OAISERVER_ID_PREFIX = 'oai:mef.rero.ch:'
 
 # Debug
 # =====
@@ -181,25 +191,26 @@ OAISERVER_ID_PREFIX = 'oai:mef.test.rero.ch:'
 #: Switches off incept of redirects by Flask-DebugToolbar.
 DEBUG_TB_INTERCEPT_REDIRECTS = False
 
-# AGENCIES LIST
 # ========
-#: List of agencies
-AGENCIES = {
-    'gnd': GndRecord,
-    'rero': ReroRecord,
-    'bnf': BnfRecord,
-    'viaf': ViafRecord,
-    'mef': MefRecord
-}
-
 BULK_CHUNK_COUNT = 100000
 
 TRANSFORMATION = {
     'gnd': Gnd_transformation,
     'rero': Rero_transformation,
-    'bnf': Bnf_transformation
+    'bnf': Bnf_transformation,
+    'idref': Idref_transformation
 }
 
+IDENTIFIERS = {
+    'bnf': BnfIdentifier,
+    'gnd': GndIdentifier,
+    'idref': IdrefIdentifier,
+    'mef': MefIdentifier,
+    'rero': ReroIdentifier,
+    'viaf': ViafIdentifier
+}
+
+RERO_MEF_APP_BASE_URL = 'https://mef.rero.ch'
 
 # REST API Configuration
 # ======================
@@ -208,10 +219,11 @@ RECORDS_REST_ENDPOINTS = dict(
         pid_type='mef',
         pid_minter='mef',
         pid_fetcher='mef',
-        search_class=MefSearch,
-        indexer_class=RecordIndexer,
-        search_index='authorities-mef-person-v0.0.1',
-        search_type='mef-person-v0.0.1',
+        search_class="rero_mef.authorities.mef.api:MefSearch",
+        indexer_class="rero_mef.authorities.mef.api:MefIndexer",
+        record_class="rero_mef.authorities.mef.api:MefRecord",
+        search_index='mef',
+        search_type=None,
         record_serializers={
             'application/json': ('rero_mef.serializers'
                                  ':json_v1_response'),
@@ -222,7 +234,8 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/mef/',
-        item_route='/mef/<pid(mef, record_class="rero_mef.authorities.api:MefRecord"):pid_value>',
+        item_route=('/mef/<pid(mef, record_class='
+                    '"rero_mef.authorities.mef.api:MefRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=10000000,
         error_handlers=dict(),
@@ -231,12 +244,13 @@ RECORDS_REST_ENDPOINTS = dict(
         pid_type='gnd',
         pid_minter='gnd',
         pid_fetcher='gnd',
-        search_class=GndSearch,
-        indexer_class=RecordIndexer,
-        search_index='authorities-gnd-person-v0.0.1',
-        search_type='gnd-person-v0.0.1',
+        search_class="rero_mef.authorities.gnd.api:GndSearch",
+        indexer_class="rero_mef.authorities.gnd.api:GndIndexer",
+        record_class="rero_mef.authorities.gnd.api:GndRecord",
+        search_index='gnd',
+        search_type=None,
         record_serializers={
-            'application/json': ('invenio_records_rest.serializers'
+            'application/json': ('rero_mef.serializers'
                                  ':json_v1_response'),
         },
         search_serializers={
@@ -245,21 +259,23 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/gnd/',
-        item_route='/gnd/<pid(gnd, record_class="rero_mef.authorities.api:GndRecord"):pid_value>',
+        item_route=('/gnd/<pid(gnd, record_class='
+                    '"rero_mef.authorities.gnd.api:GndRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=10000000,
-        error_handlers=dict(),
+        error_handlers=dict()
     ),
     bnf=dict(
         pid_type='bnf',
         pid_minter='bnf',
         pid_fetcher='bnf',
-        search_class=BnfSearch,
-        indexer_class=RecordIndexer,
-        search_index='authorities-bnf-person-v0.0.1',
-        search_type='bnf-person-v0.0.1',
+        search_class="rero_mef.authorities.bnf.api:BnfSearch",
+        indexer_class="rero_mef.authorities.bnf.api:BnfIndexer",
+        record_class="rero_mef.authorities.bnf.api:BnfRecord",
+        search_index='bnf',
+        search_type=None,
         record_serializers={
-            'application/json': ('invenio_records_rest.serializers'
+            'application/json': ('rero_mef.serializers'
                                  ':json_v1_response'),
         },
         search_serializers={
@@ -268,21 +284,48 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/bnf/',
-        item_route='/bnf/<pid(bnf, record_class="rero_mef.authorities.api:BnfRecord"):pid_value>',
+        item_route=('/bnf/<pid(bnf, record_class='
+                    '"rero_mef.authorities.bnf.api:BnfRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=10000000,
         error_handlers=dict(),
+    ),
+    idref=dict(
+        pid_type='idref',
+        pid_minter='idref',
+        pid_fetcher='idref',
+        search_class="rero_mef.authorities.idref.api:IdrefSearch",
+        indexer_class="rero_mef.authorities.idref.api:IdrefIndexer",
+        record_class="rero_mef.authorities.idref.api:IdrefRecord",
+        search_index='idref',
+        search_type=None,
+        record_serializers={
+            'application/json': ('rero_mef.serializers'
+                                 ':json_v1_response'),
+        },
+        search_serializers={
+            'application/json': ('invenio_records_rest.serializers'
+                                 ':json_v1_search'),
+        },
+        search_factory_imp='rero_mef.query:and_search_factory',
+        list_route='/idref/',
+        item_route=('/idref/<pid(idref, record_class='
+                    '"rero_mef.authorities.idref.api:IdrefRecord"):pid_value>'),
+        default_media_type='application/json',
+        max_result_window=10000000,
+        error_handlers=dict()
     ),
     rero=dict(
         pid_type='rero',
         pid_minter='rero',
         pid_fetcher='rero',
-        search_class=ReroSearch,
-        indexer_class=RecordIndexer,
-        search_index='authorities-rero-person-v0.0.1',
-        search_type='rero-person-v0.0.1',
+        search_class="rero_mef.authorities.rero.api:ReroSearch",
+        indexer_class="rero_mef.authorities.rero.api:ReroIndexer",
+        record_class="rero_mef.authorities.rero.api:ReroRecord",
+        search_index='rero',
+        search_type=None,
         record_serializers={
-            'application/json': ('invenio_records_rest.serializers'
+            'application/json': ('rero_mef.serializers'
                                  ':json_v1_response'),
         },
         search_serializers={
@@ -291,7 +334,8 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/rero/',
-        item_route='/rero/<pid(rero, record_class="rero_mef.authorities.api:ReroRecord"):pid_value>',
+        item_route=('/rero/<pid(rero, record_class='
+                    '"rero_mef.authorities.rero.api:ReroRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=10000000,
         error_handlers=dict(),
@@ -300,12 +344,13 @@ RECORDS_REST_ENDPOINTS = dict(
         pid_type='viaf',
         pid_minter='viaf',
         pid_fetcher='viaf',
-        search_class=ViafSearch,
-        indexer_class=RecordIndexer,
-        search_index='authorities-viaf-person-v0.0.1',
-        search_type='viaf-person-v0.0.1',
+        search_class="rero_mef.authorities.viaf.api:ViafSearch",
+        indexer_class="rero_mef.authorities.viaf.api:ViafIndexer",
+        record_class="rero_mef.authorities.viaf.api:ViafRecord",
+        search_index='viaf',
+        search_type=None,
         record_serializers={
-            'application/json': ('invenio_records_rest.serializers'
+            'application/json': ('rero_mef.serializers'
                                  ':json_v1_response'),
         },
         search_serializers={
@@ -314,9 +359,20 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/viaf/',
-        item_route='/viaf/<pid(viaf, record_class="rero_mef.authorities.api:ViafRecord"):pid_value>',
+        item_route=('/viaf/<pid(viaf, record_class='
+                    '"rero_mef.authorities.viaf.api:ViafRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=10000000,
         error_handlers=dict(),
     ),
+
 )
+
+RECORDS_JSON_SCHEMA = {
+    'bnf': '/bnf/bnf-person-v0.0.1.json',
+    'gnd': '/gnd/gnd-person-v0.0.1.json',
+    'rero': '/rero/rero-person-v0.0.1.json',
+    'idref': '/idref/idref-person-v0.0.1.json',
+    'mef': '/mef/mef-person-v0.0.1.json',
+    'viaf': '/viaf/viaf-person-v0.0.1.json'
+}
