@@ -24,8 +24,6 @@
 
 """Signals connections for RERO-MEF."""
 
-from flask import current_app
-
 
 def extend_mef_record(
     sender=None,
@@ -37,11 +35,7 @@ def extend_mef_record(
     **kwargs
 ):
     """Extend MEF record with list of sources."""
-    mef_doc_type = current_app.config.get(
-        'RECORDS_REST_ENDPOINTS', {}).get(
-        'mef', {}
-    ).get('search_type', '')
-    if doc_type == mef_doc_type:
+    if doc_type.startswith('mef'):
         sources = []
         # TODO: add the list of sources into the current_app.config
         if 'rero' in json:
@@ -50,4 +44,6 @@ def extend_mef_record(
             sources.append('gnd')
         if 'bnf' in json:
             sources.append('bnf')
+        if 'idref' in json:
+            sources.append('idref')
         json['sources'] = sources

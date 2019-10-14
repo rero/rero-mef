@@ -97,15 +97,15 @@ class Transformation(object):
             self.json_dict['pid'] = pid
 
         fields_024 = self.marc.get_fields('024')
-        if fields_024:
+        for field_024 in fields_024:
             if (
-                fields_024[0].get_subfields('a') and
-                fields_024[0].get_subfields('2')
+                field_024.get_subfields('0') and
+                field_024.get_subfields('2')
             ):
-                subfields_a = fields_024[0].get_subfields('a')[0]
-                subfields_2 = fields_024[0].get_subfields('2')[0]
-                if subfields_2 == 'uri':
-                    self.json_dict['identifier_for_person'] = subfields_a
+                subfields_0 = field_024.get_subfields('0')[0]
+                subfields_2 = field_024.get_subfields('2')[0]
+                if subfields_2 == 'gnd':
+                    self.json_dict['identifier_for_person'] = subfields_0
 
     def trans_gnd_birth_and_death_dates(self):
         """Transformation birth_date and death_date."""
@@ -189,8 +189,9 @@ class Transformation(object):
                 'trans_gnd_biographical_information')
         biographical_information = []
         for tag in [678]:
+            subfields = {'a': ', ', 'b': ', ', 'u': ', '}
             biographical_information += \
-                build_string_list_from_fields(self.marc, str(tag), 'abu', ', ')
+                build_string_list_from_fields(self.marc, str(tag), subfields)
         if biographical_information:
             self.json_dict['biographical_information'] = \
                 biographical_information
@@ -201,8 +202,9 @@ class Transformation(object):
             self.logger.info(
                 'Call Function',
                 'trans_preferred_name_for_person')
+        subfields = {'a': ' ', 'b': ' ', 'c': ' '}
         preferred_name_for_person = \
-            build_string_list_from_fields(self.marc, '100', 'ab', ' ')
+            build_string_list_from_fields(self.marc, '100', subfields)
         if preferred_name_for_person:
             self.json_dict['preferred_name_for_person'] = \
                 preferred_name_for_person[0]
@@ -213,8 +215,9 @@ class Transformation(object):
             self.logger.info(
                 'Call Function',
                 'trans_gnd_variant_name_for_person')
+        subfields = {'a': ', ', 'c': ', '}
         variant_name_for_person = \
-            build_string_list_from_fields(self.marc, '400', 'ac', ', ')
+            build_string_list_from_fields(self.marc, '400', subfields)
 
         if variant_name_for_person:
             self.json_dict['variant_name_for_person'] = variant_name_for_person
@@ -228,8 +231,9 @@ class Transformation(object):
             self.logger.info(
                 'Call Function',
                 'trans_gnd_authorized_access_point_representing_a_person')
+        subfields = {'a': ', ', 'b': ', ', 'c': ', ', 'd': ', '}
         authorized_access_point_representing_a_person = \
-            build_string_list_from_fields(self.marc, '100', 'abcd', ', ')
+            build_string_list_from_fields(self.marc, '100', subfields)
         if authorized_access_point_representing_a_person:
             self.json_dict['authorized_access_point_representing_a_person'] = \
                 authorized_access_point_representing_a_person[0]

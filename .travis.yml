@@ -29,7 +29,8 @@ addons:
 # See https://github.com/travis-ci/travis-ci/issues/8836
 sudo: true
 
-dist: trusty # Chrome driver fails if not trusty dist
+# Chrome driver fails if not trusty dist
+dist: trusty
 
 notifications:
   email: # sent to the committer and the author
@@ -54,39 +55,42 @@ env:
     # Enable end-to-end tests
     - E2E=no
   matrix:
-    - REQUIREMENTS=prod
-    # - REQUIREMENTS=prod E2E=yes
-    - REQUIREMENTS=qa
+    - REQUIREMENTS="--deploy" E2E=yes
+    - REQUIREMENTS=""
 
 python:
   - "3.6"
 
 before_install:
   # Stop default travis services
-  - "sudo service mysql stop"
-  - "sudo service postgresql stop"
+  - sudo service mysql stop
+  - sudo service postgresql stop
+  # start chromedriver
+  - PATH=$PATH:$HOME/webdrivers
+  - if [ ${E2E} == 'yes' ] && [ ! -f $HOME/webdrivers/chromedriver ]; then wget https://chromedriver.storage.googleapis.com/2.31/chromedriver_linux64.zip -P $HOME/webdrivers; unzip -d $HOME/webdrivers $HOME/webdrivers/chromedriver_linux64.zip; fi  # noqa
   # Start docker services
-  - "docker-compose up -d"
-  # Chrome webdriver for Selenium
-  - "PATH=$PATH:$HOME/webdrivers"
-  - "if [ ${E2E} == 'yes' ] && [ ! -f $HOME/webdrivers/chromedriver ]; then wget https://chromedriver.storage.googleapis.com/2.31/chromedriver_linux64.zip -P $HOME/webdrivers; unzip -d $HOME/webdrivers $HOME/webdrivers/chromedriver_linux64.zip; fi"
-  - "nvm install 6; nvm use 6"
-  - "travis_retry pip install --upgrade setuptools py pipenv==2018.10.9"
-  - "travis_retry pip install twine wheel coveralls"
+  - docker-compose up -d
+  # - LATEST_CHROMEDRIVER_VERSION=`curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE"`
+  # - curl "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" -O
+  # - unzip chromedriver_linux64.zip -d ~/bin
+  - nvm install 8; nvm use 8
+  - travis_retry pip install --upgrade setuptools py pipenv==2018.10.9
+  - travis_retry pip install twine wheel coveralls
   # patch default version of travis which is mark as unsave by pipenv check
-  - "travis_retry pip install --upgrade numpy"
+  - travis_retry pip install --upgrade numpy six
+  - pipenv run pip list
 
 install:
-  - "./scripts/bootstrap --ci"
+  - ./scripts/bootstrap --ci $REQUIREMENTS
 
 before_script:
   # https://docs.travis-ci.com/user/gui-and-headless-browsers/
-  - "export DISPLAY=:99.0"
-  - "if [ ${E2E} == 'yes' ]; then sh -e /etc/init.d/xvfb start; sleep 3; fi"
   # Allow services running inside docker to start
-  - "./docker/wait-for-services.sh"
+  - ./docker/wait-for-services.sh
 
 script:
+  - export DISPLAY=:99.0
+  - if [ ${E2E} == 'yes' ]; then sh -e /etc/init.d/xvfb start; sleep 3; fi
   - ./run-tests.sh # E2E tests are skipped if E2E env is set to 'no'
 
 after_success:

@@ -26,52 +26,55 @@
 
 from invenio_search import current_search
 
-from rero_mef.authorities.api import BnfRecord, GndRecord, MefSearch, \
-    ViafRecord
+from rero_mef.authorities.bnf.api import BnfRecord
+from rero_mef.authorities.gnd.api import GndRecord
+from rero_mef.authorities.mef.api import MefSearch
+from rero_mef.authorities.viaf.api import ViafRecord
 
 
 def update_indexes(agency):
     """Update indexes."""
-    data = {
-        'auth': 'authorities-',
-        'agency': agency,
-        'person': '-person-v0.0.1'
-    }
-    index = '{auth}{agency}{person}'.format(**data)
+    index = '{agency}-{agency}-person-v0.0.1'.format(
+        agency=agency
+    )
     current_search.flush_and_refresh(index=index)
 
 
 def test_create_mef_from_agency_with_viaf_links(
         app, viaf_record, bnf_record, gnd_record):
     """Test create MEF record from agency with viaf links."""
-    returned_record, status = ViafRecord.create_or_update(
+    returned_record, action, mef_action = ViafRecord.create_or_update(
         viaf_record, agency='viaf', dbcommit=True, reindex=True
     )
     update_indexes('viaf')
-    assert status == 'create'
+    assert action.name == 'CREATE'
     assert returned_record['pid'] == '66739143'
     assert returned_record['bnf_pid'] == '10000690'
     assert returned_record['gnd_pid'] == '12391664X'
     assert returned_record['rero_pid'] == 'A023655346'
+    assert returned_record['idref_pid'] == '069774331'
 
-    returned_bnf_record, bnf_status = BnfRecord.create_or_update(
+    returned_record, action, mef_action = BnfRecord.create_or_update(
         bnf_record, agency='bnf', dbcommit=True, reindex=True
     )
     update_indexes('bnf')
     update_indexes('mef')
-    assert bnf_status == 'create'
-    assert returned_bnf_record['pid'] == '10000690'
+    assert action.name == 'CREATE'
+    assert mef_action.name == 'CREATE'
+    assert returned_record['pid'] == '10000690'
 
-    returned_gnd_record, gnd_status = GndRecord.create_or_update(
+    returned_record, action, mef_action = GndRecord.create_or_update(
         gnd_record, agency='gnd', dbcommit=True, reindex=True
     )
     update_indexes('gnd')
     update_indexes('mef')
-    assert gnd_status == 'create'
-    assert returned_gnd_record['pid'] == '12391664X'
+    assert action.name == 'CREATE'
+    assert mef_action.name == 'UPDATE'
+    assert returned_record['pid'] == '12391664X'
 
     key = '{agency}{identifier}'.format(agency='bnf', identifier='.pid')
     result = MefSearch().filter(
-        'term', **{key: '10000690'}).source().scan()
+        'term', **{key: '10000690'}
+    ).source().scan()
     sources = [n['sources'] for n in result]
     assert sources[0] == ['gnd', 'bnf']

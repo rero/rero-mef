@@ -26,53 +26,59 @@
 
 from invenio_search import current_search
 
-from rero_mef.authorities.api import BnfRecord, GndRecord, MefRecord, \
-    ReroRecord, ViafRecord
+from rero_mef.authorities.bnf.api import BnfRecord
+from rero_mef.authorities.gnd.api import GndRecord
+from rero_mef.authorities.idref.api import IdrefRecord
+from rero_mef.authorities.mef.api import MefRecord
+from rero_mef.authorities.rero.api import ReroRecord
+from rero_mef.authorities.viaf.api import ViafRecord
 
 
 def test_ref_resolvers(
-        app, bnf_record, gnd_record, rero_record, viaf_record):
+        app, bnf_record, gnd_record, rero_record, viaf_record, idref_record):
     """Test ref resolvers."""
 
     """VIAF record."""
-    viaf_rec, status = ViafRecord.create_or_update(
+    returned_record, action, dummy = ViafRecord.create_or_update(
         viaf_record, agency='viaf', dbcommit=True, reindex=True
     )
-    viaf_pid = viaf_rec['pid']
+    viaf_pid = returned_record['pid']
     current_search.flush_and_refresh(
-        index='authorities-viaf-person-v0.0.1')
+        index='viaf-viaf-person-v0.0.1')
     current_search.flush_and_refresh(
-        index='authorities-mef-person-v0.0.1')
+        index='mef-mef-person-v0.0.1')
 
     """BNF record."""
-    bnf_rec, status = BnfRecord.create_or_update(
+    returned_record, action, mef_action = BnfRecord.create_or_update(
         bnf_record, agency='bnf', dbcommit=True, reindex=True
     )
-    current_search.flush_and_refresh(
-        index='authorities-bnf-person-v0.0.1')
-    current_search.flush_and_refresh(
-        index='authorities-mef-person-v0.0.1')
-    bnf_pid = bnf_rec['pid']
+    current_search.flush_and_refresh(index='bnf-bnf-person-v0.0.1')
+    current_search.flush_and_refresh(index='mef-mef-person-v0.0.1')
+    bnf_pid = returned_record['pid']
 
     """GND record."""
-    gnd_rec, status = GndRecord.create_or_update(
+    returned_record, action, mef_action = GndRecord.create_or_update(
         gnd_record, agency='gnd', dbcommit=True, reindex=True
     )
-    current_search.flush_and_refresh(
-        index='authorities-gnd-person-v0.0.1')
-    current_search.flush_and_refresh(
-        index='authorities-mef-person-v0.0.1')
-    gnd_pid = gnd_rec.get('pid')
+    current_search.flush_and_refresh(index='gnd-gnd-person-v0.0.1')
+    current_search.flush_and_refresh(index='mef-mef-person-v0.0.1')
+    gnd_pid = returned_record.get('pid')
 
     """RERO record."""
-    rero_rec, status = ReroRecord.create_or_update(
+    returned_record, action, mef_action = ReroRecord.create_or_update(
         rero_record, agency='rero', dbcommit=True, reindex=True
     )
-    current_search.flush_and_refresh(
-        index='authorities-rero-person-v0.0.1')
-    rero_pid = rero_rec.get('pid')
-    current_search.flush_and_refresh(
-        index='authorities-mef-person-v0.0.1')
+    current_search.flush_and_refresh(index='rero-rero-person-v0.0.1')
+    current_search.flush_and_refresh(index='mef-mef-person-v0.0.1')
+    rero_pid = returned_record.get('pid')
+
+    """IDREF record."""
+    returned_record, action, mef_action = IdrefRecord.create_or_update(
+        idref_record, agency='rero', dbcommit=True, reindex=True
+    )
+    current_search.flush_and_refresh(index='idref-idref-person-v0.0.1')
+    current_search.flush_and_refresh(index='mef-mef-person-v0.0.1')
+    idref_pid = returned_record.get('pid')
 
     """MEF record."""
     mef_rec_resolved = MefRecord.get_mef_by_viaf_pid(
@@ -82,3 +88,4 @@ def test_ref_resolvers(
     assert mef_rec_resolved.get('bnf').get('pid') == bnf_pid
     assert mef_rec_resolved.get('gnd').get('pid') == gnd_pid
     assert mef_rec_resolved.get('rero').get('pid') == rero_pid
+    assert mef_rec_resolved.get('idref').get('pid') == idref_pid

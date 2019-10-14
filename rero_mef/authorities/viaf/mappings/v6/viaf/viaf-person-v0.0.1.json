@@ -1,0 +1,39 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "max_result_window": 10000000
+  },
+  "mappings": {
+    "viaf-person-v0.0.1": {
+      "date_detection": false,
+      "numeric_detection": false,
+      "properties": {
+        "$schema": {
+          "type": "keyword"
+        },
+        "pid": {
+          "type": "keyword"
+        },
+        "bnf_pid": {
+          "type": "keyword"
+        },
+        "gnd_pid": {
+          "type": "keyword"
+        },
+        "rero_pid": {
+          "type": "keyword"
+        },
+        "idref_pid": {
+          "type": "keyword"
+        },
+        "_created": {
+          "type": "date"
+        },
+        "_updated": {
+          "type": "date"
+        }
+      }
+    }
+  }
+}

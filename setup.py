@@ -33,7 +33,7 @@ from setuptools import find_packages, setup
 
 readme = open('README.rst').read()
 
-INVENIO_VERSION = "3.1.1"
+INVENIO_VERSION = "3.2.1"
 
 packages = find_packages()
 
@@ -59,6 +59,11 @@ setup(
     include_package_data=True,
     platforms='any',
     entry_points={
+        'invenio_celery.tasks': [
+            'rero_mef = rero_mef.tasks',
+            'idref = rero_mef.authorities.idref.tasks'
+            'gnd = rero_mef.authorities.gnd.tasks'
+        ],
         'console_scripts': [
             'rero-mef = invenio_app.cli:cli',
         ],
@@ -71,40 +76,71 @@ setup(
         'invenio_base.blueprints': [
             'rero_mef = rero_mef.views:blueprint',
         ],
+        'invenio_base.api_blueprints': [
+            'api_rero_mef = rero_mef.views:api_blueprint'
+        ],
         'invenio_config.module': [
             'rero_mef = rero_mef.config',
         ],
         'invenio_db.models': [
-            'authorities = rero_mef.authorities.models',
+            'viaf = rero_mef.authorities.viaf.models',
+            'bnf = rero_mef.authorities.bnf.models',
+            'gnd = rero_mef.authorities.gnd.models',
+            'rero = rero_mef.authorities.rero.models',
+            'mef = rero_mef.authorities.mef.models',
+            'idref = rero_mef.authorities.idref.models'
+            'agencies = rero_mef.authorities.models'
         ],
         'invenio_pidstore.minters': [
-            'viaf = rero_mef.authorities.minters:viaf_id_minter',
-            'bnf = rero_mef.authorities.minters:bnf_id_minter',
-            'gnd = rero_mef.authorities.minters:gnd_id_minter',
-            'rero = rero_mef.authorities.minters:rero_id_minter',
-            'mef = rero_mef.authorities.minters:mef_id_minter',
+            'viaf = rero_mef.authorities.viaf.minters:viaf_id_minter',
+            'bnf = rero_mef.authorities.bnf.minters:bnf_id_minter',
+            'gnd = rero_mef.authorities.gnd.minters:gnd_id_minter',
+            'rero = rero_mef.authorities.rero.minters:rero_id_minter',
+            'mef = rero_mef.authorities.mef.minters:mef_id_minter',
+            'idref = rero_mef.authorities.idref.minters:idref_id_minter'
+
         ],
         'invenio_pidstore.fetchers': [
-            'viaf = rero_mef.authorities.fetchers:viaf_id_fetcher',
-            'bnf = rero_mef.authorities.fetchers:bnf_id_fetcher',
-            'gnd = rero_mef.authorities.fetchers:gnd_id_fetcher',
-            'rero = rero_mef.authorities.fetchers:rero_id_fetcher',
-            'mef = rero_mef.authorities.fetchers:mef_id_fetcher',
+            'viaf = rero_mef.authorities.viaf.fetchers:viaf_id_fetcher',
+            'bnf = rero_mef.authorities.bnf.fetchers:bnf_id_fetcher',
+            'gnd = rero_mef.authorities.gnd.fetchers:gnd_id_fetcher',
+            'rero = rero_mef.authorities.rero.fetchers:rero_id_fetcher',
+            'mef = rero_mef.authorities.mef.fetchers:mef_id_fetcher',
+            'idref = rero_mef.authorities.idref.fetchers:idref_id_fetcher'
         ],
         'invenio_jsonschemas.schemas': [
-            'authorities = rero_mef.authorities.jsonschemas',
+            'viaf = rero_mef.authorities.viaf.jsonschemas',
+            'bnf = rero_mef.authorities.bnf.jsonschemas',
+            'gnd = rero_mef.authorities.gnd.jsonschemas',
+            'rero = rero_mef.authorities.rero.jsonschemas',
+            'mef = rero_mef.authorities.mef.jsonschemas',
+            'idref = rero_mef.authorities.idref.jsonschemas'
         ],
         'invenio_search.mappings': [
-            'authorities = rero_mef.authorities.mappings',
+            'viaf = rero_mef.authorities.viaf.mappings',
+            'bnf = rero_mef.authorities.bnf.mappings',
+            'gnd = rero_mef.authorities.gnd.mappings',
+            'rero = rero_mef.authorities.rero.mappings',
+            'mef = rero_mef.authorities.mef.mappings',
+            'idref = rero_mef.authorities.idref.mappings'
         ],
         'invenio_records.jsonresolver': [
-            'bnf = rero_mef.authorities.jsonresolvers.bnf_resolver',
-            'gnd = rero_mef.authorities.jsonresolvers.gnd_resolver',
-            'rero = rero_mef.authorities.jsonresolvers.rero_resolver',
-            'mef = rero_mef.authorities.jsonresolvers.mef_resolver'
+            'bnf = rero_mef.authorities.bnf.jsonresolvers.bnf_resolver',
+            'gnd = rero_mef.authorities.gnd.jsonresolvers.gnd_resolver',
+            'rero = rero_mef.authorities.rero.jsonresolvers.rero_resolver',
+            'mef = rero_mef.authorities.mef.jsonresolvers.mef_resolver',
+            'idref = rero_mef.authorities.idref.jsonresolvers.idref_resolver'
         ],
         'flask.commands': [
             'fixtures = rero_mef.cli:fixtures',
+            'utils = rero_mef.cli:utils',
+        ],
+        'dojson.cli.rule': [
+            'tomarc = dojson.contrib.to_marc21:to_marc21',
+            'idrefjson = rero_ebooks.dojson.from_unimarc.model:from_unimarc'
+        ],
+        'dojson.cli.dump': [
+            'pjson = rero_mef.dojson.utils:dump'
         ],
     },
     classifiers=[
