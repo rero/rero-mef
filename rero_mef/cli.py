@@ -106,6 +106,8 @@ def marc_to_json(agency, marc_file, json_file, verbose):
             json_file = sys.stdout
 
         json_file.write('[\n')
+        not_first_line = False
+        pids = {}
         for record, count in records:
             if (
                 (agency == 'bnf' and not record.get_fields('200')) or
@@ -114,12 +116,24 @@ def marc_to_json(agency, marc_file, json_file, verbose):
             ):
                 pass
             else:
-                if count > 1:
-                    json_file.write(',\n')
-
                 data = transformation[agency](marc=record)
-                add_md5_to_json(data.json)
-                json.dump(data.json, json_file, ensure_ascii=False, indent=2)
+                pid = data.json.get('pid')
+                if pids.get(pid):
+                    click.secho(
+                        '  Error duplicate pid in {agency}: {pid}'.format(
+                            agency=agency,
+                            pid=pid
+                        ),
+                        fg='red'
+                    )
+                else:
+                    if not_first_line:
+                        json_file.write(',\n')
+                    pids[pid] = 1
+                    add_md5_to_json(data.json)
+                    json.dump(data.json, json_file, ensure_ascii=False,
+                              indent=2)
+                    not_first_line = True
         json_file.write('\n]\n')
 
 

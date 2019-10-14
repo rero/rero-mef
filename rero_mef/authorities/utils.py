@@ -346,14 +346,14 @@ def viaf_to_mef(viaf_record):
     with current_app.app_context():
         agencies = current_app.config.get('AGENCIES')
         agency_record = viaf_record
-        del agency_record['viaf_pid']
+        viaf_pid = agency_record['viaf_pid']
         for key in agency_record:
             agency = key[:-4]
             if agencies[agency].get_record_by_pid(agency_record[key]):
                 add_agency_to_json(mef_record, agency, agency_record[key])
         if len(mef_record):
             add_schema(mef_record, 'mef')
-            mef_record['viaf_pid'] = viaf_record[key]
+            mef_record['viaf_pid'] = viaf_pid
         return mef_record
 
 

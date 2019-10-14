@@ -24,10 +24,32 @@
 
 """Record serialization."""
 
-from flask import request
+from flask import current_app, request
+from invenio_records_rest.links import default_links_factory_with_additional
 from invenio_records_rest.schemas import RecordSchemaJSONV1
 from invenio_records_rest.serializers.json import JSONSerializer
 from invenio_records_rest.serializers.response import record_responsify
+
+from .authorities.api import MefRecord
+
+
+def mef_link(pid, record):
+    """Add mef link to agencys."""
+    agencies = current_app.config.get('AGENCIES', {})
+    current_agency = None
+    for agency, agency_class in agencies.items():
+        if agency_class == type(record):
+            current_agency = agency
+    mef_pid = MefRecord.get_mef_by_agency_pid(
+        pid.pid_value,
+        current_agency,
+        pid_only=True
+    )
+    links = dict()
+    if mef_pid:
+        links = dict(mef='{scheme}://{host}/api/mef/' + str(mef_pid))
+    link_factory = default_links_factory_with_additional(links)
+    return link_factory(pid)
 
 
 class ReroMefSerializer(JSONSerializer):
@@ -54,7 +76,7 @@ class ReroMefSerializer(JSONSerializer):
             record['sources'] = sources
         return super(
             ReroMefSerializer, self).serialize(
-                pid, record, links_factory, **kwargs)
+                pid, record, links_factory=mef_link, **kwargs)
 
 
 json_v1 = ReroMefSerializer(RecordSchemaJSONV1)

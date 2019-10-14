@@ -71,6 +71,9 @@ setup(
         'invenio_base.blueprints': [
             'rero_mef = rero_mef.views:blueprint',
         ],
+        'invenio_base.api_blueprints': [
+            'api_rero_mef = rero_mef.views:api_blueprint'
+        ],
         'invenio_config.module': [
             'rero_mef = rero_mef.config',
         ],

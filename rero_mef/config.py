@@ -236,7 +236,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_index='authorities-gnd-person-v0.0.1',
         search_type='gnd-person-v0.0.1',
         record_serializers={
-            'application/json': ('invenio_records_rest.serializers'
+            'application/json': ('rero_mef.serializers'
                                  ':json_v1_response'),
         },
         search_serializers={
@@ -259,7 +259,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_index='authorities-bnf-person-v0.0.1',
         search_type='bnf-person-v0.0.1',
         record_serializers={
-            'application/json': ('invenio_records_rest.serializers'
+            'application/json': ('rero_mef.serializers'
                                  ':json_v1_response'),
         },
         search_serializers={
@@ -282,7 +282,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_index='authorities-rero-person-v0.0.1',
         search_type='rero-person-v0.0.1',
         record_serializers={
-            'application/json': ('invenio_records_rest.serializers'
+            'application/json': ('rero_mef.serializers'
                                  ':json_v1_response'),
         },
         search_serializers={
@@ -319,4 +319,5 @@ RECORDS_REST_ENDPOINTS = dict(
         max_result_window=10000000,
         error_handlers=dict(),
     ),
+
 )

@@ -52,6 +52,12 @@ fi
 # install the application and all the dependencies
 pipenv install ${flags[@]}
 
+# to avoid IPython dependency problem on Mac OS X
+if [ "$(uname -s)" == "Darwin" ]; then
+  echo "Install 'appnope' for Mac OS X"
+  pipenv run pip install appnope
+fi
+
 # install assets utils
 npm i npm@latest -g --prefix `pipenv --venv` && pipenv run npm install --prefix `pipenv --venv` --silent -g node-sass@4.9.0 clean-css@3.4.19 uglify-js@2.7.3 requirejs@2.2.0 @angular/cli@7.0.4
 

@@ -97,15 +97,15 @@ class Transformation(object):
             self.json_dict['pid'] = pid
 
         fields_024 = self.marc.get_fields('024')
-        if fields_024:
+        for field_024 in fields_024:
             if (
-                fields_024[0].get_subfields('a') and
-                fields_024[0].get_subfields('2')
+                field_024.get_subfields('0') and
+                field_024.get_subfields('2')
             ):
-                subfields_a = fields_024[0].get_subfields('a')[0]
-                subfields_2 = fields_024[0].get_subfields('2')[0]
-                if subfields_2 == 'uri':
-                    self.json_dict['identifier_for_person'] = subfields_a
+                subfields_0 = field_024.get_subfields('0')[0]
+                subfields_2 = field_024.get_subfields('2')[0]
+                if subfields_2 == 'gnd':
+                    self.json_dict['identifier_for_person'] = subfields_0
 
     def trans_gnd_birth_and_death_dates(self):
         """Transformation birth_date and death_date."""
@@ -202,7 +202,7 @@ class Transformation(object):
                 'Call Function',
                 'trans_preferred_name_for_person')
         preferred_name_for_person = \
-            build_string_list_from_fields(self.marc, '100', 'ab', ' ')
+            build_string_list_from_fields(self.marc, '100', 'abc', ' ')
         if preferred_name_for_person:
             self.json_dict['preferred_name_for_person'] = \
                 preferred_name_for_person[0]

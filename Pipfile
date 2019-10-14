@@ -7,7 +7,7 @@ name = "pypi"
 rero-mef = {editable = true, path = "."}
 Babel = ">=2.4.0"
 Flask-BabelEx = ">=0.9.3"
-ijson = ">=2.3"
+ijson = ">=2.5.1"
 invenio = {version = "~=3.1.0",extras = ["base", "postgresql", "auth", "metadata", "elasticsearch6"]}
 uwsgi = ">=2.0"
 pymarc = "*"
@@ -22,7 +22,6 @@ amqp = "*"
 celery = "<4.3.0"
 
 [dev-packages]
-rero-mef = {editable = true, path = "."}
 Flask-Debugtoolbar = ">=0.10.1"
 Sphinx = ">=1.5.1"
 check-manifest = ">=0.35"

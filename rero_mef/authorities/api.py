@@ -25,6 +25,7 @@
 """API for manipulating authorities."""
 
 from flask import current_app
+from invenio_records_rest.links import default_links_factory_with_additional
 from invenio_search.api import RecordsSearch
 
 from .fetchers import bnf_id_fetcher, gnd_id_fetcher, mef_id_fetcher, \
@@ -106,18 +107,36 @@ class MefRecord(AuthRecord):
             return ref_string
 
     @classmethod
-    def get_mef_by_agency_pid(cls, agency_pid, agency):
+    def get_mef_by_agency_pid(cls, agency_pid, agency, pid_only=False):
         """Get mef record by agency pid value."""
         key = '{agency}{identifier}'.format(
             agency=agency, identifier='.pid')
         search = MefSearch()
-        result = search.filter(
-            'term', **{key: agency_pid}).source(includes=['pid']).scan()
+        result = search.query(
+            'match', **{key: agency_pid}).source(includes=['pid']).scan()
         try:
             mef_pid = next(result).pid
-            return cls.get_record_by_pid(mef_pid)
+            if pid_only:
+                return mef_pid
+            else:
+                return cls.get_record_by_pid(mef_pid)
         except StopIteration:
             return None
+
+    @classmethod
+    def get_all_mef_pids_by_agency(cls, agency):
+        """Get all mef pids for agency."""
+        key = '{agency}{identifier}'.format(
+            agency=agency, identifier='.pid')
+        search = MefSearch()
+        results = search.filter(
+            'exists',
+            field=key
+        ).source(includes=['pid', key]).scan()
+        for result in results:
+            result_dict = result.to_dict()
+            yield result_dict.get(agency, {}).get('pid'),\
+                result_dict.get('pid')
 
     @classmethod
     def get_mef_by_viaf_pid(cls, viaf_pid):
@@ -202,6 +221,12 @@ class MefRecord(AuthRecord):
                 # TODO: delete mef record if last agency
             else:
                 raise NotImplementedError
+
+    @property
+    def links(cls, pid, record=None, **kwargs):
+        """Link factory."""
+        return default_links_factory_with_additional(
+            dict(test_link='{scheme}://{host}/{pid.pid_value}'))
 
 
 class GndRecord(AuthRecord):

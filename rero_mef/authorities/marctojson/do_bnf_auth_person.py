@@ -178,7 +178,7 @@ class Transformation(object):
                 'Call Function',
                 'trans_preferred_name_for_person')
         preferred_name_for_person = \
-            build_string_list_from_fields(self.marc, '200', 'ab', ', ')
+            build_string_list_from_fields(self.marc, '200', 'abc', ', ')
         numbers = \
             build_string_list_from_fields(self.marc, '200', 'd', ', ')
         if preferred_name_for_person:
