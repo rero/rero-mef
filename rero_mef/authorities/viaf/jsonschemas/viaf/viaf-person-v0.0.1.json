@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Schema for viaf authority",
+  "type": "object",
+  "required": [
+    "$schema",
+    "pid"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "title": "Schema",
+      "description": "Schema to viaf authority record.",
+      "type": "string",
+      "minLength": 7
+    },
+    "pid": {
+      "title": "Viaf record ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "bnf_pid": {
+      "title": "Bnf authority ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "gnd_pid": {
+      "title": "Gnd authority ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "rero_pid": {
+      "title": "Rero authority ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "idref_pid": {
+      "title": "Idref authority ID",
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

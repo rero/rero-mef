@@ -26,88 +26,12 @@
 
 from __future__ import absolute_import
 
-from invenio_db import db
-from invenio_pidstore.models import RecordIdentifier
-
-
-class ViafIdentifier(RecordIdentifier):
-    """Sequence generator for Viaf Authority identifiers."""
-
-    __tablename__ = 'viaf_id'
-    __mapper_args__ = {'concrete': True}
-
-    recid = db.Column(
-        db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True,
-        autoincrement=True,
-    )
-
-
-class BnfIdentifier(RecordIdentifier):
-    """Sequence generator for BNF Authority identifiers."""
-
-    __tablename__ = 'bnf_id'
-    __mapper_args__ = {'concrete': True}
-
-    recid = db.Column(
-        db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True,
-        autoincrement=True,
-    )
-
-
-class GndIdentifier(RecordIdentifier):
-    """Sequence generator for gnd Authority identifiers."""
-
-    __tablename__ = 'gnd_id'
-    __mapper_args__ = {'concrete': True}
-
-    recid = db.Column(
-        db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True,
-        autoincrement=True,
-    )
-
-
-class MefIdentifier(RecordIdentifier):
-    """Sequence generator for mef Authority identifiers."""
-
-    __tablename__ = 'mef_id'
-    __mapper_args__ = {'concrete': True}
-
-    recid = db.Column(
-        db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True,
-        autoincrement=True,
-    )
-
-
-class ReroIdentifier(RecordIdentifier):
-    """Sequence generator for rero Authority identifiers."""
-
-    __tablename__ = 'rero_id'
-    __mapper_args__ = {'concrete': True}
-
-    recid = db.Column(
-        db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True,
-        autoincrement=True,
-    )
-
-
-class MefAction(object):
-    """Class holding all availabe Mef record creation actions."""
-
-    CREATE = 'create'
-    UPDATE = 'update'
-    DISCARD = 'discard'
-    DELETE = 'delete'
-
 
 class AgencyAction(object):
     """Class holding all availabe agency record creation actions."""
 
     CREATE = 'create'
     UPDATE = 'update'
+    UPTODATE = 'uptodate'
     DISCARD = 'discard'
     DELETE = 'delete'

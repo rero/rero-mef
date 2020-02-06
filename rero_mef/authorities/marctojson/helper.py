@@ -134,7 +134,26 @@ def display_record(record, ctrl=False):
     print(nice_record(record, ctrl))
 
 
-def build_string_list_from_fields(record, tag, subfields, separator):
+def remove_trailing_punctuation(data, punctuation=',',
+                                spaced_punctuation=':;/-'):
+    """Remove trailing punctuation from data.
+
+    The punctuation parameter list the
+    punctuation characters to be removed
+    (preceded by a space or not).
+
+    The spaced_punctuation parameter list the
+    punctuation characters needing one or more preceding space(s)
+    in order to be removed.
+    """
+    return re.sub(
+        r'([{0}]|\s+[{1}])$'.format(punctuation, spaced_punctuation),
+        '',
+        data.rstrip()
+    ).rstrip()
+
+
+def build_string_list_from_fields(record, tag, subfields):
     """Build a list of strings (one per field).
 
     from the given field tag and given subfields.
@@ -143,16 +162,21 @@ def build_string_list_from_fields(record, tag, subfields, separator):
     fields = record.get_fields(tag)
     field_string_list = []
     for field in fields:
-        subfield_list = []
+        subfield_string = ''
         for code, data in field:
-            if re.match('[' + subfields + ']', code):
-                subfield_list.append(data)
-        string_from_field = separator.join(subfield_list)
-        string_from_field = string_from_field.replace('\x98', '')
-        string_from_field = string_from_field.replace('\x9C', '')
-        string_from_field = string_from_field.replace(',,', ',')
-        string_from_field = re.sub(r'[,:;]$', '', string_from_field.strip())
-        field_string_list.append(string_from_field.strip())
+            if code in subfields:
+                if isinstance(data, (list, set)):
+                    data = subfields[code].join(data)
+                data = data.replace('\x98', '')
+                data = data.replace('\x9C', '')
+                data = data.replace(',,', ',')
+                data = remove_trailing_punctuation(data)
+                data = data.strip()
+                if subfield_string != '':
+                    subfield_string += subfields[code] + data
+                else:
+                    subfield_string += data
+        field_string_list.append(subfield_string)
     return field_string_list
 
 

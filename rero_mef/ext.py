@@ -26,6 +26,10 @@
 
 from __future__ import absolute_import, print_function
 
+from invenio_indexer.signals import before_record_index
+
+from .receivers import extend_mef_record
+
 
 class REROMEFAPP(object):
     """rero-mef extension."""
@@ -42,6 +46,4 @@ class REROMEFAPP(object):
 
     def register_signals(app):
         """Register signals."""
-        from .receivers import extend_mef_record
-        from invenio_indexer.signals import before_record_index
         before_record_index.connect(extend_mef_record, weak=False)

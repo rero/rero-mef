@@ -24,7 +24,6 @@
 
 """Marctojsons transformer for Bnf records."""
 
-
 from rero_mef.authorities.marctojson.helper import \
     build_string_list_from_fields
 
@@ -98,15 +97,10 @@ class Transformation(object):
             self.json_dict['identifier_for_person'] = identifier_for_person
 
     def trans_bnf_birth_and_death_dates(self):
-        """Transformation birth_date and death_date.
-
-        103 $a pos. 1-8 YYYYMMDD Si absence de 103 --> 200 $f (YYYY)
-        string (date, précis au jour ou à l'année),
-        non répétitif "1849-10-14"
-        """
+        """Transformation birth_date and death_date."""
         def format_103_date(date_str):
             """DocString."""
-            date_formated = date_str
+            date_formated = date_str.strip()
             if len(date_str) == 9:
                 extra = date_str[8]
                 date = date_str[:8]
@@ -160,13 +154,12 @@ class Transformation(object):
         """Transformation biographical_information 300 $a 34x $a."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_biographical_information')
-        tag_34x = range(340, 349 + 1)    # 340:349
-        tag_list = [300] + [*tag_34x]  # 300, 340:349
+        tag_list = [300] + list(range(340, 349 + 1))   # 300, 340:349
         biographical_information = []
+        subfields = {'a': ', '}
         for tag in tag_list:
             biographical_information += \
-                build_string_list_from_fields(
-                    self.marc, str(tag), 'a', ', ')
+                build_string_list_from_fields(self.marc, str(tag), subfields)
         if biographical_information:
             self.json_dict['biographical_information'] = \
                 biographical_information
@@ -177,23 +170,20 @@ class Transformation(object):
             self.logger.info(
                 'Call Function',
                 'trans_preferred_name_for_person')
+        subfields = {'a': ', ', 'b': ', ', 'c': ', ', 'd': ' '}
         preferred_name_for_person = \
-            build_string_list_from_fields(self.marc, '200', 'abc', ', ')
-        numbers = \
-            build_string_list_from_fields(self.marc, '200', 'd', ', ')
+            build_string_list_from_fields(self.marc, '200', subfields)
         if preferred_name_for_person:
             self.json_dict['preferred_name_for_person'] = \
-                '{name} {number}'.format(
-                    name=preferred_name_for_person[0],
-                    number=numbers[0]
-                ).strip()
+                preferred_name_for_person[0]
 
     def trans_bnf_variant_name_for_person(self):
         """Transformation variant_name_for_person 400 $a $b."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_variant_name_for_person')
+        subfields = {'a': ', ', 'b': ', '}
         variant_name_for_person = \
-            build_string_list_from_fields(self.marc, '400', 'ab', ', ')
+            build_string_list_from_fields(self.marc, '400', subfields)
         if variant_name_for_person:
             self.json_dict['variant_name_for_person'] = variant_name_for_person
 
@@ -206,8 +196,9 @@ class Transformation(object):
             self.logger.info(
                 'Call Function',
                 'trans_authorized_access_point_representing_a_person')
+        subfields = {'a': ', ', 'b': ', ', 'c': ', ', 'd': ', ', 'f': ', '}
         authorized_access_point_representing_a_person = \
-            build_string_list_from_fields(self.marc, '200', 'abcdf', ', ')
+            build_string_list_from_fields(self.marc, '200', subfields)
         if authorized_access_point_representing_a_person:
             self.json_dict['authorized_access_point_representing_a_person'] = \
                 authorized_access_point_representing_a_person[0]

@@ -30,7 +30,7 @@ from invenio_records_rest.schemas import RecordSchemaJSONV1
 from invenio_records_rest.serializers.json import JSONSerializer
 from invenio_records_rest.serializers.response import record_responsify
 
-from .authorities.api import MefRecord
+from .authorities.mef.api import MefRecord
 
 
 def mef_link(pid, record):

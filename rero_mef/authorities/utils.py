@@ -37,12 +37,31 @@ import click
 import ijson
 import psutil
 import psycopg2
+import sqlalchemy
 from flask import current_app
-from invenio_indexer.api import RecordIndexer
+from invenio_db import db
+from invenio_pidstore.errors import PIDDoesNotExistError
+from invenio_pidstore.models import PersistentIdentifier
+from invenio_records.api import Record
+from invenio_records_rest.utils import obj_or_import_string
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-from sqlalchemy import create_engine
 
-from .api import MefRecord
+
+def get_host():
+    """Get the host from the config."""
+    # from flask import current_app
+    # with current_app.app_context():
+    #     return current_app.config.get('JSONSCHEMAS_HOST')
+    return 'mef.rero.ch'
+
+
+def resolve_record(path, object_class):
+    """Resolve local records."""
+    try:
+        record = object_class.get_record_by_pid(path)
+        return record
+    except PIDDoesNotExistError:
+        return {}
 
 
 def metadata_csv_line(record, record_uuid, date):
@@ -79,6 +98,7 @@ def pidstore_csv_line(agency, agency_pid, record_uuid, date):
 
 def add_agency_to_json(mef_record, agency, agency_pid):
     """Add agency ref to mef record."""
+    from .mef.api import MefRecord
     ref_string = MefRecord.build_ref_string(
         agency=agency, agency_pid=agency_pid
     )
@@ -89,7 +109,7 @@ def raw_connection():
     """Return a raw connection to the database."""
     with current_app.app_context():
         URI = current_app.config.get('SQLALCHEMY_DATABASE_URI')
-        engine = create_engine(URI)
+        engine = sqlalchemy.create_engine(URI)
         # conn = engine.connect()
         connection = engine.raw_connection()
         connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -109,6 +129,25 @@ def db_copy_from(buffer, table, columns):
         )
         cursor.connection.commit()
     except psycopg2.DataError as error:
+        current_app.logger.error('data load error: {0}'.format(error))
+    cursor.execute('VACUUM ANALYSE {table}'.format(table=table))
+    cursor.close()
+    connection.close()
+
+
+def db_copy_to(filehandle, table, columns):
+    """Copy data from db to file."""
+    connection = raw_connection()
+    cursor = connection.cursor()
+    try:
+        cursor.copy_to(
+            file=filehandle,
+            table=table,
+            columns=columns,
+            sep='\t'
+        )
+        cursor.connection.commit()
+    except psycopg2.DataError as error:
         current_app.logger.error(
             'data load error: {0}'.format(error)
         )
@@ -117,16 +156,16 @@ def db_copy_from(buffer, table, columns):
     connection.close()
 
 
-def bulk_index(uuids, agency, process=False, verbose=False):
+def bulk_index(uuids, agency, verbose=False):
     """Bulk index records."""
     if verbose:
         click.echo(' add to index: {count}'.format(count=len(uuids)))
-    indexer = RecordIndexer()
     retry = True
     minutes = 1
+    from .api import AuthRecordIndexer
     while retry:
         try:
-            indexer.bulk_index(uuids)
+            AuthRecordIndexer().bulk_index(uuids, doc_type=agency)
             retry = False
         except Exception as exc:
             msg = 'Bulk Index Error: retry in {minutes} min {exc}'.format(
@@ -139,8 +178,6 @@ def bulk_index(uuids, agency, process=False, verbose=False):
             sleep(minutes * 60)
             retry = True
             minutes *= 2
-    if process:
-        indexer.process_bulk_queue()
 
 
 def print_memory(verbose, message):
@@ -158,18 +195,16 @@ def print_memory(verbose, message):
 
 def bulk_load_agency(agency, data, table, columns,
                      bulk_count=0, verbose=False,
-                     reindex=False, process=False):
+                     reindex=False):
     """Bulk load agency data to table."""
-    # print_memory(verbose, 'Start {agency}'.format(agency=agency))
     if bulk_count <= 0:
         bulk_count = current_app.config.get('BULK_CHUNK_COUNT', 100000)
     count = 0
     buffer = StringIO()
     buffer_uuid = []
+    index = -1
     if 'id' in columns:
         index = columns.index('id')
-    else:
-        index = -1
     with open(data, 'r', encoding='utf-8', buffering=1) as input_file:
         for line in input_file:
             count += 1
@@ -187,24 +222,17 @@ def bulk_load_agency(agency, data, table, columns,
                         ),
                         nl=False
                     )
-                db_copy_from(
-                    buffer=buffer,
-                    table=table,
-                    columns=columns
-                )
+                db_copy_from(buffer=buffer, table=table, columns=columns)
                 buffer.close()
 
                 if index >= 0 and reindex:
-                    bulk_index(
-                        agency=agency,
-                        uuids=buffer_uuid,
-                        process=process,
-                        verbose=verbose
-                    )
+                    bulk_index(agency=agency, uuids=buffer_uuid,
+                               verbose=verbose)
+                    buffer_uuid.clear()
                 else:
                     if verbose:
                         click.echo()
-                buffer_uuid.clear()
+
                 # force the Garbage Collector to release unreferenced memory
                 gc.collect()
                 # new buffer
@@ -220,33 +248,23 @@ def bulk_load_agency(agency, data, table, columns,
             )
         buffer.flush()
         buffer.seek(0)
-        db_copy_from(
-            buffer=buffer,
-            table=table,
-            columns=columns
-        )
+        db_copy_from(buffer=buffer, table=table, columns=columns)
         buffer.close()
         if index >= 0 and reindex:
-            bulk_index(
-                agency=agency,
-                uuids=buffer_uuid,
-                process=process,
-                verbose=verbose
-            )
+            bulk_index(agency=agency, uuids=buffer_uuid, verbose=verbose)
+            buffer_uuid.clear()
         else:
             if verbose:
                 click.echo()
-        buffer_uuid.clear()
 
     # force the Garbage Collector to release unreferenced memory
     gc.collect()
-    # print_memory(verbose, 'End {agency}'.format(agency=agency))
 
 
 def bulk_load_agency_metadata(agency, metadata, bulk_count=0,
-                              verbose=True, reindex=False, process=False):
+                              verbose=True, reindex=False):
     """Bulk load agency data to metadata table."""
-    table = 'records_metadata'
+    table = '{agency}_metadata'.format(agency=agency)
     columns = (
         'created',
         'updated',
@@ -261,13 +279,12 @@ def bulk_load_agency_metadata(agency, metadata, bulk_count=0,
         columns=columns,
         bulk_count=bulk_count,
         verbose=verbose,
-        reindex=reindex,
-        process=process
+        reindex=reindex
     )
 
 
 def bulk_load_agency_pids(agency, pidstore, bulk_count=0,
-                          verbose=True, reindex=False, process=False):
+                          verbose=True, reindex=False):
     """Bulk load agency data to metadata table."""
     table = 'pidstore_pid'
     columns = (
@@ -286,36 +303,149 @@ def bulk_load_agency_pids(agency, pidstore, bulk_count=0,
         columns=columns,
         bulk_count=bulk_count,
         verbose=verbose,
-        reindex=reindex,
-        process=process
+        reindex=reindex
     )
 
 
-def add_md5_to_json(record):
-    """Add md5 to json."""
+def bulk_load_agency_ids(agency, ids, bulk_count=0,
+                         verbose=True, reindex=False):
+    """Bulk load agency data to id table."""
+    table = '{agency}_id'.format(agency=agency)
+    columns = ('recid', )
+    bulk_load_agency(
+        agency=agency,
+        data=ids,
+        table=table,
+        columns=columns,
+        bulk_count=bulk_count,
+        verbose=verbose,
+        reindex=reindex
+    )
+
+
+def bulk_save_agency(agency, file_name, table, columns, verbose=False):
+    """Bulk save agency data to file."""
+    with open(file_name, 'w', encoding='utf-8') as output_file:
+        db_copy_to(
+            filehandle=output_file,
+            table=table,
+            columns=columns
+        )
+
+
+def bulk_save_agency_metadata(agency, file_name, verbose=False):
+    """Bulk save agency data from metadata table."""
+    if verbose:
+        click.echo('{agency} save to file: {filename}'.format(
+            agency=agency,
+            filename=file_name
+        ))
+    table = '{agency}_metadata'.format(agency=agency)
+    columns = (
+        'created',
+        'updated',
+        'id',
+        'json',
+        'version_id'
+    )
+    bulk_save_agency(
+        agency=agency,
+        file_name=file_name,
+        table=table,
+        columns=columns,
+        verbose=verbose
+    )
+
+
+def bulk_save_agency_pids(agency, file_name, verbose=False):
+    """Bulk save agency data from pids table."""
+    if verbose:
+        click.echo('{agency} save to file: {filename}'.format(
+            agency=agency,
+            filename=file_name
+        ))
+    table = 'pidstore_pid'
+    columns = (
+        'created',
+        'updated',
+        'pid_type',
+        'pid_value',
+        'status',
+        'object_type',
+        'object_uuid',
+    )
+    tmp_file_name = file_name + '_tmp'
+    bulk_save_agency(
+        agency=agency,
+        file_name=tmp_file_name,
+        table=table,
+        columns=columns,
+        verbose=verbose
+    )
+    # clean pid file
+    with open(tmp_file_name, 'r') as file_in:
+        with open(file_name, "w") as file_out:
+            file_out.writelines(line for line in file_in if agency in line)
+    os.remove(tmp_file_name)
+
+
+def bulk_save_agency_ids(agency, file_name, verbose=False):
+    """Bulk save agency data from id table."""
+    if verbose:
+        click.echo('{agency} save to file: {filename}'.format(
+            agency=agency,
+            filename=file_name
+        ))
+    table = '{agency}_id'.format(agency=agency)
+    columns = ('recid', )
+    bulk_save_agency(
+        agency=agency,
+        file_name=file_name,
+        table=table,
+        columns=columns,
+        verbose=verbose
+    )
+
+
+def create_md5(record):
+    """Create md5 for record."""
     data_md5 = hashlib.md5(
         json.dumps(record, sort_keys=True).encode('utf-8')
     ).hexdigest()
-    record['md5'] = data_md5
+    return data_md5
+
+
+def add_md5(record):
+    """Add md5 to json."""
+    schema = None
+    if record.get('$schema'):
+        schema = record.pop('$schema')
+    if record.get('md5'):
+        record.pop('md5')
+    record['md5'] = create_md5(record)
+    if schema:
+        record['$schema'] = schema
     return record
 
 
 def add_schema(record, agency):
     """Add the $schema to the record."""
     with current_app.app_context():
-        s_data = {
-            'http': 'http://',
-            'url': current_app.config.get('JSONSCHEMAS_HOST'),
-            'schema': '/schemas/authorities/',
-            'agency': agency,
-            'suffix': '-person-v0.0.1.json',
-        }
-        schema_str = '{http}{url}{schema}{agency}{suffix}'.format(**s_data)
-        record['$schema'] = schema_str
+        schemas = current_app.config.get('RECORDS_JSON_SCHEMA')
+        if agency in schemas:
+            record['$schema'] = '{base_url}{endpoint}{schema}'.format(
+                base_url=current_app.config.get('RERO_MEF_APP_BASE_URL'),
+                endpoint=current_app.config.get('JSONSCHEMAS_ENDPOINT'),
+                schema=schemas[agency]
+            )
+    return record
 
 
 def create_agency_csv_file(input_file, agency, pidstore, metadata):
     """Create agency csv file to load."""
+    if agency == 'mef':
+        agency_id_file = open('{agency}_id'.format(agency=agency),
+                              'w', encoding='utf-8')
     with \
             open(input_file, 'r', encoding='utf-8') as agency_file, \
             open(metadata, 'w', encoding='utf-8') as agency_metadata_file, \
@@ -325,7 +455,7 @@ def create_agency_csv_file(input_file, agency, pidstore, metadata):
             if agency == 'viaf':
                 record['pid'] = record['viaf_pid']
 
-            ordered_record = add_md5_to_json(record)
+            ordered_record = add_md5(record)
             add_schema(ordered_record, agency)
 
             record_uuid = str(uuid4())
@@ -338,23 +468,48 @@ def create_agency_csv_file(input_file, agency, pidstore, metadata):
             agency_pids_file.write(
                 pidstore_csv_line(agency, record['pid'], record_uuid, date)
             )
+            if agency == 'mef':
+                agency_id_file.write(record['pid'] + os.linesep)
+
+
+def get_agency_classes():
+    """Get agency classes from config."""
+    agencies = {}
+    endpoints = current_app.config.get('RECORDS_REST_ENDPOINTS', {})
+    for agency in endpoints:
+        record_class = obj_or_import_string(
+            endpoints[agency].get('record_class', Record)
+        )
+        agencies[agency] = record_class
+    return agencies
+
+
+def get_agency_class(agency):
+    """Get agency class from config."""
+    agency_endpoint = current_app.config.get(
+        'RECORDS_REST_ENDPOINTS', {}
+    ).get(agency, {})
+    record_class = obj_or_import_string(
+        agency_endpoint.get('record_class', Record)
+    )
+    return record_class
 
 
 def viaf_to_mef(viaf_record):
     """Transform viaf recod to mef."""
     mef_record = {}
     with current_app.app_context():
-        agencies = current_app.config.get('AGENCIES')
+        agencies = get_agency_classes()
         agency_record = viaf_record
         viaf_pid = agency_record['viaf_pid']
         for key in agency_record:
-            agency = key[:-4]
+            agency = key.split('_')[0]
             if agencies[agency].get_record_by_pid(agency_record[key]):
                 add_agency_to_json(mef_record, agency, agency_record[key])
         if len(mef_record):
             add_schema(mef_record, 'mef')
             mef_record['viaf_pid'] = viaf_pid
-        return mef_record
+    return mef_record
 
 
 def write_link_json(
@@ -371,12 +526,15 @@ def write_link_json(
         'BNF': 'bnf_pid',
         'DNB': 'gnd_pid',
         'RERO': 'rero_pid',
+        'SUDOC': 'idref_pid'
     }
     json_data['viaf_pid'] = viaf_pid
+    write_to_file_viaf = False
     for catalog_id in corresponding_data:
         json_data[key_per_catalog_id[catalog_id]] = corresponding_data[
             catalog_id
         ]
+        write_to_file_viaf = True
     write_to_file = False
     json_dump = json_data
     if agency == 'mef':
@@ -389,7 +547,11 @@ def write_link_json(
         add_schema(json_dump, 'viaf')
         json_dump['pid'] = agency_pid
         del(json_dump['viaf_pid'])
-        write_to_file = True
+        # only save viaf data with used pids
+        if agency == 'viaf':
+            write_to_file = write_to_file_viaf
+        else:
+            write_to_file = True
 
     if write_to_file:
         record_uuid = str(uuid4())
@@ -464,7 +626,7 @@ def create_viaf_mef_files(
                         previous_viaf_pid = viaf_pid
                     corresponding = fields[1].split('|')
                     if len(corresponding) == 2:
-                        if corresponding[0] in ['BNF', 'DNB']:
+                        if corresponding[0] in ['BNF', 'DNB', 'SUDOC']:
                             corresponding_data[corresponding[0]] = \
                                 corresponding[1]
                         elif corresponding[0] == 'RERO':
@@ -491,3 +653,16 @@ def create_viaf_mef_files(
                     corresponding_data,
                     str(agency_pid)
                 )
+
+
+def append_fixtures_new_identifiers(identifier, pids, pid_type):
+    """Insert pids into the indentifier table and update its sequence."""
+    with db.session.begin_nested():
+        for pid in pids:
+            db.session.add(identifier(recid=pid))
+        max_pid = PersistentIdentifier.query.filter_by(
+            pid_type=pid_type
+        ).order_by(sqlalchemy.desc(
+            sqlalchemy.cast(PersistentIdentifier.pid_value, sqlalchemy.Integer)
+        )).first().pid_value
+        identifier._set_sequence(max_pid)
