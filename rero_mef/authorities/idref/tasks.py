@@ -26,7 +26,6 @@
 
 import time
 
-import requests
 from celery import shared_task
 from flask import current_app
 from sickle import OAIResponse, Sickle
@@ -46,29 +45,23 @@ class MySickle(Sickle):
         :param kwargs: OAI HTTP parameters.
         :rtype: :class:`sickle.OAIResponse`
         """
+        http_response = self._request(kwargs)
         for _ in range(self.max_retries):
-            if self.http_method == 'GET':
-                http_response = requests.get(self.endpoint, params=kwargs,
-                                             **self.request_args)
-            else:
-                http_response = requests.post(self.endpoint, data=kwargs,
-                                              **self.request_args)
-            if http_response.status_code == 503:
-                try:
-                    retry_after = int(http_response.headers.get('retry-after'))
-                except TypeError:
-                    retry_after = 30
+            if self._is_error_code(http_response.status_code) \
+                    and http_response.status_code in self.retry_status_codes:
+                retry_after = self.get_retry_after(http_response)
                 current_app.logger.warning(
-                    'HTTP 503! Retrying after {retry} seconds...'.format(
-                        retry=retry_after
+                    "HTTP {code}! Retrying after {after} seconds...".format(
+                        code=http_response.status_code,
+                        after=retry_after
                     )
                 )
                 time.sleep(retry_after)
-            else:
-                http_response.raise_for_status()
-                if self.encoding:
-                    http_response.encoding = self.encoding
-                return OAIResponse(http_response, params=kwargs)
+                http_response = self._request(kwargs)
+        http_response.raise_for_status()
+        if self.encoding:
+            http_response.encoding = self.encoding
+        return OAIResponse(http_response, params=kwargs)
 
 
 @shared_task
@@ -87,6 +80,7 @@ def process_records_from_dates(from_date=None, until_date=None,
     return oai_process_records_from_dates(
         name='idref',
         sickle=MySickle,
+        max_retries=current_app.config.get('RERO_OAI_RETRIES', 0),
         oai_item_iterator=MyOAIItemIterator,
         transformation=Transformation,
         record_cls=IdrefRecord,

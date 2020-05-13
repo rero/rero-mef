@@ -202,8 +202,7 @@ def csv_action(params):
         not params['agency_is_source'] and
         params['json_file'] and
         params['csv_pidstore_file'] and
-        params['csv_metadata_file'] and
-        params['rero_pids']
+        params['csv_metadata_file']
     ):
         params['csv_action'] = True
     elif (
@@ -260,8 +259,6 @@ def number_records_in_file(json_file, type):
               help='pidstore: CSV output file.')
 @click.option('-d', '--csv_metadata_file', 'csv_metadata_file',
               help='metadata: CSV output file.')
-@click.option('-p', '--rero_pids', 'rero_pids',
-              help='rero pids: tab delemited file of rero ids.')
 @click.option('-l', '--load_records', 'load_records', is_flag=True,
               default=False, help='To load csv files to database.')
 @click.option('-c' '--bulk_count', 'bulkcount', default=0, type=int,
@@ -277,7 +274,6 @@ def bulk_load(**kwargs):
     :param json_file: JSON: output file.
     :param csv_pidstore_file: pidstore: CSV output file.
     :param csv_metadata_file: metadata: CSV output file.
-    :param rero_pids: rero pids: tab delemited file of rero ids.
     :param load_records: To load csv files to database.
     :param bulk_count: Set the bulk load chunk size.
     :param reindex: add record to reindex.
@@ -335,10 +331,8 @@ def bulk_load(**kwargs):
         if params['agency_is_source']:
             create_agency_csv_file(json_file, agency, pidstore, metadata)
         else:
-            rero_pids = '{dir}/{file}'.format(
-                dir=input_directory, file=params['rero_pids'])
-            create_viaf_mef_files(agency, rero_pids, json_file, pidstore,
-                                  metadata, verbose)
+            create_viaf_mef_files(agency, json_file, pidstore, metadata,
+                                  verbose)
 
         message = '  Number of records created in pidstore: {number}. '.format(
             number=number_records_in_file(pidstore, 'csv'))

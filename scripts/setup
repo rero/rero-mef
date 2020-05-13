@@ -62,36 +62,38 @@ success_msg() {
 
 set -e
 
+# POETRY is a mandatory condition to launch this program!
+if [[ -z "${VIRTUAL_ENV}" ]]; then
+  error_msg+exit "Error - Launch this script via poetry command:\n\tpoetry run ${PROGRAM}"
+fi
+
 function db_init () {
     # Purge celery
-    pipenv run celery purge -A invenio_app.celery -f
+    celery purge -A rero_mef.celery -f
     # Clean redis
-    pipenv run invenio shell --no-term-title -c "import redis; redis.StrictRedis.from_url(app.config['CACHE_REDIS_URL']).flushall(); print('Cache cleared')"
-    pipenv run invenio db destroy --yes-i-know || true
-    pipenv run invenio db init create
-    pipenv run invenio index destroy --force --yes-i-know || true
-    pipenv run invenio index init --force
-    pipenv run invenio index queue init purge
+    invenio shell --no-term-title -c "import redis; redis.StrictRedis.from_url(app.config['CACHE_REDIS_URL']).flushall(); print('Cache cleared')"
+    invenio db destroy --yes-i-know || true
+    invenio db init create
+    invenio index destroy --force --yes-i-know || true
+    invenio index init --force
+    invenio index queue init purge
 
     # Create admin role to rectict access
-    pipenv run invenio roles create admin
-    pipenv run invenio access allow superuser-access role admin
+    invenio roles create admin
+    invenio access allow superuser-access role admin
 }
 
 function oai_init () {
-    data_path=$(pipenv --where)/data
     # init oaiharvester config from file
-    pipenv run invenio oaiharvester initconfig ${data_path}/oaisources.yml
-    # pipenv run invenio oaiharvester harvest -n idref -q
+    invenio oaiharvester initconfig ./data/oaisources.yml
+    # invenio oaiharvester harvest -n idref -q
 }
 
 function sample_load () {
-    data_path=$(pipenv --where)/data
-
     for AGENCY in viaf rero bnf gnd idref
     do
        info_msg "Importing ${AGENCY} records:"
-       pipenv run dojson -i ${data_path}/${AGENCY}.json schema http://mef.rero.ch/schemas/${AGENCY}/${AGENCY}-person-v0.0.1.json | pipenv run invenio fixtures create_or_update ${AGENCY}
+       dojson -i ./data/${AGENCY}.json schema http://mef.rero.ch/schemas/${AGENCY}/${AGENCY}-person-v0.0.1.json | invenio fixtures create_or_update ${AGENCY}
     done
     oai_init
 }
@@ -102,29 +104,29 @@ function bulk_load () {
     # Transform marc files to json
     for AGENCY in rero bnf gnd idref
     do
-        pipenv run invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --marc_file ${AGENCY}.mrc --json_file ${AGENCY}.json
+        invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --marc_file ${AGENCY}.mrc --json_file ${AGENCY}.json
     done
     # Create CSV files from json
     for AGENCY in rero bnf gnd idref
     do
-        pipenv run invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file ${AGENCY}.json --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
+        invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file ${AGENCY}.json --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
     done
     # Load CSV files to db
     for AGENCY in rero bnf gnd idref
     do
-        pipenv run invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose --reindex
-        pipenv run invenio utils runindex  --raise-on-error
+        invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose --reindex
+        invenio utils runindex  --raise-on-error
     done
     # Create CSV files from json
     for AGENCY in mef viaf
     do
-        pipenv run invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --json_file viaf.txt --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --rero_pids rero.pids
+        invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --json_file viaf.txt --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
     done
     # Load CSV files to db
     for AGENCY in mef viaf
     do
-        pipenv run invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv  --verbose --reindex
-        pipenv run invenio utils runindex  --raise-on-error  --concurrency 8 --delayed
+        invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv  --verbose --reindex
+        invenio utils runindex  --raise-on-error  --concurrency 8 --delayed
     done
     oai_init
 }
@@ -134,12 +136,12 @@ function deploy () {
     # Load agencies CSV files to db
     for AGENCY in rero bnf gnd idref mef viaf
     do
-        pipenv run invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose --reindex
+        invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose --reindex
     done
     # Index agency records
     info_msg "For faster indexing disable ES auto refresh:"
     msg "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d '{\"index\" : {\"refresh_interval\" : \"-1\"}}'"
-    pipenv run invenio utils runindex --raise-on-error --concurrency 8 --delayed
+    invenio utils runindex --raise-on-error --concurrency 8 --delayed
     info_msg "After indexing reenable ES auto refresh:"
     msg "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d'{\"index\" : {\"refresh_interval\" : null}}'"
     oai_init

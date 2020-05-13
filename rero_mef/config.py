@@ -181,6 +181,8 @@ APP_ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # OAI-PMH
 # =======
 OAISERVER_ID_PREFIX = 'oai:mef.rero.ch:'
+# How many times to retry the harvest request
+RERO_OAI_RETRIES = 10
 
 # Debug
 # =====

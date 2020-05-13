@@ -564,22 +564,12 @@ def write_link_json(
 
 def create_viaf_mef_files(
     agency,
-    rero_pids_file,
     viaf_input_file,
     agency_pidstore_file_name,
     agency_metadata_file_name,
     verbose=False
 ):
     """Create agency csv file to load."""
-    with open(rero_pids_file, 'r', encoding='utf-8', buffering=1) as rero_pids:
-        if verbose:
-            click.echo(
-                'Read from file: {filename}'.format(filename=rero_pids_file)
-            )
-        rero_id_control_number = {}
-        for line in rero_pids:
-            parts = line.rstrip().split('\t')
-            rero_id_control_number[parts[0]] = parts[1]
     if verbose:
         click.echo('Start ***')
 
@@ -626,15 +616,7 @@ def create_viaf_mef_files(
                         previous_viaf_pid = viaf_pid
                     corresponding = fields[1].split('|')
                     if len(corresponding) == 2:
-                        if corresponding[0] in ['BNF', 'DNB', 'SUDOC']:
-                            corresponding_data[corresponding[0]] = \
-                                corresponding[1]
-                        elif corresponding[0] == 'RERO':
-                            # corresponding_data['VIRTUA'] = corresponding[1]
-                            if corresponding[1] in rero_id_control_number:
-                                corresponding_data[
-                                    'RERO'
-                                ] = rero_id_control_number[corresponding[1]]
+                        corresponding_data[corresponding[0]] = corresponding[1]
                 # save the last record
                 agency_pid += 1
                 if verbose:

@@ -30,6 +30,7 @@ SUCCESS_COLOR='\033[1;97;42m'   # Bold + white + green background
 ERROR_COLOR='\033[1;97;41m'     # Bold + white + red background
 
 PROGRAM=`basename $0`
+SCRIPT_PATH=`dirname $0`
 
 # MESSAGES
 msg() {
@@ -63,24 +64,31 @@ success_msg() {
 # Displays program name
 msg "PROGRAM: ${PROGRAM}"
 
+# Poetry is a mandatory condition to launch this program!
+if [[ -z "${VIRTUAL_ENV}" ]]; then
+  error_msg+exit "Error - Launch this script via poetry command:\n\tpoetry run run-tests"
+fi
 
 set -e
-
-info_msg "Pipenv check:"
-pipenv check
+info_msg "Safety check:"
+safety check
 info_msg "Test pydocstyle:"
-pipenv run pydocstyle rero_mef tests docs
+pydocstyle rero_mef tests docs
 info_msg "Test isort:"
-pipenv run isort -rc -c -df
+isort --check-only --diff "${SCRIPT_PATH}"
 info_msg "Test useless imports:"
-pipenv run autoflake -c -r --remove-all-unused-imports --exclude ui --ignore-init-module-imports . &> /dev/null || \
-  error_msg+exit "\nUse this command to check imports: \n\tautoflake --remove-all-unused-imports -r --exclude ui --ignore-init-module-imports .\n"
-info_msg "Check-manifest:"
-pipenv run check-manifest --ignore ".travis-*,docs/_build*"
+autoflake -c -r \
+  --remove-all-unused-imports \
+  --ignore-init-module-imports . \
+  &> /dev/null || \
+  error_msg+exit "\nUse this command to check imports: \n\tautoflake --remove-all-unused-imports -r --ignore-init-module-imports .\n"
+# info_msg "Check-manifest:"
+# TODO: check if this is required when rero-ils will be published
+# check-manifest --ignore ".travis-*,docs/_build*"
 info_msg "Sphinx-build:"
-pipenv run sphinx-build -qnNW docs docs/_build/html
+sphinx-build -qnNW docs docs/_build/html
 info_msg "Tests:"
-pipenv run test
+poetry run tests
 
 success_msg "Perfect ${PROGRAM}! See you soon…"
 exit 0

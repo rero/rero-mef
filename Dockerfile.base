@@ -30,7 +30,7 @@ LABEL description="MEF (Multilingual Entity File) server with records for person
 # require debian packages
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install --no-install-recommends -y git vim-tiny curl gcc gnupg libc6-dev && rm -rf /var/lib/apt/lists/*
-RUN pip install --upgrade setuptools wheel pip pipenv
+RUN pip install --upgrade setuptools wheel pip poetry
 
 # # uwsgi uwsgitop uwsgi-tools
 
