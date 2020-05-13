@@ -181,7 +181,7 @@ class MyOAIItemIterator(OAIItemIterator):
 
 
 def oai_process_records_from_dates(name, sickle, oai_item_iterator,
-                                   transformation, record_cls,
+                                   transformation, record_cls, max_retries=0,
                                    access_token=None, days_spann=30,
                                    from_date=None, until_date=None,
                                    ignore_deleted=False, dbcommit=True,
@@ -200,7 +200,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
     last_run = None
     url, metadata_prefix, last_run, setspecs = get_info_by_oai_name(name)
 
-    request = sickle(url, iterator=oai_item_iterator)
+    request = sickle(url, iterator=oai_item_iterator, max_retries=max_retries)
 
     dates = {
         'from': from_date or last_run,
