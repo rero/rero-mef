@@ -23,17 +23,92 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
+NC='\033[0m'                    # Default color
+INFO_COLOR='\033[1;97;44m'      # Bold + white + blue background
+SUCCESS_COLOR='\033[1;97;42m'   # Bold + white + green background
+ERROR_COLOR='\033[1;97;41m'     # Bold + white + red background
+
+PROGRAM=`basename $0`
+
+set -e
+
+# MESSAGES
+msg() {
+  echo -e "${1}" 1>&2
+}
+# Display a colored message
+# More info: https://misc.flogisoft.com/bash/tip_colors_and_formatting
+# $1: choosen color
+# $2: title
+# $3: the message
+colored_msg() {
+  msg "${1}[${2}]: ${3}${NC}"
+}
+
+info_msg() {
+  colored_msg "${INFO_COLOR}" "INFO" "${1}"
+}
+
+error_msg() {
+  colored_msg "${ERROR_COLOR}" "ERROR" "${1}"
+}
+
+error_msg+exit() {
+    error_msg "${1}" && exit 1
+}
+
+success_msg() {
+  colored_msg "${SUCCESS_COLOR}" "SUCCESS" "${1}"
+}
+
+# Displays program name
+PROGRAM=`basename $0`
+msg "PROGRAM: ${PROGRAM}"
+
+PORT=5000
+HTTP=false
+
+if ! options=$(getopt -o np: -l non_secure,port: -- "$@")
+then
+  # something went wrong, getopt will put out an error message for us
+  exit 1
+fi
+
+while [ $# -gt 0 ]
+do
+  case $1 in
+    -n|--non_secure) HTTP=true;;
+    -p|--port) PORT=$2; shift;;
+    (--) shift; break;;
+    (-*) error_msg+exit "$0: Unrecognized option $1";;
+  esac
+  shift
+done
+
 set -e
 
 script_path=$(dirname "$0")
+# poetry is a mandatory condition to launch this program!
+if [[ -z "${VIRTUAL_ENV}" ]]; then
+  error_msg+exit "Error - Launch this script via poetry command:\n\tpoetry run ${PROGRAM}"
+fi
 
-FLASK_ENV=development
+export FLASK_DEBUG=True
+export FLASK_ENV=development
 # Start Worker and Server
-pipenv run celery worker -A invenio_app.celery --beat -l INFO & pid_celery=$!
+celery worker -A rero_mef.celery --beat -l INFO & pid_celery=$!
 
-pipenv run invenio run \
-       --cert "$script_path"/../docker/nginx/test.crt \
-       --key "$script_path"/../docker/nginx/test.key & pid_server=$!
+if ${HTTP}
+then
+  info_msg "Server is running on http://localhost:${PORT}"
+  invenio run -p $PORT & pid_server=$!
+else
+  info_msg "Server is running on https://localhost:${PORT}"
+  invenio run \
+     --cert "$script_path"/../docker/nginx/test.crt \
+     --key "$script_path"/../docker/nginx/test.key \
+     -p $PORT & pid_server=$!
+fi
 
 trap 'kill $pid_celery $pid_server &>/dev/null' EXIT
 

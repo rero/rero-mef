@@ -53,7 +53,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    command: pipenv run uwsgi /invenio/var/instance/uwsgi_ui.ini
+    command: poetry run uwsgi /invenio/var/instance/uwsgi_ui.ini
     image: rero-mef-web-ui
     ports:
       - "5000"
@@ -69,7 +69,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    command: pipenv run uwsgi /invenio/var/instance/uwsgi_rest.ini
+    command: poetry run uwsgi /invenio/var/instance/uwsgi_rest.ini
     image: rero-mef-web-api
     ports:
       - "5001"
@@ -86,7 +86,7 @@ services:
       file: docker-services.yml
       service: app
     restart: "always"
-    command: "pipenv run celery worker -A invenio_app.celery --loglevel=INFO"
+    command: "poetry run celery worker -A rero_mef.celery --loglevel=INFO"
     image: rero-mef-worker
     links:
       - cache
@@ -99,7 +99,7 @@ services:
       file: docker-services.yml
       service: app
     restart: "always"
-    command: "pipenv run celery beat -A invenio_app.celery --loglevel=INFO"
+    command: "poetry run celery beat -A rero_mef.celery --loglevel=INFO"
     image: rero-ils-beat
     links:
       - cache

@@ -75,7 +75,7 @@ fi
 # The real bootstrap script starts 20 lines below ;-)
 flags=()
 deploy=false
-cmd="pipenv sync"
+cmd="poetry install"
 ci=false
 while test $# -gt 0
 do
@@ -92,41 +92,46 @@ do
     esac
     shift
 done
-if ! $deploy || $ci ; then
-    flags=("--dev")
+
+# Poetry is a mandatory condition to launch this program!
+if [[ -z "${VIRTUAL_ENV}" ]]; then
+  error_msg+exit "Error - Launch this script via poetry command:\n\tpoetry run ${PROGRAM}"
+fi
+
+if $deploy  ; then
+  if !$ci ; then
+      flags=("--no-dev")
+  fi
 fi
 
 if ! $deploy ; then
     if $ci ; then
-        cmd="pipenv install --skip-lock --sequential"
+        cmd="poetry update"
     fi
 fi
-
-# go generate a clean lock file
-# pipenv --rm; pipenv install --sequential
-# !!! delete appnope from Pipfile.lock !!!
 
 # BOOTSTRAP START
 # install the application and all the dependencies
 info_msg "Install with command: ${cmd} ${flags[@]}"
 ${cmd} ${flags[@]}
 
-# to avoid IPython dependency problem on Mac OS X
-if [ "$(uname -s)" == "Darwin" ]; then
-  info_msg "Install 'appnope' for Mac OS X"
-  pipenv run pip install appnope
+# install the app itself
+if ! $deploy ; then
+    if $ci ; then
+        poetry install
+    fi
 fi
 
 # install assets utils
-virtualenv_path=`pipenv --venv`
+virtualenv_path=`poetry env info -p`
 info_msg "Install npm assets utils in: ${virtualenv_path}"
-npm i npm@latest -g --prefix `pipenv --venv` && pipenv run npm install --prefix `pipenv --venv` --silent -g node-sass@4.9.0 clean-css@3.4.19 uglify-js@2.7.3 requirejs@2.2.0 @angular/cli@7.0.4
+npm i npm@latest -g --prefix "${virtualenv_path}" && npm install --prefix "${virtualenv_path}" --silent -g  node-sass@4.14.1 clean-css-cli@4.3.0 uglify-js@3.9.4 requirejs@2.3.6
 
 # build the web assets
 info_msg "Build web assets: collect"
-pipenv run invenio collect
+invenio collect
 info_msg "Build web assets: check (build command)"
-pipenv run invenio webpack buildall
+invenio webpack buildall
 
 success_msg "${PROGRAM} finished!"
 exit 0

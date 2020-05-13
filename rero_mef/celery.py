@@ -22,28 +22,26 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Signals connections for RERO-MEF."""
+"""Celery application for Invenio flavours."""
 
+from __future__ import absolute_import, print_function
 
-def extend_mef_record(
-    sender=None,
-    json=None,
-    record=None,
-    index=None,
-    doc_type=None,
-    *args,
-    **kwargs
-):
-    """Extend MEF record with list of sources."""
-    if index.startswith('mef'):
-        sources = []
-        # TODO: add the list of sources into the current_app.config
-        if 'rero' in json:
-            sources.append('rero')
-        if 'gnd' in json:
-            sources.append('gnd')
-        if 'bnf' in json:
-            sources.append('bnf')
-        if 'idref' in json:
-            sources.append('idref')
-        json['sources'] = sources
+from dotenv import load_dotenv
+from flask_celeryext import create_celery_app
+from invenio_app.factory import create_ui
+
+# load .env and .flaskenv
+load_dotenv()
+
+celery = create_celery_app(create_ui(
+    SENTRY_TRANSPORT='raven.transport.http.HTTPTransport',
+    RATELIMIT_ENABLED=False,
+))
+"""Celery application for Invenio.
+Overrides SENTRY_TRANSPORT wih synchronous HTTP transport since Celery does not
+deal nicely with the default threaded transport.
+"""
+
+# Trigger an app log message upon import. This makes Sentry logging
+# work with `get_task_logger(__name__)`.
+celery.flask_app.logger.info('Created Celery app')

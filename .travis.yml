@@ -74,14 +74,14 @@ before_install:
   # - curl "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" -O
   # - unzip chromedriver_linux64.zip -d ~/bin
   - nvm install 8; nvm use 8
-  - travis_retry pip install --upgrade setuptools py pipenv==2018.10.9
+  - travis_retry pip install --upgrade setuptools py poetry
   - travis_retry pip install twine wheel coveralls
-  # patch default version of travis which is mark as unsave by pipenv check
+  # patch default version of travis which is mark as unsave by safety check
   - travis_retry pip install --upgrade numpy six
-  - pipenv run pip list
+  - poetry show
 
 install:
-  - ./scripts/bootstrap --ci $REQUIREMENTS
+  - poetry run bootstrap --ci $REQUIREMENTS
 
 before_script:
   # https://docs.travis-ci.com/user/gui-and-headless-browsers/
@@ -91,7 +91,7 @@ before_script:
 script:
   - export DISPLAY=:99.0
   - if [ ${E2E} == 'yes' ]; then sh -e /etc/init.d/xvfb start; sleep 3; fi
-  - ./run-tests.sh # E2E tests are skipped if E2E env is set to 'no'
+  - poetry run run-tests # E2E tests are skipped if E2E env is set to 'no'
 
 after_success:
   - coveralls

@@ -22,28 +22,14 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Signals connections for RERO-MEF."""
+"""Poetry script utils."""
+
+import os
+import sys
 
 
-def extend_mef_record(
-    sender=None,
-    json=None,
-    record=None,
-    index=None,
-    doc_type=None,
-    *args,
-    **kwargs
-):
-    """Extend MEF record with list of sources."""
-    if index.startswith('mef'):
-        sources = []
-        # TODO: add the list of sources into the current_app.config
-        if 'rero' in json:
-            sources.append('rero')
-        if 'gnd' in json:
-            sources.append('gnd')
-        if 'bnf' in json:
-            sources.append('bnf')
-        if 'idref' in json:
-            sources.append('idref')
-        json['sources'] = sources
+def run(prg_name):
+    def fn():
+        # Replace current Python program by prg_name (same PID)
+        os.execvp(prg_name, [prg_name] + sys.argv[1:])
+    return fn

@@ -49,6 +49,7 @@ def process_records_from_dates(from_date=None, until_date=None,
     return oai_process_records_from_dates(
         name='gnd',
         sickle=Sickle,
+        max_retries=current_app.config.get('RERO_OAI_RETRIES', 0),
         oai_item_iterator=MyOAIItemIterator,
         transformation=Transformation,
         access_token=current_app.config.get('RERO_OAI_GND_TOKEN'),
