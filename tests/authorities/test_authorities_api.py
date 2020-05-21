@@ -41,50 +41,10 @@ def update_indexes(agency):
     current_search.flush_and_refresh(index=index)
 
 
-def test_create_agency_record_no_viaf_links(
-        app, bnf_record, gnd_record, rero_record, idref_record):
-    """Test create agency record without viaf links."""
-    returned_record, action, mef_action = BnfRecord.create_or_update(
-        bnf_record, agency='bnf', dbcommit=True, reindex=True
-    )
-    update_indexes('bnf')
-    update_indexes('mef')
-    assert action.name == 'DISCARD'
-    assert mef_action.name == 'DELETE'
-    assert returned_record == bnf_record
-
-    returned_record, action, mef_action = GndRecord.create_or_update(
-        gnd_record, agency='gnd', dbcommit=True, reindex=True
-    )
-    update_indexes('gnd')
-    update_indexes('mef')
-    assert action.name == 'DISCARD'
-    assert mef_action.name == 'DELETE'
-    assert returned_record == gnd_record
-
-    returned_record, action, mef_action = ReroRecord.create_or_update(
-        rero_record, agency='rero', dbcommit=True, reindex=True
-    )
-    update_indexes('rero')
-    update_indexes('mef')
-    assert action.name == 'DISCARD'
-    assert mef_action.name == 'DELETE'
-    assert returned_record == rero_record
-
-    returned_record, action, mef_action = IdrefRecord.create_or_update(
-        idref_record, agency='idref', dbcommit=True, reindex=True
-    )
-    update_indexes('idref')
-    update_indexes('mef')
-    assert action.name == 'DISCARD'
-    assert mef_action.name == 'DELETE'
-    assert returned_record == idref_record
-
-
 def test_create_viaf_record(app, viaf_record):
     """Test create Viaf record."""
     returned_record, action, mef_action = ViafRecord.create_or_update(
-        viaf_record, agency='viaf', dbcommit=True, reindex=True
+        viaf_record, dbcommit=True, reindex=True
     )
     update_indexes('viaf')
     assert action.name == 'CREATE'
@@ -175,7 +135,7 @@ def test_update_agency_record_with_viaf_links(
     assert returned_record['pid'] == '069774331'
 
 
-def test_uptodate_agency_record_with_viaf_links(
+def test_uptodate_agency_record_with_viaf_links_md5(
         app, viaf_record, bnf_record, gnd_record, rero_record, idref_record):
     """Test create agency record with viaf links."""
     returned_record, action, mef_action = BnfRecord.create_or_update(

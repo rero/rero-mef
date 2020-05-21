@@ -1,8 +1,8 @@
 {
   "settings": {
-    "number_of_shards": 1,
-    "number_of_replicas": 1,
-    "max_result_window": 10000000
+    "number_of_shards": 4,
+    "number_of_replicas": 2,
+    "max_result_window": 100000000
   },
   "mappings": {
     "date_detection": false,
@@ -19,6 +19,9 @@
       },
       "sources": {
         "type": "keyword"
+      },
+      "deleted": {
+        "type": "date"
       },
       "_created": {
         "type": "date"

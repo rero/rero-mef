@@ -57,6 +57,7 @@ class MefAction(Enum):
 
     CREATE = 'create'
     UPDATE = 'update'
+    REPLACE = 'replace'
     UPTODATE = 'uptodate'
     DISCARD = 'discard'
     DELETE = 'delete'

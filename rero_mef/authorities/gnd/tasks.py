@@ -69,7 +69,7 @@ def process_records_from_dates(from_date=None, until_date=None,
 
 @shared_task
 def gnd_get_record(id, dbcommit=False, reindex=False, test_md5=False,
-                   verbose=False, **kwargs):
+                   verbose=False, debug=False, **kwargs):
     """Get a record from GND OAI repo."""
     return oai_get_record(
         id=id,
@@ -82,5 +82,6 @@ def gnd_get_record(id, dbcommit=False, reindex=False, test_md5=False,
         reindex=reindex,
         test_md5=test_md5,
         verbose=verbose,
+        debug=debug,
         kwargs=kwargs
     )

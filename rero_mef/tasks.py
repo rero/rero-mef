@@ -27,6 +27,7 @@
 from celery import shared_task
 
 from .authorities.api import AuthRecordIndexer
+from .authorities.utils import get_record_class
 
 
 @shared_task(ignore_result=True)
@@ -58,3 +59,21 @@ def delete_record(record_uuid):
     :param record_uuid: The record UUID.
     """
     AuthRecordIndexer().delete_by_id(record_uuid)
+
+
+@shared_task(ignore_result=True)
+def mef_viaf_record(pid, agent, dbcommit=False, reindex=False):
+    """Create or update MEF and VIAF record.
+
+    :param record: the record for which a MEF and VIAF record is to be created
+    :param dbcommit: commit changes to db
+    :param reindex: reindex the records
+    """
+    record_class = get_record_class(agent)
+    if record_class:
+        record = record_class.get_record_by_pid(pid)
+        if record:
+            return record.create_or_update_mef_viaf_record(
+                dbcommit=True,
+                reindex=True
+            )
