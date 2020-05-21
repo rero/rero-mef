@@ -60,7 +60,7 @@ def test_gnd_gender_missing():
     xml_part_to_add = ""
     trans = trans_prep('gnd', xml_part_to_add)
     trans.trans_gnd_gender()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_gnd_language_of_person():
@@ -86,7 +86,7 @@ def test_gnd_language_of_person_missing():
     xml_part_to_add = ""
     trans = trans_prep('gnd', xml_part_to_add)
     trans.trans_gnd_language_of_person()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_gnd_identifier_for_person():
@@ -111,7 +111,7 @@ def test_gnd_identifier_for_person_missing():
     xml_part_to_add = ""
     trans = trans_prep('gnd', xml_part_to_add)
     trans.trans_gnd_identifier_for_person()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_gnd_birth_and_death_dates_year_birth_death():
@@ -240,7 +240,7 @@ def test_gnd_birth_and_death_dates_missing():
     xml_part_to_add = ""
     trans = trans_prep('gnd', xml_part_to_add)
     trans.trans_gnd_birth_and_death_dates()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_gnd_biographical_information():
@@ -270,7 +270,7 @@ def test_gnd_biographical_information_missing():
     xml_part_to_add = ""
     trans = trans_prep('gnd', xml_part_to_add)
     trans.trans_gnd_biographical_information()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_gnd_preferred_name_for_person():
@@ -293,7 +293,37 @@ def test_gnd_preferred_name_for_person_missing():
     xml_part_to_add = ""
     trans = trans_prep('gnd', xml_part_to_add)
     trans.trans_gnd_preferred_name_for_person()
-    assert trans.json == {}
+    assert not trans.json
+
+
+def test_trans_gnd_numeration():
+    """Test numeration for Person 100 $b"""
+    xml_part_to_add = """
+        <datafield ind1=" " ind2=" " tag="100">
+            <subfield code="b">II</subfield>
+        </datafield>
+     """
+    trans = trans_prep('gnd', xml_part_to_add)
+    trans.trans_gnd_numeration()
+    assert trans.json == {
+        'numeration':
+            'II'
+    }
+
+
+def test_trans_gnd_qualifier():
+    """Test numeration for Person 100 $c"""
+    xml_part_to_add = """
+        <datafield ind1=" " ind2=" " tag="100">
+            <subfield code="c">Jr.</subfield>
+        </datafield>
+     """
+    trans = trans_prep('gnd', xml_part_to_add)
+    trans.trans_gnd_qualifier()
+    assert trans.json == {
+        'qualifier':
+            'Jr.'
+    }
 
 
 def test_gnd_variant_name_for_person():
@@ -323,7 +353,7 @@ def test_gnd_variant_name_for_person_missing():
     xml_part_to_add = ""
     trans = trans_prep('gnd', xml_part_to_add)
     trans.trans_gnd_variant_name_for_person()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_gnd_authorized_access_point_representing_a_person():
@@ -352,4 +382,4 @@ def test_gnd_authorized_access_point_representing_a_person_missing():
     xml_part_to_add = ""
     trans = trans_prep('gnd', xml_part_to_add)
     trans.trans_gnd_authorized_access_point_representing_a_person()
-    assert trans.json == {}
+    assert not trans.json

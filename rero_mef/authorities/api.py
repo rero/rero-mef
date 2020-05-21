@@ -27,6 +27,7 @@
 from copy import deepcopy
 from uuid import uuid4
 
+import click
 from elasticsearch.exceptions import NotFoundError
 from flask import current_app
 from invenio_db import db
@@ -35,11 +36,38 @@ from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 from invenio_records.api import Record
 from invenio_records_rest.utils import obj_or_import_string
+from invenio_search import current_search
+from sqlalchemy import text
 from sqlalchemy.orm.exc import NoResultFound
 
 from .mef.models import MefAction
 from .models import AgencyAction
 from .utils import add_md5, add_schema
+
+
+class AuthRecordError:
+    """Base class for errors in the IlsRecordClass."""
+
+    class Deleted(Exception):
+        """IlsRecord is deleted."""
+
+    class NotDeleted(Exception):
+        """IlsRecord is not deleted."""
+
+    class PidMissing(Exception):
+        """IlsRecord pid missing."""
+
+    class PidChange(Exception):
+        """IlsRecord pid change."""
+
+    class PidAlradyUsed(Exception):
+        """IlsRecord pid already used."""
+
+    class PidDoesNotExist(Exception):
+        """Pid does not exist."""
+
+    class DataMissing(Exception):
+        """Data missing in record."""
 
 
 class AuthRecordIndexer(RecordIndexer):
@@ -121,6 +149,7 @@ class AuthRecord(Record):
     fetcher = None
     provider = None
     object_type = 'rec'
+    viaf_source_code = None
     agency = None
     agency_pid_type = None
 
@@ -132,7 +161,6 @@ class AuthRecord(Record):
         if '$schema' not in data:
             type = cls.provider.pid_type
             data = add_schema(data, type)
-
         if delete_pid and data.get('pid'):
             del(data['pid'])
         if not id_:
@@ -143,52 +171,87 @@ class AuthRecord(Record):
             record.dbcommit(reindex)
         return record
 
+    def _update(self, data, dbcommit=False, reindex=False, test_md5=False):
+        """Update existing record."""
+        return_record = self
+        if data.get('md5'):
+            data = add_md5(data)
+            data_md5 = data.get('md5', 'data')
+            agency_md5 = self.get('md5', 'agency')
+            if test_md5 and data_md5 == agency_md5:
+                # record has no changes
+                agency_action = AgencyAction.UPTODATE
+                mef_action = MefAction.UPTODATE
+                return return_record, agency_action, mef_action
+        data = add_schema(data, self.agency)
+        return_record = self.update(
+            data, dbcommit=dbcommit, reindex=reindex)
+        mef_action = MefAction.UPDATE
+        agency_action = AgencyAction.UPDATE
+        return return_record, agency_action, mef_action
+
     @classmethod
     def create_or_update(cls, data, id_=None, delete_pid=True, dbcommit=False,
-                         reindex=False, test_md5=False, **kwargs):
+                         reindex=False, test_md5=False, online=True, **kwargs):
         """Create or update agency record."""
-        pid = data.get('pid')
-        agency_record = cls.get_record_by_pid(pid)
+        mef_action = agency_action = None
+        return_record = data
 
+        pid = data.get('pid')
         from .viaf.api import ViafRecord
         viaf_record = ViafRecord.get_viaf_by_agency_pid(
             pid, pid_type=cls.agency_pid_type
         )
-        mef_action = agency_action = None
-        return_record = data
+
+        agency_record = cls.get_record_by_pid(pid)
         if agency_record:
-            if viaf_record:
-                data = add_md5(data)
-                data_md5 = data.get('md5', 'data')
-                agency_md5 = agency_record.get('md5', 'agency')
-                if test_md5 and data_md5 == agency_md5:
-                    return_record = agency_record
-                    agency_action = AgencyAction.UPTODATE
-                    mef_action = MefAction.UPTODATE
-                else:
-                    data = add_schema(data, cls.agency)
-                    return_record = agency_record.update(
-                        data, dbcommit=dbcommit, reindex=reindex)
-                    mef_action = MefAction.UPDATE
-                    agency_action = AgencyAction.UPDATE
-            else:
-                mef_action = MefAction.DELETE
-                agency_action = AgencyAction.DISCARD
-        elif viaf_record:
-            data = add_md5(data)
-            data = add_schema(data, cls.agency)
-            return_record = cls.create(
-                data,
-                id_=None,
-                delete_pid=False,
+            # record exist
+            return_record, agency_action, mef_action = agency_record._update(
+                data=data,
                 dbcommit=dbcommit,
                 reindex=reindex,
+                test_md5=test_md5
             )
-            mef_action = MefAction.UPDATE
-            agency_action = AgencyAction.CREATE
         else:
-            mef_action = MefAction.DELETE
-            agency_action = AgencyAction.DISCARD
+            if viaf_record:
+                mef_action = MefAction.UPDATE
+            else:
+                mef_action = MefAction.CREATE
+                if online:
+                    # we do not have a VIAF record here try to create one
+                    assert cls.viaf_source_code
+                    viaf_data = ViafRecord.get_online_viaf_record(
+                        cls.viaf_source_code,
+                        data.get('pid')
+                    )
+                    if viaf_data:
+                        viaf_record, action, mef_act = \
+                            ViafRecord.create_or_update(
+                                data=viaf_data,
+                                id_=None,
+                                dbcommit=dbcommit,
+                                reindex=reindex,
+                            )
+
+            data = add_md5(data)
+            data = add_schema(data, cls.agency)
+            try:
+                return_record = cls.create(
+                    data,
+                    id_=None,
+                    delete_pid=False,
+                    dbcommit=dbcommit,
+                    reindex=reindex,
+                )
+                agency_action = AgencyAction.CREATE
+            except Exception as err:
+                msg = 'Error creating {agency}: {pid} {err}'.format(
+                    agency=cls.agency,
+                    pid=data.get('pid'),
+                    err=err
+                )
+                current_app.logger.error(msg)
+                return None, AgencyAction.ERROR, MefAction.DISCARD
 
         from .mef.api import MefRecord
         mef_record, mef_action, dummy = MefRecord.create_or_update(
@@ -202,7 +265,7 @@ class AuthRecord(Record):
         return return_record, agency_action, mef_action
 
     @classmethod
-    def get_record_by_pid(cls, pid):
+    def get_record_by_pid(cls, pid, with_deleted=False):
         """Get ils record by pid value."""
         assert cls.provider
         try:
@@ -210,10 +273,14 @@ class AuthRecord(Record):
                 cls.provider.pid_type,
                 pid
             )
-            return super(AuthRecord, cls).get_record(
-                persistent_identifier.object_uuid
+            record = super(AuthRecord, cls).get_record(
+                persistent_identifier.object_uuid,
+                with_deleted=with_deleted
             )
+            return record
         except PIDDoesNotExistError:
+            return None
+        except NoResultFound:
             return None
 
     @classmethod
@@ -223,9 +290,9 @@ class AuthRecord(Record):
         return str(persistent_identifier.pid_value)
 
     @classmethod
-    def get_record_by_id(cls, id):
+    def get_record_by_id(cls, id, with_deleted=False):
         """Get record by uuid."""
-        return super(AuthRecord, cls).get_record(id)
+        return super(AuthRecord, cls).get_record(id, with_deleted=with_deleted)
 
     @classmethod
     def get_persistent_identifier(cls, id):
@@ -247,26 +314,65 @@ class AuthRecord(Record):
         return query
 
     @classmethod
-    def get_all_pids(cls, with_deleted=False, limit=10000):
-        """Get all records pids. Return a generator iterator."""
-        query = cls._get_all(with_deleted=with_deleted)
-        offset = 0
-        count = cls.count(with_deleted=with_deleted)
-        while offset < count:
-            for identifier in query.limit(limit).offset(offset):
-                yield identifier.pid_value
-            offset += limit
+    def get_filtered_pids(cls, filter):
+        """Get all persistent identifier records."""
+        from .mef.api import MefRecord
+        from .viaf.api import ViafRecord
+        if cls == ViafRecord:
+            search_class_string = "rero_mef.authorities.viaf.api:ViafSearch"
+        elif cls == MefRecord:
+            search_class_string = "rero_mef.authorities.mef.api:MefSearch"
+        else:
+            search_class_string = current_app.config.\
+                get('RECORDS_REST_ENDPOINTS').\
+                get(cls.agency).\
+                get('search_class', None)
+        search_class = obj_or_import_string(search_class_string)
+        query = search_class().filter(filter).source('pid')
+        for hit in query:
+            yield hit.pid
 
     @classmethod
-    def get_all_ids(cls, with_deleted=False, limit=10000):
+    def get_all_pids(cls, with_deleted=False, limit=100000):
+        """Get all records pids. Return a generator iterator."""
+        query = cls._get_all(with_deleted=with_deleted)
+        if limit:
+            # slower, less memory
+            query = query.order_by(text('pid_value')).limit(limit)
+            offset = 0
+            count = cls.count(with_deleted=with_deleted)
+            while offset < count:
+                for identifier in query.offset(offset):
+                    yield identifier.pid_value
+                offset += limit
+        else:
+            # faster, more memory
+            for identifier in query:
+                yield identifier.pid_value
+
+    @classmethod
+    def get_all_ids(cls, with_deleted=False, limit=100000):
         """Get all records uuids. Return a generator iterator."""
         query = cls._get_all(with_deleted=with_deleted)
-        offset = 0
-        count = cls.count(with_deleted=with_deleted)
-        while offset < count:
-            for identifier in query.limit(limit).offset(offset):
+        if limit:
+            # slower, less memory
+            query = query.order_by(text('pid_value')).limit(limit)
+            offset = 0
+            count = cls.count(with_deleted=with_deleted)
+            while offset < count:
+                for identifier in query.limit(limit).offset(offset):
+                    yield identifier.object_uuid
+                offset += limit
+        else:
+            # faster, more memory
+            for identifier in query:
                 yield identifier.object_uuid
-            offset += limit
+
+    @classmethod
+    def get_all_records(cls, with_deleted=False, limit=100000):
+        """Get all records. Return a generator iterator."""
+        for id in cls.get_all_ids(with_deleted=with_deleted, limit=limit):
+            yield cls.get_record_by_id(id)
 
     @classmethod
     def count(cls, with_deleted=False):
@@ -295,7 +401,7 @@ class AuthRecord(Record):
             self.dbcommit()
         if delindex:
             self.delete_from_index()
-        return result
+        return result, 'Deleted'
 
     def update(self, data, dbcommit=False, reindex=False):
         """Update data for record."""
@@ -310,7 +416,7 @@ class AuthRecord(Record):
         new_data = deepcopy(data)
         pid = new_data.get('pid')
         if not pid:
-            raise RecordIndexer.PidMissing(
+            raise AuthRecordError.PidMissing(
                 'missing pid={pid}'.format(pid=self.pid)
             )
         self.clear()
@@ -331,12 +437,128 @@ class AuthRecord(Record):
             result = RecordIndexer().index(self)
         return result
 
+    @classmethod
+    def update_indexes(cls):
+        """Update indexes."""
+        index = '{agency}-{agency}-person-v0.0.1'.format(
+            agency=cls.agency
+        )
+        try:
+            current_search.flush_and_refresh(index=index)
+        except Exception as err:
+            current_app.logger.error('ERROR flush an refresh: {err}'.format(
+                err=err
+            ))
+
     def delete_from_index(self):
         """Delete record from index."""
         try:
             RecordIndexer().delete(self)
         except NotFoundError:
             pass
+
+    def create_or_update_mef_viaf_record(self, dbcommit=False, reindex=False,
+                                         online=True):
+        """Create or update MEF and VIAF record."""
+        from .mef.api import MefRecord
+        mef_record = MefRecord.get_mef_by_agency_pid(self.pid, self.agency)
+        mef_action = MefAction.CREATE
+        if mef_record:
+            mef_action = MefAction.UPDATE
+        from .viaf.api import ViafRecord
+        viaf_record = ViafRecord.get_viaf_by_agency_pid(
+            self.pid,
+            pid_type=self.agency_pid_type
+        )
+        if not viaf_record and online:
+            viaf_record = ViafRecord.get_online_viaf_record(
+                self.viaf_source_code,
+                self.pid
+            )
+            # we got a viaf record save it
+            if viaf_record:
+                ViafRecord.create(
+                    data=viaf_record,
+                    dbcommit=dbcommit,
+                    reindex=reindex
+                )
+
+        mef_record, mef_action, dummy = MefRecord.create_or_update(
+            agency=self.agency,
+            agency_pid=self.pid,
+            viaf_record=viaf_record,
+            action=mef_action,
+            dbcommit=dbcommit,
+            reindex=reindex,
+        )
+        return mef_record, mef_action, True if viaf_record else False
+
+    def create_mef(self, dbcommit=False, reindex=False, verbose=False):
+        """Create MEF records."""
+        from .mef.api import MefRecord
+        action = MefAction.DISCARD
+        mef_record = MefRecord.get_mef_by_agency_pid(self.pid, self.agency)
+        if not mef_record:
+            from .viaf.api import ViafRecord
+            viaf_record = ViafRecord.get_viaf_by_agency_pid(
+                pid=self.pid,
+                pid_type=self.agency_pid_type
+            )
+            if viaf_record:
+                mef_data, mef_has_refs = MefRecord.mef_data_from_viaf(
+                    mef_data=None,
+                    viaf_record=viaf_record
+                )
+                if mef_has_refs:
+                    action = MefAction.CREATE
+                    mef_data = add_schema(mef_data, 'mef')
+                    mef_record = MefRecord.create(
+                        data=mef_data,
+                        id_=None,
+                        delete_pid=True,
+                        dbcommit=dbcommit,
+                        reindex=reindex
+                    )
+                    MefRecord.update_indexes()
+
+            if verbose and action != MefAction.DISCARD:
+                click.echo(
+                    'Create MEF from {agency}: {pid} {action}'.format(
+                        agency=self.agency,
+                        pid=self.pid,
+                        action=action
+                    )
+                )
+        return action
+
+    def delete_from_mef(self, mef_record=None, dbcommit=False, reindex=False,
+                        verbose=False):
+        """Delete agency from MEF record."""
+        from .mef.api import MefRecord
+        action = MefAction.DISCARD
+        mef_pid = '???'
+        mef_record = MefRecord.get_mef_by_agency_pid(self.pid, self.agency)
+        if mef_record:
+            mef_pid = mef_record.pid
+            if mef_record.pop(self.agency, None):
+                action = MefAction.UPDATE
+                mef_record = mef_record.replace(
+                    data=mef_record,
+                    dbcommit=dbcommit,
+                    reindex=reindex
+                )
+                if reindex:
+                    MefRecord.update_indexes()
+        if verbose:
+            click.echo(
+                'Delete {agency}: {pid} from MEF: {mef_pid}  {action}'.format(
+                    agency=self.agency,
+                    pid=self.pid,
+                    mef_pid=mef_pid,
+                    action=action
+                )
+            )
+        return action
 
     @property
     def pid(self):
@@ -347,3 +569,12 @@ class AuthRecord(Record):
     def persistent_identifier(self):
         """Get Persistent Identifier."""
         return self.get_persistent_identifier(self.id)
+
+    @classmethod
+    def get_online_record(cls, id, dbcommit=False, reindex=False,
+                          test_md5=False, verbose=False):
+        """Get online Record.
+
+        Has to be overloaded in agency class.
+        """
+        return None, AgencyAction.DISCARD, MefAction.DISCARD

@@ -10,6 +10,108 @@
     "authorized_access_point_representing_a_person"
   ],
   "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "title": "Schema",
+      "description": "Schema to validate an authority person from gnd against.",
+      "type": "string",
+      "minLength": 7
+    },
+    "pid": {
+      "title": "Gnd record ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "md5": {
+      "title": "Md5",
+      "type": "string",
+      "minLength": 1
+    },
+    "language_of_person": {
+      "title": "Language of person",
+      "description": "A language a person uses when writing for publication, broadcasting, etc. (cf. RDA)",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "$ref": "#/definitions/language_def"
+          }
+        }
+      }
+    },
+    "gender": {
+      "title": "Gender of person",
+      "description": "XXX (cf. RDA)",
+      "type": "string",
+      "validationMessage": "Should be one of the three options: male, female, not known.",
+      "minItems": 1,
+      "properties": {
+        "value": {
+          "enum": [
+            "male",
+            "female",
+            "not known"
+          ]
+        }
+      }
+    },
+    "identifier_for_person": {
+      "title": "Identifier for person",
+      "description": "XXX (cf. RDA)",
+      "type": "string",
+      "format": "uri"
+    },
+    "date_of_birth": {
+      "title": "Date of birth",
+      "description": "XXX (cf. RDA)",
+      "type": "string"
+    },
+    "date_of_death": {
+      "title": "Date of death",
+      "description": "XXX (cf. RDA)",
+      "type": "string"
+    },
+    "biographical_information": {
+      "title": "Biographical information",
+      "description": "XXX (cf. RDA)",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "preferred_name_for_person": {
+      "title": "Preferred name for person",
+      "description": "XXX (cf. RDA)",
+      "type": "string"
+    },
+    "qualifier": {
+      "title": "Qualifier",
+      "type": "string"
+    },
+    "numeration": {
+      "title": "Numeration",
+      "type": "string"
+    },
+    "variant_name_for_person": {
+      "title": "Variant name for person",
+      "description": "XXX (cf. RDA)",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "authorized_access_point_representing_a_person": {
+      "title": "Authorized access point representing a person",
+      "description": "XXX (cf. RDA)",
+      "type": "string"
+    }
+  },
   "definitions": {
     "language_def": {
       "title": "Language",
@@ -505,100 +607,6 @@
         "zxx",
         "zza"
       ]
-    }
-  },
-  "properties": {
-    "$schema": {
-      "title": "Schema",
-      "description": "Schema to validate an authority person from gnd against.",
-      "type": "string",
-      "minLength": 7
-    },
-    "pid": {
-      "title": "Gnd record ID",
-      "type": "string",
-      "minLength": 1
-    },
-    "md5": {
-      "title": "Md5",
-      "type": "string",
-      "minLength": 1
-    },
-    "language_of_person": {
-      "title": "Language of person",
-      "description": "A language a person uses when writing for publication, broadcasting, etc. (cf. RDA)",
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "string",
-        "additionalProperties": false,
-        "properties": {
-          "value": {
-            "$ref": "#/definitions/language_def"
-          }
-        }
-      }
-    },
-    "gender": {
-      "title": "Gender of person",
-      "description": "XXX (cf. RDA)",
-      "type": "string",
-      "validationMessage": "Should be one of the three options: male, female, not known.",
-      "minItems": 1,
-      "properties": {
-        "value": {
-          "enum": [
-            "male",
-            "female",
-            "not known"
-          ]
-        }
-      }
-    },
-    "identifier_for_person": {
-      "title": "Identifier for person",
-      "description": "XXX (cf. RDA)",
-      "type": "string",
-      "format": "uri"
-    },
-    "date_of_birth": {
-      "title": "Date of birth",
-      "description": "XXX (cf. RDA)",
-      "type": "string"
-    },
-    "date_of_death": {
-      "title": "Date of death",
-      "description": "XXX (cf. RDA)",
-      "type": "string"
-    },
-    "biographical_information": {
-      "title": "Biographical information",
-      "description": "XXX (cf. RDA)",
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "string"
-      }
-    },
-    "preferred_name_for_person": {
-      "title": "Preferred name for person",
-      "description": "XXX (cf. RDA)",
-      "type": "string"
-    },
-    "variant_name_for_person": {
-      "title": "Variant name for person",
-      "description": "XXX (cf. RDA)",
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "string",
-        "minLength": 1
-      }
-    },
-    "authorized_access_point_representing_a_person": {
-      "title": "Authorized access point representing a person",
-      "description": "XXX (cf. RDA)",
-      "type": "string"
     }
   }
 }

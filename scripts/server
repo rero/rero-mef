@@ -96,7 +96,7 @@ fi
 export FLASK_DEBUG=True
 export FLASK_ENV=development
 # Start Worker and Server
-celery worker -A rero_mef.celery --beat -l INFO & pid_celery=$!
+celery worker -A rero_mef.celery --autoscale=4,1 --beat -l INFO --without-heartbeat --purge & pid_celery=$!
 
 if ${HTTP}
 then

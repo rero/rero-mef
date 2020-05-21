@@ -60,7 +60,7 @@ def test_bnf_gender_missing():
     xml_part_to_add = ""
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_gender()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_bnf_language_of_person():
@@ -86,7 +86,7 @@ def test_bnf_language_of_perso__missing():
     xml_part_to_add = ""
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_language_of_person()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_bnf_identifier_for_person():
@@ -109,7 +109,7 @@ def test_bnf_identifier_for_person_missing():
     xml_part_to_add = ""
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_identifier_for_person()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_bnf_birth_and_death_from_field_103():
@@ -173,7 +173,7 @@ def test_bnf_birth_and_death_from_field_103():
      """
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_birth_and_death_dates()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_bnf_birth_and_death_dates_year_birth():
@@ -318,7 +318,7 @@ def test_bnf_birth_and_death_dates_missing():
     xml_part_to_add = ""
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_birth_and_death_dates()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_bnf_biographical_information():
@@ -350,7 +350,7 @@ def test_bnf_biographical_information_missing():
     xml_part_to_add = ""
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_biographical_information()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_bnf_preferred_name_for_person_1():
@@ -374,7 +374,7 @@ def test_bnf_preferred_name_for_person_missing():
     xml_part_to_add = ""
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_preferred_name_for_person()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_bnf_variant_name_for_person():
@@ -404,7 +404,7 @@ def test_bnf_variant_name_for_person_missing():
     xml_part_to_add = ""
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_variant_name_for_person()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_bnf_authorized_access_point_representing_a_person():
@@ -432,7 +432,7 @@ def test_bnf_authorized_access_point_representing_a_person_missing():
     xml_part_to_add = ""
     trans = trans_prep('bnf', xml_part_to_add)
     trans.trans_bnf_authorized_access_point_representing_a_person()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_authorized_access_point_representing_a_person_diff_order():

@@ -63,6 +63,13 @@ def test_create_mef_from_agency_with_viaf_links(
     assert mef_action.name == 'CREATE'
     assert returned_record['pid'] == '10000690'
 
+    key = '{agency}{identifier}'.format(agency='bnf', identifier='.pid')
+    result = MefSearch().filter(
+        'term', **{key: '10000690'}
+    ).source().scan()
+    sources = [n['sources'] for n in result]
+    assert sources[0] == ['bnf']
+
     returned_record, action, mef_action = GndRecord.create_or_update(
         gnd_record, agency='gnd', dbcommit=True, reindex=True
     )
@@ -72,7 +79,6 @@ def test_create_mef_from_agency_with_viaf_links(
     assert mef_action.name == 'UPDATE'
     assert returned_record['pid'] == '12391664X'
 
-    key = '{agency}{identifier}'.format(agency='bnf', identifier='.pid')
     result = MefSearch().filter(
         'term', **{key: '10000690'}
     ).source().scan()

@@ -1,8 +1,8 @@
 {
   "settings": {
-    "number_of_shards": 1,
-    "number_of_replicas": 1,
-    "max_result_window": 10000000
+    "number_of_shards": 4,
+    "number_of_replicas": 2,
+    "max_result_window": 100000000
   },
   "mappings": {
     "date_detection": false,
@@ -25,6 +25,12 @@
       },
       "preferred_name_for_person": {
         "type": "text"
+      },
+      "qualifier": {
+        "type": "keyword"
+      },
+      "numeration": {
+        "type": "keyword"
       },
       "variant_name_for_person": {
         "type": "text"

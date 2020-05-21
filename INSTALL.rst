@@ -25,7 +25,7 @@ Installation
 ============
 
 You need to install `poetry`, it will handle the virtual environment creation for the project
-in order to sandbox our Python environment, as well as manage the dependency installation,
+in order to sandbox the Python environment, as well as manage the dependency installation,
 among other things.
 
 Start all dependent services using docker-compose (this will start PostgreSQL,

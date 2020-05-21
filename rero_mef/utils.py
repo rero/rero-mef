@@ -35,10 +35,10 @@ import datetime
 import traceback
 from datetime import timedelta
 from io import StringIO
+from json import JSONDecodeError, JSONDecoder
 
 import click
 from dateutil import parser
-from dateutil.parser import ParserError
 from flask import current_app
 from invenio_db import db
 from invenio_oaiharvester.api import get_info_by_oai_name
@@ -46,10 +46,14 @@ from invenio_oaiharvester.errors import InvenioOAIHarvesterConfigNotFound, \
     WrongDateCombination
 from invenio_oaiharvester.models import OAIHarvestConfig
 from invenio_oaiharvester.utils import get_oaiharvest_object
+from jsonschema.exceptions import ValidationError
 from pymarc.marcxml import parse_xml_to_array
 from sickle import Sickle, oaiexceptions
 from sickle.iterator import OAIItemIterator
 from sickle.oaiexceptions import NoRecordsMatch
+
+from .authorities.mef.models import MefAction
+from .authorities.models import AgencyAction
 
 
 def add_oai_source(name, baseurl, metadataprefix='marc21',
@@ -120,7 +124,7 @@ def oai_set_last_run(name, date, verbose=False):
             click.echo(('ERROR OAI config not found: {name}').format(
                 name=name,
             ))
-    except ParserError as err:
+    except parser.ParserError as err:
         if verbose:
             click.echo(('OAI set lastrun {name}: {err}').format(
                 name=name,
@@ -329,7 +333,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
 
 def oai_get_record(id, name, transformation, record_cls, access_token=None,
                    identifier=None, dbcommit=False, reindex=False,
-                   test_md5=False, verbose=False, **kwargs):
+                   test_md5=False, verbose=False, debug=False, **kwargs):
     """Get record from an OAI repo.
 
     :param identifier: identifier of record.
@@ -350,15 +354,31 @@ def oai_get_record(id, name, transformation, record_cls, access_token=None,
     try:
         record = request.GetRecord(**params)
     except Exception as err:
-        return None, err
+        if debug:
+            raise(err)
+        return None, AgencyAction.DISCARD, MefAction.DISCARD
     records = parse_xml_to_array(StringIO(record.raw))
     rec = transformation(records[0]).json
-    new_rec, action, mef_action = record_cls.create_or_update(
-        rec,
-        dbcommit=dbcommit,
-        reindex=reindex,
-        test_md5=test_md5
-    )
+    try:
+        new_rec, action, mef_action = record_cls.create_or_update(
+            rec,
+            dbcommit=dbcommit,
+            reindex=reindex,
+            test_md5=test_md5
+        )
+    except ValidationError:
+        new_rec = None,
+        action = AgencyAction.VALIDATIONERROR
+        mef_action = MefAction.DISCARD
+        if debug:
+            traceback.print_exc()
+    except Exception:
+        new_rec = None,
+        action = AgencyAction.ERROR
+        mef_action = MefAction.DISCARD
+        if debug:
+            traceback.print_exc()
+
     if verbose:
         click.echo(
             'OAI-{name} get: {id} action: {action} {mef}'.format(
@@ -369,3 +389,39 @@ def oai_get_record(id, name, transformation, record_cls, access_token=None,
             )
         )
     return new_rec, action, mef_action
+
+
+def read_json_record(json_file, buf_size=1024, decoder=JSONDecoder()):
+    """Read lasy json records from file.
+
+    :param json_file: json file handle
+    :param buf_size: buffer size for file read
+    :param decoder: decoder to use for decoding
+    :return: record Generator
+    """
+    buffer = json_file.read(2).replace('\n', '')
+    # we have to delete the first [ for an list of records
+    if buffer.startswith('['):
+        buffer = buffer[1:].lstrip()
+    while True:
+        block = json_file.read(buf_size)
+        if not block:
+            break
+        buffer += block.replace('\n', '')
+        pos = 0
+        while True:
+            try:
+                buffer = buffer.lstrip()
+                obj, pos = decoder.raw_decode(buffer)
+            except JSONDecodeError as err:
+                break
+            else:
+                yield obj
+                buffer = buffer[pos:].lstrip()
+
+                if len(buffer) <= 0:
+                    # buffer is empty read more data
+                    buffer = json_file.read(buf_size)
+                if buffer.startswith(','):
+                    # delete records deliminators
+                    buffer = buffer[1:].lstrip()

@@ -28,6 +28,7 @@ import gc
 import hashlib
 import json
 import os
+from copy import deepcopy
 from datetime import datetime
 from io import StringIO
 from time import sleep
@@ -35,16 +36,38 @@ from uuid import uuid4
 
 import click
 import ijson
-import psutil
 import psycopg2
 import sqlalchemy
 from flask import current_app
 from invenio_db import db
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PersistentIdentifier
-from invenio_records.api import Record
 from invenio_records_rest.utils import obj_or_import_string
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
+
+def number_records_in_file(json_file, type):
+    """Get number of records per file."""
+    count = 0
+    with open(json_file, 'r',  buffering=1) as file:
+        for line in file:
+            if type == 'json':
+                if '"pid"' in line:
+                    count += 1
+            elif type == 'csv':
+                count += 1
+    return count
+
+
+def progressbar(items, length=0, verbose=False):
+    """Verbose progress bar."""
+    if verbose:
+        with click.progressbar(items, length=length) as progressbar_items:
+            for item in progressbar_items:
+                yield item
+    else:
+        for item in items:
+            yield item
 
 
 def get_host():
@@ -56,12 +79,32 @@ def get_host():
 
 
 def resolve_record(path, object_class):
-    """Resolve local records."""
+    """Resolve local records.
+
+    :param path: pid for record
+    :object_class: record class to use
+    :returns: record for pid or {}
+    """
     try:
         record = object_class.get_record_by_pid(path)
         return record
     except PIDDoesNotExistError:
         return {}
+
+
+def get_record_class(agent):
+    """Get the record class from agent.
+
+    :param agent: agent to get class for
+    :returns: record class for agent
+    """
+    # take the first defined doc type for finding the class
+    record_class = obj_or_import_string(
+        current_app.config.get('RECORDS_REST_ENDPOINTS').get(
+            agent
+        ).get('record_class', None)
+    )
+    return record_class
 
 
 def metadata_csv_line(record, record_uuid, date):
@@ -127,11 +170,11 @@ def db_copy_from(buffer, table, columns):
             columns=columns,
             sep='\t'
         )
-        cursor.connection.commit()
+        connection.commit()
     except psycopg2.DataError as error:
         current_app.logger.error('data load error: {0}'.format(error))
-    cursor.execute('VACUUM ANALYSE {table}'.format(table=table))
-    cursor.close()
+    # cursor.execute('VACUUM ANALYSE {table}'.format(table=table))
+    # cursor.close()
     connection.close()
 
 
@@ -180,19 +223,6 @@ def bulk_index(agency, uuids, verbose=False):
             minutes *= 2
 
 
-def print_memory(verbose, message):
-    """Print memory usage."""
-    if verbose:
-        process = psutil.Process(os.getpid())
-        click.echo(
-            '{message} memory: {memory:.2f} MB {count}'.format(
-                message=message,
-                memory=process.memory_info().rss / 1024 / 1024,
-                count=gc.get_count()
-            )
-        )
-
-
 def bulk_load_agency(agency, data, table, columns,
                      bulk_count=0, verbose=False,
                      reindex=False):
@@ -205,6 +235,7 @@ def bulk_load_agency(agency, data, table, columns,
     index = -1
     if 'id' in columns:
         index = columns.index('id')
+    start_time = datetime.now()
     with open(data, 'r', encoding='utf-8', buffering=1) as input_file:
         for line in input_file:
             count += 1
@@ -215,10 +246,14 @@ def bulk_load_agency(agency, data, table, columns,
                 buffer.flush()
                 buffer.seek(0)
                 if verbose:
+                    end_time = datetime.now()
+                    diff_time = end_time - start_time
+                    start_time = end_time
                     click.echo(
-                        '{agency} copy from file: {count}'.format(
+                        '{agency} copy from file: {count} {time}s'.format(
                             agency=agency,
-                            count=count
+                            count=count,
+                            time=diff_time.seconds
                         ),
                         nl=False
                     )
@@ -234,15 +269,18 @@ def bulk_load_agency(agency, data, table, columns,
                         click.echo()
 
                 # force the Garbage Collector to release unreferenced memory
-                gc.collect()
+                # gc.collect()
                 # new buffer
                 buffer = StringIO()
 
         if verbose:
+            end_time = datetime.now()
+            diff_time = end_time - start_time
             click.echo(
-                '{agency} copy from file: {count}'.format(
+                '{agency} copy from file: {count} {time}s'.format(
                     agency=agency,
-                    count=count
+                    count=count,
+                    time=diff_time.seconds
                 ),
                 nl=False
             )
@@ -472,15 +510,19 @@ def create_agency_csv_file(input_file, agency, pidstore, metadata):
                 agency_id_file.write(record['pid'] + os.linesep)
 
 
-def get_agency_classes():
+def get_agency_classes(without_mef_viaf=True):
     """Get agency classes from config."""
     agencies = {}
     endpoints = current_app.config.get('RECORDS_REST_ENDPOINTS', {})
+    if without_mef_viaf:
+        endpoints.pop('mef', None)
+        endpoints.pop('viaf', None)
     for agency in endpoints:
         record_class = obj_or_import_string(
-            endpoints[agency].get('record_class', Record)
+            endpoints[agency].get('record_class')
         )
-        agencies[agency] = record_class
+        if record_class:
+            agencies[agency] = record_class
     return agencies
 
 
@@ -490,26 +532,20 @@ def get_agency_class(agency):
         'RECORDS_REST_ENDPOINTS', {}
     ).get(agency, {})
     record_class = obj_or_import_string(
-        agency_endpoint.get('record_class', Record)
+        agency_endpoint.get('record_class')
     )
     return record_class
 
 
-def viaf_to_mef(viaf_record):
-    """Transform viaf recod to mef."""
-    mef_record = {}
-    with current_app.app_context():
-        agencies = get_agency_classes()
-        agency_record = viaf_record
-        viaf_pid = agency_record['viaf_pid']
-        for key in agency_record:
-            agency = key.split('_')[0]
-            if agencies[agency].get_record_by_pid(agency_record[key]):
-                add_agency_to_json(mef_record, agency, agency_record[key])
-        if len(mef_record):
-            add_schema(mef_record, 'mef')
-            mef_record['viaf_pid'] = viaf_pid
-    return mef_record
+def get_agency_search_class(agency):
+    """Get agency search class from config."""
+    agency_endpoint = current_app.config.get(
+        'RECORDS_REST_ENDPOINTS', {}
+    ).get(agency, {})
+    search_class = obj_or_import_string(
+        agency_endpoint.get('search_class')
+    )
+    return search_class
 
 
 def write_link_json(
@@ -530,28 +566,22 @@ def write_link_json(
     }
     json_data['viaf_pid'] = viaf_pid
     write_to_file_viaf = False
-    for catalog_id in corresponding_data:
-        json_data[key_per_catalog_id[catalog_id]] = corresponding_data[
-            catalog_id
-        ]
-        write_to_file_viaf = True
+    for key, value in corresponding_data.items():
+        if key in key_per_catalog_id:
+            json_data[key_per_catalog_id[key]] = value
+            write_to_file_viaf = True
     write_to_file = False
     json_dump = json_data
-    if agency == 'mef':
-        json_dump = viaf_to_mef(json_data)
-        if json_dump:
-            json_dump['pid'] = agency_pid
-            write_to_file = True
+
+    agency_pid = viaf_pid
+    add_schema(json_dump, 'viaf')
+    json_dump['pid'] = agency_pid
+    del(json_dump['viaf_pid'])
+    # only save viaf data with used pids
+    if agency == 'viaf':
+        write_to_file = write_to_file_viaf
     else:
-        agency_pid = viaf_pid
-        add_schema(json_dump, 'viaf')
-        json_dump['pid'] = agency_pid
-        del(json_dump['viaf_pid'])
-        # only save viaf data with used pids
-        if agency == 'viaf':
-            write_to_file = write_to_file_viaf
-        else:
-            write_to_file = True
+        write_to_file = True
 
     if write_to_file:
         record_uuid = str(uuid4())
@@ -562,25 +592,157 @@ def write_link_json(
         metadata_file.write(metadata_csv_line(json_dump, record_uuid, date))
 
 
-def create_viaf_mef_files(
-    agency,
-    viaf_input_file,
-    agency_pidstore_file_name,
-    agency_metadata_file_name,
+def create_mef_files(
+    viaf_pidstore_file,
+    input_directory,
+    mef_pidstore_file_name,
+    mef_metadata_file_name,
+    mef_ids_file_name,
     verbose=False
 ):
-    """Create agency csv file to load."""
+    """Create MEF csv file to load."""
+    if verbose:
+        click.echo('Start ***')
+    pids = {}
+    agency_classes = get_agency_classes()
+    viaf_agency_pid_names = {}
+    for agency in agency_classes:
+        viaf_agency_pid_names['{agency}_pid'.format(agency=agency)] = agency
+        file_name = os.path.join(
+            input_directory,
+            '{agency}_pidstore.csv'.format(agency=agency)
+        )
+        if os.path.exists(file_name):
+            if verbose:
+                click.echo('  Read pids from: {name}'.format(name=file_name))
+            length = number_records_in_file(file_name, 'csv')
+            pids[agency] = {}
+            progress = progressbar(
+                items=open(file_name, 'r'),
+                length=length,
+                verbose=verbose
+            )
+            for line in progress:
+                pid = line.split('\t')[3]
+                pids[agency][pid] = 1
+
+    mef_pid = 1
+    corresponding_data = {}
+    with open(
+        mef_pidstore_file_name, 'w', encoding='utf-8'
+    ) as mef_pidstore:
+        with open(
+            mef_metadata_file_name, 'w', encoding='utf-8'
+        ) as mef_metadata:
+            with open(
+                mef_ids_file_name, 'w', encoding='utf-8'
+            ) as mef_ids_file:
+                schemas = current_app.config.get('RECORDS_JSON_SCHEMA')
+                base_url = current_app.config.get('RERO_MEF_APP_BASE_URL')
+                schema = '{base_url}{endpoint}{schema}'.format(
+                    base_url=base_url,
+                    endpoint=current_app.config.get('JSONSCHEMAS_ENDPOINT'),
+                    schema=schemas['mef']
+                )
+                if verbose:
+                    click.echo('  Create MEF with VIAF pid: {name}'.format(
+                        name=viaf_pidstore_file
+                    ))
+                progress = progressbar(
+                    items=open(str(viaf_pidstore_file), 'r', encoding='utf-8'),
+                    length=number_records_in_file(viaf_pidstore_file, 'csv'),
+                    verbose=verbose
+                )
+                for line in progress:
+                    viaf_data = json.loads(line.split('\t')[3])
+                    viaf_pid = viaf_data['pid']
+                    corresponding_data = {
+                        'pid': str(mef_pid),
+                        '$schema': schema
+                    }
+                    for pid_name, agency in viaf_agency_pid_names.items():
+                        agency_pid = viaf_data.get(pid_name)
+                        if agency_pid:
+                            if pids.get(agency, {}).get(agency_pid):
+                                corresponding_data['viaf_pid'] = viaf_pid
+                                pids[agency].pop(agency_pid)
+                                url = '{base_url}/api/{agency}/{pid}'.format(
+                                    base_url=base_url,
+                                    agency=agency,
+                                    pid=agency_pid
+                                )
+                                corresponding_data[agency] = {'$ref': url}
+                    if corresponding_data.get('viaf_pid'):
+                        # Write MEF with VIAF to file
+                        mef_uuid = str(uuid4())
+                        date = str(datetime.utcnow())
+                        mef_pidstore.write(
+                            pidstore_csv_line(
+                                'mef', str(mef_pid), mef_uuid, date)
+                        )
+                        mef_metadata.write(
+                            metadata_csv_line(
+                                corresponding_data, mef_uuid, date)
+                        )
+                        mef_ids_file.write(str(mef_pid) + os.linesep)
+                        mef_pid += 1
+                # Create MEF without VIAF
+                length = 0
+                for agency in pids:
+                    length += len(pids[agency])
+                if verbose:
+                    click.echo('  Create MEF without VIAF pid: {count}'.format(
+                        count=length
+                    ))
+                progress = progressbar(
+                    items=pids,
+                    length=length,
+                    verbose=verbose
+                )
+                for agency in progress:
+                    url = '{base_url}/api/{agency}/{pid}'.format(
+                        base_url=base_url,
+                        agency=agency,
+                        pid=pids[agency]
+                    )
+                    corresponding_data = {
+                        'pid': str(mef_pid),
+                        '$schema': schema,
+                        'agency': url
+                    }
+                    mef_uuid = str(uuid4())
+                    date = str(datetime.utcnow())
+                    mef_pidstore.write(
+                        pidstore_csv_line('mef', str(mef_pid), mef_uuid, date)
+                    )
+                    mef_metadata.write(
+                        metadata_csv_line(corresponding_data, mef_uuid, date)
+                    )
+                    mef_ids_file.write(str(mef_pid) + os.linesep)
+                    mef_pid += 1
+    if verbose:
+        click.echo('  MEF records created: {count}'.format(count=mef_pid-1))
+
+
+def create_viaf_files(
+    agency,
+    viaf_input_file,
+    viaf_pidstore_file_name,
+    viaf_metadata_file_name,
+    verbose=False
+):
+    """Create VIAF csv file to load."""
     if verbose:
         click.echo('Start ***')
 
     agency_pid = 0
     corresponding_data = {}
     with open(
-        agency_pidstore_file_name, 'w', encoding='utf-8'
-    ) as agency_pidstore:
+        viaf_pidstore_file_name, 'w', encoding='utf-8'
+    ) as viaf_pidstore:
         with open(
-            agency_metadata_file_name, 'w', encoding='utf-8'
-        ) as agency_metadata:
+            viaf_metadata_file_name, 'w', encoding='utf-8'
+        ) as viaf_metadata:
             with open(
                 str(viaf_input_file), 'r', encoding='utf-8'
             ) as viaf_in_file:
@@ -606,8 +768,8 @@ def create_viaf_mef_files(
                             )
                         write_link_json(
                             agency,
-                            agency_pidstore,
-                            agency_metadata,
+                            viaf_pidstore,
+                            viaf_metadata,
                             previous_viaf_pid,
                             corresponding_data,
                             str(agency_pid)
@@ -629,8 +791,8 @@ def create_viaf_mef_files(
                     )
                 write_link_json(
                     agency,
-                    agency_pidstore,
-                    agency_metadata,
+                    viaf_pidstore,
+                    viaf_metadata,
                     previous_viaf_pid,
                     corresponding_data,
                     str(agency_pid)
@@ -648,3 +810,56 @@ def append_fixtures_new_identifiers(identifier, pids, pid_type):
             sqlalchemy.cast(PersistentIdentifier.pid_value, sqlalchemy.Integer)
         )).first().pid_value
         identifier._set_sequence(max_pid)
+
+
+def get_agencies_endpoints(without_mef_viaf=True):
+    """Get all agencies from config."""
+    agencies = deepcopy(current_app.config.get('RECORDS_REST_ENDPOINTS', {}))
+    if without_mef_viaf:
+        agencies.pop('mef', None)
+        agencies.pop('viaf', None)
+    return agencies
+
+
+def get_diff_db_es_pids(agency, verbose=False):
+    """Get differences between DB and ES pids."""
+    pids_db = {}
+    pids_es = {}
+    pids_es_double = []
+    record_class = get_agency_class(agency)
+    count = record_class.count()
+    if verbose:
+        click.echo('Get pids from DB: {count}'.format(count=count))
+    progress = progressbar(
+        items=record_class.get_all_pids(),
+        length=count,
+        verbose=verbose
+    )
+    for pid in progress:
+        pids_db[pid] = 1
+    search_class = get_agency_search_class(agency)
+    count = search_class().source('pid').count()
+    if verbose:
+        click.echo('Get pids from ES: {count}'.format(count=count))
+    progress = progressbar(
+        items=search_class().source('pid').scan(),
+        length=count,
+        verbose=verbose
+    )
+    for hit in progress:
+        pid = hit.pid
+        if pids_es.get(pid):
+            pids_es_double.append(pid)
+        if pids_db.get(pid):
+            pids_db.pop(pid)
+        else:
+            pids_es[pid] = 1
+    pids_db = [v for v in pids_db]
+    pids_es = [v for v in pids_es]
+    if verbose:
+        click.echo('Counts  DB: {dbc} ES: {esc} ES+: {esp}'.format(
+            dbc=len(pids_db),
+            esc=len(pids_es),
+            esp=len(pids_es_double)
+        ))
+    return pids_db, pids_es, pids_es_double

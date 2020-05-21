@@ -55,6 +55,7 @@ class GndRecord(AuthRecord):
     fetcher = gnd_id_fetcher
     provider = GndProvider
     agency = 'gnd'
+    viaf_source_code = 'DNB'
     agency_pid_type = 'gnd_pid'
     model_cls = GndMetadata
 
@@ -78,6 +79,14 @@ class GndRecord(AuthRecord):
         data = add_md5(data)
         super(GndRecord, self).update(data, dbcommit=dbcommit, reindex=reindex)
         return self
+
+    @classmethod
+    def get_online_record(cls, id, dbcommit=False, reindex=False,
+                          test_md5=False, verbose=False):
+        """Get online record."""
+        from .tasks import gnd_get_record
+        return gnd_get_record(id=id, dbcommit=dbcommit, reindex=reindex,
+                              test_md5=test_md5, verbose=verbose)
 
 
 class GndIndexer(AuthRecordIndexer):

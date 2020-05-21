@@ -45,22 +45,23 @@ class Transformation(object):
 
     def _transform(self):
         """Call the transformation functions."""
-        for func in dir(self):
-            if func.startswith('trans'):
-                func = getattr(self, func)
-                func()
+        if self.marc.get_fields('100'):
+            for func in dir(self):
+                if func.startswith('trans'):
+                    func = getattr(self, func)
+                    func()
 
     @property
     def json(self):
         """Json data."""
-        return self.json_dict
+        return self.json_dict or None
 
     def trans_rero_identifier_for_person(self):
         """Transformation identifier_for_person from field 035."""
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function',
-                'trans_rero_identifier_for_person')
+                'trans_identifier_for_person')
         fields_035 = self.marc.get_fields('035')
         if fields_035 and fields_035[0].get_subfields('a'):
             pid = fields_035[0].get_subfields('a')[0]
@@ -79,12 +80,12 @@ class Transformation(object):
             """DocString."""
             date_formated = date_str
             if len(date_str) == 8:
-                    date_data = {
-                        'year': date_str[0:4],
-                        'month': date_str[4:6],
-                        'day': date_str[6:8]
-                    }
-                    date_formated = '{year}-{month}-{day}'.format(**date_data)
+                date_data = {
+                    'year': date_str[0:4],
+                    'month': date_str[4:6],
+                    'day': date_str[6:8]
+                }
+                date_formated = '{year}-{month}-{day}'.format(**date_data)
             elif len(date_str) == 4:
                 date_formated = date_str[0:4]
             return date_formated
@@ -92,7 +93,7 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function',
-                'trans_rero_birth_and_death_dates')
+                'trans_birth_and_death_dates')
         birth_date = ''
         death_date = ''
         fields_100 = self.marc.get_fields('100')
@@ -115,7 +116,7 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function',
-                'trans_rero_biographical_information')
+                'trans_biographical_information')
         biographical_information = []
         subfields = {'a': ', '}
         for tag in [680]:
@@ -130,20 +131,42 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function',
-                'trans_rero_preferred_name_for_person')
-        subfields = {'a': ' ', 'b': ' ', 'c': ' '}
+                'trans_preferred_name_for_person')
+        subfields = {'a': ' '}
         preferred_name_for_person = \
             build_string_list_from_fields(self.marc, '100', subfields)
         if preferred_name_for_person:
             self.json_dict['preferred_name_for_person'] = \
                 preferred_name_for_person[0]
 
+    def trans_rero_numeration(self):
+        """Transformation numeration 100 $b."""
+        if self.logger and self.verbose:
+            self.logger.info(
+                'Call Function',
+                'trans_numeration')
+        subfields = {'b': ' '}
+        numeration = build_string_list_from_fields(self.marc, '100', subfields)
+        if numeration:
+            self.json_dict['numeration'] = numeration[0]
+
+    def trans_rero_qualifier(self):
+        """Transformation qualifier 100 $c."""
+        if self.logger and self.verbose:
+            self.logger.info(
+                'Call Function',
+                'trans_qualifier')
+        subfields = {'c': ' '}
+        qualifier = build_string_list_from_fields(self.marc, '100', subfields)
+        if qualifier:
+            self.json_dict['qualifier'] = qualifier[0]
+
     def trans_rero_variant_name_for_person(self):
         """Transformation variant_name_for_person 400 $a."""
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function',
-                'trans_rero_variant_name_for_person')
+                'trans_variant_name_for_person')
         subfields = {'a': ', '}
         variant_name_for_person = \
             build_string_list_from_fields(self.marc, '400', subfields)
@@ -155,7 +178,7 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function',
-                'trans_rero_authorized_access_point_representing_a_person')
+                'trans_authorized_access_point_representing_a_person')
         subfields = {'a': ', ', 'b': ', ', 'c': ', ', 'd': ', '}
         authorized_access_point_representing_a_person = \
             build_string_list_from_fields(self.marc, '100', subfields)

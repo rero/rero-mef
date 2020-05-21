@@ -71,7 +71,7 @@ function db_init () {
     # Purge celery
     celery purge -A rero_mef.celery -f
     # Clean redis
-    invenio shell --no-term-title -c "import redis; redis.StrictRedis.from_url(app.config['CACHE_REDIS_URL']).flushall(); print('Cache cleared')"
+    invenio utils flush_cache --yes-i-know || true
     invenio db destroy --yes-i-know || true
     invenio db init create
     invenio index destroy --force --yes-i-know || true
@@ -115,36 +115,38 @@ function bulk_load () {
     for AGENCY in rero bnf gnd idref
     do
         invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose --reindex
-        invenio utils runindex  --raise-on-error
+        invenio utils runindex --raise-on-error
     done
-    # Create CSV files from json
-    for AGENCY in mef viaf
-    do
-        invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --json_file viaf.txt --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
-    done
-    # Load CSV files to db
-    for AGENCY in mef viaf
-    do
-        invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv  --verbose --reindex
-        invenio utils runindex  --raise-on-error  --concurrency 8 --delayed
-    done
+    # Create viaf CSV files from viaf.txt
+    invenio fixtures bulk_load viaf ${INPUT_DIR} ${OUTPUT_DIR} --json_file viaf.txt --csv_pidstore_file viaf_pidstore.csv --csv_metadata_file viaf_metadata.csv
+    # Load viaf CSV files to db
+    invenio fixtures bulk_load viaf ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file viaf_pidstore.csv --csv_metadata_file viaf_metadata.csv  --verbose --reindex
+
+    # Create mef CSV files from viaf_metadata.csv
+    invenio fixtures bulk_load mef ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file viaf_metadata.csv --csv_pidstore_file mef_pidstore.csv --csv_metadata_file mef_metadata.csv
+    # Load viaf CSV files to db
+    invenio fixtures bulk_load mef ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file mef_pidstore.csv --csv_metadata_file mef_metadata.csv  --verbose --reindex
+
+    invenio utils runindex --raise-on-error
     oai_init
 }
 
 function deploy () {
     INPUT_DIR=$1
     # Load agencies CSV files to db
-    for AGENCY in rero bnf gnd idref mef viaf
+    for AGENCY in rero bnf gnd idref viaf mef
     do
         invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose --reindex
     done
     # Index agency records
-    info_msg "For faster indexing disable ES auto refresh:"
-    msg "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d '{\"index\" : {\"refresh_interval\" : \"-1\"}}'"
-    invenio utils runindex --raise-on-error --concurrency 8 --delayed
-    info_msg "After indexing reenable ES auto refresh:"
-    msg "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d'{\"index\" : {\"refresh_interval\" : null}}'"
+    # info_msg "For faster indexing disable ES auto refresh:"
+    # msg "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d '{\"index\" : {\"refresh_interval\" : \"-1\"}}'"
+    # info_msg "After indexing reenable ES auto refresh:"
+    # msg "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d'{\"index\" : {\"refresh_interval\" : null}}'"
     oai_init
+    invenio utils runindex --raise-on-error --concurrency 4 --delayed
+    invenio utils runindex --raise-on-error
+    invenio utils agency_counts
 }
 
 
@@ -152,6 +154,8 @@ function usage () {
     msg "Usage: "
     msg " [./scripts/setup]"
     msg "    Load prepared json files available in git/data"
+    msg " "
+    msg " [./scripts/setup --db_init]"
     msg " "
     msg " [./scripts/setup --deploy INPUT_DIR]"
     msg "    INPUT_DIR where csv files are found. "
@@ -167,6 +171,10 @@ if [[ $# -eq 0 ]] ; then
     sample_load
 else
     case $1 in
+        '--db_init')
+            info_msg "DB init"
+            db_init
+            ;;
         '--deploy')
             info_msg "Start loading CSV records to database for all agencies"
             if [ -z "$2" ]; then
