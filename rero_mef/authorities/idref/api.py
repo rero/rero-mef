@@ -55,6 +55,7 @@ class IdrefRecord(AuthRecord):
     fetcher = idref_id_fetcher
     provider = IdrefProvider
     agency = 'idref'
+    viaf_source_code = 'SUDOC'
     agency_pid_type = 'idref_pid'
     model_cls = IdrefMetadata
 
@@ -79,6 +80,14 @@ class IdrefRecord(AuthRecord):
         super(IdrefRecord, self).update(data, dbcommit=dbcommit,
                                         reindex=reindex)
         return self
+
+    @classmethod
+    def get_online_record(cls, id, dbcommit=False, reindex=False,
+                          test_md5=False, verbose=False):
+        """Get online record."""
+        from .tasks import idref_get_record
+        return idref_get_record(id=id, dbcommit=dbcommit, reindex=reindex,
+                                test_md5=test_md5, verbose=verbose)
 
 
 class IdrefIndexer(AuthRecordIndexer):

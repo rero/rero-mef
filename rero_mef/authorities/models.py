@@ -37,3 +37,5 @@ class AgencyAction(Enum):
     UPTODATE = 'uptodate'
     DISCARD = 'discard'
     DELETE = 'delete'
+    VALIDATIONERROR = 'validation error'
+    ERROR = 'error'

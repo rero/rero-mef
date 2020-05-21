@@ -42,15 +42,16 @@ class Transformation(object):
 
     def _transform(self):
         """Call the transformation functions."""
-        for func in dir(self):
-            if func.startswith('trans'):
-                func = getattr(self, func)
-                func()
+        if self.marc.get_fields('200'):
+            for func in dir(self):
+                if func.startswith('trans'):
+                    func = getattr(self, func)
+                    func()
 
     @property
     def json(self):
         """Json data."""
-        return self.json_dict
+        return self.json_dict or None
 
     def trans_bnf_gender(self):
         """Transformation gender 120 $a a:female, b: male, -:not known."""
@@ -170,12 +171,34 @@ class Transformation(object):
             self.logger.info(
                 'Call Function',
                 'trans_preferred_name_for_person')
-        subfields = {'a': ', ', 'b': ', ', 'c': ', ', 'd': ' '}
+        subfields = {'a': ', ', 'b': ', '}
         preferred_name_for_person = \
             build_string_list_from_fields(self.marc, '200', subfields)
         if preferred_name_for_person:
             self.json_dict['preferred_name_for_person'] = \
                 preferred_name_for_person[0]
+
+    def trans_bnf_qualifier(self):
+        """Transformation qualifier 200 $c."""
+        if self.logger and self.verbose:
+            self.logger.info(
+                'Call Function',
+                'trans_qualifier')
+        subfields = {'c': ', '}
+        qualifier = build_string_list_from_fields(self.marc, '200', subfields)
+        if qualifier:
+            self.json_dict['qualifier'] = qualifier[0]
+
+    def trans_bnf_numeration(self):
+        """Transformation numeration 200 $d."""
+        if self.logger and self.verbose:
+            self.logger.info(
+                'Call Function',
+                'trans_numeration')
+        subfields = {'d': ', '}
+        numeration = build_string_list_from_fields(self.marc, '200', subfields)
+        if numeration:
+            self.json_dict['numeration'] = numeration[0]
 
     def trans_bnf_variant_name_for_person(self):
         """Transformation variant_name_for_person 400 $a $b."""

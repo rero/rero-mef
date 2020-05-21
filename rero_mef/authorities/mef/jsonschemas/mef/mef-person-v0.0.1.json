@@ -50,11 +50,15 @@
     "items": {
       "type": "string",
       "enum": [
-        "rero",
+        "idref",
         "gnd",
-        "bnf",
-        "idref"
+        "rero",
+        "bnf"
       ]
     }
+  },
+  "deleted": {
+    "title": "Deletion date",
+    "type": "string"
   }
 }

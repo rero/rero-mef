@@ -61,6 +61,7 @@ setup(
     entry_points={
         'invenio_celery.tasks': [
             'rero_mef = rero_mef.tasks',
+            'authorities = rero_mef.authorities.tasks',
             'idref = rero_mef.authorities.idref.tasks'
             'gnd = rero_mef.authorities.gnd.tasks'
         ],
@@ -134,6 +135,7 @@ setup(
         'flask.commands': [
             'fixtures = rero_mef.cli:fixtures',
             'utils = rero_mef.cli:utils',
+            'celery = rero_mef.cli:celery',
         ],
         'dojson.cli.rule': [
             'tomarc = dojson.contrib.to_marc21:to_marc21',

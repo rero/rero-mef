@@ -55,6 +55,7 @@ class ReroRecord(AuthRecord):
     fetcher = rero_id_fetcher
     provider = ReroProvider
     agency = 'rero'
+    viaf_source_code = 'RERO'
     agency_pid_type = 'rero_pid'
     model_cls = ReroMetadata
 
@@ -79,6 +80,14 @@ class ReroRecord(AuthRecord):
         super(ReroRecord, self).update(data, dbcommit=dbcommit,
                                        reindex=reindex)
         return self
+
+    @classmethod
+    def get_online_record(cls, id, dbcommit=False, reindex=False,
+                          test_md5=False, verbose=False):
+        """Get online record."""
+        from .tasks import rero_get_record
+        return rero_get_record(id=id, dbcommit=dbcommit, reindex=reindex,
+                               test_md5=test_md5, verbose=verbose)
 
 
 class ReroIndexer(AuthRecordIndexer):

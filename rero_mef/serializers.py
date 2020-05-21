@@ -31,25 +31,23 @@ from invenio_records_rest.serializers.json import JSONSerializer
 from invenio_records_rest.serializers.response import record_responsify
 
 from .authorities.mef.api import MefRecord, MefSearch
-from .authorities.utils import get_agency_classes
-from .authorities.viaf.api import ViafRecord
+from .authorities.utils import get_agencies_endpoints
 
 
 def add_links(pid, record):
     """Add mef link to agencys."""
-    agency_class = get_agency_classes().get(pid.pid_type)
     links = {}
-    if agency_class == MefRecord:
-        links = dict(
-            viaf='{scheme}://{host}/api/viaf/' + record.get('viaf_pid')
-        )
-    elif agency_class == ViafRecord:
+    if pid.pid_type == "mef":
+        viaf_pid = record.get('viaf_pid')
+        if viaf_pid:
+            links = dict(viaf='{scheme}://{host}/api/viaf/' + str(viaf_pid))
+    elif pid.pid_type == "viaf":
         mef_pid_search = MefSearch().filter(
             'term', viaf_pid=record.get('pid')
         ).source(['pid']).scan()
         try:
             mef_pid = next(mef_pid_search).pid
-            links = dict(mef='{scheme}://{host}/api/mef/' + mef_pid)
+            links = dict(mef='{scheme}://{host}/api/mef/' + str(mef_pid))
         except:
             pass
     else:
@@ -104,7 +102,7 @@ class ReroMefSerializer(JSONSerializer):
                 sources.append('idref')
             record['sources'] = sources
 
-        for agency in ['bnf', 'gnd', 'idref', 'rero']:
+        for agency in get_agencies_endpoints():
             local_link(agency, record)
 
         return super(ReroMefSerializer, self).serialize(

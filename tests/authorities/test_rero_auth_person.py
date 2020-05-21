@@ -47,7 +47,7 @@ def test_rero_birth_and_death_dates():
     xml_part_to_add = ""
     trans = trans_prep('rero', xml_part_to_add)
     trans.trans_rero_birth_and_death_dates()
-    assert trans.json == {}
+    assert not trans.json
 
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
@@ -124,6 +124,36 @@ def test_rero_preferred_name_for_person():
     assert trans.json == {
         'preferred_name_for_person':
             'Brontë, Charlotte'
+    }
+
+
+def test_trans_rero_numeration():
+    """Test numeration for Person 100 $b"""
+    xml_part_to_add = """
+        <datafield ind1=" " ind2=" " tag="100">
+            <subfield code="b">II</subfield>
+        </datafield>
+     """
+    trans = trans_prep('rero', xml_part_to_add)
+    trans.trans_rero_numeration()
+    assert trans.json == {
+        'numeration':
+            'II'
+    }
+
+
+def test_trans_rero_qualifier():
+    """Test numeration for Person 100 $c"""
+    xml_part_to_add = """
+        <datafield ind1=" " ind2=" " tag="100">
+            <subfield code="c">Jr.</subfield>
+        </datafield>
+     """
+    trans = trans_prep('rero', xml_part_to_add)
+    trans.trans_rero_qualifier()
+    assert trans.json == {
+        'qualifier':
+            'Jr.'
     }
 
 

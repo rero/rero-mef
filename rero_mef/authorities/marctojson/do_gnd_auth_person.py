@@ -44,15 +44,16 @@ class Transformation(object):
 
     def _transform(self):
         """Call the transformation functions."""
-        for func in dir(self):
-            if func.startswith('trans'):
-                func = getattr(self, func)
-                func()
+        if self.marc.get_fields('100'):
+            for func in dir(self):
+                if func.startswith('trans'):
+                    func = getattr(self, func)
+                    func()
 
     @property
     def json(self):
         """Json data."""
-        return self.json_dict
+        return self.json_dict or None
 
     def trans_gnd_gender(self):
         """Transform gender 375 $a 1 = male, 2 = female, " " = not known."""
@@ -208,6 +209,28 @@ class Transformation(object):
         if preferred_name_for_person:
             self.json_dict['preferred_name_for_person'] = \
                 preferred_name_for_person[0]
+
+    def trans_gnd_numeration(self):
+        """Transformation numeration 100 $b."""
+        if self.logger and self.verbose:
+            self.logger.info(
+                'Call Function',
+                'trans_numeration')
+        subfields = {'b': ' '}
+        numeration = build_string_list_from_fields(self.marc, '100', subfields)
+        if numeration:
+            self.json_dict['numeration'] = numeration[0]
+
+    def trans_gnd_qualifier(self):
+        """Transformation qualifier 100 $c."""
+        if self.logger and self.verbose:
+            self.logger.info(
+                'Call Function',
+                'trans_qualifier')
+        subfields = {'c': ' '}
+        qualifier = build_string_list_from_fields(self.marc, '100', subfields)
+        if qualifier:
+            self.json_dict['qualifier'] = qualifier[0]
 
     def trans_gnd_variant_name_for_person(self):
         """Transformation variant_name_for_person 400 $a."""

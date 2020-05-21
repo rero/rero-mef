@@ -55,6 +55,7 @@ class BnfRecord(AuthRecord):
     fetcher = bnf_id_fetcher
     provider = BnfProvider
     agency = 'bnf'
+    viaf_source_code = 'BNF'
     agency_pid_type = 'bnf_pid'
     model_cls = BnfMetadata
 
@@ -78,6 +79,14 @@ class BnfRecord(AuthRecord):
         data = add_md5(data)
         super(BnfRecord, self).update(data, dbcommit=dbcommit, reindex=reindex)
         return self
+
+    @classmethod
+    def get_online_record(cls, id, dbcommit=False, reindex=False,
+                          test_md5=False, verbose=False):
+        """Get online record."""
+        from .tasks import bnf_get_record
+        return bnf_get_record(id=id, dbcommit=dbcommit, reindex=reindex,
+                              test_md5=test_md5, verbose=verbose)
 
 
 class BnfIndexer(AuthRecordIndexer):

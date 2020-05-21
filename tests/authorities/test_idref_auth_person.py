@@ -60,7 +60,7 @@ def test_idref_gender_missing():
     xml_part_to_add = ""
     trans = trans_prep('idref', xml_part_to_add)
     trans.trans_idref_gender()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_idref_language_of_person():
@@ -86,7 +86,7 @@ def test_idref_language_of_perso__missing():
     xml_part_to_add = ""
     trans = trans_prep('idref', xml_part_to_add)
     trans.trans_idref_language_of_person()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_idref_identifier_for_person():
@@ -107,7 +107,7 @@ def test_idref_identifier_for_person_missing():
     xml_part_to_add = ""
     trans = trans_prep('idref', xml_part_to_add)
     trans.trans_idref_identifier_for_person()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_idref_pid():
@@ -309,7 +309,7 @@ def test_idref_birth_and_death_dates_missing():
     xml_part_to_add = ""
     trans = trans_prep('idref', xml_part_to_add)
     trans.trans_idref_birth_and_death_dates()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_idref_biographical_information():
@@ -341,7 +341,7 @@ def test_idref_biographical_information_missing():
     xml_part_to_add = ""
     trans = trans_prep('idref', xml_part_to_add)
     trans.trans_idref_biographical_information()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_idref_preferred_name_for_person_1():
@@ -365,7 +365,45 @@ def test_idref_preferred_name_for_person_missing():
     xml_part_to_add = ""
     trans = trans_prep('idref', xml_part_to_add)
     trans.trans_idref_preferred_name_for_person()
-    assert trans.json == {}
+    assert not trans.json
+
+
+def test_idref_preferred_name_for_person_missing():
+    """Test Preferred Name for Person 100 $a missing"""
+    xml_part_to_add = ""
+    trans = trans_prep('idref', xml_part_to_add)
+    trans.trans_idref_preferred_name_for_person()
+    assert not trans.json
+
+
+def test_trans_idref_numeration():
+    """Test numeration for Person 200 $d"""
+    xml_part_to_add = """
+        <datafield ind1=" " ind2=" " tag="200">
+            <subfield code="d">II</subfield>
+        </datafield>
+     """
+    trans = trans_prep('idref', xml_part_to_add)
+    trans.trans_idref_numeration()
+    assert trans.json == {
+        'numeration':
+            'II'
+    }
+
+
+def test_trans_idref_qualifier():
+    """Test numeration for Person 200 $c"""
+    xml_part_to_add = """
+        <datafield ind1=" " ind2=" " tag="200">
+            <subfield code="c">Jr.</subfield>
+        </datafield>
+     """
+    trans = trans_prep('idref', xml_part_to_add)
+    trans.trans_idref_qualifier()
+    assert trans.json == {
+        'qualifier':
+            'Jr.'
+    }
 
 
 def test_idref_variant_name_for_person():
@@ -395,7 +433,7 @@ def test_idref_variant_name_for_person_missing():
     xml_part_to_add = ""
     trans = trans_prep('idref', xml_part_to_add)
     trans.trans_idref_variant_name_for_person()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_idref_authorized_access_point_representing_a_person():
@@ -423,7 +461,7 @@ def test_idref_authorized_access_point_representing_a_person_missing():
     xml_part_to_add = ""
     trans = trans_prep('idref', xml_part_to_add)
     trans.trans_idref_authorized_access_point_representing_a_person()
-    assert trans.json == {}
+    assert not trans.json
 
 
 def test_authorized_access_point_representing_a_person_diff_order():
