@@ -96,8 +96,6 @@ class ReroMefSerializer(JSONSerializer):
                 sources.append('rero')
             if 'gnd' in record:
                 sources.append('gnd')
-            if 'bnf' in record:
-                sources.append('bnf')
             if 'idref' in record:
                 sources.append('idref')
             record['sources'] = sources

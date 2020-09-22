@@ -1,0 +1,72 @@
+name: build
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dependencies: ['locked', 'deploy']
+    steps:
+    - name: Cancel Previous Runs
+      uses: styfle/cancel-workflow-action@0.5.0
+      with:
+        access_token: ${{ github.token }}
+
+    - uses: actions/checkout@v2
+
+    - name: Docker compose up
+      run: docker-compose up -d
+
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+
+    - name: Install Poetry
+      uses: dschep/install-poetry-action@v1.2
+      with:
+        version: 1.0.10
+
+    - name: Use Cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cache/pip
+          ~/.cache/pypoetry/virtualenvs
+          ~/.npm
+        key: ${{ runner.os }}-pip-venv-${{ hashFiles('**/poetry.lock') }}
+
+    - name: Bootstrap locked
+      if: ${{ matrix.dependencies == 'locked' }}
+      run: |
+        poetry run bootstrap --ci
+
+    - name: Bootstrap deploy
+      if: ${{ matrix.dependencies == 'deploy' }}
+      run: |
+        poetry run bootstrap --ci --deploy E2E=yes
+
+    - name: Update pip and coveralls
+      run: |
+        poetry run pip install --upgrade pip
+        poetry run pip install --upgrade coveralls
+
+    - name: Run Test
+      run: poetry run run-tests
+
+    # - name: Upload Coverage ${{ matrix.tests }}
+    #   if: ${{ matrix.dependencies == 'locked' }}
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     COVERALLS_FLAG_NAME: test
+    #     COVERALLS_PARALLEL: true
+    #   run: poetry run coveralls
+    #
+    # - name: Finished Coverage ${{ matrix.tests }}
+    #   if: ${{ matrix.dependencies == 'locked' }}
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     COVERALLS_PARALLEL_FINISHED: true
+    #   run: |
+    #     poetry run coveralls --finish

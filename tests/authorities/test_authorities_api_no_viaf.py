@@ -27,7 +27,6 @@
 import mock
 from invenio_search import current_search
 
-from rero_mef.authorities.bnf.api import BnfRecord
 from rero_mef.authorities.gnd.api import GndRecord
 from rero_mef.authorities.idref.api import IdrefRecord
 from rero_mef.authorities.rero.api import ReroRecord
@@ -42,27 +41,12 @@ def update_indexes(agency):
 
 @mock.patch('rero_mef.authorities.viaf.api.ViafRecord.get_online_viaf_record')
 def test_create_agency_record_no_viaf_links(
-        mock_get, app, bnf_record, gnd_record, rero_record, idref_record):
+        mock_get, app, gnd_record, rero_record, idref_record):
     """Test create agency record without viaf links."""
-    mock_get.return_value = {
-        'pid': '314851237',
-        'bnf_pid': '10000690'
-    }
-    returned_record, action, mef_action = BnfRecord.create_or_update(
-        bnf_record, agency='bnf', dbcommit=True, reindex=True
-    )
-    update_indexes('bnf')
-    update_indexes('mef')
-    update_indexes('viaf')
-    assert action.name == 'CREATE'
-    assert mef_action.name == 'CREATE'
-    assert returned_record == bnf_record
-
     mock_get.return_value = {
         'pid': '66739143',
         'gnd_pid': '12391664X',
         'idref_pid': '068979401',
-        'bnf_pid': '10008312',
         'rero_pid': 'A023655346'
     }
     returned_record, action, mef_action = GndRecord.create_or_update(
@@ -87,7 +71,6 @@ def test_create_agency_record_no_viaf_links(
 
     mock_get.return_value = {
         'pid': '37268949',
-        'bnf_pid': '10006295',
         'idref_pid': '069774331',
         'gnd_pid': '100769527'
     }

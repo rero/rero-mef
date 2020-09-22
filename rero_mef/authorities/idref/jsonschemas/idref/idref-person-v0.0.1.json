@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Schema for authority person from bnf",
+  "title": "Schema for authority person from idref",
   "type": "object",
   "required": [
     "$schema",
@@ -13,12 +13,12 @@
   "properties": {
     "$schema": {
       "title": "Schema",
-      "description": "Schema to validate an authority person from bnf against.",
+      "description": "Schema to validate an authority person from idref against.",
       "type": "string",
       "minLength": 7
     },
     "pid": {
-      "title": "Bnf record ID",
+      "title": "Idref record ID",
       "type": "string",
       "minLength": 1
     },

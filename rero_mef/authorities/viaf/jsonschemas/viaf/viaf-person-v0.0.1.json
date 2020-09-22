@@ -19,11 +19,6 @@
       "type": "string",
       "minLength": 1
     },
-    "bnf_pid": {
-      "title": "Bnf authority ID",
-      "type": "string",
-      "minLength": 1
-    },
     "gnd_pid": {
       "title": "Gnd authority ID",
       "type": "string",

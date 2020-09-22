@@ -47,7 +47,6 @@ def mef_record():
     record = {
         "$schema":
         "http://mef.rero.ch/schemas/mef/mef-person-v0.0.1.json",
-        "bnf": {"$ref": "http://mef.rero.ch/api/bnf/10000690"},
         "gnd": {"$ref": "http://mef.rero.ch/api/gnd/12391664X"},
         "rero": {"$ref": "http://mef.rero.ch/api/rero/A023655346"},
         "idref": {"$ref": "http://mef.rero.ch/api/idref/069774331"},
@@ -63,29 +62,9 @@ def viaf_record():
         "$schema":
         "http://mef.rero.ch/schemas/viaf/viaf-person-v0.0.1.json",
         "pid": "66739143",
-        "bnf_pid": "10000690",
         "gnd_pid": "12391664X",
         "rero_pid": "A023655346",
         "idref_pid": "069774331"
-    }
-    return record
-
-
-@pytest.fixture(scope='session')
-def bnf_record():
-    """BNF record."""
-    record = {
-        "preferred_name_for_person": "Aldo, Dr",
-        "gender": "male",
-        "date_of_birth": "1813-03-15",
-        "language_of_person": ["fre"],
-        "authorized_access_point_representing_a_person": "Aldo, Dr, 1813-1875",
-        "md5": "ba876f4e0e78e408ed02dba4cc3f32ed",
-        "date_of_death": "1875-12-21",
-        "identifier_for_person": "10000690",
-        "pid": "10000690",
-        "$schema":
-        "http://mef.rero.ch/schemas/bnf/bnf-person-v0.0.1.json"
     }
     return record
 
