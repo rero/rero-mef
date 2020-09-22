@@ -48,7 +48,6 @@ def rero_get_record(id, dbcommit=False, reindex=False, test_md5=False,
     http://data.rero.ch/
     http://data.rero.ch/02-A000069866/marcxml
     """
-    # http://catalogue.bnf.fr/api/SRU?version=1.2&operation=searchRetrieve&query=aut.recordid%20all%20%22FRBNF102979790%22
     base_url = 'http://data.rero.ch/02-'
     query_id = '{id}'.format(id=id)
     format = '/marcxml'

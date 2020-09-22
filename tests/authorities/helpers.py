@@ -30,8 +30,6 @@ import os
 
 from pymarc import marcxml
 
-from rero_mef.authorities.marctojson.do_bnf_auth_person import \
-    Transformation as Transformation_bnf
 from rero_mef.authorities.marctojson.do_gnd_auth_person import \
     Transformation as Transformation_gnd
 from rero_mef.authorities.marctojson.do_idref_auth_person import \
@@ -49,8 +47,6 @@ def trans_prep(source, xml_part_to_add):
     records = marcxml.parse_xml_to_array(
         file_name, strict=False, normalize_form=None)
     trans = {
-        'bnf': Transformation_bnf(marc=records[0], logger=None,
-                                  verbose=False, transform=False),
         'gnd': Transformation_gnd(marc=records[0], logger=None,
                                   verbose=False, transform=False),
         'idref': Transformation_idref(marc=records[0], logger=None,

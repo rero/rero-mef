@@ -85,7 +85,6 @@ setup(
         ],
         'invenio_db.models': [
             'viaf = rero_mef.authorities.viaf.models',
-            'bnf = rero_mef.authorities.bnf.models',
             'gnd = rero_mef.authorities.gnd.models',
             'rero = rero_mef.authorities.rero.models',
             'mef = rero_mef.authorities.mef.models',
@@ -94,7 +93,6 @@ setup(
         ],
         'invenio_pidstore.minters': [
             'viaf = rero_mef.authorities.viaf.minters:viaf_id_minter',
-            'bnf = rero_mef.authorities.bnf.minters:bnf_id_minter',
             'gnd = rero_mef.authorities.gnd.minters:gnd_id_minter',
             'rero = rero_mef.authorities.rero.minters:rero_id_minter',
             'mef = rero_mef.authorities.mef.minters:mef_id_minter',
@@ -103,7 +101,6 @@ setup(
         ],
         'invenio_pidstore.fetchers': [
             'viaf = rero_mef.authorities.viaf.fetchers:viaf_id_fetcher',
-            'bnf = rero_mef.authorities.bnf.fetchers:bnf_id_fetcher',
             'gnd = rero_mef.authorities.gnd.fetchers:gnd_id_fetcher',
             'rero = rero_mef.authorities.rero.fetchers:rero_id_fetcher',
             'mef = rero_mef.authorities.mef.fetchers:mef_id_fetcher',
@@ -111,7 +108,6 @@ setup(
         ],
         'invenio_jsonschemas.schemas': [
             'viaf = rero_mef.authorities.viaf.jsonschemas',
-            'bnf = rero_mef.authorities.bnf.jsonschemas',
             'gnd = rero_mef.authorities.gnd.jsonschemas',
             'rero = rero_mef.authorities.rero.jsonschemas',
             'mef = rero_mef.authorities.mef.jsonschemas',
@@ -119,14 +115,12 @@ setup(
         ],
         'invenio_search.mappings': [
             'viaf = rero_mef.authorities.viaf.mappings',
-            'bnf = rero_mef.authorities.bnf.mappings',
             'gnd = rero_mef.authorities.gnd.mappings',
             'rero = rero_mef.authorities.rero.mappings',
             'mef = rero_mef.authorities.mef.mappings',
             'idref = rero_mef.authorities.idref.mappings'
         ],
         'invenio_records.jsonresolver': [
-            'bnf = rero_mef.authorities.bnf.jsonresolvers.bnf_resolver',
             'gnd = rero_mef.authorities.gnd.jsonresolvers.gnd_resolver',
             'rero = rero_mef.authorities.rero.jsonresolvers.rero_resolver',
             'mef = rero_mef.authorities.mef.jsonresolvers.mef_resolver',
