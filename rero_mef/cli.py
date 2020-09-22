@@ -36,36 +36,35 @@ from time import sleep
 import click
 import redis
 import yaml
-from celery.task.control import inspect
+from celery.bin.control import inspect
 from flask import current_app
 from flask.cli import with_appcontext
 from invenio_oaiharvester.cli import oaiharvester
 from invenio_oaiharvester.models import OAIHarvestConfig
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
-from invenio_records.api import Record
 from invenio_records_rest.utils import obj_or_import_string
 
 from rero_mef.tasks import process_bulk_queue
 
-from .authorities.api import AuthRecordIndexer
-from .authorities.marctojson.helper import nice_record
-from .authorities.marctojson.records import RecordsCount
-from .authorities.mef.api import MefRecord
-from .authorities.mef.models import MefIdentifier
-from .authorities.tasks import \
+from .contributions.api import AuthRecordIndexer
+from .contributions.marctojson.helper import nice_record
+from .contributions.marctojson.records import RecordsCount
+from .contributions.mef.api import MefRecord
+from .contributions.mef.models import MefIdentifier
+from .contributions.tasks import \
     create_mef_and_agencies_from_viaf as task_mef_and_agencies_from_viaf
-from .authorities.tasks import create_mef_from_agency as task_mef_from_agency
-from .authorities.tasks import create_or_update as task_create_or_update
-from .authorities.tasks import delete as task_delete
-from .authorities.utils import add_md5, append_fixtures_new_identifiers, \
+from .contributions.tasks import create_mef_from_agency as task_mef_from_agency
+from .contributions.tasks import create_or_update as task_create_or_update
+from .contributions.tasks import delete as task_delete
+from .contributions.utils import add_md5, append_fixtures_new_identifiers, \
     bulk_load_agency_ids, bulk_load_agency_metadata, bulk_load_agency_pids, \
     bulk_save_agency_ids, bulk_save_agency_metadata, bulk_save_agency_pids, \
     create_agency_csv_file, create_mef_files, create_viaf_files, \
     get_agencies_endpoints, get_agency_class, get_agency_classes, \
     get_agency_search_class, number_records_in_file, progressbar
-from .authorities.viaf.api import ViafRecord, ViafSearch
-from .utils import add_oai_source, oai_get_last_run, oai_set_last_run, \
-    read_json_record
+from .contributions.viaf.api import ViafRecord, ViafSearch
+from .utils import add_oai_source, export_json_records, oai_get_last_run, \
+    oai_set_last_run, read_json_record
 
 
 def abort_if_false(ctx, param, value):
@@ -226,7 +225,7 @@ def delete(agency, source, lazy, enqueue, verbose):
         )
 
 
-def marc_to_json(agency, marc_file, json_file, verbose):
+def marc_to_json(agency, marc_file, json_file, json_deleted_file, verbose):
     """Marc to JSON conversion."""
     with current_app.app_context():
         transformation = current_app.config.get('TRANSFORMATION')
@@ -241,15 +240,19 @@ def marc_to_json(agency, marc_file, json_file, verbose):
 
         if json_file:
             json_file = open(json_file, 'w', encoding='utf8')
+            json_deleted_file = open(json_deleted_file, 'w', encoding='utf8')
         else:
             json_file = sys.stdout
+            json_deleted_file = sys.stderr
 
         json_file.write('[\n')
+        json_deleted_file.write('[\n')
         not_first_line = False
+        not_first_deleted = False
         pids = {}
         for record, count in records:
             data = transformation[agency](marc=record)
-            if data:
+            if data.json:
                 pid = data.json.get('pid')
                 if pids.get(pid):
                     click.secho(
@@ -260,13 +263,20 @@ def marc_to_json(agency, marc_file, json_file, verbose):
                         fg='red'
                     )
                 else:
-                    if not_first_line:
-                        json_file.write(',\n')
                     pids[pid] = 1
                     add_md5(data.json)
-                    json.dump(data.json, json_file, ensure_ascii=False,
-                              indent=2)
-                    not_first_line = True
+                    if data.json.get('deleted'):
+                        if not_first_deleted:
+                            json_deleted_file.write(',\n')
+                        json.dump(data.json, json_deleted_file,
+                                  ensure_ascii=False, indent=2)
+                        not_first_deleted = True
+                    else:
+                        if not_first_line:
+                            json_file.write(',\n')
+                        json.dump(data.json, json_file, ensure_ascii=False,
+                                  indent=2)
+                        not_first_line = True
             else:
                 click.secho(
                     '  Error can not transform marc in {agency}: {rec}'.format(
@@ -276,6 +286,7 @@ def marc_to_json(agency, marc_file, json_file, verbose):
                     fg='yellow'
                 )
         json_file.write('\n]\n')
+        json_deleted_file.write('\n]\n')
 
 
 def agency_membership(params):
@@ -397,21 +408,44 @@ def bulk_load(**kwargs):
     click.secho(message, err=True)
 
     if 'marctojson' in params and params['marctojson']:
-        message = '  Transform MARC to JSON. '.format()
-        click.secho(message, err=True)
         marc_file = '{dir}/{file}'.format(
             dir=input_directory, file=params['marc_file'])
         json_file = '{dir}/{file}'.format(
             dir=output_directory, file=params['json_file'])
+        json_deleted_file = '{file_name}_deleted{ext}'.format(
+            file_name=os.path.splitext(json_file)[0],
+            ext=os.path.splitext(json_file)[-1]
+        )
+        message = \
+            ' Transform {agency} MARC to JSON. {file} {deleted_file}'.format(
+                agency=agency,
+                file=json_file,
+                deleted_file=json_deleted_file
+            )
+        click.secho(message, err=True)
+        marc_to_json(
+            agency=agency,
+            marc_file=marc_file,
+            json_file=json_file,
+            json_deleted_file=json_deleted_file,
+            verbose=verbose
+        )
 
-        marc_to_json(agency, marc_file, json_file, verbose)
-
-        message = '  Number of JSON records created: {number}. '.format(
-            number=number_records_in_file(json_file, 'json'))
+        message = '  Number of {agency} JSON records created: {nbr}.'.format(
+            agency=agency,
+            nbr=number_records_in_file(json_file, 'json')
+        )
+        click.secho(message, fg='green', err=True)
+        message = '  Number of {agency} JSON records deleted: {nbr}. '.format(
+            agency=agency,
+            nbr=number_records_in_file(json_deleted_file, 'json')
+        )
         click.secho(message, fg='green', err=True)
 
     if 'csv_action' in params and params['csv_action']:
-        message = '  Create CSV files from JSON. '.format()
+        message = '  Create {agency} CSV files from JSON. '.format(
+            agency=agency
+        )
         click.secho(message, err=True)
         json_file = '{dir}/{file}'.format(
             dir=input_directory, file=params['json_file'])
@@ -448,19 +482,30 @@ def bulk_load(**kwargs):
                     mef_ids_file_name=ids,
                     verbose=verbose
                 )
-        message = '  Number of records created in pidstore: {number}. '.format(
-            number=number_records_in_file(pidstore, 'csv'))
+        message = \
+            '  Number of {agency} records created in pidstore: {nbr}. '.format(
+                agency=agency,
+                nbr=number_records_in_file(pidstore, 'csv')
+            )
         click.secho(message, fg='green', err=True)
-        message = '  Number of records created in metadata: {number}. '.format(
-            number=number_records_in_file(metadata, 'csv'))
+        message = \
+            '  Number of {agency} records created in metadata: {nbr}. '.format(
+                agency=agency,
+                nbr=number_records_in_file(metadata, 'nbr')
+            )
         click.secho(message, fg='green', err=True)
         if agency == 'mef':
-            message = '  Number of records created in ids: {number}. '.format(
-                number=number_records_in_file(ids, 'csv'))
+            message = \
+                '  Number of {agency} records created in ids: {nbr}. '.format(
+                    agency=agency,
+                    nbr=number_records_in_file(ids, 'csv')
+                )
             click.secho(message, fg='green', err=True)
 
     if 'db_action' in params and params['db_action']:
-        message = '  Load CSV files into database. '.format()
+        message = '  Load {agency} CSV files into database. '.format(
+            agency=agency
+        )
         click.secho(message, err=True)
         pidstore = '{dir}/{file}'.format(
             dir=input_directory, file=params['csv_pidstore_file'])
@@ -771,8 +816,12 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, agent, output,
 @click.option('-s', '--setspecs', default='',
               help='The ‘set’ criteria for the harvesting')
 @click.option('-c', '--comment', default='', help='Comment')
+@click.option(
+    '-u', '--update', is_flag=True, default=False, help='Update config'
+)
 @with_appcontext
-def add_oai_source_config(name, baseurl, metadataprefix, setspecs, comment):
+def add_oai_source_config(name, baseurl, metadataprefix, setspecs, comment,
+                          update):
     """Add OAIHarvestConfig.
 
     :param name: Name of OAI source.
@@ -780,20 +829,27 @@ def add_oai_source_config(name, baseurl, metadataprefix, setspecs, comment):
     :param metadataprefix: The prefix for the metadata
     :param setspecs: The `set` criteria for the harvesting
     :param comment: Comment
+    :param update: update config
     """
     click.echo('Add OAIHarvestConfig: {0} '.format(name), nl=False)
-    if add_oai_source(name=name, baseurl=baseurl,
-                      metadataprefix=metadataprefix, setspecs=setspecs,
-                      comment=comment):
-        click.secho('Ok', fg='green')
-    else:
-        click.secho('Exist', fg='red')
+    msg = add_oai_source(
+        name=name,
+        baseurl=baseurl,
+        metadataprefix=metadataprefix,
+        setspecs=setspecs,
+        comment=comment,
+        update=update
+    )
+    click.echo(msg)
 
 
 @oaiharvester.command('initconfig')
 @click.argument('configfile', type=click.File('rb'))
+@click.option(
+    '-u', '--update', is_flag=True, default=False, help='Update config'
+)
 @with_appcontext
-def init_oai_harvest_config(configfile):
+def init_oai_harvest_config(configfile, update):
     """Init OAIHarvestConfig."""
     configs = yaml.load(configfile)
     for name, values in sorted(configs.items()):
@@ -804,16 +860,15 @@ def init_oai_harvest_config(configfile):
         click.echo(
             'Add OAIHarvestConfig: {0} {1} '.format(name, baseurl), nl=False
         )
-        if add_oai_source(
+        msg = add_oai_source(
             name=name,
             baseurl=baseurl,
             metadataprefix=metadataprefix,
             setspecs=setspecs,
-            comment=comment
-        ):
-            click.secho('Ok', fg='green')
-        else:
-            click.secho('Exist', fg='red')
+            comment=comment,
+            update=update
+        )
+        click.echo(msg)
 
 
 @oaiharvester.command('schedules')
@@ -860,7 +915,7 @@ def set_last_run(name, date):
     return oai_set_last_run(name=name, date=date, verbose=True)
 
 
-@oaiharvester.command()
+@oaiharvester.command('harvestname')
 @click.option('-n', '--name', default=None,
               help="Name of persistent configuration to use.")
 @click.option('-f', '--from-date', default=None,
@@ -893,8 +948,8 @@ def harvestname(name, from_date, until_date, arguments, quiet, enqueue,
     click.secho('Harvest {name} ...'.format(name=name), fg='green')
     arguments = dict(x.split('=', 1) for x in arguments)
     harvest_task = obj_or_import_string(
-        'rero_mef.authorities.{name}.tasks:process_records_from_dates'.format(
-            name=name
+        'rero_mef.contributions.{nam}.tasks:process_records_from_dates'.format(
+            nam=name
         )
     )
     count = 0
@@ -928,11 +983,58 @@ def harvestname(name, from_date, until_date, arguments, quiet, enqueue,
             ))
 
 
+@oaiharvester.command('save')
+@click.argument('output_file_name')
+@click.option('-n', '--name', default=None,
+              help="Name of persistent configuration to use.")
+@click.option('-f', '--from-date', default=None,
+              help="The lower bound date for the harvesting (optional).")
+@click.option('-t', '--until_date', default=None,
+              help="The upper bound date for the harvesting (optional).")
+@click.option('-q', '--quiet', is_flag=True, default=False,
+              help="Surpress output.")
+@click.option('-k', '--enqueue', is_flag=True, default=False,
+              help="Enqueue harvesting and return immediately.")
+@with_appcontext
+def save(output_file_name, name, from_date, until_date, quiet, enqueue):
+    """Harvest records from an OAI repository and save to file.
+
+    :param name: Name of persistent configuration to use.
+    :param from-date: The lower bound date for the harvesting (optional).
+    :param until_date: The upper bound date for the harvesting (optional).
+    :param quiet: Surpress output.
+    :param enqueue: Enqueue harvesting and return immediately.
+    """
+    click.secho('Harvest {name} ...'.format(name=name), fg='green')
+    save_task = obj_or_import_string(
+        'rero_mef.contributions.{name}.tasks:save_records_from_dates'.format(
+            name=name
+        )
+    )
+    count = 0
+    if save_task:
+        if enqueue:
+            job = save_task.delay(
+                file_name=output_file_name,
+                from_date=from_date,
+                until_date=until_date,
+                verbose=(not quiet)
+            )
+            click.echo("Scheduled job {id}".format(id=job.id))
+        else:
+            count = save_task(
+                file_name=output_file_name,
+                from_date=from_date,
+                until_date=until_date,
+                verbose=(not quiet)
+            )
+            click.echo('Count: {count}'.format(count=count))
+
+
 @utils.command('export')
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
-@click.option('-p', '--pid_type', 'pid_type', default='doc')
-@click.option('-o', '--outfile', 'outfile', required=True,
-              type=click.File('w'))
+@click.option('-t', '--pid_type', 'pid_type', default='doc')
+@click.option('-o', '--outfile', 'outfile', required=True)
 @click.option('-i', '--pidfile', 'pidfile', type=click.File('r'),
               default=None)
 @click.option('-I', '--indent', 'indent', type=click.INT, default=2)
@@ -955,54 +1057,65 @@ def export(verbose, pid_type, outfile, pidfile, indent, schema):
         ),
         fg='green'
     )
-
     record_class = obj_or_import_string(
         current_app.config
         .get('RECORDS_REST_ENDPOINTS')
-        .get(pid_type).get('record_class', Record))
-
+        .get(pid_type).get('record_class')
+    )
     if pidfile:
         pids = pidfile
     else:
         pids = record_class.get_all_pids()
+    export_json_records(
+        pids=pids,
+        pid_type=pid_type,
+        output_file_name=outfile,
+        indent=indent,
+        schema=schema,
+        verbose=verbose
+    )
 
-    count = 0
-    output = '['
-    offset = '{character:{indent}}'.format(character=' ', indent=indent)
-    for pid in pids:
-        try:
-            rec = record_class.get_record_by_pid(pid)
-            count += 1
-            if verbose:
-                msg = '{count: <8} {pid_type} export {pid}:{id}'.format(
-                    count=count,
-                    pid_type=pid_type,
-                    pid=rec.pid,
-                    id=rec.id
-                )
-                click.echo(msg)
 
-            outfile.write(output)
-            if count > 1:
-                outfile.write(',')
-            if not schema:
-                del rec['$schema']
-                persons_sources = current_app.config.get(
-                    'RERO_ILS_PERSONS_SOURCES', [])
-                for persons_source in persons_sources:
-                    try:
-                        del rec[persons_sources]['$schema']
-                    except:
-                        pass
-            output = ''
-            lines = json.dumps(rec, indent=indent).split('\n')
-            for line in lines:
-                output += '\n{offset}{line}'.format(offset=offset, line=line)
-        except Exception as err:
-            click.echo(err)
-            click.echo('ERROR: Can not export pid:{pid}'.format(pid=pid))
-    outfile.write(output)
-    outfile.write('\n]\n')
+@utils.command('export_agencies')
+@click.argument('output_path')
+@click.option('-t', '--pid-type', 'pid_type', multiple=True,
+              default=['viaf', 'mef', 'gnd', 'idref', 'rero'])
+@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@click.option('-I', '--indent', 'indent', type=click.INT, default=2)
+@click.option('-s', '--schema', 'schema', is_flag=True, default=False)
+@with_appcontext
+def export_agencies(output_path, pid_type, verbose, indent, schema):
+    """Export record into JSON format.
+
+    :param pid_type: record type
+    :param verbose: verbose
+    :param pidfile: files with pids to extract
+    :param indent: indent for output
+    :param schema: do not delete $schema
+    """
+    for p_type in pid_type:
+        output_file_name = os.path.join(
+            output_path, '{pid_type}.json'.format(pid_type=p_type))
+        click.secho(
+            'Export {pid_type} records: {file_name}'.format(
+                pid_type=p_type,
+                file_name=output_file_name
+            ),
+            fg='green'
+        )
+        record_class = obj_or_import_string(
+            current_app.config
+            .get('RECORDS_REST_ENDPOINTS')
+            .get(p_type).get('record_class')
+        )
+        export_json_records(
+            pids=record_class.get_all_pids(),
+            pid_type=p_type,
+            output_file_name=output_file_name,
+            indent=indent,
+            schema=schema,
+            verbose=verbose
+        )
 
 
 @utils.command('runindex')
@@ -1051,7 +1164,7 @@ def run(delayed, concurrency, version_type=None, queue=None,
 @click.option('--yes-i-know', is_flag=True, callback=abort_if_false,
               expose_value=False,
               prompt='Do you really want to reindex all records?')
-@click.option('-t', '--pid-type', multiple=True, required=True)
+@click.option('-t', '--pid_type', "pid_type", multiple=True, required=True)
 @click.option('-n', '--no-info', 'no_info', is_flag=True, default=True)
 @with_appcontext
 def reindex(pid_type, no_info):
@@ -1145,10 +1258,12 @@ def wait_empty_tasks_cli(delay):
               help="Enqueue record creation.")
 @click.option('-o', '--online', 'online', is_flag=True, default=False)
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@click.option('-p', '--progress', 'progress', is_flag=True, default=False)
 @click.option('-w', '--wait', 'wait', is_flag=True, default=False)
+@click.option('-m', '--missing', 'missing', is_flag=True, default=False)
 @with_appcontext
 def create_mef_and_agencies_from_viaf(test_md5, enqueue, online, verbose,
-                                      wait):
+                                      progress, wait, missing):
     """Create Mef and agencies from viaf."""
     click.secho(
         'Create MEF and Agency from VIAF.',
@@ -1159,20 +1274,29 @@ def create_mef_and_agencies_from_viaf(test_md5, enqueue, online, verbose,
     for name, agency_class in agency_classes.items():
         counts[name] = {}
         counts[name]['old'] = agency_class.count()
-    progress = progressbar(
-        items=ViafRecord.get_all_pids(),
-        length=counts['viaf']['old'],
-        verbose=verbose
-    )
-    for pid in progress:
+    if missing:
+        missing_pids = MefRecord.get_all_missing_viaf_pids(
+            verbose=progress or verbose
+        )
+        progress_bar = progressbar(
+            items=missing_pids,
+            length=len(missing_pids),
+            verbose=progress
+        )
+    else:
+        progress_bar = progressbar(
+            items=ViafRecord.get_all_pids(),
+            length=counts['viaf']['old'],
+            verbose=progress
+        )
+    for pid in progress_bar:
         if enqueue:
             task = task_mef_and_agencies_from_viaf.delay(
                 pid=pid,
                 dbcommit=True,
                 reindex=True,
                 test_md5=test_md5,
-                online=online,
-                verbose=verbose
+                online=online
             )
             click.echo('viaf pid: {pid} task:{task}'.format(
                 pid=pid,
@@ -1212,15 +1336,24 @@ def create_mef_and_agencies_from_viaf(test_md5, enqueue, online, verbose,
 
 
 @utils.command('create_mef_from_agency')
-@click.option('-t', '--pid-type', 'pid_type', multiple=True,
+@click.option('-t', '--pid_type', 'pid_type', multiple=True,
               default=['idref', 'gnd', 'rero'])
 @click.option('-k', '--enqueue', 'enqueue', is_flag=True, default=False,
               help="Enqueue record creation.")
+@click.option('-o', '--online', 'online', is_flag=True, default=False)
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@click.option('-p', '--progress', 'progress', is_flag=True, default=False)
 @click.option('-w', '--wait', 'wait', is_flag=True, default=False)
+@click.option('-m', '--missing', 'missing', is_flag=True, default=False)
 @with_appcontext
-def create_mef_from_agency(pid_type, enqueue, verbose, wait):
+def create_mef_from_agency(pid_type, enqueue, online, verbose, progress, wait,
+                           missing):
     """Create Mef and agencies from viaf."""
+    if missing:
+        missing_pids = MefRecord.get_all_missing_agencies_pids(
+            agencies=pid_type,
+            verbose=verbose
+        )
     for agency in pid_type:
         click.secho(
             'Create MEF from {agency}.'.format(agency=agency),
@@ -1230,32 +1363,43 @@ def create_mef_from_agency(pid_type, enqueue, verbose, wait):
         counts = {}
         counts[agency] = agency_class.count()
         counts['mef'] = MefRecord.count()
-        for pid in progressbar(
-            items=agency_class.get_all_pids(),
-            length=counts[agency],
-            verbose=verbose
-        ):
+        if missing:
+            progress_bar = progressbar(
+                items=missing_pids[agency],
+                length=len(missing_pids[agency]),
+                verbose=progress
+            )
+        else:
+            progress_bar = progressbar(
+                items=agency_class.get_all_pids(),
+                length=counts[agency],
+                verbose=progress
+            )
+        for pid in progress_bar:
             if enqueue:
                 task = task_mef_from_agency.delay(
                     pid=pid,
                     agency=agency,
                     dbcommit=True,
                     reindex=True,
-                    verbose=verbose
+                    online=online
                 )
-                click.echo('{agency} pid: {pid} task:{task}'.format(
-                    agency=agency,
-                    pid=pid,
-                    task=task
-                ))
+                if verbose:
+                    click.echo('{agency} pid: {pid} task:{task}'.format(
+                        agency=agency,
+                        pid=pid,
+                        task=task
+                    ))
             else:
-                task_mef_from_agency(
+                msg = task_mef_from_agency(
                     pid=pid,
                     agency=agency,
                     dbcommit=True,
                     reindex=True,
-                    verbose=verbose
+                    online=online
                 )
+                if verbose:
+                    click.echo(msg)
         if wait:
             wait_empty_tasks(delay=3, verbose=True)
             click.secho(
@@ -1321,7 +1465,7 @@ def agency_counts():
             name=key.upper(),
             count=count
         ))
-    from .authorities.mef.api import MefRecord, MefSearch
+    from .contributions.mef.api import MefRecord, MefSearch
     display_counts(
         agency='MEF',
         db_count=MefRecord.count(),

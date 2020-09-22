@@ -30,8 +30,8 @@ from invenio_records_rest.schemas import RecordSchemaJSONV1
 from invenio_records_rest.serializers.json import JSONSerializer
 from invenio_records_rest.serializers.response import record_responsify
 
-from .authorities.mef.api import MefRecord, MefSearch
-from .authorities.utils import get_agencies_endpoints
+from .contributions.mef.api import MefRecord, MefSearch
+from .contributions.utils import get_agencies_endpoints
 
 
 def add_links(pid, record):
