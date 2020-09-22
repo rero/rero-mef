@@ -90,7 +90,7 @@ function oai_init () {
 }
 
 function sample_load () {
-    for AGENCY in viaf rero bnf gnd idref
+    for AGENCY in viaf rero gnd idref
     do
        info_msg "Importing ${AGENCY} records:"
        dojson -i ./data/${AGENCY}.json schema http://mef.rero.ch/schemas/${AGENCY}/${AGENCY}-person-v0.0.1.json | invenio fixtures create_or_update ${AGENCY}
@@ -102,17 +102,17 @@ function bulk_load () {
     INPUT_DIR=$1
     OUTPUT_DIR=$2
     # Transform marc files to json
-    for AGENCY in rero bnf gnd idref
+    for AGENCY in rero gnd idref
     do
         invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --marc_file ${AGENCY}.mrc --json_file ${AGENCY}.json
     done
     # Create CSV files from json
-    for AGENCY in rero bnf gnd idref
+    for AGENCY in rero gnd idref
     do
         invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file ${AGENCY}.json --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
     done
     # Load CSV files to db
-    for AGENCY in rero bnf gnd idref
+    for AGENCY in rero gnd idref
     do
         invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose --reindex
         invenio utils runindex --raise-on-error
@@ -134,7 +134,7 @@ function bulk_load () {
 function deploy () {
     INPUT_DIR=$1
     # Load agencies CSV files to db
-    for AGENCY in rero bnf gnd idref viaf mef
+    for AGENCY in rero gnd idref viaf mef
     do
         invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose --reindex
     done

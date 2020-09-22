@@ -27,7 +27,6 @@
 import mock
 from invenio_search import current_search
 
-# from rero_mef.authorities.bnf.api import BnfRecord
 from rero_mef.authorities.gnd.api import GndRecord
 from rero_mef.authorities.idref.api import IdrefRecord
 from rero_mef.authorities.mef.api import MefRecord
@@ -44,13 +43,12 @@ def update_indexes(agency):
 
 @mock.patch('rero_mef.authorities.viaf.api.ViafRecord.get_online_viaf_record')
 def test_create_agency_updates(
-        mock_get, app, viaf_record, bnf_record, gnd_record, rero_record,
+        mock_get, app, viaf_record, gnd_record, rero_record,
         idref_record):
     """Test create agency record with viaf links."""
     # we have to mock the access to viaf
     mock_get.return_value = {
         'pid': '37268949',
-        'bnf_pid': '10006295',
         'idref_pid': '069774331',
         'gnd_pid': '100769527'
     }
@@ -81,7 +79,6 @@ def test_create_agency_updates(
         'pid': '66739143',
         'gnd_pid': '12391664X',
         'idref_pid': '068979401',
-        'bnf_pid': '10008312',
         'rero_pid': 'A023655346'
     }
     # create second record

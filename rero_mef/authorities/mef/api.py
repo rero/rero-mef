@@ -224,7 +224,6 @@ class MefRecord(AuthRecord):
         """Get all pids for records without agencies and viaf pids."""
         query = MefSearch()\
             .filter('bool', must_not=[Q('exists', field="viaf_pid")]) \
-            .filter('bool', must_not=[Q('exists', field="bnf")]) \
             .filter('bool', must_not=[Q('exists', field="gnd")]) \
             .filter('bool', must_not=[Q('exists', field="idref")]) \
             .filter('bool', must_not=[Q('exists', field="rero")]) \
@@ -238,7 +237,6 @@ class MefRecord(AuthRecord):
         """Get all pids for records without viaf pid."""
         query = MefSearch()\
             .filter('bool', must_not=[Q('exists', field="viaf_pid")])\
-            .filter('bool', should=[Q('exists', field="bnf")]) \
             .filter('bool', should=[Q('exists', field="gnd")]) \
             .filter('bool', should=[Q('exists', field="idref")]) \
             .filter('bool', should=[Q('exists', field="rero")]) \
@@ -250,7 +248,7 @@ class MefRecord(AuthRecord):
     @classmethod
     def get_all_missing_agencies_pids(
             cls,
-            agencies=['bnf', 'gnd', 'idref', 'rero'],
+            agencies=['gnd', 'idref', 'rero'],
             verbose=False
     ):
         """Get all missing agencies."""

@@ -32,11 +32,8 @@ You overwrite and set instance-specific configuration by either:
 
 from __future__ import absolute_import, print_function
 
-from .authorities.bnf.models import BnfIdentifier
 from .authorities.gnd.models import GndIdentifier
 from .authorities.idref.models import IdrefIdentifier
-from .authorities.marctojson.do_bnf_auth_person import \
-    Transformation as Bnf_transformation
 from .authorities.marctojson.do_gnd_auth_person import \
     Transformation as Gnd_transformation
 from .authorities.marctojson.do_idref_auth_person import \
@@ -199,12 +196,10 @@ BULK_CHUNK_COUNT = 100000
 TRANSFORMATION = {
     'gnd': Gnd_transformation,
     'rero': Rero_transformation,
-    'bnf': Bnf_transformation,
     'idref': Idref_transformation
 }
 
 IDENTIFIERS = {
-    'bnf': BnfIdentifier,
     'gnd': GndIdentifier,
     'idref': IdrefIdentifier,
     'mef': MefIdentifier,
@@ -294,31 +289,6 @@ RECORDS_REST_ENDPOINTS = dict(
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict()
     ),
-    bnf=dict(
-        pid_type='bnf',
-        pid_minter='bnf',
-        pid_fetcher='bnf',
-        search_class="rero_mef.authorities.bnf.api:BnfSearch",
-        indexer_class="rero_mef.authorities.bnf.api:BnfIndexer",
-        record_class="rero_mef.authorities.bnf.api:BnfRecord",
-        search_index='bnf',
-        search_type=None,
-        record_serializers={
-            'application/json': ('rero_mef.serializers'
-                                 ':json_v1_response'),
-        },
-        search_serializers={
-            'application/json': ('invenio_records_rest.serializers'
-                                 ':json_v1_search'),
-        },
-        search_factory_imp='rero_mef.query:and_search_factory',
-        list_route='/bnf/',
-        item_route=('/bnf/<pid(bnf, record_class='
-                    '"rero_mef.authorities.bnf.api:BnfRecord"):pid_value>'),
-        default_media_type='application/json',
-        max_result_window=MAX_RESULT_WINDOW,
-        error_handlers=dict(),
-    ),
     idref=dict(
         pid_type='idref',
         pid_minter='idref',
@@ -372,7 +342,6 @@ RECORDS_REST_ENDPOINTS = dict(
 )
 
 RECORDS_JSON_SCHEMA = {
-    'bnf': '/bnf/bnf-person-v0.0.1.json',
     'gnd': '/gnd/gnd-person-v0.0.1.json',
     'rero': '/rero/rero-person-v0.0.1.json',
     'idref': '/idref/idref-person-v0.0.1.json',

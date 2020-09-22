@@ -517,14 +517,14 @@ def bulk_load(**kwargs):
 @fixtures.command('bulk_save')
 @click.argument('output_directory')
 @click.option('-a', '--agencies', 'agencies', multiple=True,
-              default=['bnf', 'gnd', 'idref', 'rero', 'mef', 'viaf'])
+              default=['gnd', 'idref', 'rero', 'mef', 'viaf'])
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @with_appcontext
 def bulk_save(agencies, output_directory, verbose):
     """Agencies record dump.
 
     :param agencies: Agencies to export.
-        default=['bnf', 'gnd', 'idref', 'rero', 'mef', 'viaf'])
+        default=['gnd', 'idref', 'rero', 'mef', 'viaf'])
     :param verbose: Verbose.
     """
     for agency in agencies:
@@ -1213,7 +1213,7 @@ def create_mef_and_agencies_from_viaf(test_md5, enqueue, online, verbose,
 
 @utils.command('create_mef_from_agency')
 @click.option('-t', '--pid-type', 'pid_type', multiple=True,
-              default=['idref', 'gnd', 'bnf', 'rero'])
+              default=['idref', 'gnd', 'rero'])
 @click.option('-k', '--enqueue', 'enqueue', is_flag=True, default=False,
               help="Enqueue record creation.")
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)

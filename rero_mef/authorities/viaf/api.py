@@ -231,7 +231,6 @@ class ViafRecord(AuthRecord):
         """
         source_code = {
             'DNB': 'gnd_pid',
-            'BNF': 'bnf_pid',
             'SUDOC': 'idref_pid',
             'RERO': 'rero_pid'
         }

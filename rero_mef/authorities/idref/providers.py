@@ -49,4 +49,4 @@ class IdrefProvider(BaseProvider):
     """
 
     default_status = PIDStatus.REGISTERED
-    """Bnf IDs are by default registered immediately."""
+    """Idref IDs are by default registered immediately."""

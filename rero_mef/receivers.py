@@ -42,8 +42,6 @@ def extend_mef_record(
             sources.append('rero')
         if 'gnd' in json:
             sources.append('gnd')
-        if 'bnf' in json:
-            sources.append('bnf')
         if 'idref' in json:
             sources.append('idref')
         json['sources'] = sources
