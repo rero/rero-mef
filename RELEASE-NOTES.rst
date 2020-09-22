@@ -50,7 +50,7 @@ v0.2.0
 -  Data:
 
    -  Updates agencies (source) data.
-   -  Improves transformation to ``preferred_name_for_person`` to keep
+   -  Improves transformation to ``preferred_name`` to keep
       regnal numbers.
 
 -  Search:

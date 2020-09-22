@@ -1,150 +1,207 @@
 [
-{
-  "authorized_access_point_representing_a_person": "Genty de Bonqueval, J",
-  "pid": "A000070488",
-  "identifier_for_person": "http://data.rero.ch/02-A000070488",
-  "preferred_name_for_person": "Genty de Bonqueval, J",
-  "variant_name_for_person": [
-    "Bonqueval, J.G. de"
-  ],
-  "md5": "e583d9ad6f02b8ad118fd4a898d947da"
-},
-{
-  "authorized_access_point_representing_a_person": "Cavalieri, Giovanni Battista, ca.1525-1601",
-  "biographical_information": [
-    "Graveur, dessinateur et éditeur"
-  ],
-  "date_of_birth": "ca.1525",
-  "date_of_death": "1601",
-  "pid": "A023655346",
-  "identifier_for_person": "http://data.rero.ch/02-A023655346",
-  "preferred_name_for_person": "Cavalieri, Giovanni Battista",
-  "variant_name_for_person": [
-    "De Cavalieri, Giovanni Battista",
-    "Cavalleriis, Baptista de",
-    "Cavalleriis, Giovanni Battista de",
-    "Cavalieri, Gianbattista"
-  ],
-  "md5": "331762326ee0288548d0ffdb1cf56fb9"
-},
-{
-  "authorized_access_point_representing_a_person": "Arnoudt, Pierre J., 1811-1865",
-  "biographical_information": [
-    "Jésuite (à partir de 1835 ; ordonné prêtre en 1843) ; vécut aux Etats-Unis à partir de 1835, écrivit aussi en latin"
-  ],
-  "date_of_birth": "1811",
-  "date_of_death": "1865",
-  "pid": "A017671081",
-  "identifier_for_person": "http://data.rero.ch/02-A017671081",
-  "preferred_name_for_person": "Arnoudt, Pierre J.",
-  "variant_name_for_person": [
-    "Aernoudt, Pierre",
-    "Arnold, Joseph"
-  ],
-  "md5": "a33cbda21ed35959bcac921de5523b5c"
-},
-{
-  "authorized_access_point_representing_a_person": "Franchi De Cavalieri, Pio Pietro",
-  "pid": "A000065776",
-  "identifier_for_person": "http://data.rero.ch/02-A000065776",
-  "preferred_name_for_person": "Franchi De Cavalieri, Pio Pietro",
-  "variant_name_for_person": [
-    "Cavalieri, Pius Franchi de",
-    "Franchi De Cavalieri, Pietro Pio",
-    "Franchi De Cavalieri, Pius"
-  ],
-  "md5": "6cdd1ffc9fa4a361b94715357292d07b"
-},
-{
-  "authorized_access_point_representing_a_person": "Bernard, William Bayle, 1807-1875",
-  "date_of_birth": "1807",
-  "date_of_death": "1875",
-  "pid": "A022480124",
-  "identifier_for_person": "http://data.rero.ch/02-A022480124",
-  "preferred_name_for_person": "Bernard, William Bayle",
-  "variant_name_for_person": [
-    "Bernard, Bayle"
-  ],
-  "md5": "bd0c77ca4c61dd68a645deea0dfe0331"
-},
-{
-  "authorized_access_point_representing_a_person": "Constantin, de Barbanson",
-  "pid": "A009535178",
-  "identifier_for_person": "http://data.rero.ch/02-A009535178",
-  "preferred_name_for_person": "Constantin",
-  "variant_name_for_person": [
-    "Barbançon, Constantin de"
-  ],
-  "md5": "cabacb428ac2d73a2700a791987bd6c6"
-},
-{
-  "authorized_access_point_representing_a_person": "Kouroudēs, Kōstas",
-  "pid": "A021799923",
-  "identifier_for_person": "http://data.rero.ch/02-A021799923",
-  "preferred_name_for_person": "Kouroudēs, Kōstas",
-  "variant_name_for_person": [
-    "Kouroúdi̲s, Kó̲stas"
-  ],
-  "md5": "9fddc78706ccbb10dd31c6e76d0912b7"
-},
-{
-  "authorized_access_point_representing_a_person": "Catalani, Giuseppe, 1698-1764",
-  "biographical_information": [
-    "Historien, théologien et juriste"
-  ],
-  "date_of_birth": "1698",
-  "date_of_death": "1764",
-  "pid": "A017991779",
-  "identifier_for_person": "http://data.rero.ch/02-A017991779",
-  "preferred_name_for_person": "Catalani, Giuseppe",
-  "variant_name_for_person": [
-    "Catalano, Giuseppe",
-    "Catalanus, Josephus",
-    "Catalani, Josephus",
-    "Catalano, Josepho"
-  ],
-  "md5": "6130737046c74ddebc170b6b44340c0c"
-},
-{
-  "authorized_access_point_representing_a_person": "Guillemin, Léon",
-  "biographical_information": [
-    "Léon d'Amboise est le pseud. de Léon Guillemin"
-  ],
-  "pid": "A005591402",
-  "identifier_for_person": "http://data.rero.ch/02-A005591402",
-  "preferred_name_for_person": "Guillemin, Léon",
-  "variant_name_for_person": [
-    "Amboise, Léon d'",
-    "Léon"
-  ],
-  "md5": "d6ef37ebcfa7e5e686e8852fc2285614"
-},
-{
-  "authorized_access_point_representing_a_person": "Soyarslan, Çiǧdem, 1983-",
-  "biographical_information": [
-    "Artiste lyrique (soprano)"
-  ],
-  "date_of_birth": "1983",
-  "pid": "A024285452",
-  "identifier_for_person": "http://data.rero.ch/02-A024285452",
-  "preferred_name_for_person": "Soyarslan, Çiǧdem",
-  "md5": "5b6abbd6c350b38bf01aec7f5c071f1f"
-},
-{
-  "authorized_access_point_representing_a_person": "Arenthon d'Alex, Jean d', 1620-1695",
-  "biographical_information": [
-    "Prince-évêque de Genève (1661-1695)"
-  ],
-  "date_of_birth": "1620",
-  "date_of_death": "1695",
-  "pid": "A000009346",
-  "identifier_for_person": "http://data.rero.ch/02-A000009346",
-  "preferred_name_for_person": "Arenthon d'Alex, Jean d'",
-  "variant_name_for_person": [
-    "Aranton d'Alex, Jean d'",
-    "Aranthon d'Alex, Jean d'",
-    "Alex, Jean d'Arenthon d'"
-  ],
-  "md5": "559b817d1aaae0ee30ca190c5db961fd"
-}
+  {
+    "md5": "4c28725deadb4ed5fa3ca042776f832b",
+    "pid": "A000009346",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A000009346",
+    "variant_name": [
+      "Aranton d'Alex, Jean d'",
+      "Aranthon d'Alex, Jean d'",
+      "Alex, Jean d'Arenthon d'"
+    ],
+    "date_of_birth": "1620",
+    "date_of_death": "1695",
+    "preferred_name": "Arenthon d'Alex, Jean d'",
+    "variant_access_point": [
+      "Aranton d'Alex, Jean d', 1620-1695",
+      "Aranthon d'Alex, Jean d', 1620-1695",
+      "Alex, Jean d'Arenthon d', 1620-1695"
+    ],
+    "authorized_access_point": "Arenthon d'Alex, Jean d', 1620-1695",
+    "biographical_information": [
+      "Prince-\u00e9v\u00eaque de Gen\u00e8ve (1661-1695)"
+    ]
+  },
+  {
+    "md5": "7badff1fad1b3179ba1ba9bdf25a9bf3",
+    "pid": "A000065776",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A000065776",
+    "variant_name": [
+      "Cavalieri, Pius Franchi de",
+      "Franchi De Cavalieri, Pietro Pio",
+      "Franchi De Cavalieri, Pius"
+    ],
+    "preferred_name": "Franchi De Cavalieri, Pio Pietro",
+    "variant_access_point": [
+      "Cavalieri, Pius Franchi de",
+      "Franchi De Cavalieri, Pietro Pio",
+      "Franchi De Cavalieri, Pius"
+    ],
+    "authorized_access_point": "Franchi De Cavalieri, Pio Pietro"
+  },
+  {
+    "md5": "11f264777581fcb816a74c28d05553b5",
+    "pid": "A000070488",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A000070488",
+    "variant_name": [
+      "Bonqueval, J.G. de"
+    ],
+    "preferred_name": "Genty de Bonqueval, J",
+    "variant_access_point": [
+      "Bonqueval, J.G. de"
+    ],
+    "authorized_access_point": "Genty de Bonqueval, J"
+  },
+  {
+    "md5": "688d4779a6ff694f109ba842761bdf75",
+    "pid": "A005591402",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A005591402",
+    "variant_name": [
+      "Amboise, L\u00e9on d'",
+      "L\u00e9on"
+    ],
+    "preferred_name": "Guillemin, L\u00e9on",
+    "variant_access_point": [
+      "Amboise, L\u00e9on d'",
+      "L\u00e9on, d'Amboise"
+    ],
+    "authorized_access_point": "Guillemin, L\u00e9on",
+    "biographical_information": [
+      "L\u00e9on d'Amboise est le pseud. de L\u00e9on Guillemin"
+    ]
+  },
+  {
+    "md5": "bfd464fa17664336571df8b7fe3a9c4c",
+    "pid": "A009535178",
+    "bf:Agent": "bf:Person",
+    "qualifier": "de Barbanson",
+    "identifier": "http://data.rero.ch/02-A009535178",
+    "variant_name": [
+      "Barban\u00e7on, Constantin de"
+    ],
+    "preferred_name": "Constantin",
+    "variant_access_point": [
+      "Barban\u00e7on, Constantin de"
+    ],
+    "authorized_access_point": "Constantin, de Barbanson"
+  },
+  {
+    "md5": "c9d57616acf5c7e1a9d5acf02bc537bf",
+    "pid": "A017671081",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017671081",
+    "variant_name": [
+      "Aernoudt, Pierre",
+      "Arnold, Joseph"
+    ],
+    "date_of_birth": "1811",
+    "date_of_death": "1865",
+    "preferred_name": "Arnoudt, Pierre J.",
+    "variant_access_point": [
+      "Aernoudt, Pierre, 1811-1865",
+      "Arnold, Joseph, 1811-1865"
+    ],
+    "authorized_access_point": "Arnoudt, Pierre J., 1811-1865",
+    "biographical_information": [
+      "J\u00e9suite (\u00e0 partir de 1835 ; ordonn\u00e9 pr\u00eatre en 1843) ; v\u00e9cut aux Etats-Unis \u00e0 partir de 1835, \u00e9crivit aussi en latin"
+    ]
+  },
+  {
+    "md5": "8c59e1f5089b5bb4f2fe9914b2626638",
+    "pid": "A017991779",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017991779",
+    "variant_name": [
+      "Catalano, Giuseppe",
+      "Catalanus, Josephus",
+      "Catalani, Josephus",
+      "Catalano, Josepho"
+    ],
+    "date_of_birth": "1698",
+    "date_of_death": "1764",
+    "preferred_name": "Catalani, Giuseppe",
+    "variant_access_point": [
+      "Catalano, Giuseppe, 1698-1764",
+      "Catalanus, Josephus, 1698-1764",
+      "Catalani, Josephus, 1698-1764",
+      "Catalano, Josepho, 1698-1764"
+    ],
+    "authorized_access_point": "Catalani, Giuseppe, 1698-1764",
+    "biographical_information": [
+      "Historien, th\u00e9ologien et juriste"
+    ]
+  },
+  {
+    "md5": "c6b87e7bfc29646948f5429209965caf",
+    "pid": "A021799923",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A021799923",
+    "variant_name": [
+      "Kouro\u00fadi\u0332s, K\u00f3\u0332stas"
+    ],
+    "preferred_name": "Kouroud\u0113s, K\u014dstas",
+    "variant_access_point": [
+      "Kouro\u00fadi\u0332s, K\u00f3\u0332stas"
+    ],
+    "parallel_access_point": [
+      "\u039a\u03bf\u03c5\u03c1\u03bf\u03cd\u03b4\u03b7\u03c2, \u039a\u03ce\u03c3\u03c4\u03b1\u03c2"
+    ],
+    "authorized_access_point": "Kouroud\u0113s, K\u014dstas"
+  },
+  {
+    "md5": "740408771d8a98b31052b8603d8c8316",
+    "pid": "A022480124",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A022480124",
+    "variant_name": [
+      "Bernard, Bayle"
+    ],
+    "date_of_birth": "1807",
+    "date_of_death": "1875",
+    "preferred_name": "Bernard, William Bayle",
+    "variant_access_point": [
+      "Bernard, Bayle, 1807-1875"
+    ],
+    "authorized_access_point": "Bernard, William Bayle, 1807-1875"
+  },
+  {
+    "md5": "d43369b1282152a5ffa7cbdb20161ed1",
+    "pid": "A023655346",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A023655346",
+    "variant_name": [
+      "De Cavalieri, Giovanni Battista",
+      "Cavalleriis, Baptista de",
+      "Cavalleriis, Giovanni Battista de",
+      "Cavalieri, Gianbattista"
+    ],
+    "date_of_birth": "ca.1525",
+    "date_of_death": "1601",
+    "preferred_name": "Cavalieri, Giovanni Battista",
+    "variant_access_point": [
+      "De Cavalieri, Giovanni Battista, ca.1525-1601",
+      "Cavalleriis, Baptista de, ca.1525-1601",
+      "Cavalleriis, Giovanni Battista de, ca.1525-1601",
+      "Cavalieri, Gianbattista, ca.1525-1601"
+    ],
+    "authorized_access_point": "Cavalieri, Giovanni Battista, ca.1525-1601",
+    "biographical_information": [
+      "Graveur, dessinateur et \u00e9diteur"
+    ]
+  },
+  {
+    "md5": "d8f7cf747c8350f568c4faf963e89bd9",
+    "pid": "A024285452",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A024285452",
+    "date_of_birth": "1983",
+    "preferred_name": "Soyarslan, \u00c7i\u01e7dem",
+    "authorized_access_point": "Soyarslan, \u00c7i\u01e7dem, 1983-",
+    "biographical_information": [
+      "Artiste lyrique (soprano)"
+    ]
+  }
 ]

@@ -69,7 +69,7 @@ fi
 
 function db_init () {
     # Purge celery
-    celery purge -A rero_mef.celery -f
+    celery -A rero_mef.celery purge -f
     # Clean redis
     invenio utils flush_cache --yes-i-know || true
     invenio db destroy --yes-i-know || true
@@ -86,48 +86,20 @@ function db_init () {
 function oai_init () {
     # init oaiharvester config from file
     invenio oaiharvester initconfig ./data/oaisources.yml
-    # invenio oaiharvester harvest -n idref -q
+    # we got the last gnd files on 10 2020 from here:
+    # https://data.dnb.de/GND/
+    invenio oaiharvester set_last_run -n gnd -d 2020-06-21
+    # we got the last idref files on 10 2020 with:
+    # invenio oaiharvester save idref.mrc -n idref -f 1990-01-01
+    invenio oaiharvester set_last_run -n idref -d 2020-10-01
 }
 
 function sample_load () {
     for AGENCY in viaf rero gnd idref
     do
        info_msg "Importing ${AGENCY} records:"
-       dojson -i ./data/${AGENCY}.json schema http://mef.rero.ch/schemas/${AGENCY}/${AGENCY}-person-v0.0.1.json | invenio fixtures create_or_update ${AGENCY}
+       dojson -i ./data/${AGENCY}.json schema "http://mef.rero.ch/schemas/${AGENCY}/${AGENCY}-contribution-v0.0.1.json" | invenio fixtures create_or_update ${AGENCY}
     done
-    oai_init
-}
-
-function bulk_load () {
-    INPUT_DIR=$1
-    OUTPUT_DIR=$2
-    # Transform marc files to json
-    for AGENCY in rero gnd idref
-    do
-        invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --marc_file ${AGENCY}.mrc --json_file ${AGENCY}.json
-    done
-    # Create CSV files from json
-    for AGENCY in rero gnd idref
-    do
-        invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file ${AGENCY}.json --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
-    done
-    # Load CSV files to db
-    for AGENCY in rero gnd idref
-    do
-        invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose --reindex
-        invenio utils runindex --raise-on-error
-    done
-    # Create viaf CSV files from viaf.txt
-    invenio fixtures bulk_load viaf ${INPUT_DIR} ${OUTPUT_DIR} --json_file viaf.txt --csv_pidstore_file viaf_pidstore.csv --csv_metadata_file viaf_metadata.csv
-    # Load viaf CSV files to db
-    invenio fixtures bulk_load viaf ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file viaf_pidstore.csv --csv_metadata_file viaf_metadata.csv  --verbose --reindex
-
-    # Create mef CSV files from viaf_metadata.csv
-    invenio fixtures bulk_load mef ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file viaf_metadata.csv --csv_pidstore_file mef_pidstore.csv --csv_metadata_file mef_metadata.csv
-    # Load viaf CSV files to db
-    invenio fixtures bulk_load mef ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file mef_pidstore.csv --csv_metadata_file mef_metadata.csv  --verbose --reindex
-
-    invenio utils runindex --raise-on-error
     oai_init
 }
 
@@ -137,18 +109,51 @@ function deploy () {
     for AGENCY in rero gnd idref viaf mef
     do
         invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose --reindex
+        invenio utils runindex --raise-on-error --concurrency 4 --delayed
     done
-    # Index agency records
-    # info_msg "For faster indexing disable ES auto refresh:"
-    # msg "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d '{\"index\" : {\"refresh_interval\" : \"-1\"}}'"
-    # info_msg "After indexing reenable ES auto refresh:"
-    # msg "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d'{\"index\" : {\"refresh_interval\" : null}}'"
     oai_init
-    invenio utils runindex --raise-on-error --concurrency 4 --delayed
     invenio utils runindex --raise-on-error
     invenio utils agency_counts
 }
 
+function create_json () {
+    INPUT_DIR=$1
+    OUTPUT_DIR=$2
+    # Transform marc files to json
+    for AGENCY in rero gnd idref
+    do
+        invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --marc_file ${AGENCY}.mrc --json_file ${AGENCY}.json &
+    done
+    wait
+}
+
+function create_csv () {
+    OUTPUT_DIR=$1
+    # Create CSV files from json
+    for AGENCY in rero gnd idref
+    do
+        invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file ${AGENCY}.json --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv &
+    done
+    wait
+    # Create viaf CSV files from viaf.txt
+    invenio fixtures bulk_load viaf ${INPUT_DIR} ${OUTPUT_DIR} --json_file viaf.txt --csv_pidstore_file viaf_pidstore.csv --csv_metadata_file viaf_metadata.csv --verbose
+    # Create mef CSV files from viaf_metadata.csv
+    invenio fixtures bulk_load mef ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file viaf_metadata.csv --csv_pidstore_file mef_pidstore.csv --csv_metadata_file mef_metadata.csv --verbose
+}
+
+function bulk_load () {
+    INPUT_DIR=$1
+    OUTPUT_DIR=$2
+    # Transform marc files to json
+    create_json ${INPUT_DIR} ${OUTPUT_DIR}
+
+    # Create CSV files from json
+    create_csv ${OUTPUT_DIR}
+
+    db_init
+    # Load CSV files to db
+    deploy ${OUTPUT_DIR}
+}
 
 function usage () {
     msg "Usage: "
@@ -163,6 +168,13 @@ function usage () {
     msg " [./scripts/setup --bulk_load INPUT_DIR OUTPUT_DIR]"
     msg "    INPUT_DIR where marc files are found. "
     msg "    OUTPUT_DIR directory for output file"
+    msg " "
+    msg " [./scripts/setup --create_json INPUT_DIR OUTPUT_DIR]"
+    msg "    INPUT_DIR where marc files are found. "
+    msg "    OUTPUT_DIR directory for output file"
+    msg " "
+    msg " [./scripts/setup --create_csv INPUT_OUTPUT_DIR]"
+    msg "    INPUT_OUTPUT_DIR directory for input and output file"
 }
 
 if [[ $# -eq 0 ]] ; then
@@ -174,6 +186,10 @@ else
         '--db_init')
             info_msg "DB init"
             db_init
+            ;;
+        '--oai_init')
+            info_msg "OAI init"
+            oai_init
             ;;
         '--deploy')
             info_msg "Start loading CSV records to database for all agencies"
@@ -193,8 +209,27 @@ else
                 usage
                 exit 3
             else
-                db_init
                 bulk_load $2 $3
+            fi
+            ;;
+        '--create_json')
+            info_msg "Start creating json for all types of agencies"
+            if [ -z "$2" ] || [ -z "$3" ]; then
+                error_msg "Invalid input arguments. "
+                usage
+                exit 3
+            else
+                create_json $2 $3
+            fi
+            ;;
+        '--create_csv')
+            info_msg "Start creating csv for all types of agencies"
+            if [ -z "$2" ]; then
+                error_msg "Invalid input arguments. "
+                usage
+                exit 3
+            else
+                create_csv $2
             fi
             ;;
         '--help')

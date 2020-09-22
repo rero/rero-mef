@@ -86,7 +86,7 @@ services:
       file: docker-services.yml
       service: app
     restart: "always"
-    command: "poetry run celery worker -A rero_mef.celery --loglevel=INFO"
+    command: "poetry run celery -A rero_mef.celery worker --loglevel=INFO"
     image: rero-mef-worker
     links:
       - cache
@@ -99,7 +99,7 @@ services:
       file: docker-services.yml
       service: app
     restart: "always"
-    command: "poetry run celery beat -A rero_mef.celery --loglevel=INFO"
+    command: "poetry run celery -A rero_mef.celery beat --loglevel=INFO"
     image: rero-ils-beat
     links:
       - cache

@@ -7,12 +7,14 @@
 # OAI-PMH connection settings
 
 idref:
+    # http://documentation.abes.fr/aideidrefoai/index.html
     baseurl: https://www.idref.fr/OAI/oai.jsp
     metadataprefix: marc-xml
     comment: 'idref'
-    setspecs: 'a'
+    setspecs: 'a b'
 gnd:
+    # https://www.dnb.de/EN/Professionell/Metadatendienste/Datenbezug/OAI/oai_node.html
     baseurl: http://services.dnb.de/oai/repository
     metadataprefix: MARC21-xml
     comment: 'gnd'
-    setspecs: 'authorities:person'
+    setspecs: 'authorities'
