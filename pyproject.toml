@@ -51,8 +51,8 @@ ijson = ">=2.5.1"
 pymarc = ">=3.1.10"
 
 ## Additionnal constraints on python modules
-# solves datetime serialize error
-celery = "<5.0.0"
+# solves fixture 'celery_config' not found
+# celery = "<5.0.0"
 
 ## Deployment
 # sentry

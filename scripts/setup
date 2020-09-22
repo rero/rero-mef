@@ -69,7 +69,7 @@ fi
 
 function db_init () {
     # Purge celery
-    celery purge -A rero_mef.celery -f
+    celery -A rero_mef.celery purge -f
     # Clean redis
     invenio utils flush_cache --yes-i-know || true
     invenio db destroy --yes-i-know || true
@@ -86,14 +86,19 @@ function db_init () {
 function oai_init () {
     # init oaiharvester config from file
     invenio oaiharvester initconfig ./data/oaisources.yml
-    # invenio oaiharvester harvest -n idref -q
+    # we got the last gnd files on 10 2020 from here:
+    # https://data.dnb.de/GND/
+    invenio oaiharvester set_last_run -n gnd -d 2020-10-01
+    # we got the last idref files on 10 2020 with:
+    # invenio oaiharvester save idref.mrc -n idref -f 1990-01-01
+    invenio oaiharvester set_last_run -n idref -d 2020-10-01
 }
 
 function sample_load () {
     for AGENCY in viaf rero gnd idref
     do
        info_msg "Importing ${AGENCY} records:"
-       dojson -i ./data/${AGENCY}.json schema http://mef.rero.ch/schemas/${AGENCY}/${AGENCY}-person-v0.0.1.json | invenio fixtures create_or_update ${AGENCY}
+       dojson -i ./data/${AGENCY}.json schema "http://mef.rero.ch/schemas/${AGENCY}/${AGENCY}-person-v0.0.1.json" | invenio fixtures create_or_update ${AGENCY}
     done
     oai_init
 }
@@ -111,22 +116,22 @@ function bulk_load () {
     do
         invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file ${AGENCY}.json --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv
     done
+    # Create viaf CSV files from viaf.txt
+    invenio fixtures bulk_load viaf ${INPUT_DIR} ${OUTPUT_DIR} --json_file viaf.txt --csv_pidstore_file viaf_pidstore.csv --csv_metadata_file viaf_metadata.csv --verbose
+    # Create mef CSV files from viaf_metadata.csv
+    invenio fixtures bulk_load mef ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file viaf_metadata.csv --csv_pidstore_file mef_pidstore.csv --csv_metadata_file mef_metadata.csv --verbose
+
+    # we can run background bulkindexing
+    # invenio utils runindex --raise-on-error --delayed --concurrency 4
     # Load CSV files to db
     for AGENCY in rero gnd idref
     do
         invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose --reindex
-        invenio utils runindex --raise-on-error
     done
-    # Create viaf CSV files from viaf.txt
-    invenio fixtures bulk_load viaf ${INPUT_DIR} ${OUTPUT_DIR} --json_file viaf.txt --csv_pidstore_file viaf_pidstore.csv --csv_metadata_file viaf_metadata.csv
     # Load viaf CSV files to db
     invenio fixtures bulk_load viaf ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file viaf_pidstore.csv --csv_metadata_file viaf_metadata.csv  --verbose --reindex
-
-    # Create mef CSV files from viaf_metadata.csv
-    invenio fixtures bulk_load mef ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file viaf_metadata.csv --csv_pidstore_file mef_pidstore.csv --csv_metadata_file mef_metadata.csv
-    # Load viaf CSV files to db
+    # Load mef CSV files to db
     invenio fixtures bulk_load mef ${OUTPUT_DIR} ${OUTPUT_DIR} --load_records --csv_pidstore_file mef_pidstore.csv --csv_metadata_file mef_metadata.csv  --verbose --reindex
-
     invenio utils runindex --raise-on-error
     oai_init
 }
@@ -137,6 +142,7 @@ function deploy () {
     for AGENCY in rero gnd idref viaf mef
     do
         invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose --reindex
+        invenio utils runindex --raise-on-error --concurrency 4 --delayed
     done
     # Index agency records
     # info_msg "For faster indexing disable ES auto refresh:"
@@ -144,7 +150,6 @@ function deploy () {
     # info_msg "After indexing reenable ES auto refresh:"
     # msg "curl -X PUT \"localhost:29200/_settings\" -H 'Content-Type: application/json' -d'{\"index\" : {\"refresh_interval\" : null}}'"
     oai_init
-    invenio utils runindex --raise-on-error --concurrency 4 --delayed
     invenio utils runindex --raise-on-error
     invenio utils agency_counts
 }
@@ -174,6 +179,10 @@ else
         '--db_init')
             info_msg "DB init"
             db_init
+            ;;
+        '--oai_init')
+            info_msg "OAI init"
+            oai_init
             ;;
         '--deploy')
             info_msg "Start loading CSV records to database for all agencies"

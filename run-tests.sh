@@ -70,7 +70,6 @@ if [[ -z "${VIRTUAL_ENV}" ]]; then
 fi
 
 set -e
-# TODO: find out why we have following error:
 # | pipenv                     | 2018.11.2 | <2020.5.28               | 38334    |
 safety check --ignore 38334
 info_msg "Test pydocstyle:"

@@ -32,6 +32,7 @@
 """Utilities."""
 
 import datetime
+import json
 import traceback
 from datetime import timedelta
 from io import StringIO
@@ -46,21 +47,23 @@ from invenio_oaiharvester.errors import InvenioOAIHarvesterConfigNotFound, \
     WrongDateCombination
 from invenio_oaiharvester.models import OAIHarvestConfig
 from invenio_oaiharvester.utils import get_oaiharvest_object
+from invenio_records_rest.utils import obj_or_import_string
 from jsonschema.exceptions import ValidationError
 from pymarc.marcxml import parse_xml_to_array
 from sickle import Sickle, oaiexceptions
 from sickle.iterator import OAIItemIterator
 from sickle.oaiexceptions import NoRecordsMatch
 
-from .authorities.mef.models import MefAction
-from .authorities.models import AgencyAction
+from .contributions.mef.models import MefAction
+from .contributions.models import AgencyAction
 
 
 def add_oai_source(name, baseurl, metadataprefix='marc21',
-                   setspecs='', comment=''):
+                   setspecs='', comment='', update=False):
     """Add OAIHarvestConfig."""
     with current_app.app_context():
-        if OAIHarvestConfig.query.filter_by(name=name).count() == 0:
+        source = OAIHarvestConfig.query.filter_by(name=name).first()
+        if not source:
             source = OAIHarvestConfig(
                 name=name,
                 baseurl=baseurl,
@@ -70,9 +73,18 @@ def add_oai_source(name, baseurl, metadataprefix='marc21',
             )
             source.save()
             db.session.commit()
-            return True
-        else:
-            return False
+            return 'Added'
+        elif update:
+            source.name = name
+            source.baseurl = baseurl
+            source.metadataprefix = metadataprefix
+            if setspecs != '':
+                source.setspecs = setspecs
+            if comment != '':
+                source.comment = comment
+            db.session.commit()
+            return 'Updated'
+        return 'Not Updated'
 
 
 def oai_get_last_run(name, verbose=False):
@@ -215,8 +227,6 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
     if dates['until'] is not None and dates['from'] > dates['until']:
         raise WrongDateCombination("'Until' date larger than 'from' date.")
 
-    last_run_date = datetime.datetime.now()
-
     # If we don't have specifications for set searches the setspecs will be
     # set to e list with None to go into the retrieval loop without
     # a set definition (line 177)
@@ -224,6 +234,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
     count = 0
     action_count = {}
     mef_action_count = {}
+    last_run_date = datetime.datetime.now()
     for spec in setspecs:
         params = {
             'metadataPrefix': metadata_prefix,
@@ -277,9 +288,10 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                         mef_action_count[mef_action.name] = count_a + 1
                         if verbose:
                             click.echo(
-                                ('OAI {name}: {pid} updated: {updated}'
+                                ('OAI {name} {spec}: {pid} updated: {updated}'
                                  ' action: {action} {mef}').format(
                                     name=name,
+                                    spec=spec,
                                     pid=pid,
                                     action=action,
                                     mef=mef_action,
@@ -309,8 +321,9 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
             my_from_date = my_from_date + timedelta(days=days_spann + 1)
             if verbose:
                 click.echo(
-                    ('OAI {name}: {from_d} .. +{days_spann}').format(
+                    ('OAI {name} {spec}: {from_d} .. +{days_spann}').format(
                         name=name,
+                        spec=spec,
                         from_d=my_from_date.strftime("%Y-%m-%d"),
                         days_spann=days_spann
                     )
@@ -329,6 +342,119 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
         oai_source.save()
         db.session.commit()
     return count, action_count, mef_action_count
+
+
+def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
+                                max_retries=0,
+                                access_token=None, days_spann=30,
+                                from_date=None, until_date=None,
+                                verbose=False, **kwargs):
+    """Harvest and save multiple records from an OAI repo.
+
+    :param name: The name of the OAIHarvestConfig to use instead of passing
+                 specific parameters.
+    :param from_date: The lower bound date for the harvesting (optional).
+    :param until_date: The upper bound date for the harvesting (optional).
+    """
+    # data on IDREF Servers starts on 2000-10-01
+    name = name
+    days_spann = days_spann
+    last_run = None
+    url, metadata_prefix, last_run, setspecs = get_info_by_oai_name(name)
+
+    request = sickle(url, iterator=oai_item_iterator, max_retries=max_retries)
+
+    dates = {
+        'from': from_date or last_run,
+        'until': until_date
+    }
+    # Sanity check
+    if dates['until'] is not None and dates['from'] > dates['until']:
+        raise WrongDateCombination("'Until' date larger than 'from' date.")
+
+    last_run_date = datetime.datetime.now()
+
+    # If we don't have specifications for set searches the setspecs will be
+    # set to e list with None to go into the retrieval loop without
+    # a set definition (line 177)
+    setspecs = setspecs.split() or [None]
+    count = 0
+    with open(file_name, 'bw') as output_file:
+        for spec in setspecs:
+            params = {
+                'metadataPrefix': metadata_prefix,
+                'ignore_deleted': False
+            }
+            if access_token:
+                params['accessToken'] = access_token
+            params.update(dates)
+            if spec:
+                params['set'] = spec
+
+            my_from_date = parser.parse(dates['from'])
+            my_until_date = last_run_date
+            if dates['until']:
+                my_until_date = parser.parse(dates['until'])
+            while my_from_date <= my_until_date:
+                until_date = my_from_date + timedelta(days=days_spann)
+                if until_date > my_until_date:
+                    until_date = my_until_date
+                dates = {
+                    'from': my_from_date.strftime("%Y-%m-%d"),
+                    'until': until_date.strftime("%Y-%m-%d")
+                }
+                params.update(dates)
+
+                try:
+                    for record in request.ListRecords(**params):
+                        # Todo: DELETED
+                        count += 1
+                        records = parse_xml_to_array(StringIO(record.raw))
+                        record_id = '???'
+                        field_001 = records[0]['001']
+                        if field_001:
+                            record_id = field_001.data
+                        if verbose:
+                            click.echo(
+                                'OAI {name} spec({spec}): {from_d} '
+                                'count:{count:>10} = {id}'.format(
+                                    name=name,
+                                    spec=spec,
+                                    from_d=my_from_date.strftime("%Y-%m-%d"),
+                                    days_spann=days_spann,
+                                    count=count,
+                                    id=record_id
+                                )
+                            )
+                        rec = records[0]
+                        rec.leader = rec.leader[0:9] + 'a' + rec.leader[10:]
+                        output_file.write(rec.as_marc())
+                except NoRecordsMatch:
+                    my_from_date = my_from_date + timedelta(
+                        days=days_spann + 1)
+                    continue
+                except Exception as err:
+                    current_app.logger.error(err)
+                    # import traceback
+                    # traceback.print_exc()
+
+                my_from_date = my_from_date + timedelta(days=days_spann + 1)
+                if verbose:
+                    click.echo(
+                        'OAI {name} spec({spec}): '
+                        '{from_d} .. +{days_spann}'.format(
+                            name=name,
+                            spec=spec,
+                            from_d=my_from_date.strftime("%Y-%m-%d"),
+                            days_spann=days_spann
+                        )
+                    )
+    if verbose:
+        click.echo('OAI {name}: {count}'.format(
+            name=name,
+            count=count
+        ))
+    return count
 
 
 def oai_get_record(id, name, transformation, record_cls, access_token=None,
@@ -425,3 +551,58 @@ def read_json_record(json_file, buf_size=1024, decoder=JSONDecoder()):
                 if buffer.startswith(','):
                     # delete records deliminators
                     buffer = buffer[1:].lstrip()
+
+
+def export_json_records(pids, pid_type, output_file_name, indent=2,
+                        schema=True, verbose=False):
+    """Writes records from record_class to file.
+
+    :param pids: pids to use
+    :param pid_type: pid_type to use
+    :param output_file_name: file name to write to
+    :param indent: indent to use in output file
+    :param schema: do not delete $schema
+    :param verbose: verbose print
+    :returns: count of records written
+    """
+    record_class = obj_or_import_string(
+        current_app.config
+        .get('RECORDS_REST_ENDPOINTS')
+        .get(pid_type).get('record_class')
+    )
+    count = 0
+    output = '['
+    offset = '{character:{indent}}'.format(character=' ', indent=indent)
+    with open(output_file_name, 'w') as outfile:
+        for pid in pids:
+            try:
+                rec = record_class.get_record_by_pid(pid)
+                count += 1
+                if verbose:
+                    msg = '{count: <8} {pid_type} export {pid}:{id}'.format(
+                        count=count,
+                        pid_type=pid_type,
+                        pid=rec.pid,
+                        id=rec.id
+                    )
+                    click.echo(msg)
+
+                outfile.write(output)
+                if count > 1:
+                    outfile.write(',')
+                if not schema:
+                    rec.pop('$schema', None)
+                    persons_sources = current_app.config.get(
+                        'RERO_ILS_PERSONS_SOURCES', [])
+                    for persons_source in persons_sources:
+                        rec[persons_sources].pop('$schema', None)
+                output = ''
+                lines = json.dumps(rec, indent=indent).split('\n')
+                for line in lines:
+                    output += '\n{offset}{line}'.format(
+                        offset=offset, line=line)
+            except Exception as err:
+                click.echo(err)
+                click.echo('ERROR: Can not export pid:{pid}'.format(pid=pid))
+        outfile.write(output)
+        outfile.write('\n]\n')
