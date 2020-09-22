@@ -26,7 +26,6 @@
 
 from invenio_search import current_search
 
-from rero_mef.authorities.bnf.api import BnfRecord
 from rero_mef.authorities.gnd.api import GndRecord
 from rero_mef.authorities.idref.api import IdrefRecord
 from rero_mef.authorities.mef.api import MefRecord
@@ -35,7 +34,7 @@ from rero_mef.authorities.viaf.api import ViafRecord
 
 
 def test_ref_resolvers(
-        app, bnf_record, gnd_record, rero_record, viaf_record, idref_record):
+        app, gnd_record, rero_record, viaf_record, idref_record):
     """Test ref resolvers."""
 
     """VIAF record."""
@@ -47,14 +46,6 @@ def test_ref_resolvers(
         index='viaf-viaf-person-v0.0.1')
     current_search.flush_and_refresh(
         index='mef-mef-person-v0.0.1')
-
-    """BNF record."""
-    returned_record, action, mef_action = BnfRecord.create_or_update(
-        bnf_record, agency='bnf', dbcommit=True, reindex=True
-    )
-    current_search.flush_and_refresh(index='bnf-bnf-person-v0.0.1')
-    current_search.flush_and_refresh(index='mef-mef-person-v0.0.1')
-    bnf_pid = returned_record['pid']
 
     """GND record."""
     returned_record, action, mef_action = GndRecord.create_or_update(
@@ -85,7 +76,6 @@ def test_ref_resolvers(
         viaf_pid=viaf_pid
     )
     mef_rec_resolved = mef_rec_resolved.replace_refs()
-    assert mef_rec_resolved.get('bnf').get('pid') == bnf_pid
     assert mef_rec_resolved.get('gnd').get('pid') == gnd_pid
     assert mef_rec_resolved.get('rero').get('pid') == rero_pid
     assert mef_rec_resolved.get('idref').get('pid') == idref_pid

@@ -559,7 +559,6 @@ def write_link_json(
     """Write a json record into file."""
     json_data = {}
     key_per_catalog_id = {
-        'BNF': 'bnf_pid',
         'DNB': 'gnd_pid',
         'RERO': 'rero_pid',
         'SUDOC': 'idref_pid'
