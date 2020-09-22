@@ -26,8 +26,8 @@
 
 from celery import shared_task
 
-from .authorities.api import AuthRecordIndexer
-from .authorities.utils import get_record_class
+from .contributions.api import AuthRecordIndexer
+from .contributions.utils import get_record_class
 
 
 @shared_task(ignore_result=True)

@@ -111,6 +111,7 @@ if ! $deploy ; then
 fi
 
 # BOOTSTRAP START
+
 # install the application and all the dependencies
 info_msg "Install with command: ${cmd} ${flags[@]}"
 ${cmd} ${flags[@]}
@@ -122,9 +123,12 @@ if ! $deploy ; then
     fi
 fi
 
+# update pip
+pip install --upgrade pip
+
 # install assets utils
 virtualenv_path=`poetry env info -p`
-info_msg "Install npm assets utils in: ${virtualenv_path}"
+# info_msg "Install npm assets utils in: ${virtualenv_path}"
 npm i npm@latest -g --prefix "${virtualenv_path}" && npm install --prefix "${virtualenv_path}" --silent -g  node-sass@4.14.1 clean-css-cli@4.3.0 uglify-js@3.9.4 requirejs@2.3.6
 
 # build the web assets
