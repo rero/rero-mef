@@ -49,7 +49,7 @@ v0.2.0
 
 -  Data:
 
-   -  Updates agencies (source) data.
+   -  Updates agents (source) data.
    -  Improves transformation to ``preferred_name`` to keep
       regnal numbers.
 
@@ -60,7 +60,7 @@ v0.2.0
    -  Uses AND as the default ES query boolean operator.
 
 -  Ignores versioning of ``.env`` and celerybeat directory.
--  Extends CLI with an utility to create ``csv`` agency files.
+-  Extends CLI with an utility to create ``csv`` agent files.
 -  Improves bulk loading of big files with chunks.
 -  Adds a serializer to resolve JSON references.
 -  Moves deployment files to an external git repository.

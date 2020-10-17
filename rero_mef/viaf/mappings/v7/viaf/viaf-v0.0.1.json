@@ -1,0 +1,34 @@
+{
+  "settings": {
+    "number_of_shards": 8,
+    "number_of_replicas": 2,
+    "max_result_window": 100000000
+  },
+  "mappings": {
+    "date_detection": false,
+    "numeric_detection": false,
+    "properties": {
+      "$schema": {
+        "type": "keyword"
+      },
+      "pid": {
+        "type": "keyword"
+      },
+      "gnd_pid": {
+        "type": "keyword"
+      },
+      "rero_pid": {
+        "type": "keyword"
+      },
+      "idref_pid": {
+        "type": "keyword"
+      },
+      "_created": {
+        "type": "date"
+      },
+      "_updated": {
+        "type": "date"
+      }
+    }
+  }
+}

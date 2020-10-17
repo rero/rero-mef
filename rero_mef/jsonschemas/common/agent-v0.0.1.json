@@ -1,0 +1,182 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Schema for agent",
+  "type": "object",
+  "required": [
+    "$schema",
+    "pid",
+    "identifier",
+    "authorized_access_point"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "title": "Schema",
+      "description": "Schema to validate against.",
+      "type": "string",
+      "minLength": 7
+    },
+    "pid": {
+      "title": "Rero record ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "bf:Agent": {
+      "title": "Type",
+      "type": "string",
+      "enum": [
+        "bf:Person",
+        "bf:Organisation"
+      ]
+    },
+    "md5": {
+      "title": "Md5",
+      "type": "string",
+      "minLength": 1
+    },
+    "language": {
+      "title": "Language of person",
+      "description": "A language a person uses when writing for publication, broadcasting, etc. (cf. RDA)",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "$ref": "https://mef.rero.ch/schemas/common/languages-v0.0.1.json#/language"
+          }
+        }
+      }
+    },
+    "gender": {
+      "title": "Gender",
+      "description": "XXX (cf. RDA)",
+      "type": "string",
+      "validationMessage": "Should be one of the three options: male, female, not known.",
+      "minItems": 1,
+      "properties": {
+        "value": {
+          "enum": [
+            "male",
+            "female",
+            "not known"
+          ]
+        }
+      }
+    },
+    "identifier": {
+      "title": "Identifier",
+      "description": "XXX (cf. RDA)",
+      "type": "string",
+      "format": "uri"
+    },
+    "date_of_birth": {
+      "title": "Date of birth",
+      "description": "XXX (cf. RDA)",
+      "type": "string"
+    },
+    "date_of_death": {
+      "title": "Date of death",
+      "description": "XXX (cf. RDA)",
+      "type": "string"
+    },
+    "biographical_information": {
+      "title": "Biographical information",
+      "description": "XXX (cf. RDA)",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "preferred_name": {
+      "title": "Preferred names",
+      "description": "XXX (cf. RDA)",
+      "type": "string",
+      "minLegth": 1
+    },
+    "authorized_access_point": {
+      "title": "Authorized access point",
+      "description": "XXX (cf. RDA)",
+      "type": "string",
+      "minLength": 1
+    },
+    "qualifier": {
+      "title": "Qualifier",
+      "type": "string"
+    },
+    "numeration": {
+      "title": "Numeration",
+      "type": "string"
+    },
+    "variant_name": {
+      "title": "Variant name",
+      "description": "XXX (cf. RDA)",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "date_of_establishment": {
+      "title": "Date of establishment",
+      "description": "XXX (cf. RDA)",
+      "type": "string"
+    },
+    "date_of_termination": {
+      "title": "Date of termination",
+      "description": "XXX (cf. RDA)",
+      "type": "string"
+    },
+    "conference": {
+      "title": "Conference",
+      "description": "XXX (cf. RDA)",
+      "type": "boolean"
+    },
+    "variant_access_point": {
+      "title": "Variant access point",
+      "description": "XXX (cf. RDA)",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "parallel_access_point": {
+      "title": "Parallel access point",
+      "description": "XXX (cf. RDA)",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "country_associated": {
+      "$ref": "https://mef.rero.ch/schemas/common/countries-v0.0.1.json#/country"
+    },
+    "deleted": {
+      "title": "Deletion date",
+      "type": "string"
+    },
+    "relation_pid": {
+      "title": "Relation pid",
+      "type": "object",
+      "properties": {
+        "value": {
+          "title": "Relation pid value",
+          "type": "string"
+        },
+        "type": {
+          "title": "Relation pid type",
+          "type": "string",
+          "enum": [
+            "redirect_to",
+            "redirect_from"
+          ]
+        }
+      }
+    }
+  }
+}

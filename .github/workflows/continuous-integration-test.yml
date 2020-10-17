@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dependencies: ['locked', 'deploy']
+        dependencies: ['development', 'deploy']
     steps:
     - name: Cancel Previous Runs
       uses: styfle/cancel-workflow-action@0.5.0
@@ -14,6 +14,11 @@ jobs:
         access_token: ${{ github.token }}
 
     - uses: actions/checkout@v2
+
+    - name: Setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12'
 
     - name: Docker compose up
       run: docker-compose up -d
@@ -23,8 +28,14 @@ jobs:
       with:
         python-version: 3.6
 
+    # - name: Allow unsecure commands
+    #   # needed by dschep/install-poetry-action@v1.3
+    #   run: |
+    #     echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
+    #     echo "VIRTUAL_ENV=~/.cache/pypoetry/virtualenvs" >> $GITHUB_ENV
+
     - name: Install Poetry
-      uses: dschep/install-poetry-action@v1.2
+      uses: snok/install-poetry@v1.1.1
       with:
         version: 1.0.10
 
@@ -37,8 +48,8 @@ jobs:
           ~/.npm
         key: ${{ runner.os }}-pip-venv-${{ hashFiles('**/poetry.lock') }}
 
-    - name: Bootstrap locked
-      if: ${{ matrix.dependencies == 'locked' }}
+    - name: Bootstrap
+      if: ${{ matrix.dependencies == 'development' }}
       run: |
         poetry run bootstrap --ci
 
@@ -47,9 +58,8 @@ jobs:
       run: |
         poetry run bootstrap --ci --deploy E2E=yes
 
-    - name: Update pip and coveralls
+    - name: Update coveralls
       run: |
-        poetry run pip install --upgrade pip
         poetry run pip install --upgrade coveralls
 
     - name: Run Test
