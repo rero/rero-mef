@@ -61,9 +61,9 @@ setup(
     entry_points={
         'invenio_celery.tasks': [
             'rero_mef = rero_mef.tasks',
-            'contributions = rero_mef.contributions.tasks',
-            'idref = rero_mef.contributions.idref.tasks'
-            'gnd = rero_mef.contributions.gnd.tasks'
+            'agents = rero_mef.agents.tasks',
+            'idref = rero_mef.agents.idref.tasks'
+            'gnd = rero_mef.agents.gnd.tasks'
         ],
         'console_scripts': [
             'rero-mef = invenio_app.cli:cli',
@@ -78,54 +78,59 @@ setup(
             'rero_mef = rero_mef.views:blueprint',
         ],
         'invenio_base.api_blueprints': [
-            'api_rero_mef = rero_mef.views:api_blueprint'
+            'api_rero_mef = rero_mef.views:api_blueprint',
+            'monitoring = rero_mef.monitoring:api_blueprint',
         ],
         'invenio_config.module': [
             'rero_mef = rero_mef.config',
         ],
         'invenio_db.models': [
-            'viaf = rero_mef.contributions.viaf.models',
-            'gnd = rero_mef.contributions.gnd.models',
-            'rero = rero_mef.contributions.rero.models',
-            'mef = rero_mef.contributions.mef.models',
-            'idref = rero_mef.contributions.idref.models'
-            'agencies = rero_mef.contributions.models'
+            'mef = rero_mef.mef.models',
+            'viaf = rero_mef.viaf.models',
+            'agents_gnd = rero_mef.agents.gnd.models',
+            'agents_idref = rero_mef.agents.idref.models',
+            'agents_rero = rero_mef.agents.rero.models',
+            'concepts_rero = rero_mef.concepts.rero.models',
         ],
         'invenio_pidstore.minters': [
-            'viaf = rero_mef.contributions.viaf.minters:viaf_id_minter',
-            'gnd = rero_mef.contributions.gnd.minters:gnd_id_minter',
-            'rero = rero_mef.contributions.rero.minters:rero_id_minter',
-            'mef = rero_mef.contributions.mef.minters:mef_id_minter',
-            'idref = rero_mef.contributions.idref.minters:idref_id_minter'
-
+            'mef_id = rero_mef.mef.minters:mef_id_minter',
+            'viaf_id = rero_mef.viaf.minters:viaf_id_minter',
+            'agent_gnd_id = rero_mef.agents.gnd.minters:gnd_id_minter',
+            'agent_idref_id = rero_mef.agents.idref.minters:idref_id_minter',
+            'agent_rero_id = rero_mef.agents.rero.minters:rero_id_minter',
+            'concept_rero_id = rero_mef.concepts.rero.minters:rero_id_minter'
         ],
         'invenio_pidstore.fetchers': [
-            'viaf = rero_mef.contributions.viaf.fetchers:viaf_id_fetcher',
-            'gnd = rero_mef.contributions.gnd.fetchers:gnd_id_fetcher',
-            'rero = rero_mef.contributions.rero.fetchers:rero_id_fetcher',
-            'mef = rero_mef.contributions.mef.fetchers:mef_id_fetcher',
-            'idref = rero_mef.contributions.idref.fetchers:idref_id_fetcher'
+            'mef_id = rero_mef.mef.fetchers:mef_id_fetcher',
+            'viaf_id = rero_mef.viaf.fetchers:viaf_id_fetcher',
+            'agent_gnd_id = rero_mef.agents.gnd.fetchers:gnd_id_fetcher',
+            'agent_idref_id = rero_mef.agents.idref.fetchers:idref_id_fetcher',
+            'agent_rero_id = rero_mef.agents.rero.fetchers:rero_id_fetcher',
+            'concept_rero_id = rero_mef.concepts.rero.fetchers:rero_id_fetcher',
         ],
         'invenio_jsonschemas.schemas': [
             'common = rero_mef.jsonschemas',
-            'viaf = rero_mef.contributions.viaf.jsonschemas',
-            'gnd = rero_mef.contributions.gnd.jsonschemas',
-            'rero = rero_mef.contributions.rero.jsonschemas',
-            'mef = rero_mef.contributions.mef.jsonschemas',
-            'idref = rero_mef.contributions.idref.jsonschemas'
+            'mef = rero_mef.mef.jsonschemas',
+            'viaf = rero_mef.viaf.jsonschemas',
+            'agents_gnd = rero_mef.agents.gnd.jsonschemas',
+            'agents_idref = rero_mef.agents.idref.jsonschemas',
+            'agents_rero = rero_mef.agents.rero.jsonschemas',
+            'cocepts_rero = rero_mef.concepts.rero.jsonschemas'
         ],
         'invenio_search.mappings': [
-            'viaf = rero_mef.contributions.viaf.mappings',
-            'gnd = rero_mef.contributions.gnd.mappings',
-            'rero = rero_mef.contributions.rero.mappings',
-            'mef = rero_mef.contributions.mef.mappings',
-            'idref = rero_mef.contributions.idref.mappings'
+            'mef = rero_mef.mef.mappings',
+            'viaf = rero_mef.viaf.mappings',
+            'agents_gnd = rero_mef.agents.gnd.mappings',
+            'agents_idref = rero_mef.agents.idref.mappings',
+            'agents_rero = rero_mef.agents.rero.mappings',
+            'concepts_rero = rero_mef.concepts.rero.mappings'
         ],
         'invenio_records.jsonresolver': [
-            'gnd = rero_mef.contributions.gnd.jsonresolvers.gnd_resolver',
-            'rero = rero_mef.contributions.rero.jsonresolvers.rero_resolver',
-            'mef = rero_mef.contributions.mef.jsonresolvers.mef_resolver',
-            'idref = rero_mef.contributions.idref.jsonresolvers.idref_resolver'
+            'mef = rero_mef.mef.jsonresolvers.mef_resolver',
+            'agents_gnd = rero_mef.agents.gnd.jsonresolvers.gnd_resolver',
+            'agents_idref = rero_mef.agents.idref.jsonresolvers.idref_resolver',
+            'agents_rero = rero_mef.agents.rero.jsonresolvers.rero_resolver',
+            'concepts_rero = rero_mef.concepts.rero.jsonresolvers.rero_resolver',
         ],
         'flask.commands': [
             'fixtures = rero_mef.cli:fixtures',

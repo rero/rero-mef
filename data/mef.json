@@ -1,35 +1,232 @@
 [
   {
     "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/1056901632"
+      "$ref": "https://mef.rero.ch/api/gnd/124813844"
     },
     "pid": "1",
     "rero": {
-      "$ref": "https://mef.rero.ch/api/rero/A000009346"
+      "$ref": "https://mef.rero.ch/api/rero/A017991779"
     },
     "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/098326635"
+      "$ref": "https://mef.rero.ch/api/idref/183349199"
     },
-    "viaf_pid": "59071074"
+    "viaf_pid": "100195656"
   },
   {
     "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/12391664X"
+      "$ref": "https://mef.rero.ch/api/gnd/969004222"
     },
     "pid": "10",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/076515788"
+    },
+    "viaf_pid": "124294761"
+  },
+  {
+    "pid": "11",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/078061911"
+    },
+    "viaf_pid": "124645295"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/122101359"
+    },
+    "pid": "12",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/112244424"
+    },
+    "viaf_pid": "12644471"
+  },
+  {
+    "pid": "13",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/08233367X"
+    },
+    "viaf_pid": "126917762"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/1032371390"
+    },
+    "pid": "14",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/080491898"
+    },
+    "viaf_pid": "127966279"
+  },
+  {
+    "pid": "15",
     "rero": {
-      "$ref": "https://mef.rero.ch/api/rero/A023655346"
+      "$ref": "https://mef.rero.ch/api/rero/A005353099"
     },
     "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/068979401"
+      "$ref": "https://mef.rero.ch/api/idref/078069084"
     },
-    "viaf_pid": "66739143"
+    "viaf_pid": "128149213"
+  },
+  {
+    "pid": "16",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/079491251"
+    },
+    "viaf_pid": "129268494"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/00401653X"
+    },
+    "pid": "17",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/030348722"
+    },
+    "viaf_pid": "129633871"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/00421952X"
+    },
+    "pid": "18",
+    "rero": {
+      "$ref": "https://mef.rero.ch/api/rero/A005464637"
+    },
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/02638714X"
+    },
+    "viaf_pid": "129719472"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/951795597"
+    },
+    "pid": "19",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/03459910X"
+    },
+    "viaf_pid": "131481965"
+  },
+  {
+    "pid": "2",
+    "rero": {
+      "$ref": "https://mef.rero.ch/api/rero/A005591402"
+    },
+    "viaf_pid": "100261763"
+  },
+  {
+    "pid": "20",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/029402360"
+    },
+    "viaf_pid": "133380394"
+  },
+  {
+    "pid": "21",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/080809197"
+    },
+    "viaf_pid": "138571124"
+  },
+  {
+    "pid": "22",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/079206557"
+    },
+    "viaf_pid": "141024188"
+  },
+  {
+    "pid": "23",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/080715060"
+    },
+    "viaf_pid": "144574453"
+  },
+  {
+    "pid": "24",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/080785425"
+    },
+    "viaf_pid": "145728538"
+  },
+  {
+    "pid": "25",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/080826660"
+    },
+    "viaf_pid": "146898132"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/008046662"
+    },
+    "pid": "26",
+    "rero": {
+      "$ref": "https://mef.rero.ch/api/rero/A012320736"
+    },
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/083442774"
+    },
+    "viaf_pid": "148442771"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/1020174943"
+    },
+    "pid": "27",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/081589093"
+    },
+    "viaf_pid": "15"
+  },
+  {
+    "pid": "28",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/03227758X"
+    },
+    "viaf_pid": "152673250"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/007430779"
+    },
+    "pid": "29",
+    "rero": {
+      "$ref": "https://mef.rero.ch/api/rero/A003671569"
+    },
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/028893670"
+    },
+    "viaf_pid": "153261207"
+  },
+  {
+    "pid": "3",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/179863436"
+    },
+    "viaf_pid": "103796168"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/050534696"
+    },
+    "pid": "30",
+    "rero": {
+      "$ref": "https://mef.rero.ch/api/rero/A028240818"
+    },
+    "viaf_pid": "156682652"
+  },
+  {
+    "pid": "31",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/149367430"
+    },
+    "viaf_pid": "15835520"
   },
   {
     "gnd": {
       "$ref": "https://mef.rero.ch/api/gnd/143032704"
     },
-    "pid": "11",
+    "pid": "32",
     "rero": {
       "$ref": "https://mef.rero.ch/api/rero/A024285452"
     },
@@ -37,76 +234,169 @@
   },
   {
     "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/1019749911"
+      "$ref": "https://mef.rero.ch/api/gnd/118095617"
     },
-    "pid": "12",
+    "pid": "33",
     "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/131513168"
+      "$ref": "https://mef.rero.ch/api/idref/033967776"
     },
-    "viaf_pid": "88950387"
+    "viaf_pid": "165425716"
   },
   {
-    "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/1020174943"
-    },
-    "pid": "13",
+    "pid": "34",
     "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/081589093"
+      "$ref": "https://mef.rero.ch/api/idref/075825686"
     },
-    "viaf_pid": "15"
+    "viaf_pid": "168132274"
   },
   {
     "gnd": {
       "$ref": "https://mef.rero.ch/api/gnd/104189576"
     },
-    "pid": "14",
+    "pid": "35",
     "idref": {
       "$ref": "https://mef.rero.ch/api/idref/095116672"
     },
     "viaf_pid": "17655678"
   },
   {
-    "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/1045857424"
-    },
-    "pid": "15",
+    "pid": "36",
     "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/192777475"
+      "$ref": "https://mef.rero.ch/api/idref/081780931"
     },
-    "viaf_pid": "89216027"
+    "viaf_pid": "17976125"
+  },
+  {
+    "pid": "37",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/073668818"
+    },
+    "viaf_pid": "188444430"
+  },
+  {
+    "pid": "38",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/154079693"
+    },
+    "viaf_pid": "188751400"
+  },
+  {
+    "pid": "39",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/071579478"
+    },
+    "viaf_pid": "204759432"
   },
   {
     "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/1053083351"
+      "$ref": "https://mef.rero.ch/api/gnd/117513601"
     },
-    "pid": "16",
-    "viaf_pid": "34085769"
+    "pid": "4",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/097556505"
+    },
+    "viaf_pid": "10625354"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/1089786255"
+    },
+    "pid": "40",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/076675246"
+    },
+    "viaf_pid": "210058740"
+  },
+  {
+    "pid": "41",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/077723953"
+    },
+    "viaf_pid": "210070480"
+  },
+  {
+    "pid": "42",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/081337418"
+    },
+    "viaf_pid": "219393798"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/1117819884"
+    },
+    "pid": "43",
+    "viaf_pid": "233394263"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/051062763"
+    },
+    "pid": "44",
+    "rero": {
+      "$ref": "https://mef.rero.ch/api/rero/A005472911"
+    },
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/069632421"
+    },
+    "viaf_pid": "249145258"
   },
   {
     "gnd": {
       "$ref": "https://mef.rero.ch/api/gnd/1055101586"
     },
-    "pid": "17",
+    "pid": "45",
     "idref": {
       "$ref": "https://mef.rero.ch/api/idref/106993542"
     },
     "viaf_pid": "24961297"
   },
   {
-    "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/1060580543"
-    },
-    "pid": "18",
+    "pid": "46",
     "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/074087061"
+      "$ref": "https://mef.rero.ch/api/idref/078047315"
     },
-    "viaf_pid": "71379653"
+    "viaf_pid": "265455615"
+  },
+  {
+    "pid": "47",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/071593462"
+    },
+    "viaf_pid": "267378825"
+  },
+  {
+    "pid": "48",
+    "rero": {
+      "$ref": "https://mef.rero.ch/api/rero/A009238698"
+    },
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/080852629"
+    },
+    "viaf_pid": "268637883"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/130672289"
+    },
+    "pid": "49",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/087876035"
+    },
+    "viaf_pid": "27"
+  },
+  {
+    "pid": "5",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/223404543"
+    },
+    "viaf_pid": "1132151837981420520008"
   },
   {
     "gnd": {
       "$ref": "https://mef.rero.ch/api/gnd/1073132285"
     },
-    "pid": "19",
+    "pid": "50",
     "idref": {
       "$ref": "https://mef.rero.ch/api/idref/165617845"
     },
@@ -114,9 +404,105 @@
   },
   {
     "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/100023754"
+    },
+    "pid": "51",
+    "rero": {
+      "$ref": "https://mef.rero.ch/api/rero/A009535178"
+    },
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/104547677"
+    },
+    "viaf_pid": "280249934"
+  },
+  {
+    "pid": "52",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/196562643"
+    },
+    "viaf_pid": "288662742"
+  },
+  {
+    "pid": "53",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/172347343"
+    },
+    "viaf_pid": "305400030"
+  },
+  {
+    "pid": "54",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/08049188X"
+    },
+    "viaf_pid": "316657320"
+  },
+  {
+    "pid": "55",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/086912909"
+    },
+    "viaf_pid": "316658943"
+  },
+  {
+    "pid": "56",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/085649562"
+    },
+    "viaf_pid": "3266155044774972520008"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/1053083351"
+    },
+    "pid": "57",
+    "viaf_pid": "34085769"
+  },
+  {
+    "pid": "58",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/069774331"
+    },
+    "viaf_pid": "37268949"
+  },
+  {
+    "pid": "59",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/124563627"
+    },
+    "viaf_pid": "38942782"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/131543334"
+    },
+    "pid": "6",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/197394787"
+    },
+    "viaf_pid": "1147669"
+  },
+  {
+    "pid": "60",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/16777154X"
+    },
+    "viaf_pid": "39365357"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/129943495"
+    },
+    "pid": "61",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/078633907"
+    },
+    "viaf_pid": "44287671"
+  },
+  {
+    "gnd": {
       "$ref": "https://mef.rero.ch/api/gnd/11669355X"
     },
-    "pid": "2",
+    "pid": "62",
     "rero": {
       "$ref": "https://mef.rero.ch/api/rero/A000065776"
     },
@@ -127,66 +513,9 @@
   },
   {
     "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/1089786255"
-    },
-    "pid": "20",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/076675246"
-    },
-    "viaf_pid": "210058740"
-  },
-  {
-    "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/1117819884"
-    },
-    "pid": "21",
-    "viaf_pid": "233394263"
-  },
-  {
-    "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/117513601"
-    },
-    "pid": "22",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/097556505"
-    },
-    "viaf_pid": "10625354"
-  },
-  {
-    "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/117671533"
-    },
-    "pid": "23",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/233021523"
-    },
-    "viaf_pid": "52473075"
-  },
-  {
-    "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/118095617"
-    },
-    "pid": "24",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/033967776"
-    },
-    "viaf_pid": "165425716"
-  },
-  {
-    "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/119120674"
-    },
-    "pid": "25",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/081816529"
-    },
-    "viaf_pid": "59887231"
-  },
-  {
-    "gnd": {
       "$ref": "https://mef.rero.ch/api/gnd/119291088"
     },
-    "pid": "26",
+    "pid": "63",
     "idref": {
       "$ref": "https://mef.rero.ch/api/idref/070483981"
     },
@@ -194,266 +523,161 @@
   },
   {
     "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/122101359"
+      "$ref": "https://mef.rero.ch/api/gnd/117588768"
     },
-    "pid": "27",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/112244424"
-    },
-    "viaf_pid": "12644471"
-  },
-  {
-    "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/124981933"
-    },
-    "pid": "28",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/189341793"
-    },
-    "viaf_pid": "61533460"
-  },
-  {
-    "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/129943495"
-    },
-    "pid": "29",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/078633907"
-    },
-    "viaf_pid": "44287671"
-  },
-  {
-    "pid": "3",
+    "pid": "64",
     "rero": {
-      "$ref": "https://mef.rero.ch/api/rero/A000070488"
+      "$ref": "https://mef.rero.ch/api/rero/A022480124"
     },
-    "viaf_pid": "121668467"
+    "viaf_pid": "50006920"
   },
   {
     "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/130672289"
+      "$ref": "https://mef.rero.ch/api/gnd/117671533"
     },
-    "pid": "30",
+    "pid": "65",
     "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/087876035"
+      "$ref": "https://mef.rero.ch/api/idref/233021523"
     },
-    "viaf_pid": "27"
+    "viaf_pid": "52473075"
   },
   {
-    "pid": "31",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/057286752"
-    },
-    "viaf_pid": "61533487"
-  },
-  {
-    "pid": "32",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/069774331"
-    },
-    "viaf_pid": "37268949"
-  },
-  {
-    "pid": "33",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/081780931"
-    },
-    "viaf_pid": "17976125"
-  },
-  {
-    "pid": "34",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/085209910"
-    },
-    "viaf_pid": "59878108"
-  },
-  {
-    "pid": "35",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/088356809"
-    },
-    "viaf_pid": "71772321"
-  },
-  {
-    "pid": "36",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/124563627"
-    },
-    "viaf_pid": "38942782"
-  },
-  {
-    "pid": "37",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/130990221"
-    },
-    "viaf_pid": "68917636"
-  },
-  {
-    "pid": "38",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/147013283"
-    },
-    "viaf_pid": "71115516"
-  },
-  {
-    "pid": "39",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/149367430"
-    },
-    "viaf_pid": "15835520"
-  },
-  {
-    "pid": "4",
+    "pid": "66",
     "rero": {
-      "$ref": "https://mef.rero.ch/api/rero/A005591402"
+      "$ref": "https://mef.rero.ch/api/rero/A021799923"
     },
-    "viaf_pid": "100261763"
+    "viaf_pid": "56496818"
   },
   {
-    "pid": "40",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/154079693"
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/172759757"
     },
-    "viaf_pid": "188751400"
+    "pid": "67",
+    "rero": {
+      "$ref": "https://mef.rero.ch/api/rero/A017671081"
+    },
+    "viaf_pid": "56597999"
   },
   {
-    "pid": "41",
+    "pid": "68",
     "idref": {
       "$ref": "https://mef.rero.ch/api/idref/156591324"
     },
     "viaf_pid": "56598007"
   },
   {
-    "pid": "42",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/16777154X"
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/1056901632"
     },
-    "viaf_pid": "39365357"
+    "pid": "69",
+    "rero": {
+      "$ref": "https://mef.rero.ch/api/rero/A000009346"
+    },
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/098326635"
+    },
+    "viaf_pid": "59071074"
   },
   {
-    "pid": "43",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/172347343"
+    "pid": "7",
+    "rero": {
+      "$ref": "https://mef.rero.ch/api/rero/A000070488"
     },
-    "viaf_pid": "305400030"
+    "viaf_pid": "121668467"
   },
   {
-    "pid": "44",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/179863436"
+    "pid": "70",
+    "rero": {
+      "$ref": "https://mef.rero.ch/api/rero/A027454547"
     },
-    "viaf_pid": "103796168"
-  },
-  {
-    "pid": "45",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/196562643"
-    },
-    "viaf_pid": "288662742"
-  },
-  {
-    "pid": "46",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/197394787"
-    },
-    "viaf_pid": "1147669"
-  },
-  {
-    "pid": "47",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/223404543"
-    },
-    "viaf_pid": "1132151837981420520008"
-  },
-  {
-    "pid": "48",
     "idref": {
       "$ref": "https://mef.rero.ch/api/idref/02778259X"
     },
     "viaf_pid": "5974157704214244440009"
   },
   {
-    "pid": "49",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/03459910X"
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/118666762"
     },
-    "viaf_pid": "131481965"
+    "pid": "71",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/085209910"
+    },
+    "viaf_pid": "59878108"
   },
   {
     "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/100023754"
+      "$ref": "https://mef.rero.ch/api/gnd/119120674"
     },
-    "pid": "5",
+    "pid": "72",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/081816529"
+    },
+    "viaf_pid": "59887231"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/124981933"
+    },
+    "pid": "73",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/189341793"
+    },
+    "viaf_pid": "61533460"
+  },
+  {
+    "pid": "74",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/057286752"
+    },
+    "viaf_pid": "61533487"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/12391664X"
+    },
+    "pid": "75",
     "rero": {
-      "$ref": "https://mef.rero.ch/api/rero/A009535178"
+      "$ref": "https://mef.rero.ch/api/rero/A023655346"
     },
     "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/104547677"
+      "$ref": "https://mef.rero.ch/api/idref/068979401"
     },
-    "viaf_pid": "280249934"
+    "viaf_pid": "66739143"
   },
   {
-    "pid": "50",
+    "pid": "76",
     "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/24966822X"
-    }
-  },
-  {
-    "pid": "51",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/249669323"
-    }
-  },
-  {
-    "pid": "52",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/24967047X"
-    }
-  },
-  {
-    "pid": "53",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/02638714X"
+      "$ref": "https://mef.rero.ch/api/idref/130990221"
     },
-    "viaf_pid": "129719472"
+    "viaf_pid": "68917636"
   },
   {
-    "pid": "54",
+    "pid": "77",
     "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/027483061"
+      "$ref": "https://mef.rero.ch/api/idref/147013283"
     },
-    "viaf_pid": "123832554"
+    "viaf_pid": "71115516"
   },
   {
-    "pid": "55",
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/1060580543"
+    },
+    "pid": "78",
     "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/028893670"
+      "$ref": "https://mef.rero.ch/api/idref/074087061"
     },
-    "viaf_pid": "153261207"
+    "viaf_pid": "71379653"
   },
   {
-    "pid": "56",
+    "pid": "79",
     "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/029402360"
+      "$ref": "https://mef.rero.ch/api/idref/088356809"
     },
-    "viaf_pid": "133380394"
+    "viaf_pid": "71772321"
   },
   {
-    "pid": "57",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/030348722"
-    },
-    "viaf_pid": "129633871"
-  },
-  {
-    "pid": "58",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/03227758X"
-    },
-    "viaf_pid": "152673250"
-  },
-  {
-    "pid": "59",
+    "pid": "8",
     "idref": {
       "$ref": "https://mef.rero.ch/api/idref/034875891"
     },
@@ -461,210 +685,35 @@
   },
   {
     "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/172759757"
+      "$ref": "https://mef.rero.ch/api/gnd/1019749911"
     },
-    "pid": "6",
-    "rero": {
-      "$ref": "https://mef.rero.ch/api/rero/A017671081"
-    },
-    "viaf_pid": "56597999"
-  },
-  {
-    "pid": "60",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/069632421"
-    },
-    "viaf_pid": "249145258"
-  },
-  {
-    "pid": "61",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/071579478"
-    },
-    "viaf_pid": "204759432"
-  },
-  {
-    "pid": "62",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/071593462"
-    },
-    "viaf_pid": "267378825"
-  },
-  {
-    "pid": "63",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/073668818"
-    },
-    "viaf_pid": "188444430"
-  },
-  {
-    "pid": "64",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/075825686"
-    },
-    "viaf_pid": "168132274"
-  },
-  {
-    "pid": "65",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/076515788"
-    },
-    "viaf_pid": "124294761"
-  },
-  {
-    "pid": "66",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/077723953"
-    },
-    "viaf_pid": "210070480"
-  },
-  {
-    "pid": "67",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/078047315"
-    },
-    "viaf_pid": "265455615"
-  },
-  {
-    "pid": "68",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/078061911"
-    },
-    "viaf_pid": "124645295"
-  },
-  {
-    "pid": "69",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/078069084"
-    },
-    "viaf_pid": "128149213"
-  },
-  {
-    "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/124813844"
-    },
-    "pid": "7",
-    "rero": {
-      "$ref": "https://mef.rero.ch/api/rero/A017991779"
-    },
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/183349199"
-    },
-    "viaf_pid": "100195656"
-  },
-  {
-    "pid": "70",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/079206557"
-    },
-    "viaf_pid": "141024188"
-  },
-  {
-    "pid": "71",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/079491251"
-    },
-    "viaf_pid": "129268494"
-  },
-  {
-    "pid": "72",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/08049188X"
-    },
-    "viaf_pid": "316657320"
-  },
-  {
-    "pid": "73",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/080491898"
-    },
-    "viaf_pid": "127966279"
-  },
-  {
-    "pid": "74",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/080715060"
-    },
-    "viaf_pid": "144574453"
-  },
-  {
-    "pid": "75",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/080785425"
-    },
-    "viaf_pid": "145728538"
-  },
-  {
-    "pid": "76",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/080809197"
-    },
-    "viaf_pid": "138571124"
-  },
-  {
-    "pid": "77",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/080826660"
-    },
-    "viaf_pid": "146898132"
-  },
-  {
-    "pid": "78",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/080852629"
-    },
-    "viaf_pid": "268637883"
-  },
-  {
-    "pid": "79",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/081337418"
-    },
-    "viaf_pid": "219393798"
-  },
-  {
-    "pid": "8",
-    "rero": {
-      "$ref": "https://mef.rero.ch/api/rero/A021799923"
-    },
-    "viaf_pid": "56496818"
-  },
-  {
     "pid": "80",
     "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/08233367X"
+      "$ref": "https://mef.rero.ch/api/idref/131513168"
     },
-    "viaf_pid": "126917762"
-  },
-  {
-    "pid": "81",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/083442774"
-    },
-    "viaf_pid": "148442771"
-  },
-  {
-    "pid": "82",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/085649562"
-    },
-    "viaf_pid": "3266155044774972520008"
-  },
-  {
-    "pid": "83",
-    "idref": {
-      "$ref": "https://mef.rero.ch/api/idref/086912909"
-    },
-    "viaf_pid": "316658943"
+    "viaf_pid": "88950387"
   },
   {
     "gnd": {
-      "$ref": "https://mef.rero.ch/api/gnd/117588768"
+      "$ref": "https://mef.rero.ch/api/gnd/1045857424"
+    },
+    "pid": "81",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/192777475"
+    },
+    "viaf_pid": "89216027"
+  },
+  {
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/gnd/00402074X"
     },
     "pid": "9",
     "rero": {
-      "$ref": "https://mef.rero.ch/api/rero/A022480124"
+      "$ref": "https://mef.rero.ch/api/rero/A009962747"
     },
-    "viaf_pid": "50006920"
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/idref/027483061"
+    },
+    "viaf_pid": "123832554"
   }
 ]

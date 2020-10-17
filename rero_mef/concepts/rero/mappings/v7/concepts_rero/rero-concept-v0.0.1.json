@@ -1,0 +1,108 @@
+{
+  "settings": {
+    "number_of_shards": 8,
+    "number_of_replicas": 2,
+    "max_result_window": 100000000
+  },
+  "mappings": {
+    "date_detection": false,
+    "numeric_detection": false,
+    "properties": {
+      "$schema": {
+        "type": "keyword"
+      },
+      "pid": {
+        "type": "keyword"
+      },
+      "md5": {
+        "type": "keyword"
+      },
+      "identifiedBy": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "keyword"
+          },
+          "source": {
+            "type": "keyword"
+          },
+          "value": {
+            "type": "text"
+          }
+        }
+      },
+      "bnf_type": {
+        "type": "text"
+      },
+      "authorized_access_point": {
+        "type": "text"
+      },
+      "variant_access_point": {
+        "type": "text"
+      },
+      "broader": {
+        "type": "object",
+        "properties": {
+          "$ref": {
+            "type": "object"
+          },
+          "authorized_access_point": {
+            "type": "text"
+          }
+        }
+      },
+      "related": {
+        "type": "object",
+        "properties": {
+          "$ref": {
+            "type": "object"
+          },
+          "authorized_access_point": {
+            "type": "text"
+          }
+        }
+      },
+      "narrower": {
+        "type": "object",
+        "properties": {
+          "$ref": {
+            "type": "object"
+          },
+          "authorized_access_point": {
+            "type": "text"
+          }
+        }
+      },
+      "classification": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "keyword"
+          },
+          "classificationPortion": {
+            "type": "keyword"
+          },
+          "name": {
+            "type": "keyword"
+          }        }
+      },
+      "note": {
+        "type": "object",
+        "properties": {
+          "nodeType": {
+            "type": "keyword"
+          },
+          "label": {
+            "type": "text"
+          }
+        }
+      },
+      "_created": {
+        "type": "date"
+      },
+      "_updated": {
+        "type": "date"
+      }
+    }
+  }
+}

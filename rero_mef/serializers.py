@@ -30,51 +30,62 @@ from invenio_records_rest.schemas import RecordSchemaJSONV1
 from invenio_records_rest.serializers.json import JSONSerializer
 from invenio_records_rest.serializers.response import record_responsify
 
-from .contributions.mef.api import MefRecord, MefSearch
-from .contributions.utils import get_agencies_endpoints
+from .mef.api import MefRecord, MefSearch
+from .utils import get_agent_classes
+from .viaf.api import ViafSearch
 
 
 def add_links(pid, record):
-    """Add mef link to agencys."""
+    """Add mef link to agents."""
     links = {}
-    if pid.pid_type == "mef":
+    if pid.pid_type == 'mef':
         viaf_pid = record.get('viaf_pid')
         if viaf_pid:
-            links = dict(viaf='{scheme}://{host}/api/viaf/' + str(viaf_pid))
+            links['viaf'] = '{scheme}://{host}/api/viaf/' + str(viaf_pid)
     elif pid.pid_type == "viaf":
         mef_pid_search = MefSearch().filter(
             'term', viaf_pid=record.get('pid')
         ).source(['pid']).scan()
         try:
             mef_pid = next(mef_pid_search).pid
-            links = dict(mef='{scheme}://{host}/api/mef/' + str(mef_pid))
+            links['mef'] = '{scheme}://{host}/api/mef/' + str(mef_pid)
         except:
             pass
     else:
-        mef_pid = MefRecord.get_mef_by_agency_pid(
-            pid.pid_value,
-            pid.pid_type,
+        mef_pid = MefRecord.get_mef_by_agent_pid(
+            record.pid,
+            record.name,
             pid_only=True
         )
         if mef_pid:
-            links = dict(mef='{scheme}://{host}/api/mef/' + str(mef_pid))
+            links['mef'] = '{scheme}://{host}/api/mef/' + str(mef_pid)
+        try:
+            viaf_pid_name = record.viaf_pid_name
+            query = ViafSearch(). \
+                filter({'term': {viaf_pid_name: pid.pid_value}}). \
+                source('pid')
+            viaf_pid = next(query.scan()).pid
+            links['viaf'] = '{scheme}://{host}/api/viaf/' + str(viaf_pid)
+        except Exception as err:
+            pass
+
     link_factory = default_links_factory_with_additional(links)
     return link_factory(pid)
 
 
 # Nice to have direct working links in test server!
-def local_link(agency, record):
+def local_link(agent, name, record):
     """Change links to actual links."""
-    if agency in record:
-        ref = my_pid = record[agency].get('$ref')
+    if name in record:
+        ref = record[name].get('$ref')
         if ref:
             my_pid = ref.split('/')[-1]
             url = url_for(
-                'invenio_records_rest.{agency}_item'.format(agency=agency),
+                'invenio_records_rest.{agent}_item'.format(agent=agent),
                 pid_value=my_pid,
                 _external=True
             )
-            record[agency].update({'$ref': url})
+            record[name].update({'$ref': url})
 
 
 class ReroMefSerializer(JSONSerializer):
@@ -100,8 +111,10 @@ class ReroMefSerializer(JSONSerializer):
                 sources.append('idref')
             record['sources'] = sources
 
-        for agency in get_agencies_endpoints():
-            local_link(agency, record)
+        agent_classes = get_agent_classes()
+        for agent, agent_classe in agent_classes.items():
+            if agent in ['aidref', 'aggnd', 'agrero']:
+                local_link(agent, agent_classe.name, record)
 
         return super(ReroMefSerializer, self).serialize(
             pid, record, links_factory=add_links, **kwargs
