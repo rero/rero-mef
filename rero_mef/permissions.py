@@ -22,20 +22,9 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Define relation between records and buckets."""
+"""Permissions for this module."""
 
-from __future__ import absolute_import
+from flask_principal import RoleNeed
+from invenio_access.permissions import Permission
 
-from enum import Enum
-
-
-class AgencyAction(Enum):
-    """Class holding all availabe agency record creation actions."""
-
-    CREATE = 'create'
-    UPDATE = 'update'
-    UPTODATE = 'uptodate'
-    DISCARD = 'discard'
-    DELETE = 'delete'
-    VALIDATIONERROR = 'validation error'
-    ERROR = 'error'
+admin_permission = Permission(RoleNeed('admins'))

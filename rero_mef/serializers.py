@@ -31,11 +31,11 @@ from invenio_records_rest.serializers.json import JSONSerializer
 from invenio_records_rest.serializers.response import record_responsify
 
 from .contributions.mef.api import MefRecord, MefSearch
-from .contributions.utils import get_agencies_endpoints
+from .contributions.utils import get_agents_endpoints
 
 
 def add_links(pid, record):
-    """Add mef link to agencys."""
+    """Add mef link to agents."""
     links = {}
     if pid.pid_type == "mef":
         viaf_pid = record.get('viaf_pid')
@@ -51,7 +51,7 @@ def add_links(pid, record):
         except:
             pass
     else:
-        mef_pid = MefRecord.get_mef_by_agency_pid(
+        mef_pid = MefRecord.get_mef_by_agent_pid(
             pid.pid_value,
             pid.pid_type,
             pid_only=True
@@ -63,18 +63,18 @@ def add_links(pid, record):
 
 
 # Nice to have direct working links in test server!
-def local_link(agency, record):
+def local_link(agent, record):
     """Change links to actual links."""
-    if agency in record:
-        ref = my_pid = record[agency].get('$ref')
+    if agent in record:
+        ref = my_pid = record[agent].get('$ref')
         if ref:
             my_pid = ref.split('/')[-1]
             url = url_for(
-                'invenio_records_rest.{agency}_item'.format(agency=agency),
+                'invenio_records_rest.{agent}_item'.format(agent=agent),
                 pid_value=my_pid,
                 _external=True
             )
-            record[agency].update({'$ref': url})
+            record[agent].update({'$ref': url})
 
 
 class ReroMefSerializer(JSONSerializer):
@@ -100,8 +100,8 @@ class ReroMefSerializer(JSONSerializer):
                 sources.append('idref')
             record['sources'] = sources
 
-        for agency in get_agencies_endpoints():
-            local_link(agency, record)
+        for agent in get_agents_endpoints():
+            local_link(agent, record)
 
         return super(ReroMefSerializer, self).serialize(
             pid, record, links_factory=add_links, **kwargs

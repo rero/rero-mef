@@ -38,12 +38,9 @@ from .fetchers import viaf_id_fetcher
 from .minters import viaf_id_minter
 from .models import ViafMetadata
 from .providers import ViafProvider
-from ..api import AuthRecord, AuthRecordIndexer
+from ..api import ContributionIndexer, ContributionRecord
 from ..mef.api import MefRecord
-from ..mef.models import MefAction
-from ..models import AgencyAction
-from ..utils import add_schema, get_agencies_endpoints, get_agency_class, \
-    progressbar
+from ..utils import get_agent_class, get_agents_endpoints, progressbar
 
 
 class ViafSearch(RecordsSearch):
@@ -60,158 +57,13 @@ class ViafSearch(RecordsSearch):
         default_filter = None
 
 
-class ViafRecord(AuthRecord):
+class ViafRecord(ContributionRecord):
     """Viaf Authority class."""
 
     minter = viaf_id_minter
     fetcher = viaf_id_fetcher
     provider = ViafProvider
     model_cls = ViafMetadata
-
-    @classmethod
-    def get_viaf_by_agency_pid(cls, pid, pid_type):
-        """Get viaf record by agency pid value."""
-        search = ViafSearch()
-        if pid_type == 'mef':
-            mef_record = MefRecord.get_record_by_pid(pid)
-            viaf_pid = mef_record.get('viaf_pid')
-            return cls.get_record_by_pid(viaf_pid)
-        if pid_type == 'viaf':
-            return cls.get_record_by_pid(pid)
-        result = search.filter(
-            'term', **{pid_type: pid}).source(['pid']).scan()
-        try:
-            viaf_pid = next(result).pid
-            return cls.get_record_by_pid(viaf_pid)
-        except StopIteration:
-            return None
-
-    @classmethod
-    def create_or_update(cls, data, id_=None, dbcommit=False,
-                         reindex=False, **kwargs):
-        """Create or update viaf record."""
-        pid = data['pid']
-        record = cls.get_record_by_pid(pid)
-        if record:
-            data['$schema'] = record['$schema']
-            data['pid'] = record['pid']
-            record.update(
-                data=data,
-                dbcommit=dbcommit,
-                reindex=reindex
-            )
-            viaf_action = AgencyAction.UPDATE
-        else:
-            record = cls.create(
-                data=data,
-                delete_pid=False,
-                dbcommit=dbcommit,
-                reindex=reindex
-            )
-            viaf_action = AgencyAction.CREATE
-        # mef_record = MefRecord.get_mef_by_viaf_pid(record.pid)
-    # mef_data, mef_has_refs = MefRecord.mef_data_from_viaf(mef_record, data)
-        # if mef_record:
-        #     mef_action = MefAction.REPLACE
-        #     mef_record = mef_record.replace(
-        #         data=mef_data,
-        #         dbcommit=dbcommit,
-        #         reindex=reindex
-        #     )
-        # else:
-        #     if mef_has_refs:
-        #         mef_action = MefAction.CREATE
-        #         mef_data = add_schema(mef_data, 'mef')
-        #         mef_record = MefRecord.create(
-        #             data=mef_data,
-        #             id_=None,
-        #             delete_pid=True,
-        #             dbcommit=dbcommit,
-        #             reindex=reindex
-        #         )
-        #     else:
-        #         mef_action = MefAction.DELETE
-        return record, viaf_action, None
-
-    def create_mef_and_agencies(self, dbcommit=False, reindex=False,
-                                test_md5=False, online=False,
-                                verbose=False):
-        """Create MEF and agencies records."""
-        actions = {}
-        for agency, agency_data in get_agencies_endpoints().items():
-            actions[agency] = {
-                'mef': MefAction.DISCARD,
-                'agency': AgencyAction.DISCARD
-            }
-            pid_name = '{agency}_pid'.format(agency=agency)
-            pid_value = self.get(pid_name)
-            if pid_value:
-                agency_class = obj_or_import_string(
-                    agency_data.get('record_class')
-                )
-                try:
-                    PersistentIdentifier.get(
-                        agency_class.provider.pid_type,
-                        pid_value
-                    )
-                except PIDDoesNotExistError:
-                    # try to get the agency record online
-                    if online:
-                        record, a_action, m_action = \
-                            agency_class.get_online_record(
-                                id=pid_value,
-                                dbcommit=dbcommit,
-                                reindex=reindex,
-                                test_md5=test_md5,
-                                verbose=verbose
-                            )
-                        if record:
-
-                            agency_class.update_indexes()
-                            MefRecord.update_indexes()
-                        actions[agency] = {
-                            'mef': m_action,
-                            'agency': a_action
-                        }
-
-        mef_record = MefRecord.get_mef_by_viaf_pid(self.pid)
-        if not mef_record:
-            mef_data, mef_has_refs = MefRecord.mef_data_from_viaf(None, self)
-            if mef_has_refs:
-                actions['mef'] = MefAction.CREATE
-                mef_data = add_schema(mef_data, 'mef')
-                mef_record = MefRecord.create(
-                    data=mef_data,
-                    id_=None,
-                    delete_pid=True,
-                    dbcommit=dbcommit,
-                    reindex=reindex
-                )
-                MefRecord.update_indexes()
-        if verbose:
-            msgs = []
-            for key, value in actions.items():
-                if key == 'mef':
-                    msgs.insert(0, '{key}: {m_action}'.format(
-                        key=key,
-                        m_action=value
-                    ))
-                else:
-                    if value['agency'] != AgencyAction.DISCARD and \
-                            value['mef'] != MefAction.DISCARD:
-                        msgs.append('{key}: {a_action} {m_action}'.format(
-                            key=key,
-                            a_action=value['agency'],
-                            m_action=value['mef']
-                        ))
-            if msgs:
-                click.echo(
-                    'Create MEF viaf pid:{pid} > {actions}'.format(
-                        pid=self.pid,
-                        actions=', '.join(msgs)
-                    )
-                )
-        return actions
 
     @classmethod
     def get_online_viaf_record(cls, viaf_source_code, pid, format=None):
@@ -258,28 +110,112 @@ class ViafRecord(AuthRecord):
         return result or None
 
     @classmethod
+    def get_viaf_by_agent(cls, agent, online=False):
+        """Get viaf record by agent.
+
+        :param agent: Agency do get corresponding viaf record.
+        :param online: Try to get viaf record online if not exist.
+        """
+        if isinstance(agent, MefRecord):
+            viaf_pid = agent.get('viaf_pid')
+            return cls.get_record_by_pid(viaf_pid), False
+        if isinstance(agent, ViafRecord):
+            viaf_pid = agent.get('pid')
+            return cls.get_record_by_pid(viaf_pid), False
+        pid = agent.get('pid')
+        pid_type = agent.agent_pid_type
+        result = ViafSearch().filter(
+            {'term': {pid_type: pid}}).source(['pid']).scan()
+        try:
+            viaf_pid = next(result).pid
+            return cls.get_record_by_pid(viaf_pid), False
+        except StopIteration:
+            if online:
+                viaf_source_code = agent.viaf_source_code
+                viaf_data = cls.get_online_viaf_record(
+                    viaf_source_code=viaf_source_code,
+                    pid=pid
+                )
+                if viaf_data:
+                    viaf_record = cls.create(
+                        data=viaf_data,
+                        dbcommit=True,
+                        reindex=True
+                    )
+                    cls.update_indexes()
+                    return viaf_record, True
+        return None, False
+
+    def create_mef_and_agents(self, dbcommit=False, reindex=False,
+                              test_md5=False, online=False,
+                              verbose=False):
+        """Create MEF and agents records."""
+        actions = {}
+        for agent, agent_data in get_agents_endpoints().items():
+            pid_value = self.get('{agent}_pid'.format(agent=agent))
+            if pid_value:
+                agent_class = obj_or_import_string(
+                    agent_data.get('record_class')
+                )
+                try:
+                    PersistentIdentifier.get(
+                        agent_class.provider.pid_type,
+                        pid_value
+                    )
+                except PIDDoesNotExistError:
+                    # try to get the agent record online
+                    if online:
+                        data = agent_class.get_online_record(
+                            id=pid_value,
+                            verbose=verbose
+                        )
+                        if data:
+                            results = \
+                                agent_class.create_or_update_agent_mef_viaf(
+                                    data=data,
+                                    dbcommit=dbcommit,
+                                    reindex=reindex,
+                                    online=False
+                                )
+                            m_pid = 'Non'
+                            if results[2]:
+                                m_pid = results[2].pid
+                            actions[agent] = {
+                                'pid': results[0].pid,
+                                'action': results[1].name,
+                                'm_pid': m_pid,
+                                'm_action': results[3].name,
+                            }
+
+        if verbose:
+            msgs = []
+            for key, value in actions.items():
+                msgs.append(
+                    '{key}: {pid} {action} mef: {m_pid} {m_action}'.format(
+                        key=key,
+                        pid=value['pid'],
+                        action=value['action'],
+                        m_pid=value['m_pid'],
+                        m_action=value['m_action']
+                    )
+                )
+            if msgs:
+                click.echo(
+                    '  Create MEF from viaf pid: {pid} | {actions}'.format(
+                        pid=self.pid,
+                        actions=' | '.join(msgs)
+                    )
+                )
+        return actions
+
+    @classmethod
     def update_indexes(cls):
         """Update indexes."""
         current_search.flush_and_refresh(index='viaf-viaf-contribution-v0.0.1')
 
-    def get_agencies_records(self):
-        """Get agencies."""
-        agencies_record = {}
-        agencies_pid_type = {}
-        agencies_endpoints = get_agencies_endpoints()
-        for agency, agency_data in agencies_endpoints.items():
-            agencies_pid_type['{agency}_pid'.format(agency=agency)] = \
-                obj_or_import_string(agency_data.get('record_class'))
-        for data in self:
-            if data in agencies_pid_type:
-                record = agencies_pid_type[data].get_record_by_pid(self[data])
-                if record:
-                    agencies_record[data] = record
-        return agencies_record
-
     def delete(self, dbcommit=False, delindex=False, online=True):
         """Delete record and persistent identifier."""
-        agencies_records = self.get_agencies_records()
+        agents_records = self.get_agents_records()
         # delete viaf_pid from Mef record
         from ..mef.api import MefRecord
         mef_record = MefRecord.get_mef_by_viaf_pid(self.pid)
@@ -288,7 +224,7 @@ class ViafRecord(AuthRecord):
             mef_record.replace(mef_record, dbcommit=dbcommit, reindex=True)
         # delete Viaf record
         persistent_identifier = self.get_persistent_identifier(self.id)
-        result = super(AuthRecord, self).delete(force=True)
+        result = super(ContributionRecord, self).delete(force=True)
         if dbcommit:
             self.dbcommit()
         if delindex:
@@ -299,47 +235,59 @@ class ViafRecord(AuthRecord):
         if dbcommit:
             db.session.commit()
 
-        # delete agencies refs from Mef record
         mef_actions = []
         if mef_record:
-            for agency_pid_type, agency_record in agencies_records.items():
-                mef_record, action = mef_record.delete_agency(
-                    agency_record=agency_record,
-                    dbcommit=dbcommit,
-                    reindex=True
-                )
-                mef_record, mef_action, has_viaf = \
-                    agency_record.create_or_update_mef_viaf_record(
-                        dbcommit=dbcommit,
+            # delete associated mef record
+            mef_record.delete(dbcommit=dbcommit, delindex=delindex)
+            # recreate mef and viaf records for agents
+            for agent_pid_type, agent_record in agents_records.items():
+                record, action, mef_record, mef_action, viaf_record, online = \
+                    agent_record.create_or_update_agent_mef_viaf(
+                        data=agent_record,
+                        dbcommit=True,
                         reindex=True,
                         online=online
                     )
+                if viaf_record:
+                    viaf_pid = viaf_record.pid
+                else:
+                    viaf_pid = 'Non'
                 mef_actions.append(
-                    '{pid_type}: {apid} mef: {pid} {action} {viaf}'.format(
-                        pid_type=agency_pid_type,
-                        apid=agency_record.get('pid'),
-                        pid=mef_record.get('pid'),
-                        action=str(mef_action),
-                        viaf=has_viaf
+                    '{type}: {apid} mef: {pid} {action} viaf: {viaf}'.format(
+                        type=agent_pid_type,
+                        apid=agent_record.pid,
+                        pid=mef_record.pid,
+                        action=mef_action.name,
+                        viaf=viaf_pid
                     )
                 )
                 MefRecord.update_indexes()
         return result, '; '.join(mef_actions)
 
-    def create_or_update_mef_viaf_record(self, dbcommit=False, reindex=False,
-                                         online=False):
-        """Create or update MEF and VIAF record."""
-        return self, MefAction.DISCARD, False
+    def get_agents_records(self):
+        """Get agents."""
+        agents_record = {}
+        agents_pid_type = {}
+        agents_endpoints = get_agents_endpoints()
+        for agent, agent_data in agents_endpoints.items():
+            agents_pid_type['{agent}_pid'.format(agent=agent)] = \
+                obj_or_import_string(agent_data.get('record_class'))
+        for data in self:
+            if data in agents_pid_type:
+                record = agents_pid_type[data].get_record_by_pid(self[data])
+                if record:
+                    agents_record[data] = record
+        return agents_record
 
     @classmethod
-    def get_missing_agency_pids(cls, agency, verbose=False):
+    def get_missing_agent_pids(cls, agent, verbose=False):
         """Get all missing pids defined in VIAF."""
         pids_db = {}
         pids_viaf = []
-        record_class = get_agency_class(agency)
+        record_class = get_agent_class(agent)
         if verbose:
             click.echo(
-                'Get pids from {agency} ...'.format(agency=agency)
+                'Get pids from {agent} ...'.format(agent=agent)
             )
         progress = progressbar(
             items=record_class.get_all_pids(),
@@ -350,12 +298,12 @@ class ViafRecord(AuthRecord):
             pids_db[pid] = 1
         if verbose:
             click.echo(
-                'Get pids from viaf with {agency} ...'.format(agency=agency)
+                'Get pids from viaf with {agent} ...'.format(agent=agent)
             )
-        agency_pid_name = '{agency}_pid'.format(agency=agency)
+        agent_pid_name = '{agent}_pid'.format(agent=agent)
         query = ViafSearch().filter('bool', should=[
-            Q('exists', field=agency_pid_name)
-        ]).source(['pid', agency_pid_name])
+            Q('exists', field=agent_pid_name)
+        ]).source(['pid', agent_pid_name])
         progress = progressbar(
             items=query.scan(),
             length=query.count(),
@@ -363,16 +311,16 @@ class ViafRecord(AuthRecord):
         )
         for hit in progress:
             viaf_pid = hit.pid
-            agency_pid = hit.to_dict().get(agency_pid_name)
-            if pids_db.get(agency_pid):
-                pids_db.pop(agency_pid)
+            agent_pid = hit.to_dict().get(agent_pid_name)
+            if pids_db.get(agent_pid):
+                pids_db.pop(agent_pid)
             else:
                 pids_viaf.append(viaf_pid)
         pids_db = [v for v in pids_db]
         return pids_db, pids_viaf
 
 
-class ViafIndexer(AuthRecordIndexer):
+class ViafIndexer(ContributionIndexer):
     """ViafIndexer."""
 
     record_cls = ViafRecord

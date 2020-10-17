@@ -124,15 +124,15 @@ def metadata_csv_line(record, record_uuid, date):
     return metadata_line + os.linesep
 
 
-def pidstore_csv_line(agency, agency_pid, record_uuid, date):
+def pidstore_csv_line(agent, agent_pid, record_uuid, date):
     """Build CSV pidstore table line."""
     created_date = updated_date = date
     sep = '\t'
     pidstore_data = [
         created_date,
         updated_date,
-        agency,
-        agency_pid,
+        agent,
+        agent_pid,
         'R',
         'rec',
         record_uuid,
@@ -141,13 +141,13 @@ def pidstore_csv_line(agency, agency_pid, record_uuid, date):
     return pidstore_line + os.linesep
 
 
-def add_agency_to_json(mef_record, agency, agency_pid):
-    """Add agency ref to mef record."""
+def add_agent_to_json(mef_record, agent, agent_pid):
+    """Add agent ref to mef record."""
     from .mef.api import MefRecord
     ref_string = MefRecord.build_ref_string(
-        agency=agency, agency_pid=agency_pid
+        agent=agent, agent_pid=agent_pid
     )
-    mef_record[agency] = {'$ref': ref_string}
+    mef_record[agent] = {'$ref': ref_string}
 
 
 def raw_connection():
@@ -201,16 +201,16 @@ def db_copy_to(filehandle, table, columns):
     connection.close()
 
 
-def bulk_index(agency, uuids, verbose=False):
+def bulk_index(agent, uuids, verbose=False):
     """Bulk index records."""
     if verbose:
         click.echo(' add to index: {count}'.format(count=len(uuids)))
     retry = True
     minutes = 1
-    from .api import AuthRecordIndexer
+    from .api import ContributionIndexer
     while retry:
         try:
-            AuthRecordIndexer().bulk_index(uuids, doc_type=agency)
+            ContributionIndexer().bulk_index(uuids, doc_type=agent)
             retry = False
         except Exception as exc:
             msg = 'Bulk Index Error: retry in {minutes} min {exc}'.format(
@@ -225,10 +225,9 @@ def bulk_index(agency, uuids, verbose=False):
             minutes *= 2
 
 
-def bulk_load_agency(agency, data, table, columns,
-                     bulk_count=0, verbose=False,
-                     reindex=False):
-    """Bulk load agency data to table."""
+def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
+                    reindex=False):
+    """Bulk load agent data to table."""
     if bulk_count <= 0:
         bulk_count = current_app.config.get('BULK_CHUNK_COUNT', 100000)
     count = 0
@@ -252,8 +251,8 @@ def bulk_load_agency(agency, data, table, columns,
                     diff_time = end_time - start_time
                     start_time = end_time
                     click.echo(
-                        '{agency} copy from file: {count} {time}s'.format(
-                            agency=agency,
+                        '{agent} copy from file: {count} {time}s'.format(
+                            agent=agent,
                             count=count,
                             time=diff_time.seconds
                         ),
@@ -263,7 +262,7 @@ def bulk_load_agency(agency, data, table, columns,
                 buffer.close()
 
                 if index >= 0 and reindex:
-                    bulk_index(agency=agency, uuids=buffer_uuid,
+                    bulk_index(agent=agent, uuids=buffer_uuid,
                                verbose=verbose)
                     buffer_uuid.clear()
                 else:
@@ -279,8 +278,8 @@ def bulk_load_agency(agency, data, table, columns,
             end_time = datetime.now()
             diff_time = end_time - start_time
             click.echo(
-                '{agency} copy from file: {count} {time}s'.format(
-                    agency=agency,
+                '{agent} copy from file: {count} {time}s'.format(
+                    agent=agent,
                     count=count,
                     time=diff_time.seconds
                 ),
@@ -291,7 +290,7 @@ def bulk_load_agency(agency, data, table, columns,
         db_copy_from(buffer=buffer, table=table, columns=columns)
         buffer.close()
         if index >= 0 and reindex:
-            bulk_index(agency=agency, uuids=buffer_uuid, verbose=verbose)
+            bulk_index(agent=agent, uuids=buffer_uuid, verbose=verbose)
             buffer_uuid.clear()
         else:
             if verbose:
@@ -301,10 +300,10 @@ def bulk_load_agency(agency, data, table, columns,
     gc.collect()
 
 
-def bulk_load_agency_metadata(agency, metadata, bulk_count=0,
-                              verbose=True, reindex=False):
-    """Bulk load agency data to metadata table."""
-    table = '{agency}_metadata'.format(agency=agency)
+def bulk_load_agent_metadata(agent, metadata, bulk_count=0, verbose=True,
+                             reindex=False):
+    """Bulk load agent data to metadata table."""
+    table = '{agent}_metadata'.format(agent=agent)
     columns = (
         'created',
         'updated',
@@ -312,8 +311,8 @@ def bulk_load_agency_metadata(agency, metadata, bulk_count=0,
         'json',
         'version_id'
     )
-    bulk_load_agency(
-        agency=agency,
+    bulk_load_agent(
+        agent=agent,
         data=metadata,
         table=table,
         columns=columns,
@@ -323,9 +322,9 @@ def bulk_load_agency_metadata(agency, metadata, bulk_count=0,
     )
 
 
-def bulk_load_agency_pids(agency, pidstore, bulk_count=0,
-                          verbose=True, reindex=False):
-    """Bulk load agency data to metadata table."""
+def bulk_load_agent_pids(agent, pidstore, bulk_count=0, verbose=True,
+                         reindex=False):
+    """Bulk load agent data to metadata table."""
     table = 'pidstore_pid'
     columns = (
         'created',
@@ -336,8 +335,8 @@ def bulk_load_agency_pids(agency, pidstore, bulk_count=0,
         'object_type',
         'object_uuid',
     )
-    bulk_load_agency(
-        agency=agency,
+    bulk_load_agent(
+        agent=agent,
         data=pidstore,
         table=table,
         columns=columns,
@@ -347,13 +346,12 @@ def bulk_load_agency_pids(agency, pidstore, bulk_count=0,
     )
 
 
-def bulk_load_agency_ids(agency, ids, bulk_count=0,
-                         verbose=True, reindex=False):
-    """Bulk load agency data to id table."""
-    table = '{agency}_id'.format(agency=agency)
+def bulk_load_agent_ids(agent, ids, bulk_count=0, verbose=True, reindex=False):
+    """Bulk load agent data to id table."""
+    table = '{agent}_id'.format(agent=agent)
     columns = ('recid', )
-    bulk_load_agency(
-        agency=agency,
+    bulk_load_agent(
+        agent=agent,
         data=ids,
         table=table,
         columns=columns,
@@ -363,8 +361,8 @@ def bulk_load_agency_ids(agency, ids, bulk_count=0,
     )
 
 
-def bulk_save_agency(agency, file_name, table, columns, verbose=False):
-    """Bulk save agency data to file."""
+def bulk_save_agent(agent, file_name, table, columns, verbose=False):
+    """Bulk save agent data to file."""
     with open(file_name, 'w', encoding='utf-8') as output_file:
         db_copy_to(
             filehandle=output_file,
@@ -373,14 +371,14 @@ def bulk_save_agency(agency, file_name, table, columns, verbose=False):
         )
 
 
-def bulk_save_agency_metadata(agency, file_name, verbose=False):
-    """Bulk save agency data from metadata table."""
+def bulk_save_agent_metadata(agent, file_name, verbose=False):
+    """Bulk save agent data from metadata table."""
     if verbose:
-        click.echo('{agency} save to file: {filename}'.format(
-            agency=agency,
+        click.echo('{agent} save to file: {filename}'.format(
+            agent=agent,
             filename=file_name
         ))
-    table = '{agency}_metadata'.format(agency=agency)
+    table = '{agent}_metadata'.format(agent=agent)
     columns = (
         'created',
         'updated',
@@ -388,8 +386,8 @@ def bulk_save_agency_metadata(agency, file_name, verbose=False):
         'json',
         'version_id'
     )
-    bulk_save_agency(
-        agency=agency,
+    bulk_save_agent(
+        agent=agent,
         file_name=file_name,
         table=table,
         columns=columns,
@@ -397,11 +395,11 @@ def bulk_save_agency_metadata(agency, file_name, verbose=False):
     )
 
 
-def bulk_save_agency_pids(agency, file_name, verbose=False):
-    """Bulk save agency data from pids table."""
+def bulk_save_agent_pids(agent, file_name, verbose=False):
+    """Bulk save agent data from pids table."""
     if verbose:
-        click.echo('{agency} save to file: {filename}'.format(
-            agency=agency,
+        click.echo('{agent} save to file: {filename}'.format(
+            agent=agent,
             filename=file_name
         ))
     table = 'pidstore_pid'
@@ -415,8 +413,8 @@ def bulk_save_agency_pids(agency, file_name, verbose=False):
         'object_uuid',
     )
     tmp_file_name = file_name + '_tmp'
-    bulk_save_agency(
-        agency=agency,
+    bulk_save_agent(
+        agent=agent,
         file_name=tmp_file_name,
         table=table,
         columns=columns,
@@ -425,21 +423,21 @@ def bulk_save_agency_pids(agency, file_name, verbose=False):
     # clean pid file
     with open(tmp_file_name, 'r') as file_in:
         with open(file_name, "w") as file_out:
-            file_out.writelines(line for line in file_in if agency in line)
+            file_out.writelines(line for line in file_in if agent in line)
     os.remove(tmp_file_name)
 
 
-def bulk_save_agency_ids(agency, file_name, verbose=False):
-    """Bulk save agency data from id table."""
+def bulk_save_agent_ids(agent, file_name, verbose=False):
+    """Bulk save agent data from id table."""
     if verbose:
-        click.echo('{agency} save to file: {filename}'.format(
-            agency=agency,
+        click.echo('{agent} save to file: {filename}'.format(
+            agent=agent,
             filename=file_name
         ))
-    table = '{agency}_id'.format(agency=agency)
+    table = '{agent}_id'.format(agent=agent)
     columns = ('recid', )
-    bulk_save_agency(
-        agency=agency,
+    bulk_save_agent(
+        agent=agent,
         file_name=file_name,
         table=table,
         columns=columns,
@@ -468,95 +466,95 @@ def add_md5(record):
     return record
 
 
-def add_schema(record, agency):
+def add_schema(record, agent):
     """Add the $schema to the record."""
     with current_app.app_context():
         schemas = current_app.config.get('RECORDS_JSON_SCHEMA')
-        if agency in schemas:
+        if agent in schemas:
             record['$schema'] = '{base_url}{endpoint}{schema}'.format(
                 base_url=current_app.config.get('RERO_MEF_APP_BASE_URL'),
                 endpoint=current_app.config.get('JSONSCHEMAS_ENDPOINT'),
-                schema=schemas[agency]
+                schema=schemas[agent]
             )
     return record
 
 
-def create_agency_csv_file(input_file, agency, pidstore, metadata):
-    """Create agency csv file to load."""
-    if agency == 'mef':
-        agency_id_file = open('{agency}_id'.format(agency=agency),
-                              'w', encoding='utf-8')
+def create_agent_csv_file(input_file, agent, pidstore, metadata):
+    """Create agent csv file to load."""
+    if agent == 'mef':
+        agent_id_file = open('{agent}_id'.format(agent=agent),
+                             'w', encoding='utf-8')
     with \
-            open(input_file, 'r', encoding='utf-8') as agency_file, \
-            open(metadata, 'w', encoding='utf-8') as agency_metadata_file, \
-            open(pidstore, 'w', encoding='utf-8') as agency_pids_file:
+            open(input_file, 'r', encoding='utf-8') as agent_file, \
+            open(metadata, 'w', encoding='utf-8') as agent_metadata_file, \
+            open(pidstore, 'w', encoding='utf-8') as agent_pids_file:
 
-        for record in ijson.items(agency_file, "item"):
-            if agency == 'viaf':
+        for record in ijson.items(agent_file, "item"):
+            if agent == 'viaf':
                 record['pid'] = record['viaf_pid']
 
             ordered_record = add_md5(record)
-            add_schema(ordered_record, agency)
+            add_schema(ordered_record, agent)
 
             record_uuid = str(uuid4())
             date = str(datetime.utcnow())
 
-            agency_metadata_file.write(
+            agent_metadata_file.write(
                 metadata_csv_line(ordered_record, record_uuid, date)
             )
 
-            agency_pids_file.write(
-                pidstore_csv_line(agency, record['pid'], record_uuid, date)
+            agent_pids_file.write(
+                pidstore_csv_line(agent, record['pid'], record_uuid, date)
             )
-            if agency == 'mef':
-                agency_id_file.write(record['pid'] + os.linesep)
+            if agent == 'mef':
+                agent_id_file.write(record['pid'] + os.linesep)
 
 
-def get_agency_classes(without_mef_viaf=True):
-    """Get agency classes from config."""
-    agencies = {}
+def get_agent_classes(without_mef_viaf=True):
+    """Get agent classes from config."""
+    agents = {}
     endpoints = current_app.config.get('RECORDS_REST_ENDPOINTS', {})
     if without_mef_viaf:
         endpoints.pop('mef', None)
         endpoints.pop('viaf', None)
-    for agency in endpoints:
+    for agent in endpoints:
         record_class = obj_or_import_string(
-            endpoints[agency].get('record_class')
+            endpoints[agent].get('record_class')
         )
         if record_class:
-            agencies[agency] = record_class
-    return agencies
+            agents[agent] = record_class
+    return agents
 
 
-def get_agency_class(agency):
-    """Get agency class from config."""
-    agency_endpoint = current_app.config.get(
+def get_agent_class(agent):
+    """Get agent class from config."""
+    agent_endpoint = current_app.config.get(
         'RECORDS_REST_ENDPOINTS', {}
-    ).get(agency, {})
+    ).get(agent, {})
     record_class = obj_or_import_string(
-        agency_endpoint.get('record_class')
+        agent_endpoint.get('record_class')
     )
     return record_class
 
 
-def get_agency_search_class(agency):
-    """Get agency search class from config."""
-    agency_endpoint = current_app.config.get(
+def get_agent_search_class(agent):
+    """Get agent search class from config."""
+    agent_endpoint = current_app.config.get(
         'RECORDS_REST_ENDPOINTS', {}
-    ).get(agency, {})
+    ).get(agent, {})
     search_class = obj_or_import_string(
-        agency_endpoint.get('search_class')
+        agent_endpoint.get('search_class')
     )
     return search_class
 
 
 def write_link_json(
-    agency,
+    agent,
     pidstore_file,
     metadata_file,
     viaf_pid,
     corresponding_data,
-    agency_pid
+    agent_pid
 ):
     """Write a json record into file."""
     json_data = {}
@@ -574,12 +572,12 @@ def write_link_json(
     write_to_file = False
     json_dump = json_data
 
-    agency_pid = viaf_pid
+    agent_pid = viaf_pid
     add_schema(json_dump, 'viaf')
-    json_dump['pid'] = agency_pid
+    json_dump['pid'] = agent_pid
     del(json_dump['viaf_pid'])
     # only save viaf data with used pids
-    if agency == 'viaf':
+    if agent == 'viaf':
         write_to_file = write_to_file_viaf
     else:
         write_to_file = True
@@ -588,7 +586,7 @@ def write_link_json(
         record_uuid = str(uuid4())
         date = str(datetime.utcnow())
         pidstore_file.write(
-            pidstore_csv_line(agency, agency_pid, record_uuid, date)
+            pidstore_csv_line(agent, agent_pid, record_uuid, date)
         )
         metadata_file.write(metadata_csv_line(json_dump, record_uuid, date))
     return write_to_file
@@ -606,19 +604,19 @@ def create_mef_files(
     if verbose:
         click.echo('Start ***')
     pids = {}
-    agency_classes = get_agency_classes()
-    viaf_agency_pid_names = {}
-    for agency in agency_classes:
-        viaf_agency_pid_names['{agency}_pid'.format(agency=agency)] = agency
+    agent_classes = get_agent_classes()
+    viaf_agent_pid_names = {}
+    for agent in agent_classes:
+        viaf_agent_pid_names['{agent}_pid'.format(agent=agent)] = agent
         file_name = os.path.join(
             input_directory,
-            '{agency}_pidstore.csv'.format(agency=agency)
+            '{agent}_pidstore.csv'.format(agent=agent)
         )
         if os.path.exists(file_name):
             if verbose:
                 click.echo('  Read pids from: {name}'.format(name=file_name))
             length = number_records_in_file(file_name, 'csv')
-            pids[agency] = {}
+            pids[agent] = {}
             progress = progressbar(
                 items=open(file_name, 'r'),
                 length=length,
@@ -626,7 +624,7 @@ def create_mef_files(
             )
             for line in progress:
                 pid = line.split('\t')[3]
-                pids[agency][pid] = 1
+                pids[agent][pid] = 1
 
     mef_pid = 1
     corresponding_data = {}
@@ -662,18 +660,18 @@ def create_mef_files(
                         'pid': str(mef_pid),
                         '$schema': schema
                     }
-                    for pid_name, agency in viaf_agency_pid_names.items():
-                        agency_pid = viaf_data.get(pid_name)
-                        if agency_pid:
-                            if pids.get(agency, {}).get(agency_pid):
+                    for pid_name, agent in viaf_agent_pid_names.items():
+                        agent_pid = viaf_data.get(pid_name)
+                        if agent_pid:
+                            if pids.get(agent, {}).get(agent_pid):
                                 corresponding_data['viaf_pid'] = viaf_pid
-                                pids[agency].pop(agency_pid)
-                                url = '{base_url}/api/{agency}/{pid}'.format(
+                                pids[agent].pop(agent_pid)
+                                url = '{base_url}/api/{agent}/{pid}'.format(
                                     base_url=base_url,
-                                    agency=agency,
-                                    pid=agency_pid
+                                    agent=agent,
+                                    pid=agent_pid
                                 )
-                                corresponding_data[agency] = {'$ref': url}
+                                corresponding_data[agent] = {'$ref': url}
                     if corresponding_data.get('viaf_pid'):
                         # Write MEF with VIAF to file
                         mef_uuid = str(uuid4())
@@ -690,8 +688,8 @@ def create_mef_files(
                         mef_pid += 1
                 # Create MEF without VIAF
                 length = 0
-                for agency in pids:
-                    length += len(pids[agency])
+                for agent in pids:
+                    length += len(pids[agent])
                 if verbose:
                     click.echo('  Create MEF without VIAF pid: {count}'.format(
                         count=length
@@ -701,17 +699,17 @@ def create_mef_files(
                     length=length,
                     verbose=verbose
                 )
-                for agency in progress:
-                    for pid in pids[agency]:
-                        url = '{base_url}/api/{agency}/{pid}'.format(
+                for agent in progress:
+                    for pid in pids[agent]:
+                        url = '{base_url}/api/{agent}/{pid}'.format(
                             base_url=base_url,
-                            agency=agency,
+                            agent=agent,
                             pid=pid
                         )
                         corresponding_data = {
                             'pid': str(mef_pid),
                             '$schema': schema,
-                            agency: {'$ref': url}
+                            agent: {'$ref': url}
                         }
                         mef_uuid = str(uuid4())
                         date = str(datetime.utcnow())
@@ -730,7 +728,7 @@ def create_mef_files(
 
 
 def create_viaf_files(
-    agency,
+    agent,
     viaf_input_file,
     viaf_pidstore_file_name,
     viaf_metadata_file_name,
@@ -740,7 +738,7 @@ def create_viaf_files(
     if verbose:
         click.echo('Start ***')
 
-    agency_pid = 0
+    agent_pid = 0
     corresponding_data = {}
     count = 0
     with open(
@@ -763,22 +761,22 @@ def create_viaf_files(
                     assert len(fields) == 2
                     viaf_pid = fields[0].split('/')[-1]
                     if viaf_pid != previous_viaf_pid:
-                        agency_pid += 1
+                        agent_pid += 1
                         # if verbose:
                         #     click.echo(
                         #         '{pid}: {viaf_pid} {corresponding}'.format(
-                        #             pid=agency_pid,
+                        #             pid=agent_pid,
                         #             viaf_pid=previous_viaf_pid,
                         #             corresponding=corresponding_data
                         #         )
                         #     )
                         written = write_link_json(
-                            agency,
+                            agent,
                             viaf_pidstore,
                             viaf_metadata,
                             previous_viaf_pid,
                             corresponding_data,
-                            str(agency_pid)
+                            str(agent_pid)
                         )
                         if written:
                             count += 1
@@ -788,22 +786,22 @@ def create_viaf_files(
                     if len(corresponding) == 2:
                         corresponding_data[corresponding[0]] = corresponding[1]
                 # save the last record
-                agency_pid += 1
+                agent_pid += 1
                 if verbose:
                     click.echo(
                         '{pid}: {viaf_pid} {corresponding}'.format(
-                            pid=agency_pid,
+                            pid=agent_pid,
                             viaf_pid=previous_viaf_pid,
                             corresponding=corresponding_data
                         )
                     )
                 written = write_link_json(
-                    agency,
+                    agent,
                     viaf_pidstore,
                     viaf_metadata,
                     previous_viaf_pid,
                     corresponding_data,
-                    str(agency_pid)
+                    str(agent_pid)
                 )
                 if written:
                     count += 1
@@ -824,21 +822,21 @@ def append_fixtures_new_identifiers(identifier, pids, pid_type):
         identifier._set_sequence(max_pid)
 
 
-def get_agencies_endpoints(without_mef_viaf=True):
-    """Get all agencies from config."""
-    agencies = deepcopy(current_app.config.get('RECORDS_REST_ENDPOINTS', {}))
+def get_agents_endpoints(without_mef_viaf=True):
+    """Get all agents from config."""
+    agents = deepcopy(current_app.config.get('RECORDS_REST_ENDPOINTS', {}))
     if without_mef_viaf:
-        agencies.pop('mef', None)
-        agencies.pop('viaf', None)
-    return agencies
+        agents.pop('mef', None)
+        agents.pop('viaf', None)
+    return agents
 
 
-def get_diff_db_es_pids(agency, verbose=False):
+def get_diff_db_es_pids(agent, verbose=False):
     """Get differences between DB and ES pids."""
     pids_db = {}
     pids_es = {}
     pids_es_double = []
-    record_class = get_agency_class(agency)
+    record_class = get_agent_class(agent)
     count = record_class.count()
     if verbose:
         click.echo('Get pids from DB: {count}'.format(count=count))
@@ -849,7 +847,7 @@ def get_diff_db_es_pids(agency, verbose=False):
     )
     for pid in progress:
         pids_db[pid] = 1
-    search_class = get_agency_search_class(agency)
+    search_class = get_agent_search_class(agent)
     count = search_class().source('pid').count()
     if verbose:
         click.echo('Get pids from ES: {count}'.format(count=count))

@@ -24,127 +24,123 @@
 
 """Test contributions api."""
 
-from invenio_search import current_search
-
 from rero_mef.contributions.gnd.api import GndRecord
 from rero_mef.contributions.idref.api import IdrefRecord
-from rero_mef.contributions.mef.api import MefRecord
 from rero_mef.contributions.rero.api import ReroRecord
 from rero_mef.contributions.viaf.api import ViafRecord
 
 
-def update_indexes(agency):
-    index = '{agency}-{agency}-contribution-v0.0.1'.format(
-        agency=agency
-    )
-    current_search.flush_and_refresh(index=index)
-
-
-def test_create_viaf_record(app, viaf_record):
-    """Test create Viaf record."""
-    returned_record, action, dummy = ViafRecord.create_or_update(
+def test_create_agent_record_with_viaf_links(
+        app, viaf_record, gnd_record, rero_record, idref_record):
+    """Test create agent record with viaf links."""
+    returned_record, action = ViafRecord.create_or_update(
         viaf_record, dbcommit=True, reindex=True
     )
-    update_indexes('viaf')
+    ViafRecord.update_indexes()
     assert action.name == 'CREATE'
     assert returned_record['pid'] == '66739143'
     assert returned_record['gnd_pid'] == '12391664X'
     assert returned_record['rero_pid'] == 'A023655346'
     assert returned_record['idref_pid'] == '069774331'
 
+    record, action, m_record, m_action, v_record, online = \
+        GndRecord.create_or_update_agent_mef_viaf(
+            data=gnd_record,
+            dbcommit=True,
+            reindex=True,
+            online=False
+        )
+    assert action.name == 'CREATE'
+    assert record['pid'] == '12391664X'
+    assert m_action.name == 'CREATE'
+    assert m_record == {
+        '$schema':
+            'https://mef.rero.ch/schemas/mef/mef-contribution-v0.0.1.json',
+        'gnd': {'$ref': 'https://mef.rero.ch/api/gnd/12391664X'},
+        'pid': '1',
+        'viaf_pid': '66739143'
+    }
 
-def test_create_agency_record_with_viaf_links(
+    record, action, m_record, m_action, v_record, online = \
+        ReroRecord.create_or_update_agent_mef_viaf(
+            data=rero_record,
+            dbcommit=True,
+            reindex=True,
+            online=False
+        )
+    assert action.name == 'CREATE'
+    assert record['pid'] == 'A023655346'
+    assert m_action.name == 'UPDATE'
+    assert m_record == {
+        '$schema':
+            'https://mef.rero.ch/schemas/mef/mef-contribution-v0.0.1.json',
+        'gnd': {'$ref': 'https://mef.rero.ch/api/gnd/12391664X'},
+        'pid': '1',
+        'rero': {'$ref': 'https://mef.rero.ch/api/rero/A023655346'},
+        'viaf_pid': '66739143'
+    }
+
+    record, action, m_record, m_action, v_record, online = \
+        IdrefRecord.create_or_update_agent_mef_viaf(
+            data=idref_record,
+            dbcommit=True,
+            reindex=True,
+            online=False
+        )
+    assert action.name == 'CREATE'
+    assert record['pid'] == '069774331'
+    assert m_action.name == 'UPDATE'
+    assert m_record == {
+        '$schema':
+            'https://mef.rero.ch/schemas/mef/mef-contribution-v0.0.1.json',
+        'gnd': {'$ref': 'https://mef.rero.ch/api/gnd/12391664X'},
+        'idref': {'$ref': 'https://mef.rero.ch/api/idref/069774331'},
+        'pid': '1',
+        'rero': {'$ref': 'https://mef.rero.ch/api/rero/A023655346'},
+        'viaf_pid': '66739143'
+    }
+
+
+def test_update_agent_record_with_viaf_links(
         app, viaf_record, gnd_record, rero_record, idref_record):
-    """Test create agency record with viaf links."""
-    returned_record, action, mef_action = GndRecord.create_or_update(
+    """Test create agent record with viaf links."""
+    returned_record, action = GndRecord.create_or_update(
         gnd_record, dbcommit=True, reindex=True
     )
-    update_indexes('gnd')
-    update_indexes('mef')
-    assert action.name == 'CREATE'
-    assert mef_action.name == 'CREATE'
+    assert action.name == 'UPDATE'
     assert returned_record['pid'] == '12391664X'
 
-    returned_record, action, mef_action = ReroRecord.create_or_update(
+    returned_record, action = ReroRecord.create_or_update(
         rero_record, dbcommit=True, reindex=True
     )
-    update_indexes('rero')
-    update_indexes('mef')
-    assert action.name == 'CREATE'
-    assert mef_action.name == 'UPDATE'
+    assert action.name == 'UPDATE'
     assert returned_record['pid'] == 'A023655346'
 
-    returned_record, action, mef_action = IdrefRecord.create_or_update(
+    returned_record, action = IdrefRecord.create_or_update(
         idref_record, dbcommit=True, reindex=True
     )
-    update_indexes('idref')
-    update_indexes('mef')
-    assert action.name == 'CREATE'
-    assert mef_action.name == 'UPDATE'
+    assert action.name == 'UPDATE'
     assert returned_record['pid'] == '069774331'
 
 
-def test_update_agency_record_with_viaf_links(
+def test_uptodate_agent_record_with_viaf_links_md5(
         app, viaf_record, gnd_record, rero_record, idref_record):
-    """Test create agency record with viaf links."""
-    returned_record, action, mef_action = GndRecord.create_or_update(
-        gnd_record, dbcommit=True, reindex=True
-    )
-    update_indexes('gnd')
-    update_indexes('mef')
-    assert action.name == 'UPDATE'
-    assert mef_action.name == 'UPDATE'
-    assert returned_record['pid'] == '12391664X'
-
-    returned_record, action, mef_action = ReroRecord.create_or_update(
-        rero_record, dbcommit=True, reindex=True
-    )
-    update_indexes('rero')
-    update_indexes('mef')
-    assert action.name == 'UPDATE'
-    assert mef_action.name == 'UPDATE'
-    assert returned_record['pid'] == 'A023655346'
-
-    returned_record, action, mef_action = IdrefRecord.create_or_update(
-        idref_record, dbcommit=True, reindex=True
-    )
-    update_indexes('idref')
-    update_indexes('mef')
-    assert action.name == 'UPDATE'
-    assert mef_action.name == 'UPDATE'
-    assert returned_record['pid'] == '069774331'
-
-
-def test_uptodate_agency_record_with_viaf_links_md5(
-        app, viaf_record, gnd_record, rero_record, idref_record):
-    """Test create agency record with viaf links."""
-    returned_record, action, mef_action = GndRecord.create_or_update(
+    """Test create agent record with viaf links."""
+    returned_record, action = GndRecord.create_or_update(
         gnd_record, dbcommit=True, reindex=True, test_md5=True
     )
     assert action.name == 'UPTODATE'
-    assert mef_action.name == 'UPTODATE'
     assert returned_record['pid'] == '12391664X'
 
-    returned_record, action, mef_action = ReroRecord.create_or_update(
+    returned_record, action = ReroRecord.create_or_update(
         rero_record, dbcommit=True, reindex=True, test_md5=True
     )
     assert action.name == 'UPTODATE'
-    assert mef_action.name == 'UPTODATE'
     assert returned_record['pid'] == 'A023655346'
 
-    returned_record, action, mef_action = IdrefRecord.create_or_update(
+    returned_record, action = IdrefRecord.create_or_update(
         idref_record, dbcommit=True, reindex=True,
         test_md5=True
     )
     assert action.name == 'UPTODATE'
-    assert mef_action.name == 'UPTODATE'
     assert returned_record['pid'] == '069774331'
-
-
-def test_mef_record(app, viaf_record):
-    """Test MEF record."""
-    viaf_pid = viaf_record['pid']
-    mef_rec = MefRecord.get_mef_by_viaf_pid(viaf_pid=viaf_pid)
-    assert mef_rec.get('gnd')
-    assert mef_rec.get('rero')
-    assert mef_rec.get('idref')

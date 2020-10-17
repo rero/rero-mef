@@ -26,7 +26,7 @@
 
 from celery import shared_task
 
-from .contributions.api import AuthRecordIndexer
+from .contributions.api import ContributionIndexer
 from .contributions.utils import get_record_class
 
 
@@ -39,7 +39,7 @@ def process_bulk_queue(version_type=None, es_bulk_kwargs=None):
         :func:`elasticsearch:elasticsearch.helpers.bulk`.
     Note: You can start multiple versions of this task.
     """
-    AuthRecordIndexer(version_type=version_type).process_bulk_queue(
+    ContributionIndexer(version_type=version_type).process_bulk_queue(
         es_bulk_kwargs=es_bulk_kwargs)
 
 
@@ -49,7 +49,7 @@ def index_record(record_uuid):
 
     :param record_uuid: The record UUID.
     """
-    AuthRecordIndexer().index_by_id(record_uuid)
+    ContributionIndexer().index_by_id(record_uuid)
 
 
 @shared_task(ignore_result=True)
@@ -58,7 +58,7 @@ def delete_record(record_uuid):
 
     :param record_uuid: The record UUID.
     """
-    AuthRecordIndexer().delete_by_id(record_uuid)
+    ContributionIndexer().delete_by_id(record_uuid)
 
 
 @shared_task(ignore_result=True)

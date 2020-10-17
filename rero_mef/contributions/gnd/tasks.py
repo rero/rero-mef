@@ -29,7 +29,7 @@ from flask import current_app
 from sickle import Sickle
 
 from .api import GndRecord
-from ..marctojson.do_gnd_auth_person import Transformation
+from ..marctojson.do_gnd_contribution import Transformation
 from ...utils import MyOAIItemIterator, oai_get_record, \
     oai_process_records_from_dates, oai_save_records_from_dates
 
@@ -92,8 +92,7 @@ def save_records_from_dates(file_name, from_date=None, until_date=None,
 
 
 @shared_task
-def gnd_get_record(id, dbcommit=False, reindex=False, test_md5=False,
-                   verbose=False, debug=False, **kwargs):
+def gnd_get_record(id, verbose=False, debug=False):
     """Get a record from GND OAI repo."""
     return oai_get_record(
         id=id,
@@ -102,10 +101,6 @@ def gnd_get_record(id, dbcommit=False, reindex=False, test_md5=False,
         record_cls=GndRecord,
         access_token=current_app.config.get('RERO_OAI_GND_TOKEN'),
         identifier='oai:dnb.de/authorities/',
-        dbcommit=dbcommit,
-        reindex=reindex,
-        test_md5=test_md5,
         verbose=verbose,
-        debug=debug,
-        kwargs=kwargs
+        debug=debug
     )

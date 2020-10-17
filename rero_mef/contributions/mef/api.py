@@ -37,11 +37,10 @@ from invenio_search.api import RecordsSearch
 
 from .fetchers import mef_id_fetcher
 from .minters import mef_id_minter
-from .models import MefAction, MefMetadata
+from .models import MefMetadata
 from .providers import MefProvider
-from ..api import AuthRecord, AuthRecordIndexer
-from ..utils import add_schema, get_agencies_endpoints, get_agency_classes, \
-    progressbar
+from ..api import Action, ContributionIndexer, ContributionRecord
+from ..utils import get_agent_classes, get_agents_endpoints, progressbar
 
 
 class MefSearch(RecordsSearch):
@@ -58,7 +57,7 @@ class MefSearch(RecordsSearch):
         default_filter = None
 
 
-class MefRecord(AuthRecord):
+class MefRecord(ContributionRecord):
     """Mef Authority class."""
 
     minter = mef_id_minter
@@ -67,23 +66,22 @@ class MefRecord(AuthRecord):
     model_cls = MefMetadata
 
     @classmethod
-    def build_ref_string(cls, agency_pid, agency):
-        """Build url for agency's api."""
+    def build_ref_string(cls, agent_pid, agent):
+        """Build url for agent's api."""
         with current_app.app_context():
-            ref_string = '{url}/api/{agency}/{pid}'.format(
+            ref_string = '{url}/api/{agent}/{pid}'.format(
                 url=current_app.config.get('RERO_MEF_APP_BASE_URL'),
-                agency=agency,
-                pid=agency_pid
+                agent=agent,
+                pid=agent_pid
             )
             return ref_string
 
     @classmethod
-    def get_mef_by_agency_pid(cls, agency_pid, agency, pid_only=False):
-        """Get mef record by agency pid value."""
-        key = '{agency}.pid'.format(agency=agency)
-        search = MefSearch()
-        result = search.query(
-            'match', **{key: agency_pid}).source(['pid']).scan()
+    def get_mef_by_agent_pid(cls, agent_pid, agent, pid_only=False):
+        """Get mef record by agent pid value."""
+        key = '{agent}.pid'.format(agent=agent)
+        result = MefSearch().query(
+            'match', **{key: agent_pid}).source(['pid']).scan()
         try:
             mef_pid = next(result).pid
             if pid_only:
@@ -94,10 +92,10 @@ class MefRecord(AuthRecord):
             return None
 
     @classmethod
-    def get_all_mef_pids_by_agency(cls, agency):
-        """Get all mef pids for agency."""
-        key = '{agency}{identifier}'.format(
-            agency=agency, identifier='.pid')
+    def get_all_mef_pids_by_agent(cls, agent):
+        """Get all mef pids for agent."""
+        key = '{agent}{identifier}'.format(
+            agent=agent, identifier='.pid')
         search = MefSearch()
         results = search.filter(
             'exists',
@@ -105,12 +103,12 @@ class MefRecord(AuthRecord):
         ).source(['pid', key]).scan()
         for result in results:
             result_dict = result.to_dict()
-            yield result_dict.get(agency, {}).get('pid'),\
+            yield result_dict.get(agent, {}).get('pid'),\
                 result_dict.get('pid')
 
     @classmethod
     def get_mef_by_viaf_pid(cls, viaf_pid):
-        """Get mef record by agency pid value."""
+        """Get mef record by agent pid value."""
         search = MefSearch()
         result = search.filter(
             'term', viaf_pid=viaf_pid).source(['pid']).scan()
@@ -128,88 +126,29 @@ class MefRecord(AuthRecord):
             mef_data = {}
         if viaf_record and viaf_record.get('pid'):
             mef_data['viaf_pid'] = viaf_record.get('pid')
-        for agency, agency_data in get_agencies_endpoints().items():
-            mef_data.pop(agency, None)
-            pid_name = '{agency}_pid'.format(agency=agency)
+        for agent, agent_data in get_agents_endpoints().items():
+            mef_data.pop(agent, None)
+            pid_name = '{agent}_pid'.format(agent=agent)
             pid_value = viaf_record.get(pid_name)
             if pid_value:
-                agency_class = obj_or_import_string(
-                    agency_data.get('record_class')
+                agent_class = obj_or_import_string(
+                    agent_data.get('record_class')
                 )
                 try:
-                    record = agency_class.get_record_by_pid(pid_value)
+                    record = agent_class.get_record_by_pid(pid_value)
                     if record and not record.get('deleted'):
                         ref_string = cls.build_ref_string(
-                            agency=agency, agency_pid=pid_value
+                            agent=agent, agent_pid=pid_value
                         )
-                        mef_data[agency] = {'$ref': ref_string}
+                        mef_data[agent] = {'$ref': ref_string}
                         has_refs = True
                 except PIDDoesNotExistError:
                     pass
         return mef_data, has_refs
 
     @classmethod
-    def create_or_update(cls, viaf_record, action=None, agency=None,
-                         agency_pid=None, delete_pid=True, dbcommit=False,
-                         reindex=False, test_md5=False, online=False):
-        """Create, update or delete Mef record."""
-        record = None
-        if action not in [MefAction.DISCARD, MefAction.UPTODATE]:
-            if viaf_record:
-                viaf_pid = viaf_record.get('pid')
-                mef_record = cls.get_mef_by_viaf_pid(viaf_pid=viaf_pid)
-            else:
-                mef_record = cls.get_mef_by_agency_pid(
-                    agency_pid=agency_pid, agency=agency
-                )
-                viaf_record = {
-                    "{agency}_pid".format(agency=agency): agency_pid
-                }
-
-            mef_data, mef_has_refs = MefRecord.mef_data_from_viaf(
-                mef_record, viaf_record)
-            if not mef_record:
-                action = MefAction.CREATE
-            if not mef_has_refs:
-                action = MefAction.DELETE
-
-            if action == MefAction.CREATE:
-                mef_data = add_schema(mef_data, 'mef')
-                record = MefRecord.create(
-                    data=mef_data,
-                    id_=None,
-                    delete_pid=True,
-                    dbcommit=dbcommit,
-                    reindex=reindex
-                )
-
-            elif action in [MefAction.UPDATE, MefAction.REPLACE]:
-                record = mef_record.replace(
-                    data=mef_data,
-                    dbcommit=dbcommit,
-                    reindex=reindex
-                )
-            elif action == MefAction.DELETE:
-                if mef_record:
-                    mef_record.pop(agency, None)
-                    if len(mef_record) > 2:
-                        record = mef_record.update(
-                            mef_record,
-                            dbcommit=dbcommit,
-                            reindex=reindex,
-                        )
-                    else:
-                        mef_record.delete(dbcommit=True, delindex=True)
-                        action = MefAction.DELETEMEF
-            elif action == MefAction.UPTODATE:
-                pass
-            else:
-                raise NotImplementedError
-        return record, action, None
-
-    @classmethod
-    def get_all_pids_without_agencies_viaf(cls):
-        """Get all pids for records without agencies and viaf pids."""
+    def get_all_pids_without_agents_viaf(cls):
+        """Get all pids for records without agents and viaf pids."""
         query = MefSearch()\
             .filter('bool', must_not=[Q('exists', field="viaf_pid")]) \
             .filter('bool', must_not=[Q('exists', field="gnd")]) \
@@ -234,31 +173,31 @@ class MefRecord(AuthRecord):
             yield hit.pid
 
     @classmethod
-    def get_all_missing_agencies_pids(
+    def get_all_missing_agents_pids(
             cls,
-            agencies=['gnd', 'idref', 'rero'],
+            agents=['gnd', 'idref', 'rero'],
             verbose=False
     ):
-        """Get all missing agencies."""
+        """Get all missing agents."""
         missing_pids = {}
-        agency_classes = get_agency_classes()
+        agent_classes = get_agent_classes()
         used_classes = {}
-        for agency_classe in agency_classes:
-            if agency_classe in agencies:
-                used_classes[agency_classe] = agency_classes[agency_classe]
-        for agency, agency_class in used_classes.items():
+        for agent_classe in agent_classes:
+            if agent_classe in agents:
+                used_classes[agent_classe] = agent_classes[agent_classe]
+        for agent, agent_class in used_classes.items():
             if verbose:
                 click.echo(
-                    'Get pids from {agency} ...'.format(agency=agency)
+                    'Get pids from {agent} ...'.format(agent=agent)
                 )
-            missing_pids[agency] = {}
+            missing_pids[agent] = {}
             progress = progressbar(
-                items=agency_class.get_all_pids(),
-                length=agency_class.count(),
+                items=agent_class.get_all_pids(),
+                length=agent_class.count(),
                 verbose=verbose
             )
             for pid in progress:
-                missing_pids[agency][pid] = 1
+                missing_pids[agent][pid] = 1
         if verbose:
             click.echo('Get pids from mef and calculate missing ...')
         # progress = progressbar(
@@ -268,10 +207,10 @@ class MefRecord(AuthRecord):
         # )
         # for id in progress:
         #     mef_record = cls.get_record_by_id(id)
-        #     for agency in used_classes:
-        #         agency_ref = mef_record.get(agency, {}).get('$ref', '')
-        #         agency_pid = agency_ref.split('/')[-1]
-        #         missing_pids[agency].pop(agency_pid, None)
+        #     for agent in used_classes:
+        #         agent_ref = mef_record.get(agent, {}).get('$ref', '')
+        #         agent_pid = agent_ref.split('/')[-1]
+        #         missing_pids[agent].pop(agent_pid, None)
 
         # working with ES is much faster
         progress = progressbar(
@@ -282,10 +221,10 @@ class MefRecord(AuthRecord):
         for hit in progress:
             pid = hit.pid
             data = hit.to_dict()
-            for agency in used_classes:
-                agency_data = data.get(agency)
-                if agency_data:
-                    missing_pids[agency].pop(agency_data.get('pid'), None)
+            for agent in used_classes:
+                agent_data = data.get(agent)
+                if agent_data:
+                    missing_pids[agent].pop(agent_data.get('pid'), None)
         return missing_pids
 
     @classmethod
@@ -343,22 +282,16 @@ class MefRecord(AuthRecord):
         self.update(data=self, dbcommit=dbcommit, reindex=reindex)
         return self
 
-    def create_or_update_mef_viaf_record(self, dbcommit=False, reindex=False,
-                                         online=True):
-        """Create or update MEF and VIAF record."""
-        """Create or update MEF and VIAF record."""
-        return self, MefAction.DISCARD, False
-
     @classmethod
     def update_indexes(cls):
         """Update indexes."""
         current_search.flush_and_refresh(index='mef-mef-contribution-v0.0.1')
 
-    def delete_agency(self, agency_record, dbcommit=False, reindex=False):
+    def delete_agent(self, agent_record, dbcommit=False, reindex=False):
         """Delete Agency from record."""
-        action = MefAction.DISCARD
-        if self.pop(agency_record.agency, None):
-            action = MefAction.UPDATE
+        action = Action.DISCARD
+        if self.pop(agent_record.agent, None):
+            action = Action.UPDATE
             self.replace(
                 data=self,
                 dbcommit=dbcommit,
@@ -369,7 +302,7 @@ class MefRecord(AuthRecord):
         return self, action
 
 
-class MefIndexer(AuthRecordIndexer):
+class MefIndexer(ContributionIndexer):
     """MefIndexer."""
 
     record_cls = MefRecord

@@ -48,14 +48,10 @@ from invenio_oaiharvester.errors import InvenioOAIHarvesterConfigNotFound, \
 from invenio_oaiharvester.models import OAIHarvestConfig
 from invenio_oaiharvester.utils import get_oaiharvest_object
 from invenio_records_rest.utils import obj_or_import_string
-from jsonschema.exceptions import ValidationError
 from pymarc.marcxml import parse_xml_to_array
 from sickle import Sickle, oaiexceptions
 from sickle.iterator import OAIItemIterator
 from sickle.oaiexceptions import NoRecordsMatch
-
-from .contributions.mef.models import MefAction
-from .contributions.models import AgencyAction
 
 
 def add_oai_source(name, baseurl, metadataprefix='marc21',
@@ -237,6 +233,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
     count = 0
     action_count = {}
     mef_action_count = {}
+    viaf_online_count = 0
     for spec in setspecs:
         dates = dates_inital
         params = {
@@ -278,25 +275,36 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                             updated = '????'
                         rec = transformation(records[0]).json
                         pid = rec.get('pid')
-                        rec, action, mef_action = record_cls.create_or_update(
-                            rec,
-                            dbcommit=dbcommit,
-                            reindex=reindex,
-                            test_md5=test_md5
-                        )
+                        rec, action, m_record, m_action, v_record, online = \
+                            record_cls.create_or_update_agent_mef_viaf(
+                                data=rec,
+                                dbcommit=True,
+                                reindex=True,
+                                online=True
+                            )
                         action_count.setdefault(action.name, 0)
                         action_count[action.name] += 1
-                        mef_action_count.setdefault(mef_action.name, 0)
-                        mef_action_count[mef_action.name] += 1
+                        mef_action_count.setdefault(m_action.name, 0)
+                        mef_action_count[m_action.name] += 1
+                        if online:
+                            viaf_online_count += 1
+
                         if verbose:
+                            m_pid = 'Non'
+                            if m_record:
+                                m_pid = m_record.pid
                             click.echo(
-                                ('OAI {name} {spec}: {pid} updated: {updated}'
-                                 ' action: {action} {mef}').format(
+                                ('OAI {name} spec({spec}): {pid}'
+                                 ' updated: {updated}'
+                                 ' action: {action} mef: {m_pid} {m_action}'
+                                 ' viaf online: {online}').format(
                                     name=name,
                                     spec=spec,
                                     pid=pid,
-                                    action=action,
-                                    mef=mef_action,
+                                    action=action.name,
+                                    m_pid=m_pid,
+                                    m_action=m_action.name,
+                                    online=online,
                                     updated=updated
                                 )
                             )
@@ -343,7 +351,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
         oai_source.update_lastrun(last_run_date)
         oai_source.save()
         db.session.commit()
-    return count, action_count, mef_action_count
+    return count, action_count, mef_action_count, viaf_action_count
 
 
 def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
@@ -483,39 +491,17 @@ def oai_get_record(id, name, transformation, record_cls, access_token=None,
     except Exception as err:
         if debug:
             raise(err)
-        return None, AgencyAction.DISCARD, MefAction.DISCARD
+        return None
     records = parse_xml_to_array(StringIO(record.raw))
-    rec = transformation(records[0]).json
-    try:
-        new_rec, action, mef_action = record_cls.create_or_update(
-            rec,
-            dbcommit=dbcommit,
-            reindex=reindex,
-            test_md5=test_md5
-        )
-    except ValidationError:
-        new_rec = None,
-        action = AgencyAction.VALIDATIONERROR
-        mef_action = MefAction.DISCARD
-        if debug:
-            traceback.print_exc()
-    except Exception:
-        new_rec = None,
-        action = AgencyAction.ERROR
-        mef_action = MefAction.DISCARD
-        if debug:
-            traceback.print_exc()
-
+    trans_record = transformation(records[0]).json
     if verbose:
         click.echo(
-            'OAI-{name} get: {id} action: {action} {mef}'.format(
+            'OAI-{name} get: {id}'.format(
                 name=name,
-                id=id,
-                action=action,
-                mef=mef_action
+                id=id
             )
         )
-    return new_rec, action, mef_action
+    return trans_record
 
 
 def read_json_record(json_file, buf_size=1024, decoder=JSONDecoder()):

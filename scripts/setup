@@ -81,6 +81,12 @@ function db_init () {
     # Create admin role to rectict access
     invenio roles create admin
     invenio access allow superuser-access role admin
+    # create new admin user
+    invenio users create -a admin@rero.ch --password administrator
+    invenio users confirm admin@rero.ch
+    invenio roles create -d 'Admins Group' admins
+    invenio access allow admin-access role admins
+    invenio roles add admin@rero.ch admins
 }
 
 function oai_init () {
@@ -95,34 +101,36 @@ function oai_init () {
 }
 
 function sample_load () {
-    for AGENCY in viaf rero gnd idref
+    for AGENT in viaf rero gnd idref
     do
-       info_msg "Importing ${AGENCY} records:"
-       dojson -i ./data/${AGENCY}.json schema "http://mef.rero.ch/schemas/${AGENCY}/${AGENCY}-contribution-v0.0.1.json" | invenio fixtures create_or_update ${AGENCY}
+       info_msg "Importing ${AGENT} records:"
+       dojson -i ./data/${AGENT}.json schema "http://mef.rero.ch/schemas/${AGENT}/${AGENT}-contribution-v0.0.1.json" | invenio fixtures create_or_update ${AGENT}
     done
+    info_msg "Creating MEF records:"
+    invenio utils create_mef_from_agent
     oai_init
 }
 
 function deploy () {
     INPUT_DIR=$1
-    # Load agencies CSV files to db
-    for AGENCY in rero gnd idref viaf mef
+    # Load agents CSV files to db
+    for AGENT in rero gnd idref viaf mef
     do
-        invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv --verbose --reindex
+        invenio fixtures bulk_load ${AGENT} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENT}_pidstore.csv --csv_metadata_file ${AGENT}_metadata.csv --verbose --reindex
         invenio utils runindex --raise-on-error --concurrency 4 --delayed
     done
     oai_init
     invenio utils runindex --raise-on-error
-    invenio utils agency_counts
+    invenio utils agent_counts
 }
 
 function create_json () {
     INPUT_DIR=$1
     OUTPUT_DIR=$2
     # Transform marc files to json
-    for AGENCY in rero gnd idref
+    for AGENT in rero gnd idref
     do
-        invenio fixtures bulk_load ${AGENCY} ${INPUT_DIR} ${OUTPUT_DIR} --marc_file ${AGENCY}.mrc --json_file ${AGENCY}.json &
+        invenio fixtures bulk_load ${AGENT} ${INPUT_DIR} ${OUTPUT_DIR} --marc_file ${AGENT}.mrc --json_file ${AGENT}.json &
     done
     wait
 }
@@ -130,9 +138,9 @@ function create_json () {
 function create_csv () {
     OUTPUT_DIR=$1
     # Create CSV files from json
-    for AGENCY in rero gnd idref
+    for AGENT in rero gnd idref
     do
-        invenio fixtures bulk_load ${AGENCY} ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file ${AGENCY}.json --csv_pidstore_file ${AGENCY}_pidstore.csv --csv_metadata_file ${AGENCY}_metadata.csv &
+        invenio fixtures bulk_load ${AGENT} ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file ${AGENT}.json --csv_pidstore_file ${AGENT}_pidstore.csv --csv_metadata_file ${AGENT}_metadata.csv &
     done
     wait
     # Create viaf CSV files from viaf.txt
@@ -178,7 +186,7 @@ function usage () {
 }
 
 if [[ $# -eq 0 ]] ; then
-    info_msg "Start sample loading of all types of agencies"
+    info_msg "Start sample loading of all types of agents"
     db_init
     sample_load
 else
@@ -192,7 +200,7 @@ else
             oai_init
             ;;
         '--deploy')
-            info_msg "Start loading CSV records to database for all agencies"
+            info_msg "Start loading CSV records to database for all agents"
             if [ -z "$2" ]; then
                 error_msg "Invalid input arguments. "
                 usage
@@ -203,7 +211,7 @@ else
             fi
             ;;
         '--bulk_load')
-            info_msg "Start bulk loading of all types of agencies"
+            info_msg "Start bulk loading of all types of agents"
             if [ -z "$2" ] || [ -z "$3" ]; then
                 error_msg "Invalid input arguments. "
                 usage
@@ -213,7 +221,7 @@ else
             fi
             ;;
         '--create_json')
-            info_msg "Start creating json for all types of agencies"
+            info_msg "Start creating json for all types of agents"
             if [ -z "$2" ] || [ -z "$3" ]; then
                 error_msg "Invalid input arguments. "
                 usage
@@ -223,7 +231,7 @@ else
             fi
             ;;
         '--create_csv')
-            info_msg "Start creating csv for all types of agencies"
+            info_msg "Start creating csv for all types of agents"
             if [ -z "$2" ]; then
                 error_msg "Invalid input arguments. "
                 usage

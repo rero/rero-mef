@@ -30,11 +30,11 @@ import os
 
 from pymarc import marcxml
 
-from rero_mef.contributions.marctojson.do_gnd_auth_person import \
+from rero_mef.contributions.marctojson.do_gnd_contribution import \
     Transformation as Transformation_gnd
-from rero_mef.contributions.marctojson.do_idref_auth_person import \
+from rero_mef.contributions.marctojson.do_idref_contribution import \
     Transformation as Transformation_idref
-from rero_mef.contributions.marctojson.do_rero_auth_person import \
+from rero_mef.contributions.marctojson.do_rero_contribution import \
     Transformation as Transformation_rero
 
 

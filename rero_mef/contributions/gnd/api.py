@@ -30,8 +30,7 @@ from .fetchers import gnd_id_fetcher
 from .minters import gnd_id_minter
 from .models import GndMetadata
 from .providers import GndProvider
-from ..api import AuthRecord, AuthRecordIndexer
-from ..utils import add_md5
+from ..agent_api import AgentIndexer, AgentRecord
 
 
 class GndSearch(RecordsSearch):
@@ -48,48 +47,25 @@ class GndSearch(RecordsSearch):
         default_filter = None
 
 
-class GndRecord(AuthRecord):
+class GndRecord(AgentRecord):
     """Gnd Authority class."""
 
     minter = gnd_id_minter
     fetcher = gnd_id_fetcher
     provider = GndProvider
-    agency = 'gnd'
+    agent = 'gnd'
     viaf_source_code = 'DNB'
-    agency_pid_type = 'gnd_pid'
+    agent_pid_type = 'gnd_pid'
     model_cls = GndMetadata
 
     @classmethod
-    def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
-               reindex=False, **kwargs):
-        """Create a new agency record."""
-        data = add_md5(data)
-        record = super(GndRecord, cls).create(
-            data=data,
-            id_=id_,
-            delete_pid=delete_pid,
-            dbcommit=dbcommit,
-            reindex=reindex,
-            **kwargs
-        )
-        return record
-
-    def update(self, data, dbcommit=False, reindex=False):
-        """Update data for record."""
-        data = add_md5(data)
-        super(GndRecord, self).update(data, dbcommit=dbcommit, reindex=reindex)
-        return self
-
-    @classmethod
-    def get_online_record(cls, id, dbcommit=False, reindex=False,
-                          test_md5=False, verbose=False):
+    def get_online_record(cls, id, verbose=False):
         """Get online record."""
         from .tasks import gnd_get_record
-        return gnd_get_record(id=id, dbcommit=dbcommit, reindex=reindex,
-                              test_md5=test_md5, verbose=verbose)
+        return gnd_get_record(id=id, verbose=verbose)
 
 
-class GndIndexer(AuthRecordIndexer):
+class GndIndexer(AgentIndexer):
     """GndIndexer."""
 
     record_cls = GndRecord
