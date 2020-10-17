@@ -1,0 +1,362 @@
+[
+  {
+    "md5": "e46818a77f0b8c5f676351781323d1f0",
+    "pid": "A000009346",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A000009346",
+    "variant_name": [
+      "Aranton d'Alex, Jean d',",
+      "Aranthon d'Alex, Jean d',",
+      "Alex, Jean d'Arenthon d',"
+    ],
+    "date_of_birth": "1620",
+    "date_of_death": "1695",
+    "preferred_name": "Arenthon d'Alex, Jean d',",
+    "variant_access_point": [
+      "Aranton d'Alex, Jean d', 1620-1695",
+      "Aranthon d'Alex, Jean d', 1620-1695",
+      "Alex, Jean d'Arenthon d', 1620-1695"
+    ],
+    "authorized_access_point": "Arenthon d'Alex, Jean d', 1620-1695",
+    "biographical_information": [
+      "Prince-\u00e9v\u00eaque de Gen\u00e8ve (1661-1695)"
+    ]
+  },
+  {
+    "md5": "7badff1fad1b3179ba1ba9bdf25a9bf3",
+    "pid": "A000065776",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A000065776",
+    "variant_name": [
+      "Cavalieri, Pius Franchi de",
+      "Franchi De Cavalieri, Pietro Pio",
+      "Franchi De Cavalieri, Pius"
+    ],
+    "preferred_name": "Franchi De Cavalieri, Pio Pietro",
+    "variant_access_point": [
+      "Cavalieri, Pius Franchi de",
+      "Franchi De Cavalieri, Pietro Pio",
+      "Franchi De Cavalieri, Pius"
+    ],
+    "authorized_access_point": "Franchi De Cavalieri, Pio Pietro"
+  },
+  {
+    "md5": "11f264777581fcb816a74c28d05553b5",
+    "pid": "A000070488",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A000070488",
+    "variant_name": [
+      "Bonqueval, J.G. de"
+    ],
+    "preferred_name": "Genty de Bonqueval, J",
+    "variant_access_point": [
+      "Bonqueval, J.G. de"
+    ],
+    "authorized_access_point": "Genty de Bonqueval, J"
+  },
+  {
+    "md5": "2b1a18ffab5e93b126d089d2e5379466",
+    "pid": "A003671569",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A003671569",
+    "variant_name": [
+      "Parlement europ\u00e9en. DG4",
+      "Parlement europ\u00e9en. Generaldirektion Wissenschaft",
+      "Parlement europ\u00e9en. Directorate General for Research"
+    ],
+    "preferred_name": "Parlement europ\u00e9en. Direction g\u00e9n\u00e9rale des \u00e9tudes",
+    "variant_access_point": [
+      "Parlement europ\u00e9en. DG4",
+      "Parlement europ\u00e9en. Generaldirektion Wissenschaft",
+      "Parlement europ\u00e9en. Directorate General for Research"
+    ],
+    "authorized_access_point": "Parlement europ\u00e9en. Direction g\u00e9n\u00e9rale des \u00e9tudes"
+  },
+  {
+    "md5": "9a84175e56df06dd9c4e9a564d34b5c4",
+    "pid": "A005353099",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A005353099",
+    "preferred_name": "G\u00fcrzenich-Orchester K\u00f6lner Philharmoniker",
+    "authorized_access_point": "G\u00fcrzenich-Orchester K\u00f6lner Philharmoniker",
+    "biographical_information": [
+      "Jusqu'en 1986: G\u00fcrzenich-Orchester (K\u00f6ln)",
+      "Jusqu'en 1986: K\u00f6lner Philharmoniker",
+      "D\u00e8s 1986: G\u00fcrzenich-Orchester K\u00f6lner Philharmoniker"
+    ]
+  },
+  {
+    "md5": "980b127758f806da1ad917589a594a12",
+    "pid": "A005464637",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A005464637",
+    "variant_name": [
+      "Institut de recherches sur les civilisations de l'Occident moderne (Paris)",
+      "Unit\u00e9 de recherches sur les civilisations de l'Occident moderne (Paris)",
+      "URCOM (Unit\u00e9 de recherches sur les civilisations de l'Occident moderne) (Paris)"
+    ],
+    "preferred_name": "Universit\u00e9 de Paris 4. Institut de recherches sur les civilisations de l'Occident moderne",
+    "variant_access_point": [
+      "Institut de recherches sur les civilisations de l'Occident moderne (Paris)",
+      "Unit\u00e9 de recherches sur les civilisations de l'Occident moderne (Paris)",
+      "URCOM (Unit\u00e9 de recherches sur les civilisations de l'Occident moderne) (Paris)"
+    ],
+    "authorized_access_point": "Universit\u00e9 de Paris 4. Institut de recherches sur les civilisations de l'Occident moderne"
+  },
+  {
+    "md5": "23d44ce5a4a9eaa6d00b174e796467d0",
+    "pid": "A005472911",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A005472911",
+    "variant_name": [
+      "Institut d'administration des entreprises (Rennes : ?-1970)"
+    ],
+    "preferred_name": "Universit\u00e9 de Rennes. Institut d'administration des entreprises",
+    "variant_access_point": [
+      "Institut d'administration des entreprises (Rennes : ?-1970)"
+    ],
+    "authorized_access_point": "Universit\u00e9 de Rennes. Institut d'administration des entreprises",
+    "biographical_information": [
+      "Jusqu'en 1970: Universit\u00e9 de Rennes. Institut d'administration des entreprises",
+      "D\u00e8s 1970: Universit\u00e9 de Rennes 1. Institut d'administration des entreprises"
+    ]
+  },
+  {
+    "md5": "f85ee7377ce74a69d30828a225752747",
+    "pid": "A005591402",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A005591402",
+    "variant_name": [
+      "Amboise, L\u00e9on d'",
+      "L\u00e9on, d'Amboise"
+    ],
+    "preferred_name": "Guillemin, L\u00e9on",
+    "variant_access_point": [
+      "Amboise, L\u00e9on d'",
+      "L\u00e9on, d'Amboise"
+    ],
+    "authorized_access_point": "Guillemin, L\u00e9on",
+    "biographical_information": [
+      "L\u00e9on d'Amboise est le pseud. de L\u00e9on Guillemin"
+    ]
+  },
+  {
+    "md5": "370239fe4f5431ca3b36284f9026e2da",
+    "pid": "A009238698",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A009238698",
+    "preferred_name": "Pipe Trio",
+    "authorized_access_point": "Pipe Trio"
+  },
+  {
+    "md5": "eb9f4559b841ebb23b3aa81f48c75cb2",
+    "pid": "A009535178",
+    "bf:Agent": "bf:Person",
+    "qualifier": "de Barbanson",
+    "identifier": "http://data.rero.ch/02-A009535178",
+    "variant_name": [
+      "Barban\u00e7on, Constantin de"
+    ],
+    "preferred_name": "Constantin, de Barbanson",
+    "variant_access_point": [
+      "Barban\u00e7on, Constantin de"
+    ],
+    "authorized_access_point": "Constantin, de Barbanson"
+  },
+  {
+    "md5": "8490c0706e4d85befe6a1763153a64d8",
+    "pid": "A009962747",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A009962747",
+    "variant_name": [
+      "European Coal and Steel Community",
+      "Europ\u00e4ische Gemeinschaft f\u00fcr Kohle und Stahl",
+      "Comunit\u00e0 europea del carbone e dell'acciaio",
+      "CECA (Communaut\u00e9 europ\u00e9enne du charbon et de l'acier)",
+      "ECSC (European Coal and Steel Community)",
+      "EGKS (Europ\u00e4ische Gemeinschaft f\u00fcr Kohle und Stahl)"
+    ],
+    "preferred_name": "Communaut\u00e9 europ\u00e9enne du charbon et de l'acier",
+    "variant_access_point": [
+      "European Coal and Steel Community",
+      "Europ\u00e4ische Gemeinschaft f\u00fcr Kohle und Stahl",
+      "Comunit\u00e0 europea del carbone e dell'acciaio",
+      "CECA (Communaut\u00e9 europ\u00e9enne du charbon et de l'acier)",
+      "ECSC (European Coal and Steel Community)",
+      "EGKS (Europ\u00e4ische Gemeinschaft f\u00fcr Kohle und Stahl)"
+    ],
+    "authorized_access_point": "Communaut\u00e9 europ\u00e9enne du charbon et de l'acier",
+    "biographical_information": [
+      "Sous le descripteur \"COMMUNAUTE EUROPEENNE DU CHARBON ET DE L'ACIER\", on trouve les documents traitant de l'organisation cr\u00e9\u00e9e par le Trait\u00e9 de Paris (1951) jusqu'\u00e0 sa dissolution en 2002",
+      "Sous les descripteurs \"COMMUNAUTE EUROPEENNE\", \"COMMUNAUTE EUROPEENNE DE L'ENERGIE ATOMIQUE\" et \"COMMUNAUTE EUROPEENNE DU CHARBON ET DE L'ACIER\", on trouve uniquement les documents traitant sp\u00e9cifiquement de ces organisations, en particulier avant leur regroupement en 1967",
+      "Sous le descripteur \"COMMUNAUTES EUROPEENNES\", on trouve les documents traitant de l'ensemble des Communaut\u00e9s, du Trait\u00e9 de fusion (1967) au Trait\u00e9 sur l'Union europ\u00e9enne (1993)"
+    ]
+  },
+  {
+    "md5": "f7c64698afa7f5653da5f6e2a471a4e4",
+    "pid": "A012320736",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A012320736",
+    "preferred_name": "Congr\u00e8s de psychiatrie et de neurologie de langue fran\u00e7aise",
+    "authorized_access_point": "Congr\u00e8s de psychiatrie et de neurologie de langue fran\u00e7aise (78 : 1980 : Reims)"
+  },
+  {
+    "md5": "0654556e79b0a5993f1a3f21e2538522",
+    "pid": "A017671081",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017671081",
+    "variant_name": [
+      "Aernoudt, Pierre,",
+      "Arnold, Joseph,"
+    ],
+    "date_of_birth": "1811",
+    "date_of_death": "1865",
+    "preferred_name": "Arnoudt, Pierre J.,",
+    "variant_access_point": [
+      "Aernoudt, Pierre, 1811-1865",
+      "Arnold, Joseph, 1811-1865"
+    ],
+    "authorized_access_point": "Arnoudt, Pierre J., 1811-1865",
+    "biographical_information": [
+      "J\u00e9suite (\u00e0 partir de 1835 ; ordonn\u00e9 pr\u00eatre en 1843) ; v\u00e9cut aux Etats-Unis \u00e0 partir de 1835, \u00e9crivit aussi en latin"
+    ]
+  },
+  {
+    "md5": "a0899531d7e144d6fddf862902296756",
+    "pid": "A017991779",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017991779",
+    "variant_name": [
+      "Catalano, Giuseppe,",
+      "Catalanus, Josephus,",
+      "Catalani, Josephus,",
+      "Catalano, Josepho,"
+    ],
+    "date_of_birth": "1698",
+    "date_of_death": "1764",
+    "preferred_name": "Catalani, Giuseppe,",
+    "variant_access_point": [
+      "Catalano, Giuseppe, 1698-1764",
+      "Catalanus, Josephus, 1698-1764",
+      "Catalani, Josephus, 1698-1764",
+      "Catalano, Josepho, 1698-1764"
+    ],
+    "authorized_access_point": "Catalani, Giuseppe, 1698-1764",
+    "biographical_information": [
+      "Historien, th\u00e9ologien et juriste"
+    ]
+  },
+  {
+    "md5": "c6b87e7bfc29646948f5429209965caf",
+    "pid": "A021799923",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A021799923",
+    "variant_name": [
+      "Kouro\u00fadi\u0332s, K\u00f3\u0332stas"
+    ],
+    "preferred_name": "Kouroud\u0113s, K\u014dstas",
+    "variant_access_point": [
+      "Kouro\u00fadi\u0332s, K\u00f3\u0332stas"
+    ],
+    "parallel_access_point": [
+      "\u039a\u03bf\u03c5\u03c1\u03bf\u03cd\u03b4\u03b7\u03c2, \u039a\u03ce\u03c3\u03c4\u03b1\u03c2"
+    ],
+    "authorized_access_point": "Kouroud\u0113s, K\u014dstas"
+  },
+  {
+    "md5": "63217758345f5fdbd0be66a2286b2632",
+    "pid": "A022480124",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A022480124",
+    "variant_name": [
+      "Bernard, Bayle,"
+    ],
+    "date_of_birth": "1807",
+    "date_of_death": "1875",
+    "preferred_name": "Bernard, William Bayle,",
+    "variant_access_point": [
+      "Bernard, Bayle, 1807-1875"
+    ],
+    "authorized_access_point": "Bernard, William Bayle, 1807-1875"
+  },
+  {
+    "md5": "48d1e9960cb7c0bd89d2fbb674569087",
+    "pid": "A023655346",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A023655346",
+    "variant_name": [
+      "De Cavalieri, Giovanni Battista,",
+      "Cavalleriis, Baptista de,",
+      "Cavalleriis, Giovanni Battista de,",
+      "Cavalieri, Gianbattista,"
+    ],
+    "date_of_birth": "ca.1525",
+    "date_of_death": "1601",
+    "preferred_name": "Cavalieri, Giovanni Battista,",
+    "variant_access_point": [
+      "De Cavalieri, Giovanni Battista, ca.1525-1601",
+      "Cavalleriis, Baptista de, ca.1525-1601",
+      "Cavalleriis, Giovanni Battista de, ca.1525-1601",
+      "Cavalieri, Gianbattista, ca.1525-1601"
+    ],
+    "authorized_access_point": "Cavalieri, Giovanni Battista, ca.1525-1601",
+    "biographical_information": [
+      "Graveur, dessinateur et \u00e9diteur"
+    ]
+  },
+  {
+    "md5": "9d9fe3b19e907d9c733bf1c4028b8da0",
+    "pid": "A024285452",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A024285452",
+    "date_of_birth": "1983",
+    "preferred_name": "Soyarslan, \u00c7i\u01e7dem,",
+    "authorized_access_point": "Soyarslan, \u00c7i\u01e7dem, 1983-",
+    "biographical_information": [
+      "Artiste lyrique (soprano)"
+    ]
+  },
+  {
+    "md5": "bf13b602d6494f21385cbac14b029716",
+    "pid": "A027454547",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A027454547",
+    "preferred_name": "Van Halen (groupe musical)",
+    "authorized_access_point": "Van Halen (groupe musical)"
+  },
+  {
+    "md5": "85ad5ae7222d0f32634ce6691d1aad52",
+    "pid": "A028240818",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A028240818",
+    "variant_name": [
+      "Compagnie PO",
+      "Compagnie des chemins de fer de Paris \u00e0 Orl\u00e9ans",
+      "Compagnie des chemins de fer P. O. Midi",
+      "Compagnie des chemins de fer d'Orl\u00e9ans et du Midi",
+      "Chemin de fer d'Orl\u00e9ans",
+      "Compagnie d'Orl\u00e9ans",
+      "Compagnie du chemin de fer de Paris \u00e0 Orl\u00e9ans"
+    ],
+    "preferred_name": "Compagnie du chemin de fer de Paris \u00e0 Orl\u00e9ans (Paris)",
+    "variant_access_point": [
+      "Compagnie PO",
+      "Compagnie des chemins de fer de Paris \u00e0 Orl\u00e9ans",
+      "Compagnie des chemins de fer P. O. Midi",
+      "Compagnie des chemins de fer d'Orl\u00e9ans et du Midi",
+      "Chemin de fer d'Orl\u00e9ans",
+      "Compagnie d'Orl\u00e9ans",
+      "Compagnie du chemin de fer de Paris \u00e0 Orl\u00e9ans"
+    ],
+    "authorized_access_point": "Compagnie du chemin de fer de Paris \u00e0 Orl\u00e9ans (Paris)"
+  }
+]

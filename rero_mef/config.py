@@ -32,25 +32,23 @@ You overwrite and set instance-specific configuration by either:
 
 from __future__ import absolute_import, print_function
 
+from datetime import timedelta
+
 from invenio_records_rest.facets import terms_filter
 
-from .contributions.gnd.models import GndIdentifier
-from .contributions.idref.models import IdrefIdentifier
-from .contributions.marctojson.do_gnd_auth_person import \
-    Transformation as Gnd_transformation
-from .contributions.marctojson.do_idref_auth_person import \
-    Transformation as Idref_transformation
-from .contributions.marctojson.do_rero_auth_person import \
-    Transformation as Rero_transformation
-from .contributions.mef.models import MefIdentifier
-from .contributions.rero.models import ReroIdentifier
-from .contributions.viaf.models import ViafIdentifier
-
-
-def _(x):
-    """Identity function used to trigger string extraction."""
-    return x
-
+from .agents.gnd.models import AgentGndIdentifier
+from .agents.idref.models import AgentIdrefIdentifier
+from .agents.rero.models import AgentReroIdentifier
+from .concepts.rero.models import ConceptReroIdentifier
+from .filter import exists_filter
+from .marctojson.do_gnd_agent import Transformation as AgentGndTransformation
+from .marctojson.do_idref_agent import \
+    Transformation as AgentIdrefTransformation
+from .marctojson.do_rero_agent import Transformation as AgentReroTransformation
+from .marctojson.do_rero_concepts import \
+    Transformation as ConceptReroTransformation
+from .mef.models import MefIdentifier
+from .viaf.models import ViafIdentifier
 
 # Rate limiting
 # =============
@@ -86,11 +84,11 @@ SETTINGS_TEMPLATE = 'invenio_theme/page_settings.html'
 # Theme configuration
 # ===================
 #: Site name
-THEME_SITENAME = _('RERO MEF')
+THEME_SITENAME = 'RERO MEF'
 #: Use default frontpage.
 THEME_FRONTPAGE = False
 #: Frontpage title.
-THEME_FRONTPAGE_TITLE = _('RERO MEF')
+THEME_FRONTPAGE_TITLE = 'RERO MEF'
 #: Frontpage template.
 THEME_FRONTPAGE_TEMPLATE = 'rero_mef/frontpage.html'
 #: Template for error pages.
@@ -113,7 +111,7 @@ MAIL_SUPPRESS_SEND = True
 #: Email address used as sender of account registration emails.
 SECURITY_EMAIL_SENDER = SUPPORT_EMAIL
 #: Email subject for account registration emails.
-SECURITY_EMAIL_SUBJECT_REGISTER = _("Welcome to RERO MEF!")
+SECURITY_EMAIL_SUBJECT_REGISTER = "Welcome to RERO MEF!"
 #: Redis session storage URL.
 ACCOUNTS_SESSION_REDIS_URL = 'redis://localhost:6379/1'
 
@@ -132,14 +130,13 @@ CELERY_BEAT_SCHEDULE = {
     #     'task': 'rero_mef.tasks.process_bulk_queue',
     #     'schedule': timedelta(minutes=5),
     # },
-    # We dont't have accounts to clean.
-    # 'accounts': {
-    #     'task': 'invenio_accounts.tasks.clean_session_table',
-    #     'schedule': timedelta(minutes=60),
-    # },
+    'accounts': {
+        'task': 'invenio_accounts.tasks.clean_session_table',
+        'schedule': timedelta(minutes=60),
+    }
     # We will harvest with a kubernetes cron job.
     # 'idref-harvester': {
-    #     'task': 'rero_mef.contributions.idref.tasks.process_records_from_dates',
+    #     'task': 'rero_mef.agents.idref.tasks.process_records_from_dates',
     #     'schedule': timedelta(minutes=360),
     #     'kwargs': dict(name='idref'),
     # }
@@ -198,21 +195,27 @@ DEBUG_TB_INTERCEPT_REDIRECTS = False
 BULK_CHUNK_COUNT = 100000
 
 TRANSFORMATION = {
-    'gnd': Gnd_transformation,
-    'rero': Rero_transformation,
-    'idref': Idref_transformation
+    'corero': ConceptReroTransformation,
+    'aggnd': AgentGndTransformation,
+    'aidref': AgentIdrefTransformation,
+    'agrero': AgentReroTransformation
 }
 
 IDENTIFIERS = {
-    'gnd': GndIdentifier,
-    'idref': IdrefIdentifier,
     'mef': MefIdentifier,
-    'rero': ReroIdentifier,
-    'viaf': ViafIdentifier
+    'viaf': ViafIdentifier,
+    'corero': ConceptReroIdentifier,
+    'aggnd': AgentGndIdentifier,
+    'aidref': AgentIdrefIdentifier,
+    'agrero': AgentReroIdentifier
 }
 
 RERO_MEF_APP_BASE_URL = 'https://mef.rero.ch'
 
+SEARCH_CLIENT_CONFIG = dict(
+    timeout=30,
+    max_retries=5,
+)
 
 MAX_RESULT_WINDOW = 100000000
 # REST API Configuration
@@ -220,11 +223,11 @@ MAX_RESULT_WINDOW = 100000000
 RECORDS_REST_ENDPOINTS = dict(
     mef=dict(
         pid_type='mef',
-        pid_minter='mef',
-        pid_fetcher='mef',
-        search_class="rero_mef.contributions.mef.api:MefSearch",
-        indexer_class="rero_mef.contributions.mef.api:MefIndexer",
-        record_class="rero_mef.contributions.mef.api:MefRecord",
+        pid_minter='mef_id',
+        pid_fetcher='mef_id',
+        search_class="rero_mef.mef.api:MefSearch",
+        indexer_class="rero_mef.mef.api:MefIndexer",
+        record_class="rero_mef.mef.api:MefRecord",
         search_index='mef',
         search_type=None,
         record_serializers={
@@ -238,18 +241,18 @@ RECORDS_REST_ENDPOINTS = dict(
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/mef/',
         item_route=('/mef/<pid(mef, record_class='
-                    '"rero_mef.contributions.mef.api:MefRecord"):pid_value>'),
+                    '"rero_mef.mef.api:MefRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict(),
     ),
     viaf=dict(
         pid_type='viaf',
-        pid_minter='viaf',
-        pid_fetcher='viaf',
-        search_class="rero_mef.contributions.viaf.api:ViafSearch",
-        indexer_class="rero_mef.contributions.viaf.api:ViafIndexer",
-        record_class="rero_mef.contributions.viaf.api:ViafRecord",
+        pid_minter='viaf_id',
+        pid_fetcher='viaf_id',
+        search_class="rero_mef.viaf.api:ViafSearch",
+        indexer_class="rero_mef.viaf.api:ViafIndexer",
+        record_class="rero_mef.viaf.api:ViafRecord",
         search_index='viaf',
         search_type=None,
         record_serializers={
@@ -263,19 +266,19 @@ RECORDS_REST_ENDPOINTS = dict(
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/viaf/',
         item_route=('/viaf/<pid(viaf, record_class='
-                    '"rero_mef.contributions.viaf.api:ViafRecord"):pid_value>'),
+                    '"rero_mef.viaf.api:ViafRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict(),
     ),
-    gnd=dict(
-        pid_type='gnd',
-        pid_minter='gnd',
-        pid_fetcher='gnd',
-        search_class="rero_mef.contributions.gnd.api:GndSearch",
-        indexer_class="rero_mef.contributions.gnd.api:GndIndexer",
-        record_class="rero_mef.contributions.gnd.api:GndRecord",
-        search_index='gnd',
+    aggnd=dict(
+        pid_type='aggnd',
+        pid_minter='agent_gnd_id',
+        pid_fetcher='agent_gnd_id',
+        search_class="rero_mef.agents.gnd.api:AgentGndSearch",
+        indexer_class="rero_mef.agents.gnd.api:AgentGndIndexer",
+        record_class="rero_mef.agents.gnd.api:AgentGndRecord",
+        search_index='agents_gnd',
         search_type=None,
         record_serializers={
             'application/json': ('rero_mef.serializers'
@@ -287,20 +290,20 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/gnd/',
-        item_route=('/gnd/<pid(gnd, record_class='
-                    '"rero_mef.contributions.gnd.api:GndRecord"):pid_value>'),
+        item_route=('/gnd/<pid(aggnd, record_class='
+                    '"rero_mef.agents.gnd.api:AgentGndRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict()
     ),
-    idref=dict(
-        pid_type='idref',
-        pid_minter='idref',
-        pid_fetcher='idref',
-        search_class="rero_mef.contributions.idref.api:IdrefSearch",
-        indexer_class="rero_mef.contributions.idref.api:IdrefIndexer",
-        record_class="rero_mef.contributions.idref.api:IdrefRecord",
-        search_index='idref',
+    aidref=dict(
+        pid_type='aidref',
+        pid_minter='agent_idref_id',
+        pid_fetcher='agent_idref_id',
+        search_class="rero_mef.agents.idref.api:AgentIdrefSearch",
+        indexer_class="rero_mef.agents.idref.api:AgentIdrefIndexer",
+        record_class="rero_mef.agents.idref.api:AgentIdrefRecord",
+        search_index='agents_idref',
         search_type=None,
         record_serializers={
             'application/json': ('rero_mef.serializers'
@@ -312,20 +315,20 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/idref/',
-        item_route=('/idref/<pid(idref, record_class='
-                    '"rero_mef.contributions.idref.api:IdrefRecord"):pid_value>'),
+        item_route=('/idref/<pid(aidref, record_class='
+                    '"rero_mef.agents.idref.api:AgentIdrefRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict()
     ),
-    rero=dict(
-        pid_type='rero',
-        pid_minter='rero',
-        pid_fetcher='rero',
-        search_class="rero_mef.contributions.rero.api:ReroSearch",
-        indexer_class="rero_mef.contributions.rero.api:ReroIndexer",
-        record_class="rero_mef.contributions.rero.api:ReroRecord",
-        search_index='rero',
+    agrero=dict(
+        pid_type='agrero',
+        pid_minter='agent_rero_id',
+        pid_fetcher='agent_rero_id',
+        search_class="rero_mef.agents.rero.api:AgentReroSearch",
+        indexer_class="rero_mef.agents.rero.api:AgentReroIndexer",
+        record_class="rero_mef.agents.rero.api:AgentReroRecord",
+        search_index='agents_rero',
         search_type=None,
         record_serializers={
             'application/json': ('rero_mef.serializers'
@@ -337,8 +340,33 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/rero/',
-        item_route=('/rero/<pid(rero, record_class='
-                    '"rero_mef.contributions.rero.api:ReroRecord"):pid_value>'),
+        item_route=('/rero/<pid(agrero, record_class='
+                    '"rero_mef.agents.rero.api:AgentReroRecord"):pid_value>'),
+        default_media_type='application/json',
+        max_result_window=MAX_RESULT_WINDOW,
+        error_handlers=dict(),
+    ),
+    corero=dict(
+        pid_type='corero',
+        pid_minter='concept_rero_id',
+        pid_fetcher='concept_rero_id',
+        search_class="rero_mef.concepts.rero.api:ConceptReroSearch",
+        indexer_class="rero_mef.concepts.rero.api:ConceptReroIndexer",
+        record_class="rero_mef.concepts.rero.api:ConceptReroRecord",
+        search_index='concepts_rero',
+        search_type=None,
+        record_serializers={
+            'application/json': ('rero_mef.serializers'
+                                 ':json_v1_response'),
+        },
+        search_serializers={
+            'application/json': ('invenio_records_rest.serializers'
+                                 ':json_v1_search'),
+        },
+        search_factory_imp='rero_mef.query:and_search_factory',
+        list_route='/concepts/rero/',
+        item_route=('/concepts/rero/<pid(corero, record_class='
+                    '"rero_mef.concepts.rero.api:ConceptReroRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict(),
@@ -346,64 +374,111 @@ RECORDS_REST_ENDPOINTS = dict(
 )
 
 RECORDS_JSON_SCHEMA = {
-    'gnd': '/gnd/gnd-contribution-v0.0.1.json',
-    'rero': '/rero/rero-contribution-v0.0.1.json',
-    'idref': '/idref/idref-contribution-v0.0.1.json',
-    'mef': '/mef/mef-contribution-v0.0.1.json',
-    'viaf': '/viaf/viaf-contribution-v0.0.1.json'
+    'corero': '/concepts_rero/rero-concept-v0.0.1.json',
+    'aggnd': '/agents_gnd/gnd-agent-v0.0.1.json',
+    'agrero': '/agents_rero/rero-agent-v0.0.1.json',
+    'aidref': '/agents_idref/idref-agent-v0.0.1.json',
+    'mef': '/mef/mef-v0.0.1.json',
+    'viaf': '/viaf/viaf-v0.0.1.json'
 }
 
 RECORDS_REST_FACETS = dict(
     mef=dict(
         aggs=dict(
-            # The organisation or library facet is defined
-            # dynamically during the query (query.py)
             agent_type=dict(
                 terms=dict(field='type', size=30)
             ),
             sources=dict(
                 terms=dict(field='sources', size=30)
+            ),
+            deleted=dict(
+                filter=dict(exists=dict(field="deleted"))
+            ),
+        ),
+        filters={
+            'agent_type': terms_filter('type'),
+            'agent_sources': terms_filter('sources'),
+            'deleted': exists_filter('deleted'),
+            'rero_double': terms_filter('rero.pid')
+        }
+    ),
+    viaf=dict(
+        aggs=dict(
+            gnd=dict(
+                filter=dict(exists=dict(field="gnd_pid"))
+            ),
+            idref=dict(
+                filter=dict(exists=dict(field="idref_pid"))
+            ),
+            rero=dict(
+                filter=dict(exists=dict(field="rero_pid"))
+            ),
+
+        ),
+        filters={
+            'gnd': exists_filter('gnd_pid'),
+            'idref': exists_filter('idref_pid'),
+            'rero': exists_filter('rero_pid'),
+        }
+    ),
+    agents_gnd=dict(
+        aggs=dict(
+            agent_type=dict(
+                terms=dict(field='bf:Agent', size=30)
+            ),
+            deleted=dict(
+                filter=dict(exists=dict(field="deleted"))
             )
         ),
         filters={
-            _('agent_type'): terms_filter('type'),
-            _('agent_sources'): terms_filter('sources'),
-        }
+            'agent_type': terms_filter('bf:Agent'),
+            'deleted': exists_filter('deleted'),
+        },
     ),
-    gnd=dict(
+    agents_idref=dict(
         aggs=dict(
-            # The organisation or library facet is defined
-            # dynamically during the query (query.py)
             agent_type=dict(
                 terms=dict(field='bf:Agent', size=30)
             ),
+            deleted=dict(
+                filter=dict(exists=dict(field="deleted"))
+            )
         ),
         filters={
-            _('agent_type'): terms_filter('bf:Agent'),
+            'agent_type': terms_filter('bf:Agent'),
+            'deleted': exists_filter('deleted'),
         }
     ),
-    idref=dict(
+    agents_rero=dict(
         aggs=dict(
-            # The organisation or library facet is defined
-            # dynamically during the query (query.py)
             agent_type=dict(
                 terms=dict(field='bf:Agent', size=30)
             ),
+            deleted=dict(
+                filter=dict(exists=dict(field="deleted"))
+            )
         ),
         filters={
-            _('agent_type'): terms_filter('bf:Agent'),
+            'agent_type': terms_filter('bf:Agent'),
+            'deleted': exists_filter('deleted'),
         }
     ),
-    rero=dict(
+    concepts_rero=dict(
         aggs=dict(
-            # The organisation or library facet is defined
-            # dynamically during the query (query.py)
-            agent_type=dict(
-                terms=dict(field='bf:Agent', size=30)
+            classification=dict(
+                terms=dict(field='classification.name', size=30)
+            ),
+            classificationPortion=dict(
+                terms=dict(
+                    field='classification.classificationPortion', size=30
+                )
             ),
         ),
         filters={
-            _('agent_type'): terms_filter('bf:Agent'),
+            'classification': terms_filter('classification.name'),
+            'classificationPortion': terms_filter(
+                'classification.classificationPortion'
+            )
         }
     )
 
