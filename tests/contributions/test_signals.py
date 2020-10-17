@@ -24,41 +24,31 @@
 
 """Test signals."""
 
-from invenio_search import current_search
-
 from rero_mef.contributions.gnd.api import GndRecord
 from rero_mef.contributions.mef.api import MefSearch
 from rero_mef.contributions.viaf.api import ViafRecord
 
 
-def update_indexes(agency):
-    """Update indexes."""
-    index = '{agency}-{agency}-contribution-v0.0.1'.format(
-        agency=agency
-    )
-    current_search.flush_and_refresh(index=index)
-
-
-def test_create_mef_from_agency_with_viaf_links(app, viaf_record, gnd_record):
-    """Test create MEF record from agency with viaf links."""
-    returned_record, action, dummy = ViafRecord.create_or_update(
+def test_create_mef_from_agent_with_viaf_links(app, viaf_record, gnd_record):
+    """Test create MEF record from agent with viaf links."""
+    v_record, action = ViafRecord.create_or_update(
         viaf_record, dbcommit=True, reindex=True
     )
-    update_indexes('viaf')
     assert action.name == 'CREATE'
-    assert returned_record['pid'] == '66739143'
-    assert returned_record['gnd_pid'] == '12391664X'
-    assert returned_record['rero_pid'] == 'A023655346'
-    assert returned_record['idref_pid'] == '069774331'
+    assert v_record['pid'] == '66739143'
+    assert v_record['gnd_pid'] == '12391664X'
+    assert v_record['rero_pid'] == 'A023655346'
+    assert v_record['idref_pid'] == '069774331'
 
-    returned_record, action, mef_action = GndRecord.create_or_update(
-        gnd_record, dbcommit=True, reindex=True
-    )
-    update_indexes('gnd')
-    update_indexes('mef')
+    record, action, m_record, m_action, v_record, online = \
+        GndRecord.create_or_update_agent_mef_viaf(
+            data=gnd_record,
+            dbcommit=True,
+            reindex=True,
+            online=False
+        )
     assert action.name == 'CREATE'
-    assert mef_action.name == 'CREATE'
-    assert returned_record['pid'] == '12391664X'
+    assert record['pid'] == '12391664X'
 
     query = MefSearch(). \
         filter('term', gnd__pid='12391664X'). \

@@ -32,25 +32,19 @@ You overwrite and set instance-specific configuration by either:
 
 from __future__ import absolute_import, print_function
 
-from invenio_records_rest.facets import terms_filter
+from invenio_records_rest.facets import range_filter, terms_filter
 
 from .contributions.gnd.models import GndIdentifier
 from .contributions.idref.models import IdrefIdentifier
-from .contributions.marctojson.do_gnd_auth_person import \
+from .contributions.marctojson.do_gnd_contribution import \
     Transformation as Gnd_transformation
-from .contributions.marctojson.do_idref_auth_person import \
+from .contributions.marctojson.do_idref_contribution import \
     Transformation as Idref_transformation
-from .contributions.marctojson.do_rero_auth_person import \
+from .contributions.marctojson.do_rero_contribution import \
     Transformation as Rero_transformation
 from .contributions.mef.models import MefIdentifier
 from .contributions.rero.models import ReroIdentifier
 from .contributions.viaf.models import ViafIdentifier
-
-
-def _(x):
-    """Identity function used to trigger string extraction."""
-    return x
-
 
 # Rate limiting
 # =============
@@ -86,11 +80,11 @@ SETTINGS_TEMPLATE = 'invenio_theme/page_settings.html'
 # Theme configuration
 # ===================
 #: Site name
-THEME_SITENAME = _('RERO MEF')
+THEME_SITENAME = 'RERO MEF'
 #: Use default frontpage.
 THEME_FRONTPAGE = False
 #: Frontpage title.
-THEME_FRONTPAGE_TITLE = _('RERO MEF')
+THEME_FRONTPAGE_TITLE = 'RERO MEF'
 #: Frontpage template.
 THEME_FRONTPAGE_TEMPLATE = 'rero_mef/frontpage.html'
 #: Template for error pages.
@@ -113,7 +107,7 @@ MAIL_SUPPRESS_SEND = True
 #: Email address used as sender of account registration emails.
 SECURITY_EMAIL_SENDER = SUPPORT_EMAIL
 #: Email subject for account registration emails.
-SECURITY_EMAIL_SUBJECT_REGISTER = _("Welcome to RERO MEF!")
+SECURITY_EMAIL_SUBJECT_REGISTER = "Welcome to RERO MEF!"
 #: Redis session storage URL.
 ACCOUNTS_SESSION_REDIS_URL = 'redis://localhost:6379/1'
 
@@ -356,8 +350,6 @@ RECORDS_JSON_SCHEMA = {
 RECORDS_REST_FACETS = dict(
     mef=dict(
         aggs=dict(
-            # The organisation or library facet is defined
-            # dynamically during the query (query.py)
             agent_type=dict(
                 terms=dict(field='type', size=30)
             ),
@@ -366,44 +358,42 @@ RECORDS_REST_FACETS = dict(
             )
         ),
         filters={
-            _('agent_type'): terms_filter('type'),
-            _('agent_sources'): terms_filter('sources'),
+            'agent_type': terms_filter('type'),
+            'agent_sources': terms_filter('sources'),
+            'deleted': range_filter('deleted'),
         }
     ),
     gnd=dict(
         aggs=dict(
-            # The organisation or library facet is defined
-            # dynamically during the query (query.py)
             agent_type=dict(
                 terms=dict(field='bf:Agent', size=30)
             ),
         ),
         filters={
-            _('agent_type'): terms_filter('bf:Agent'),
+            'agent_type': terms_filter('bf:Agent'),
+            'deleted': range_filter('deleted'),
         }
     ),
     idref=dict(
         aggs=dict(
-            # The organisation or library facet is defined
-            # dynamically during the query (query.py)
             agent_type=dict(
                 terms=dict(field='bf:Agent', size=30)
             ),
         ),
         filters={
-            _('agent_type'): terms_filter('bf:Agent'),
+            'agent_type': terms_filter('bf:Agent'),
+            'deleted': range_filter('deleted'),
         }
     ),
     rero=dict(
         aggs=dict(
-            # The organisation or library facet is defined
-            # dynamically during the query (query.py)
             agent_type=dict(
                 terms=dict(field='bf:Agent', size=30)
             ),
         ),
         filters={
-            _('agent_type'): terms_filter('bf:Agent'),
+            'agent_type': terms_filter('bf:Agent'),
+            'deleted': range_filter('deleted'),
         }
     )
 

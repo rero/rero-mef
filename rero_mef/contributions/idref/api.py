@@ -30,8 +30,7 @@ from .fetchers import idref_id_fetcher
 from .minters import idref_id_minter
 from .models import IdrefMetadata
 from .providers import IdrefProvider
-from ..api import AuthRecord, AuthRecordIndexer
-from ..utils import add_md5
+from ..agent_api import AgentIndexer, AgentRecord
 
 
 class IdrefSearch(RecordsSearch):
@@ -48,49 +47,25 @@ class IdrefSearch(RecordsSearch):
         default_filter = None
 
 
-class IdrefRecord(AuthRecord):
+class IdrefRecord(AgentRecord):
     """Idref Authority class."""
 
     minter = idref_id_minter
     fetcher = idref_id_fetcher
     provider = IdrefProvider
-    agency = 'idref'
+    agent = 'idref'
     viaf_source_code = 'SUDOC'
-    agency_pid_type = 'idref_pid'
+    agent_pid_type = 'idref_pid'
     model_cls = IdrefMetadata
 
     @classmethod
-    def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
-               reindex=False, **kwargs):
-        """Create a new agency record."""
-        data = add_md5(data)
-        record = super(IdrefRecord, cls).create(
-            data=data,
-            id_=id_,
-            delete_pid=delete_pid,
-            dbcommit=dbcommit,
-            reindex=reindex,
-            **kwargs
-        )
-        return record
-
-    def update(self, data, dbcommit=False, reindex=False):
-        """Update data for record."""
-        data = add_md5(data)
-        super(IdrefRecord, self).update(data, dbcommit=dbcommit,
-                                        reindex=reindex)
-        return self
-
-    @classmethod
-    def get_online_record(cls, id, dbcommit=False, reindex=False,
-                          test_md5=False, verbose=False):
+    def get_online_record(cls, id, verbose=False):
         """Get online record."""
         from .tasks import idref_get_record
-        return idref_get_record(id=id, dbcommit=dbcommit, reindex=reindex,
-                                test_md5=test_md5, verbose=verbose)
+        return idref_get_record(id=id, verbose=verbose)
 
 
-class IdrefIndexer(AuthRecordIndexer):
+class IdrefIndexer(AgentIndexer):
     """IdrefIndexer."""
 
     record_cls = IdrefRecord

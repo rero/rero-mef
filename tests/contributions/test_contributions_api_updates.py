@@ -25,7 +25,6 @@
 """Test contributions api."""
 
 import mock
-from invenio_search import current_search
 
 from rero_mef.contributions.gnd.api import GndRecord
 from rero_mef.contributions.idref.api import IdrefRecord
@@ -34,18 +33,11 @@ from rero_mef.contributions.rero.api import ReroRecord
 from rero_mef.contributions.viaf.api import ViafRecord
 
 
-def update_indexes(agency):
-    index = '{agency}-{agency}-contribution-v0.0.1'.format(
-        agency=agency
-    )
-    current_search.flush_and_refresh(index=index)
-
-
 @mock.patch(
     'rero_mef.contributions.viaf.api.ViafRecord.get_online_viaf_record')
-def test_create_agency_updates(mock_get, app, gnd_record, rero_record,
-                               idref_record):
-    """Test create agency record with viaf links."""
+def test_create_agent_updates(mock_get, app, gnd_record, rero_record,
+                              idref_record):
+    """Test create agent record with viaf links."""
     # we have to mock the access to viaf
     mock_get.return_value = {
         'pid': '37268949',
@@ -55,17 +47,18 @@ def test_create_agency_updates(mock_get, app, gnd_record, rero_record,
     # create first record no viaf and mef records exist
     assert MefRecord.count() == 0
     assert ViafRecord.count() == 0
-    returned_record, action, mef_action = IdrefRecord.create_or_update(
-        idref_record, dbcommit=True, reindex=True, online=True
-    )
-    update_indexes('idref')
-    update_indexes('mef')
-    update_indexes('viaf')
+    record, action, m_record, m_action, v_record, online = \
+        IdrefRecord.create_or_update_agent_mef_viaf(
+            data=idref_record,
+            dbcommit=True,
+            reindex=True,
+            online=True
+        )
     assert action.name == 'CREATE'
-    assert mef_action.name == 'CREATE'
-    assert returned_record['pid'] == '069774331'
+    assert record['pid'] == '069774331'
     assert MefRecord.count() == 1
     assert ViafRecord.count() == 1
+    assert online
 
     # we should have a mef and viaf record now
     mef_pid = list(MefRecord.get_all_pids())[-1]
@@ -86,13 +79,13 @@ def test_create_agency_updates(mock_get, app, gnd_record, rero_record,
         'rero_pid': 'A023655346'
     }
     # create second record
-    returned_record, action, mef_action = GndRecord.create_or_update(
-        gnd_record, dbcommit=True, reindex=True
-    )
-    update_indexes('gnd')
-    update_indexes('mef')
-    update_indexes('viaf')
-
+    record, action, m_record, m_action, v_record, online = \
+        GndRecord.create_or_update_agent_mef_viaf(
+            data=gnd_record,
+            dbcommit=True,
+            reindex=True,
+            online=True
+        )
     mef_pid = list(MefRecord.get_all_pids())[-1]
     mef_record = MefRecord.get_record_by_pid(mef_pid)
     assert mef_record.get('pid') == '2'
@@ -103,12 +96,13 @@ def test_create_agency_updates(mock_get, app, gnd_record, rero_record,
     assert viaf_record.get('pid') == '66739143'
     assert viaf_record.get('gnd_pid') == '12391664X'
 
-    returned_record, action, mef_action = ReroRecord.create_or_update(
-        rero_record, dbcommit=True, reindex=True
-    )
-    update_indexes('rero')
-    update_indexes('mef')
-    update_indexes('viaf')
+    record, action, m_record, m_action, v_record, online = \
+        ReroRecord.create_or_update_agent_mef_viaf(
+            data=rero_record,
+            dbcommit=True,
+            reindex=True,
+            online=True
+        )
 
     mef_pid = list(MefRecord.get_all_pids())[-1]
     mef_record = MefRecord.get_record_by_pid(mef_pid)
@@ -143,7 +137,6 @@ def test_create_agency_updates(mock_get, app, gnd_record, rero_record,
     assert mef_record == {
         'viaf_pid': 'xxxxxxxx',
         'gnd': {'$ref': 'https://mef.rero.ch/api/gnd/12391664X'},
-        'idref': {'$ref': 'https://mef.rero.ch/api/idref/069774331'},
         'rero': {'$ref': 'https://mef.rero.ch/api/rero/A023655346'},
         '$schema':
             'https://mef.rero.ch/schemas/mef/mef-contribution-v0.0.1.json',

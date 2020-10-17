@@ -24,63 +24,61 @@
 
 """Test contributions api."""
 
-import mock
-from invenio_search import current_search
-
 from rero_mef.contributions.gnd.api import GndRecord
 from rero_mef.contributions.idref.api import IdrefRecord
 from rero_mef.contributions.rero.api import ReroRecord
 
 
-def update_indexes(agency):
-    index = '{agency}-{agency}-contribution-v0.0.1'.format(
-        agency=agency
-    )
-    current_search.flush_and_refresh(index=index)
-
-
-@mock.patch(
-    'rero_mef.contributions.viaf.api.ViafRecord.get_online_viaf_record')
-def test_create_agency_record_no_viaf_links(
-        mock_get, app, gnd_record, rero_record, idref_record):
-    """Test create agency record without viaf links."""
-    mock_get.return_value = {
-        'pid': '66739143',
-        'gnd_pid': '12391664X',
-        'idref_pid': '068979401',
-        'rero_pid': 'A023655346'
+def test_create_agent_record_no_viaf_links(
+        app, gnd_record, rero_record, idref_record):
+    """Test create agent record without viaf links."""
+    record, action, m_record, m_action, v_record, online = \
+        GndRecord.create_or_update_agent_mef_viaf(
+            data=gnd_record,
+            dbcommit=True,
+            reindex=True,
+            online=False
+        )
+    assert action.name == 'CREATE'
+    assert record['pid'] == '12391664X'
+    assert m_action.name == 'CREATE'
+    assert m_record == {
+        '$schema':
+            'https://mef.rero.ch/schemas/mef/mef-contribution-v0.0.1.json',
+        'gnd': {'$ref': 'https://mef.rero.ch/api/gnd/12391664X'},
+        'pid': '1',
     }
-    returned_record, action, mef_action = GndRecord.create_or_update(
-        gnd_record, dbcommit=True, reindex=True
-    )
-    update_indexes('gnd')
-    update_indexes('mef')
-    update_indexes('viaf')
-    assert action.name == 'CREATE'
-    assert mef_action.name == 'CREATE'
-    assert returned_record == gnd_record
 
-    returned_record, action, mef_action = ReroRecord.create_or_update(
-        rero_record, dbcommit=True, reindex=True
-    )
-    update_indexes('rero')
-    update_indexes('mef')
-    update_indexes('viaf')
+    record, action, m_record, m_action, v_record, online = \
+        ReroRecord.create_or_update_agent_mef_viaf(
+            data=rero_record,
+            dbcommit=True,
+            reindex=True,
+            online=False
+        )
     assert action.name == 'CREATE'
-    assert mef_action.name == 'UPDATE'
-    assert returned_record == rero_record
-
-    mock_get.return_value = {
-        'pid': '37268949',
-        'idref_pid': '069774331',
-        'gnd_pid': '100769527'
+    assert record['pid'] == 'A023655346'
+    assert m_action.name == 'CREATE'
+    assert m_record == {
+        '$schema':
+            'https://mef.rero.ch/schemas/mef/mef-contribution-v0.0.1.json',
+        'pid': '2',
+        'rero': {'$ref': 'https://mef.rero.ch/api/rero/A023655346'},
     }
-    returned_record, action, mef_action = IdrefRecord.create_or_update(
-        idref_record, dbcommit=True, reindex=True
-    )
-    update_indexes('idref')
-    update_indexes('mef')
-    update_indexes('viaf')
+
+    record, action, m_record, m_action, v_record, online = \
+        IdrefRecord.create_or_update_agent_mef_viaf(
+            data=idref_record,
+            dbcommit=True,
+            reindex=True,
+            online=False
+        )
     assert action.name == 'CREATE'
-    assert mef_action.name == 'CREATE'
-    assert returned_record == idref_record
+    assert record['pid'] == '069774331'
+    assert m_action.name == 'CREATE'
+    assert m_record == {
+        '$schema':
+            'https://mef.rero.ch/schemas/mef/mef-contribution-v0.0.1.json',
+        'idref': {'$ref': 'https://mef.rero.ch/api/idref/069774331'},
+        'pid': '3',
+    }

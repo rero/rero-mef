@@ -27,31 +27,30 @@
 from celery import shared_task
 from flask import current_app
 
-from .mef.models import MefAction
-from .models import AgencyAction
-from .utils import get_agency_class
+from .api import Action
+from .utils import get_agent_class
 from .viaf.api import ViafRecord
 
 
 @shared_task
-def create_or_update(index, record, agency, dbcommit=True, reindex=True,
+def create_or_update(index, record, agent, dbcommit=True, reindex=True,
                      test_md5=False, verbose=False):
     """Create or update record task.
 
     :param index: index of record
     :param record: record data to use
-    :param agency: agency to use
+    :param agent: agent to use
     :param dbcommit: db commit or not
     :param reindex: reindex or not
     :param test_md5: test md5 or not
     :param verbose: verbose or not
-    :returns: id type, pid or id, agency action, mef action
+    :returns: id type, pid or id, agent action, mef action
     """
-    agency_class = get_agency_class(agency)
-    returned_record, agency_action, mef_action = agency_class.create_or_update(
-        record, dbcommit=True, reindex=True, test_md5=test_md5
+    agent_class = get_agent_class(agent)
+    returned_record, agent_action = agent_class.create_or_update(
+        data=record, dbcommit=True, reindex=True, test_md5=test_md5
     )
-    if agency_action != AgencyAction.DISCARD:
+    if agent_action != Action.DISCARD:
         id_type = 'uuid: '
         id = returned_record.id
     else:
@@ -59,49 +58,47 @@ def create_or_update(index, record, agency, dbcommit=True, reindex=True,
         id = returned_record.get('pid')
 
     if verbose:
-        message = '{index:<10} {agency} {type}{id:<38}' \
-                  ' | {agency_action}\t| {mef_action}'.format(
-                        index=index,
-                        agency=agency,
-                        type=id_type,
-                        id=str(id),
-                        agency_action=agency_action,
-                        mef_action=mef_action
-                    )
+        message = '{index:<10} {agent} {type}{id:<38} | {agent_action}'.format(
+            index=index,
+            agent=agent,
+            type=id_type,
+            id=str(id),
+            agent_action=agent_action
+        )
         current_app.logger.info(message)
-    return id_type, str(id), str(agency_action), str(mef_action)
+    return id_type, str(id), str(agent_action)
 
 
 @shared_task
-def delete(index, pid, agency, dbcommit=True, delindex=True, verbose=False):
+def delete(index, pid, agent, dbcommit=True, delindex=True, verbose=False):
     """Delete record task.
 
     :param index: index of record
     :param pid: pid to delete
-    :param agency: agency to use
+    :param agent: agent to use
     :param dbcommit: db commit or not
     :param delindex: delete index or not
     :param verbose: verbose or not
     :returns: action
     """
-    agency_class = get_agency_class(agency)
-    agency_record = agency_class.get_record_by_pid(pid)
+    agent_class = get_agent_class(agent)
+    agent_record = agent_class.get_record_by_pid(pid)
     action = None
-    if agency_record:
-        result, action = agency_record.delete(dbcommit=dbcommit,
-                                              delindex=delindex)
+    if agent_record:
+        result, action = agent_record.delete(dbcommit=dbcommit,
+                                             delindex=delindex)
         if verbose:
-            message = '{index:<10} Deleted {agency} {pid:<38} {action}'.format(
+            message = '{index:<10} Deleted {agent} {pid:<38} {action}'.format(
                 index=index,
-                agency=agency,
+                agent=agent,
                 pid=pid,
                 action=action
             )
             current_app.logger.info(message)
     else:
-        message = '{index:<10} Not found {agency} {pid:<38}'.format(
+        message = '{index:<10} Not found {agent} {pid:<38}'.format(
             index=index,
-            agency=agency,
+            agent=agent,
             pid=pid,
         )
         current_app.logger.warning(message)
@@ -109,10 +106,10 @@ def delete(index, pid, agency, dbcommit=True, delindex=True, verbose=False):
 
 
 @shared_task
-def create_mef_and_agencies_from_viaf(pid, dbcommit=True, reindex=True,
-                                      test_md5=False, online=False,
-                                      verbose=False):
-    """Create MEF and agencies from VIAF task.
+def create_mef_and_agents_from_viaf(pid, dbcommit=True, reindex=True,
+                                    test_md5=False, online=False,
+                                    verbose=False):
+    """Create MEF and agents from VIAF task.
 
     :param pid: pid for viaf to use
     :param dbcommit: db commit or not
@@ -123,62 +120,54 @@ def create_mef_and_agencies_from_viaf(pid, dbcommit=True, reindex=True,
     :returns: string with pid and actions
     """
     viaf_record = ViafRecord.get_record_by_pid(pid)
-    actions = viaf_record.create_mef_and_agencies(
+    actions = viaf_record.create_mef_and_agents(
         dbcommit=dbcommit,
         reindex=reindex,
         test_md5=test_md5,
         online=online,
         verbose=verbose
     )
-    msgs = []
-    for key, value in actions.items():
-        if key == 'mef':
-            msgs.insert(0, '{key}: {m_action}'.format(
-                key=key,
-                m_action=value
-            ))
-        else:
-            if value['agency'] != AgencyAction.DISCARD and \
-                    value['mef'] != MefAction.DISCARD:
-                msgs.append('{key}: {a_action} {m_action}'.format(
-                    key=key,
-                    a_action=value['agency'],
-                    m_action=value['mef']
-                ))
-    return ('Create MEF viaf pid:{pid} > {actions}'.format(
-        pid=pid,
-        actions=', '.join(msgs)
-    ))
+    return actions
 
 
 @shared_task
-def create_mef_from_agency(pid, agency, dbcommit=True, reindex=True,
-                           online=False):
-    """Create MEF from agency task.
+def create_mef_from_agent(pid, agent, dbcommit=True, reindex=True,
+                          online=False):
+    """Create MEF from agent task.
 
-    :param pid: pid for agency to use
-    :param agency: agency
+    :param pid: pid for agent to use
+    :param agent: agent
     :param dbcommit: db commit or not
     :param reindex: reindex or not
     :param test_md5: test md5 or not
     :param online: get viaf online if not exist
     :returns: no return
     """
-    agency_class = get_agency_class(agency)
-    agency_record = agency_class.get_record_by_pid(pid)
-    record, action, online = agency_record.create_or_update_mef_viaf_record(
-        dbcommit=dbcommit,
-        reindex=reindex,
-        online=online
-    )
-    if not record:
-        record = {}
-    msg = 'Create MEF {agency} pid: {pid} > ' \
-        'MEF pid: {mef_pid} {action} {online}'.format(
-            agency=agency,
-            pid=pid,
-            mef_pid=record.get('pid'),
-            action=action,
+    agent_class = get_agent_class(agent)
+    agent_record = agent_class.get_record_by_pid(pid)
+    mef_record, mef_action, viaf_record, online = \
+        agent_record.create_or_update_mef_viaf_record(
+            dbcommit=dbcommit,
+            reindex=reindex,
             online=online
         )
+    mef_pid = 'Non'
+    if mef_record:
+        mef_pid = mef_record.pid
+    viaf_pid = 'Non'
+    if viaf_record:
+        viaf_pid = viaf_record.pid
+
+    actions = 'mef: {m_pid} {m_action} viaf: {v_pid} {online}'.format(
+        m_pid=mef_pid,
+        m_action=mef_action.name,
+        v_pid=viaf_pid,
+        online=online
+    )
+
+    msg = 'Create MEF from {agent} pid: {pid} | {actions}'.format(
+        agent=agent,
+        pid=pid,
+        actions=actions
+    )
     return msg

@@ -31,7 +31,7 @@ from flask import current_app
 from sickle import OAIResponse, Sickle
 
 from .api import IdrefRecord
-from ..marctojson.do_idref_auth_person import Transformation
+from ..marctojson.do_idref_contribution import Transformation
 from ...utils import MyOAIItemIterator, oai_get_record, \
     oai_process_records_from_dates, oai_save_records_from_dates
 
@@ -122,8 +122,7 @@ def save_records_from_dates(file_name, from_date=None, until_date=None,
 
 
 @shared_task
-def idref_get_record(id, dbcommit=False, reindex=False, test_md5=False,
-                     verbose=False, debug=False, **kwargs):
+def idref_get_record(id, verbose=False, debug=False):
     """Get a record from GND OAI repo."""
     return oai_get_record(
         id=id,
@@ -131,10 +130,6 @@ def idref_get_record(id, dbcommit=False, reindex=False, test_md5=False,
         transformation=Transformation,
         record_cls=IdrefRecord,
         identifier='oai:IdRefOAIServer.fr:',
-        dbcommit=dbcommit,
-        reindex=reindex,
-        test_md5=test_md5,
         verbose=verbose,
-        debug=debug,
-        kwargs=kwargs
+        debug=debug
     )

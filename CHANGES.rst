@@ -103,7 +103,7 @@ Changelog <https://github.com/rero/rero-mef/compare/3d64a87af51ff046941b5aeeb8b3
 
 **Merged pull requests:**
 
--  Bulk load mef and agencies data
+-  Bulk load mef and agents data
    `#10 <https://github.com/rero/rero-mef/pull/10>`__
    (`BadrAly <https://github.com/BadrAly>`__)
 -  feat: Add personalized homepage

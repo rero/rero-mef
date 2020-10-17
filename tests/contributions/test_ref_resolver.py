@@ -24,8 +24,6 @@
 
 """Test ref resolver."""
 
-from invenio_search import current_search
-
 from rero_mef.contributions.gnd.api import GndRecord
 from rero_mef.contributions.idref.api import IdrefRecord
 from rero_mef.contributions.mef.api import MefRecord
@@ -37,41 +35,45 @@ def test_ref_resolvers(
         app, gnd_record, rero_record, viaf_record, idref_record):
     """Test ref resolvers."""
 
-    """VIAF record."""
-    returned_record, action, dummy = ViafRecord.create_or_update(
-        viaf_record, dbcommit=True, reindex=True
+    # VIAF record
+    record, action = ViafRecord.create_or_update(
+        data=viaf_record,
+        dbcommit=True,
+        reindex=True
     )
-    viaf_pid = returned_record['pid']
-    current_search.flush_and_refresh(
-        index='viaf-viaf-contribution-v0.0.1')
-    current_search.flush_and_refresh(
-        index='mef-mef-contribution-v0.0.1')
+    viaf_pid = record['pid']
 
-    """GND record."""
-    returned_record, action, mef_action = GndRecord.create_or_update(
-        gnd_record, dbcommit=True, reindex=True
-    )
-    current_search.flush_and_refresh(index='gnd-gnd-contribution-v0.0.1')
-    current_search.flush_and_refresh(index='mef-mef-contribution-v0.0.1')
-    gnd_pid = returned_record.get('pid')
+    # GND record
+    record, action, m_record, m_action, v_record, online = \
+        GndRecord.create_or_update_agent_mef_viaf(
+            data=gnd_record,
+            dbcommit=True,
+            reindex=True,
+            online=False
+        )
+    gnd_pid = record.get('pid')
 
-    """RERO record."""
-    returned_record, action, mef_action = ReroRecord.create_or_update(
-        rero_record, dbcommit=True, reindex=True
-    )
-    current_search.flush_and_refresh(index='rero-rero-contribution-v0.0.1')
-    current_search.flush_and_refresh(index='mef-mef-contribution-v0.0.1')
-    rero_pid = returned_record.get('pid')
+    # RERO record
+    record, action, m_record, m_action, v_record, online = \
+        ReroRecord.create_or_update_agent_mef_viaf(
+            data=rero_record,
+            dbcommit=True,
+            reindex=True,
+            online=False
+        )
+    rero_pid = record.get('pid')
 
-    """IDREF record."""
-    returned_record, action, mef_action = IdrefRecord.create_or_update(
-        idref_record, dbcommit=True, reindex=True
-    )
-    current_search.flush_and_refresh(index='idref-idref-contribution-v0.0.1')
-    current_search.flush_and_refresh(index='mef-mef-contribution-v0.0.1')
-    idref_pid = returned_record.get('pid')
+    # IDREF record
+    record, action, m_record, m_action, v_record, online = \
+        IdrefRecord.create_or_update_agent_mef_viaf(
+            data=idref_record,
+            dbcommit=True,
+            reindex=True,
+            online=False
+        )
+    idref_pid = record.get('pid')
 
-    """MEF record."""
+    # MEF record
     mef_rec_resolved = MefRecord.get_mef_by_viaf_pid(
         viaf_pid=viaf_pid
     )

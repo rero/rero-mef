@@ -24,24 +24,17 @@
 
 """Tasks used by  RERO-MEF."""
 
-import traceback
-
 import click
 import requests
 from celery import shared_task
-from jsonschema.exceptions import ValidationError
 from pymarc.marcxml import parse_xml_to_array
 from six import BytesIO
 
-from .api import ReroRecord
-from ..marctojson.do_rero_auth_person import Transformation
-from ..mef.models import MefAction
-from ..models import AgencyAction
+from ..marctojson.do_rero_contribution import Transformation
 
 
 @shared_task
-def rero_get_record(id, dbcommit=False, reindex=False, test_md5=False,
-                    verbose=False, debug=False, **kwargs):
+def rero_get_record(id, verbose=False, debug=False):
     """Get a record from RERO data repo.
 
     RERO documentation:
@@ -56,42 +49,18 @@ def rero_get_record(id, dbcommit=False, reindex=False, test_md5=False,
         query_id=query_id,
         format=format
     )
-    new_rec = None
-    action = AgencyAction.DISCARD
-    mef_action = MefAction.DISCARD
+    trans_record = None
     response = requests.get(url)
     if response.status_code == requests.codes.ok:
         try:
             records = parse_xml_to_array(BytesIO(response.content))
             if records:
-                rec = Transformation(records[0]).json
-                try:
-                    new_rec, action, mef_action = ReroRecord.create_or_update(
-                        rec,
-                        dbcommit=dbcommit,
-                        reindex=reindex,
-                        test_md5=test_md5
-                    )
-                except ValidationError:
-                    new_rec = None,
-                    action = AgencyAction.VALIDATIONERROR
-                    mef_action = MefAction.DISCARD
-                    if debug:
-                        traceback.print_exc()
-                except Exception:
-                    new_rec = None,
-                    action = AgencyAction.ERROR
-                    mef_action = MefAction.DISCARD
-                    if debug:
-                        traceback.print_exc()
+                trans_record = Transformation(records[0]).json
                 if verbose:
-                    click.echo(
-                        'DATA-rero get: {id} action: {action} {mef}'.format(
-                            id=id,
-                            action=action,
-                            mef=mef_action
-                        )
-                    )
-        except Exception:
-            pass
-    return new_rec, action, mef_action
+                    click.echo('API-rero get: {id}'.format(id=id))
+        except Exception as err:
+            if verbose:
+                click.echo('ERROR get rero record: {err}'.format(err=err))
+            if debug:
+                raise(err)
+    return trans_record

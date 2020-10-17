@@ -25,9 +25,9 @@
 """API for manipulating records."""
 
 from copy import deepcopy
+from enum import Enum
 from uuid import uuid4
 
-import click
 from elasticsearch.exceptions import NotFoundError
 from flask import current_app
 from invenio_db import db
@@ -40,12 +40,24 @@ from invenio_search import current_search
 from sqlalchemy import text
 from sqlalchemy.orm.exc import NoResultFound
 
-from .mef.models import MefAction
-from .models import AgencyAction
 from .utils import add_md5, add_schema
 
 
-class AuthRecordError:
+class Action(Enum):
+    """Class holding all availabe agent record creation actions."""
+
+    CREATE = 'create'
+    UPDATE = 'update'
+    REPLACE = 'replace'
+    UPTODATE = 'uptodate'
+    DISCARD = 'discard'
+    DELETE = 'delete'
+    DELETEAGENT = 'delete agent'
+    VALIDATIONERROR = 'validation error'
+    ERROR = 'error'
+
+
+class ContributionRecordError:
     """Base class for errors in the IlsRecordClass."""
 
     class Deleted(Exception):
@@ -70,79 +82,7 @@ class AuthRecordError:
         """Data missing in record."""
 
 
-class AuthRecordIndexer(RecordIndexer):
-    """Indexing class for mef."""
-
-    def bulk_index(self, record_id_iterator, doc_type=None):
-        """Bulk index records.
-
-        :param record_id_iterator: Iterator yielding record UUIDs.
-        """
-        self._bulk_op(record_id_iterator, op_type='index', doc_type=doc_type)
-
-    def _get_indexer_class(self, payload):
-        """Get the record class from payload."""
-        # take the first defined doc type for finding the class
-        pid_type = payload.get('doc_type', 'rec')
-        record_class = obj_or_import_string(
-            current_app.config.get('RECORDS_REST_ENDPOINTS').get(
-                pid_type
-            ).get('indexer_class', RecordIndexer)
-        )
-        return record_class
-
-    def _actionsiter(self, message_iterator):
-        """Iterate bulk actions.
-
-        :param message_iterator: Iterator yielding messages from a queue.
-        """
-        for message in message_iterator:
-            payload = message.decode()
-            try:
-                indexer_class = self._get_indexer_class(payload)
-                if payload['op'] == 'delete':
-                    yield indexer_class()._delete_action(
-                        payload=payload
-                    )
-                else:
-                    yield indexer_class()._index_action(
-                        payload=payload
-                    )
-                message.ack()
-            except NoResultFound:
-                message.reject()
-            except Exception:
-                message.reject()
-                current_app.logger.error(
-                    "Failed to index record {0}".format(payload.get('id')),
-                    exc_info=True)
-
-    def _index_action(self, payload):
-        """Bulk index action.
-
-        :param payload: Decoded message body.
-        :returns: Dictionary defining an Elasticsearch bulk 'index' action.
-        """
-        record = self.record_cls.get_record(payload['id'])
-        index, doc_type = self.record_to_index(record)
-
-        arguments = {}
-        body = self._prepare_record(record, index, doc_type, arguments)
-        action = {
-            '_op_type': 'index',
-            '_index': index,
-            '_type': doc_type,
-            '_id': str(record.id),
-            '_version': record.revision_id,
-            '_version_type': self._version_type,
-            '_source': body
-        }
-        action.update(arguments)
-
-        return action
-
-
-class AuthRecord(Record):
+class ContributionRecord(Record):
     """Authority Record class."""
 
     minter = None
@@ -150,13 +90,13 @@ class AuthRecord(Record):
     provider = None
     object_type = 'rec'
     viaf_source_code = None
-    agency = None
-    agency_pid_type = None
+    agent = None
+    agent_pid_type = None
 
     @classmethod
     def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
-               reindex=False, **kwargs):
-        """Create a new agency record."""
+               reindex=False, md5=False, **kwargs):
+        """Create a new agent record."""
         assert cls.minter
         if '$schema' not in data:
             type = cls.provider.pid_type
@@ -166,104 +106,52 @@ class AuthRecord(Record):
         if not id_:
             id_ = uuid4()
         cls.minter(id_, data)
-        record = super(AuthRecord, cls).create(data=data, id_=id_, **kwargs)
+        if md5:
+            data = add_md5(data)
+        record = super(ContributionRecord, cls).create(
+            data=data,
+            id_=id_,
+            **kwargs
+        )
         if dbcommit:
             record.dbcommit(reindex)
         return record
 
-    def _update(self, data, dbcommit=False, reindex=False, test_md5=False):
-        """Update existing record."""
-        return_record = self
-        if data.get('md5'):
-            data = add_md5(data)
-            data_md5 = data.get('md5', 'data')
-            agency_md5 = self.get('md5', 'agency')
-            if test_md5 and data_md5 == agency_md5:
-                # record has no changes
-                agency_action = AgencyAction.UPTODATE
-                mef_action = MefAction.UPTODATE
-                return return_record, agency_action, mef_action
-        data = add_schema(data, self.agency)
-        return_record = self.update(
-            data, dbcommit=dbcommit, reindex=reindex)
-        mef_action = MefAction.UPDATE
-        agency_action = AgencyAction.UPDATE
-        return return_record, agency_action, mef_action
-
     @classmethod
     def create_or_update(cls, data, id_=None, delete_pid=True, dbcommit=False,
                          reindex=False, test_md5=False, online=True):
-        """Create or update agency record."""
-        mef_action = agency_action = None
+        """Create or update agent record."""
+        mef_action = agent_action = None
         return_record = data
 
         pid = data.get('pid')
-        from .viaf.api import ViafRecord
-        viaf_record = ViafRecord.get_viaf_by_agency_pid(
-            pid, pid_type=cls.agency_pid_type
-        )
+        agent_record = cls.get_record_by_pid(pid)
 
-        agency_record = cls.get_record_by_pid(pid)
-
-        if agency_record:
+        if agent_record:
             # record exist
-            return_record, agency_action, mef_action = agency_record._update(
+            if test_md5:
+                return_record, agent_action = agent_record.update_test_md5(
+                    data=data,
+                    dbcommit=dbcommit,
+                    reindex=reindex
+                )
+            else:
+                agent_action = Action.UPDATE
+                return_record = agent_record.update(
+                    data=data,
+                    dbcommit=dbcommit,
+                    reindex=reindex
+                )
+        else:
+            return_record = cls.create(
                 data=data,
+                id_=None,
+                delete_pid=False,
                 dbcommit=dbcommit,
                 reindex=reindex,
-                test_md5=test_md5
             )
-        else:
-            if viaf_record:
-                mef_action = MefAction.UPDATE
-            else:
-                mef_action = MefAction.CREATE
-                if online:
-                    # we do not have a VIAF record here try to create one
-                    assert cls.viaf_source_code
-                    viaf_data = ViafRecord.get_online_viaf_record(
-                        cls.viaf_source_code,
-                        data.get('pid')
-                    )
-                    if viaf_data:
-                        viaf_record, action, dum = ViafRecord.create_or_update(
-                            data=viaf_data,
-                            id_=None,
-                            dbcommit=dbcommit,
-                            reindex=reindex,
-                        )
-
-            data = add_md5(data)
-            data = add_schema(data, cls.agency)
-            try:
-                return_record = cls.create(
-                    data,
-                    id_=None,
-                    delete_pid=False,
-                    dbcommit=dbcommit,
-                    reindex=reindex,
-                )
-                agency_action = AgencyAction.CREATE
-            except Exception as err:
-                msg = 'Error creating {agency}: {pid} {err}'.format(
-                    agency=cls.agency,
-                    pid=data.get('pid'),
-                    err=err
-                )
-                current_app.logger.error(msg)
-                return None, AgencyAction.ERROR, MefAction.DISCARD
-
-        from .mef.api import MefRecord
-        mef_record, mef_action, dummy = MefRecord.create_or_update(
-            agency=cls.agency,
-            agency_pid=pid,
-            viaf_record=viaf_record,
-            action=mef_action,
-            dbcommit=dbcommit,
-            reindex=reindex,
-            online=online
-        )
-        return return_record, agency_action, mef_action
+            agent_action = Action.CREATE
+        return return_record, agent_action
 
     @classmethod
     def get_record_by_pid(cls, pid, with_deleted=False):
@@ -274,7 +162,7 @@ class AuthRecord(Record):
                 cls.provider.pid_type,
                 pid
             )
-            record = super(AuthRecord, cls).get_record(
+            record = super(ContributionRecord, cls).get_record(
                 persistent_identifier.object_uuid,
                 with_deleted=with_deleted
             )
@@ -293,7 +181,10 @@ class AuthRecord(Record):
     @classmethod
     def get_record_by_id(cls, id, with_deleted=False):
         """Get record by uuid."""
-        return super(AuthRecord, cls).get_record(id, with_deleted=with_deleted)
+        return super(ContributionRecord, cls).get_record(
+            id,
+            with_deleted=with_deleted
+        )
 
     @classmethod
     def get_persistent_identifier(cls, id):
@@ -326,7 +217,7 @@ class AuthRecord(Record):
         else:
             search_class_string = current_app.config.\
                 get('RECORDS_REST_ENDPOINTS').\
-                get(cls.agency).\
+                get(cls.agent).\
                 get('search_class', None)
         search_class = obj_or_import_string(search_class_string)
         query = search_class().filter(filter).source('pid')
@@ -397,7 +288,7 @@ class AuthRecord(Record):
         """Delete record and persistent identifier."""
         persistent_identifier = self.get_persistent_identifier(self.id)
         persistent_identifier.delete()
-        result = super(AuthRecord, self).delete(force=force)
+        result = super(ContributionRecord, self).delete(force=force)
         if dbcommit:
             self.dbcommit()
         if delindex:
@@ -406,8 +297,8 @@ class AuthRecord(Record):
 
     def update(self, data, dbcommit=False, reindex=False):
         """Update data for record."""
-        super(AuthRecord, self).update(data)
-        super(AuthRecord, self).commit()
+        super(ContributionRecord, self).update(data)
+        super(ContributionRecord, self).commit()
         if dbcommit:
             self.dbcommit(reindex)
         return self
@@ -417,7 +308,7 @@ class AuthRecord(Record):
         new_data = deepcopy(data)
         pid = new_data.get('pid')
         if not pid:
-            raise AuthRecordError.PidMissing(
+            raise ContributionRecordError.PidMissing(
                 'missing pid={pid}'.format(pid=self.pid)
             )
         self.clear()
@@ -441,8 +332,8 @@ class AuthRecord(Record):
     @classmethod
     def update_indexes(cls):
         """Update indexes."""
-        index = '{agency}-{agency}-contribution-v0.0.1'.format(
-            agency=cls.agency
+        index = '{agent}-{agent}-contribution-v0.0.1'.format(
+            agent=cls.agent
         )
         try:
             current_search.flush_and_refresh(index=index)
@@ -458,77 +349,9 @@ class AuthRecord(Record):
         except NotFoundError:
             pass
 
-    def create_or_update_mef_viaf_record(self, dbcommit=False, reindex=False,
-                                         online=True):
-        """Create or update MEF and VIAF record."""
-        from .mef.api import MefRecord
-        mef_record = MefRecord.get_mef_by_agency_pid(self.pid, self.agency)
-        mef_action = MefAction.CREATE
-        if mef_record:
-            mef_action = MefAction.UPDATE
-        from .viaf.api import ViafRecord
-        viaf_record = ViafRecord.get_viaf_by_agency_pid(
-            self.pid,
-            pid_type=self.agency_pid_type
-        )
-        if not viaf_record and online:
-            viaf_record = ViafRecord.get_online_viaf_record(
-                self.viaf_source_code,
-                self.pid
-            )
-            # we got a viaf record save it
-            if viaf_record:
-                ViafRecord.create_or_update(
-                    data=viaf_record,
-                    dbcommit=dbcommit,
-                    reindex=reindex
-                )
-                if reindex:
-                    ViafRecord.update_indexes()
-        mef_record, mef_action, dummy = MefRecord.create_or_update(
-            agency=self.agency,
-            agency_pid=self.pid,
-            viaf_record=viaf_record,
-            action=mef_action,
-            dbcommit=dbcommit,
-            reindex=reindex,
-        )
-        if reindex:
-            MefRecord.update_indexes()
-        return mef_record, mef_action, True if viaf_record else False
-
-    def delete_from_mef(self, mef_record=None, dbcommit=False, reindex=False,
-                        verbose=False):
-        """Delete agency from MEF record."""
-        from .mef.api import MefRecord
-        action = MefAction.DISCARD
-        mef_pid = '???'
-        mef_record = MefRecord.get_mef_by_agency_pid(self.pid, self.agency)
-        if mef_record:
-            mef_pid = mef_record.pid
-            if mef_record.pop(self.agency, None):
-                action = MefAction.UPDATE
-                mef_record = mef_record.replace(
-                    data=mef_record,
-                    dbcommit=dbcommit,
-                    reindex=reindex
-                )
-                if reindex:
-                    MefRecord.update_indexes()
-        if verbose:
-            click.echo(
-                'Delete {agency}: {pid} from MEF: {mef_pid}  {action}'.format(
-                    agency=self.agency,
-                    pid=self.pid,
-                    mef_pid=mef_pid,
-                    action=action
-                )
-            )
-        return action
-
     @property
     def pid(self):
-        """Get ils record pid value."""
+        """Get record pid value."""
         return self.get('pid')
 
     @property
@@ -536,11 +359,74 @@ class AuthRecord(Record):
         """Get Persistent Identifier."""
         return self.get_persistent_identifier(self.id)
 
-    @classmethod
-    def get_online_record(cls, id, dbcommit=False, reindex=False,
-                          test_md5=False, verbose=False):
-        """Get online Record.
 
-        Has to be overloaded in agency class.
+class ContributionIndexer(RecordIndexer):
+    """Indexing class for mef."""
+
+    def bulk_index(self, record_id_iterator, doc_type=None):
+        """Bulk index records.
+
+        :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        return None, AgencyAction.DISCARD, MefAction.DISCARD
+        self._bulk_op(record_id_iterator, op_type='index', doc_type=doc_type)
+
+    def _get_indexer_class(self, payload):
+        """Get the record class from payload."""
+        # take the first defined doc type for finding the class
+        pid_type = payload.get('doc_type', 'rec')
+        record_class = obj_or_import_string(
+            current_app.config.get('RECORDS_REST_ENDPOINTS').get(
+                pid_type
+            ).get('indexer_class', RecordIndexer)
+        )
+        return record_class
+
+    def _actionsiter(self, message_iterator):
+        """Iterate bulk actions.
+
+        :param message_iterator: Iterator yielding messages from a queue.
+        """
+        for message in message_iterator:
+            payload = message.decode()
+            try:
+                indexer_class = self._get_indexer_class(payload)
+                if payload['op'] == 'delete':
+                    yield indexer_class()._delete_action(
+                        payload=payload
+                    )
+                else:
+                    yield indexer_class()._index_action(
+                        payload=payload
+                    )
+                message.ack()
+            except NoResultFound:
+                message.reject()
+            except Exception:
+                message.reject()
+                current_app.logger.error(
+                    "Failed to index record {0}".format(payload.get('id')),
+                    exc_info=True)
+
+    def _index_action(self, payload):
+        """Bulk index action.
+
+        :param payload: Decoded message body.
+        :returns: Dictionary defining an Elasticsearch bulk 'index' action.
+        """
+        record = self.record_cls.get_record(payload['id'])
+        index, doc_type = self.record_to_index(record)
+
+        arguments = {}
+        body = self._prepare_record(record, index, doc_type, arguments)
+        action = {
+            '_op_type': 'index',
+            '_index': index,
+            '_type': doc_type,
+            '_id': str(record.id),
+            '_version': record.revision_id,
+            '_version_type': self._version_type,
+            '_source': body
+        }
+        action.update(arguments)
+
+        return action

@@ -30,8 +30,7 @@ from .fetchers import rero_id_fetcher
 from .minters import rero_id_minter
 from .models import ReroMetadata
 from .providers import ReroProvider
-from ..api import AuthRecord, AuthRecordIndexer
-from ..utils import add_md5
+from ..agent_api import AgentIndexer, AgentRecord
 
 
 class ReroSearch(RecordsSearch):
@@ -48,49 +47,25 @@ class ReroSearch(RecordsSearch):
         default_filter = None
 
 
-class ReroRecord(AuthRecord):
+class ReroRecord(AgentRecord):
     """Rero Authority class."""
 
     minter = rero_id_minter
     fetcher = rero_id_fetcher
     provider = ReroProvider
-    agency = 'rero'
+    agent = 'rero'
     viaf_source_code = 'RERO'
-    agency_pid_type = 'rero_pid'
+    agent_pid_type = 'rero_pid'
     model_cls = ReroMetadata
 
     @classmethod
-    def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
-               reindex=False, **kwargs):
-        """Create a new agency record."""
-        data = add_md5(data)
-        record = super(ReroRecord, cls).create(
-            data=data,
-            id_=id_,
-            delete_pid=delete_pid,
-            dbcommit=dbcommit,
-            reindex=reindex,
-            **kwargs
-        )
-        return record
-
-    def update(self, data, dbcommit=False, reindex=False):
-        """Update data for record."""
-        data = add_md5(data)
-        super(ReroRecord, self).update(data, dbcommit=dbcommit,
-                                       reindex=reindex)
-        return self
-
-    @classmethod
-    def get_online_record(cls, id, dbcommit=False, reindex=False,
-                          test_md5=False, verbose=False):
+    def get_online_record(cls, id, verbose=False):
         """Get online record."""
         from .tasks import rero_get_record
-        return rero_get_record(id=id, dbcommit=dbcommit, reindex=reindex,
-                               test_md5=test_md5, verbose=verbose)
+        return rero_get_record(id=id, verbose=verbose)
 
 
-class ReroIndexer(AuthRecordIndexer):
+class ReroIndexer(AgentIndexer):
     """ReroIndexer."""
 
     record_cls = ReroRecord

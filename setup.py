@@ -78,7 +78,8 @@ setup(
             'rero_mef = rero_mef.views:blueprint',
         ],
         'invenio_base.api_blueprints': [
-            'api_rero_mef = rero_mef.views:api_blueprint'
+            'api_rero_mef = rero_mef.views:api_blueprint',
+            'monitoring = rero_mef.monitoring:api_blueprint',
         ],
         'invenio_config.module': [
             'rero_mef = rero_mef.config',
@@ -89,7 +90,6 @@ setup(
             'rero = rero_mef.contributions.rero.models',
             'mef = rero_mef.contributions.mef.models',
             'idref = rero_mef.contributions.idref.models'
-            'agencies = rero_mef.contributions.models'
         ],
         'invenio_pidstore.minters': [
             'viaf = rero_mef.contributions.viaf.minters:viaf_id_minter',

@@ -400,7 +400,7 @@ class Transformation(object):
         parallel_access_point = \
             build_string_list_from_fields(self.marc, tag, subfields)
         if parallel_access_point:
-            self.json_dict['parallel_access_points'] = parallel_access_point
+            self.json_dict['parallel_access_point'] = parallel_access_point
 
     def trans_gnd_country_associated(self):
         """Transformation country_associated 043 $c codes ISO 3166-1."""

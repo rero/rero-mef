@@ -26,8 +26,6 @@
 
 from __future__ import absolute_import
 
-from enum import Enum
-
 from invenio_db import db
 from invenio_pidstore.models import RecordIdentifier
 from invenio_records.models import RecordMetadataBase
@@ -50,15 +48,3 @@ class MefMetadata(db.Model, RecordMetadataBase):
     """Represent a record metadata."""
 
     __tablename__ = 'mef_metadata'
-
-
-class MefAction(Enum):
-    """Class holding all availabe Mef record creation actions."""
-
-    CREATE = 'create'
-    UPDATE = 'update'
-    REPLACE = 'replace'
-    UPTODATE = 'uptodate'
-    DISCARD = 'discard'
-    DELETE = 'delete'
-    DELETEMEF = 'deletemef'
