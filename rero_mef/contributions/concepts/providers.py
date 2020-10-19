@@ -22,22 +22,31 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Persistent identifier minters."""
+"""Identifier provider."""
 
-from __future__ import absolute_import, print_function, unicode_literals
+from __future__ import absolute_import, print_function
+
+from invenio_pidstore.models import PIDStatus
+from invenio_pidstore.providers.base import BaseProvider
+
+from .models import ConceptsIdentifier
 
 
-def id_minter(record_uuid, data, provider, pid_key='pid',
-              object_type='rec', recid_field=''):
-    """REROMEF id minter."""
-    # assert pid_key not in data
-    assert recid_field in data
-    pid_value = data[recid_field]
-    provider = provider.create(
-        object_type=object_type,
-        object_uuid=record_uuid,
-        pid_value=pid_value
-    )
-    pid = provider.pid
-    data[pid_key] = pid.pid_value
-    return pid
+class ConceptsProvider(BaseProvider):
+    """Concepts identifier provider."""
+
+    pid_type = 'concpt'
+    """Type of persistent identifier."""
+
+    pid_identifier = ConceptsIdentifier.__tablename__
+    """Identifier for table name"""
+
+    pid_provider = None
+    """Provider name.
+
+    The provider name is not recorded in the PID since the provider does not
+    provide any additional features besides creation of Document ids.
+    """
+
+    default_status = PIDStatus.REGISTERED
+    """Concepts IDs are by default registered immediately."""

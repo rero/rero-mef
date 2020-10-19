@@ -1,0 +1,53 @@
+
+        <record>
+            <leader>00589nx  a2200193   45  </leader> 
+        <datafield tag="670" ind1=" " ind2=" ">
+            <subfield code="a">
+                Grand Larousse universel (art. : Livre)
+            </subfield>
+        </datafield>
+        <datafield tag="675" ind1=" " ind2=" ">
+            <subfield code="a">Laval RVM (en ligne), 2004-11-23</subfield>
+        </datafield>
+        <datafield tag="680" ind1=" " ind2=" ">
+            <subfield code="a">
+                Mers profondément engagées dans la masse des ...
+            </subfield>
+        </datafield>
+        <datafield tag="667" ind1=" " ind2=" ">
+            <subfield code="a">Note interne</subfield>
+        </datafield>
+        <datafield tag="260" ind1=" " ind2="9">
+            <subfield code="a">
+                Voir le descripteur Opposition (science politique) ...
+            </subfield>
+        </datafield>
+        <datafield tag="260" ind1=" " ind2="9">
+            <subfield code="a">
+                Combiner un des descripteurs Mouvements ...
+            </subfield>
+        </datafield>
+        <datafield tag="260" ind1=" " ind2=" ">
+            <subfield code="a">
+                Voir les vedettes : Mouvements contestataires ; ...
+                </subfield>
+        </datafield>
+        <datafield tag="260" ind1=" " ind2=" ">
+            <subfield code="a">
+                Voir les vedettes du type : Antifascisme ; ...
+            </subfield>
+        </datafield>
+        <datafield tag="260" ind1=" " ind2=" ">
+            <subfield code="a">
+                Voir aux mouvements d'opposition particuliers, par ...
+            </subfield>
+        </datafield>
+        <datafield tag="360" ind1=" " ind2=" ">
+            <subfield code="a">
+                Voir aussi aux mers et océans particuliers
+            </subfield>
+        </datafield>
+        <datafield tag="016" ind1=" " ind2=" ">
+            <subfield code="9">VF3, NC3, NC30</subfield>
+        </datafield>
+    </record>

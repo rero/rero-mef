@@ -101,10 +101,14 @@ function oai_init () {
 }
 
 function sample_load () {
-    for AGENT in viaf rero gnd idref
+    for AGENT in viaf gnd idref rero concpt
     do
-       info_msg "Importing ${AGENT} records:"
-       dojson -i ./data/${AGENT}.json schema "http://mef.rero.ch/schemas/${AGENT}/${AGENT}-contribution-v0.0.1.json" | invenio fixtures create_or_update ${AGENT}
+      SCHEMA="http://mef.rero.ch/schemas/${AGENT}/${AGENT}-contribution-v0.0.1.json"
+      if [ ${AGENT} == 'concpt' ]; then
+        SCHEMA="http://mef.rero.ch/schemas/concepts/concept-v0.0.1.json"
+      fi
+      info_msg "Importing ${AGENT} records:"
+      dojson -i ./data/${AGENT}.json schema ${SCHEMA} | invenio fixtures create_or_update ${AGENT}
     done
     info_msg "Creating MEF records:"
     invenio utils create_mef_from_agent
@@ -114,7 +118,7 @@ function sample_load () {
 function deploy () {
     INPUT_DIR=$1
     # Load agents CSV files to db
-    for AGENT in rero gnd idref viaf mef
+    for AGENT in gnd idref rero concpt viaf mef
     do
         invenio fixtures bulk_load ${AGENT} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENT}_pidstore.csv --csv_metadata_file ${AGENT}_metadata.csv --verbose --reindex
         invenio utils runindex --raise-on-error --concurrency 4 --delayed
@@ -128,7 +132,7 @@ function create_json () {
     INPUT_DIR=$1
     OUTPUT_DIR=$2
     # Transform marc files to json
-    for AGENT in rero gnd idref
+    for AGENT in gnd idref rero concpt
     do
         invenio fixtures bulk_load ${AGENT} ${INPUT_DIR} ${OUTPUT_DIR} --marc_file ${AGENT}.mrc --json_file ${AGENT}.json &
     done
@@ -138,7 +142,7 @@ function create_json () {
 function create_csv () {
     OUTPUT_DIR=$1
     # Create CSV files from json
-    for AGENT in rero gnd idref
+    for AGENT in gnd idref rero concpt
     do
         invenio fixtures bulk_load ${AGENT} ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file ${AGENT}.json --csv_pidstore_file ${AGENT}_pidstore.csv --csv_metadata_file ${AGENT}_metadata.csv &
     done

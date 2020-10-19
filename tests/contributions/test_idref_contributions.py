@@ -24,7 +24,7 @@
 
 """Test IDREF auth person."""
 
-from helpers import trans_prep
+from contributions_helpers import trans_prep
 
 
 def test_idref_deleted():

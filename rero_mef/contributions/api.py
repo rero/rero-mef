@@ -58,22 +58,22 @@ class Action(Enum):
 
 
 class ContributionRecordError:
-    """Base class for errors in the IlsRecordClass."""
+    """Base class for errors in the ContributionRecord class."""
 
     class Deleted(Exception):
-        """IlsRecord is deleted."""
+        """ContributionRecord is deleted."""
 
     class NotDeleted(Exception):
-        """IlsRecord is not deleted."""
+        """ContributionRecord is not deleted."""
 
     class PidMissing(Exception):
-        """IlsRecord pid missing."""
+        """ContributionRecord pid missing."""
 
     class PidChange(Exception):
-        """IlsRecord pid change."""
+        """ContributionRecord pid change."""
 
     class PidAlradyUsed(Exception):
-        """IlsRecord pid already used."""
+        """ContributionRecord pid already used."""
 
     class PidDoesNotExist(Exception):
         """Pid does not exist."""
@@ -155,7 +155,7 @@ class ContributionRecord(Record):
 
     @classmethod
     def get_record_by_pid(cls, pid, with_deleted=False):
-        """Get ils record by pid value."""
+        """Get record by pid value."""
         assert cls.provider
         try:
             persistent_identifier = PersistentIdentifier.get(

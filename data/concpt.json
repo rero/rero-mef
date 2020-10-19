@@ -1,0 +1,1628 @@
+[
+  {
+    "authorized_access_point": "Réunification allemande (Allemagne ; 1989-1990)",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "999",
+        "name": "rero"
+      }
+    ],
+    "pid": "A009955971",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A009955971"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF122237960"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "nonPublic",
+        "label": [
+          "Notice RERO transformée en notice RAMEAU"
+        ]
+      },
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "AR"
+        ]
+      }
+    ],
+    "variant_access_point": [
+      "Question allemande",
+      "Unification allemande (Allemagne ; 1989-1990)"
+    ],
+    "md5": "c08f978bd67e3faf1a69db4b716e334c"
+  },
+  {
+    "authorized_access_point": "Sultanat mamelouk (Égypte ; 1250-1517)",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "999",
+        "name": "rero"
+      }
+    ],
+    "pid": "A010077990",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A010077990"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119366571"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "nonPublic",
+        "label": [
+          "Nom commun RERO",
+          "Inversion d'une notice de nom géographique"
+        ]
+      },
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "AR"
+        ]
+      }
+    ],
+    "md5": "253638ef171c9c3f26ba2c219531d38d"
+  },
+  {
+    "authorized_access_point": "Abdomen",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "570",
+        "name": "Biologie"
+      },
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "610",
+        "name": "Médecine"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Abdomen",
+      "source": "MeSH"
+    },
+    "pid": "A021001001",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001001"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308148"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11930814c"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "dataSource",
+        "label": [
+          "Grand dict. encyclopédique Larousse (art. : Abdomen ; Ventre)",
+          "Petit dict. d'anatomie, d'embryologie et d'histologie / P. Kamina, 1990 (art. : Abdomen ; Cavité abdominale)"
+        ]
+      },
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "NC32d, NC30"
+        ]
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Aine"
+      }
+    ],
+    "narrower": [
+      {
+        "authorized_access_point": "Espace rétropéritonéal"
+      },
+      {
+        "authorized_access_point": "Fascia transversalis"
+      },
+      {
+        "authorized_access_point": "Ligament ombilical médian"
+      },
+      {
+        "authorized_access_point": "Mamelle"
+      },
+      {
+        "authorized_access_point": "Muscles de l'abdomen"
+      },
+      {
+        "authorized_access_point": "Paroi abdominale"
+      },
+      {
+        "authorized_access_point": "Péritoine"
+      },
+      {
+        "authorized_access_point": "Région épigastrique"
+      }
+    ],
+    "broader": [
+      {
+        "authorized_access_point": "Tronc (anatomie)"
+      }
+    ],
+    "variant_access_point": [
+      "Radiographie abdominale -> Utiliser une combinaison de descripteurs",
+      "Échographie abdominale -> Utiliser une combinaison de descripteurs",
+      "Chirurgie abdominale -> Utiliser une combinaison de descripteurs",
+      "Laparotomie -> Utiliser une combinaison de descripteurs",
+      "Cavité abdominale",
+      "Ventre"
+    ],
+    "md5": "63525adafafe6043a213c691d51baa9d"
+  },
+  {
+    "authorized_access_point": "Accumulateurs",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "530",
+        "name": "Physique"
+      },
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "600",
+        "name": "Technique"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Storage batteries",
+      "source": "LCSH"
+    },
+    "pid": "A021001003",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001003"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308187"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11930818r"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "NC32c, NC32d, NC30"
+        ]
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Chargeurs de batteries"
+      },
+      {
+        "authorized_access_point": "Piles électriques"
+      }
+    ],
+    "narrower": [
+      {
+        "authorized_access_point": "Accumulateurs au lithium"
+      },
+      {
+        "authorized_access_point": "Accumulateurs au nickel-cadmium"
+      },
+      {
+        "authorized_access_point": "Accumulateurs au nickel-hydrogène"
+      },
+      {
+        "authorized_access_point": "Accumulateurs au nickel-hydrure métallique"
+      },
+      {
+        "authorized_access_point": "Accumulateurs au plomb"
+      }
+    ],
+    "broader": [
+      {
+        "authorized_access_point": "Alimentations (électricité)"
+      }
+    ],
+    "variant_access_point": [
+      "Recyclage des accumulateurs -> Utiliser une combinaison de descripteurs",
+      "Accumulateurs électriques",
+      "Accumulateurs électrochimiques",
+      "Batteries d'accumulateurs",
+      "Générateurs secondaires (électricité)"
+    ],
+    "md5": "fa4d40072713f4647e2cf177dab3db5e"
+  },
+  {
+    "authorized_access_point": "Actes de langage",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "100",
+        "name": "Philosophie"
+      },
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "401",
+        "name": "Linguistique générale"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Speech acts (Linguistics)",
+      "source": "LCSH"
+    },
+    "pid": "A021001004",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001004"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308205"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb119308209"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "dataSource",
+        "label": [
+          "Sens et expression : études de théorie des actes de langage / J. R. Searle, 1989"
+        ]
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Discours (linguistique)"
+      },
+      {
+        "authorized_access_point": "Énonciation (linguistique)"
+      },
+      {
+        "authorized_access_point": "Performatif"
+      }
+    ],
+    "broader": [
+      {
+        "authorized_access_point": "Philosophie du langage"
+      },
+      {
+        "authorized_access_point": "Pragmatique"
+      }
+    ],
+    "variant_access_point": [
+      "Acte (linguistique)",
+      "Actes (linguistique)",
+      "Actes de discours",
+      "Actes de parole",
+      "Discours, Actes de",
+      "Langage, Actes de",
+      "Parole, Actes de"
+    ],
+    "md5": "b928ef81687f40759e12030312d7df43"
+  },
+  {
+    "authorized_access_point": "Acteurs de cinéma",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "305",
+        "name": "Groupes sociaux"
+      },
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "791",
+        "name": "Audiovisuel"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Motion picture actors and actresses",
+      "source": "LCSH"
+    },
+    "pid": "A021001005",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001005"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308212"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11930821n"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "dataSource",
+        "label": [
+          "Dict. des acteurs de cinéma / C. Dureau, 2006"
+        ]
+      },
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "NC32e, NC32d"
+        ]
+      }
+    ],
+    "variant_access_point": [
+      "Cinéma - Acteurs",
+      "Étoiles de cinéma",
+      "Stars",
+      "Vedettes de cinéma"
+    ],
+    "md5": "d8b716667be130c39c9e81e0f9974ca8"
+  },
+  {
+    "authorized_access_point": "Activités d'éveil",
+    "pid": "A021001006",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001006"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF11930822X"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb119308220"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "dataSource",
+        "label": [
+          "Vocabulaire de l'éducation / G. Mialaret, 1979"
+        ]
+      },
+      {
+        "noteType": "dataNotFound",
+        "label": [
+          "LCSH, 1995-03"
+        ]
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Leçons de choses"
+      }
+    ],
+    "broader": [
+      {
+        "authorized_access_point": "Enseignement primaire"
+      }
+    ],
+    "variant_access_point": [
+      "Activités d'éveil (enseignement primaire)",
+      "Disciplines d'éveil",
+      "Éveil, Activités d'"
+    ],
+    "md5": "396cb10437e3be77358d12ee1d03e30c"
+  },
+  {
+    "authorized_access_point": "Actrices",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "300",
+        "name": "Sciences sociales"
+      },
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "305",
+        "name": "Groupes sociaux"
+      },
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "790",
+        "name": "Arts du spectacle"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Actresses",
+      "source": "LCSH"
+    },
+    "pid": "A021001007",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001007"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308237"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11930823b"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "dataSource",
+        "label": [
+          "Nouveau petit Robert 1993 (art. : Acteur)",
+          "Femmes dramaturges et actrices en Angleterre : 1660-1706 / M. Adam, 1993"
+        ]
+      },
+      {
+        "noteType": "seeAlsoReference",
+        "label": [
+          "Voir aussi les vedettes du type Actrices [adjectif de nationalité ou géographique]"
+        ]
+      }
+    ],
+    "narrower": [
+      {
+        "authorized_access_point": "Actrices de cinéma"
+      },
+      {
+        "authorized_access_point": "Actrices de télévision"
+      },
+      {
+        "authorized_access_point": "Actrices travesties"
+      }
+    ],
+    "broader": [
+      {
+        "authorized_access_point": "Acteurs"
+      },
+      {
+        "authorized_access_point": "Femmes artistes interprètes"
+      }
+    ],
+    "variant_access_point": [
+      "Actrices de théâtre",
+      "Artistes dramatiques",
+      "Comédiennes"
+    ],
+    "md5": "124c3cc644edc5553812924497626546"
+  },
+  {
+    "authorized_access_point": "Adhésifs",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "540",
+        "name": "Chimie"
+      },
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "600",
+        "name": "Technique"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Adhesives",
+      "source": "LCSH"
+    },
+    "pid": "A021001008",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001008"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308269"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11930826c"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "NC32e, NC32f, NC32d"
+        ]
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Assemblages collés"
+      },
+      {
+        "authorized_access_point": "Colles"
+      },
+      {
+        "authorized_access_point": "Époxydes"
+      },
+      {
+        "authorized_access_point": "Mucilages"
+      },
+      {
+        "authorized_access_point": "Produits d'étanchéité"
+      }
+    ],
+    "narrower": [
+      {
+        "authorized_access_point": "Adhésifs sensibles à la pression"
+      },
+      {
+        "authorized_access_point": "Autocollants"
+      },
+      {
+        "authorized_access_point": "Cyanoacrylates"
+      },
+      {
+        "authorized_access_point": "Gomme arabique"
+      },
+      {
+        "authorized_access_point": "Mortier"
+      },
+      {
+        "authorized_access_point": "Ruban adhésif"
+      }
+    ],
+    "broader": [
+      {
+        "authorized_access_point": "Liants"
+      }
+    ],
+    "variant_access_point": [
+      "Agglutinants"
+    ],
+    "md5": "1b2c9b483ff86ddfbd98dc70c9ad9463"
+  },
+  {
+    "authorized_access_point": "Administration publique",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "350",
+        "name": "Administration publique"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Administration publique",
+      "source": "RVMLaval"
+    },
+    "pid": "A021001009",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001009"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308276"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11930827q"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "NC32c, NC32a, NC32e, NC32d"
+        ]
+      }
+    ],
+    "variant_access_point": [
+      "Management public -> Utiliser une combinaison de descripteurs",
+      "New public management -> Utiliser une combinaison de descripteurs",
+      "NMP -> Utiliser une combinaison de descripteurs",
+      "Nouveau management public -> Utiliser une combinaison de descripteurs",
+      "NPM -> Utiliser une combinaison de descripteurs",
+      "Modernisation de l'administration -> Utiliser une combinaison de descripteurs",
+      "Réforme administrative -> Utiliser une combinaison de descripteurs",
+      "Réforme de l'administration -> Utiliser une combinaison de descripteurs",
+      "Réforme de l'État -> Utiliser une combinaison de descripteurs",
+      "Réorganisation administrative -> Utiliser une combinaison de descripteurs",
+      "Restructuration administrative -> Utiliser une combinaison de descripteurs",
+      "Révision générale des politiques publiques -> Utiliser une combinaison de descripteurs",
+      "RGPP -> Utiliser une combinaison de descripteurs",
+      "Décision administrative -> Utiliser une combinaison de descripteurs",
+      "Décision gouvernementale -> Utiliser une combinaison de descripteurs",
+      "Décision publique -> Utiliser une combinaison de descripteurs",
+      "Décisions publiques -> Utiliser une combinaison de descripteurs",
+      "Inspection administrative -> Utiliser une combinaison de descripteurs",
+      "Inspection générale des services administratifs -> Utiliser une combinaison de descripteurs",
+      "Inspections générales de l'administration -> Utiliser une combinaison de descripteurs",
+      "Histoire administrative -> Utiliser une combinaison de descripteurs",
+      "Action administrative",
+      "Administration de l'État",
+      "Administration publique (science)",
+      "Agences administratives",
+      "Gestion publique",
+      "Institutions administratives",
+      "Organisation administrative",
+      "Organismes administratifs",
+      "Régime administratif",
+      "Science administrative",
+      "Service public",
+      "Services administratifs",
+      "Structures administratives"
+    ],
+    "md5": "6ba7196c199f23ba3af0f5f89b7ed484"
+  },
+  {
+    "authorized_access_point": "Aérodynamique",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "530",
+        "name": "Physique"
+      },
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "600",
+        "name": "Technique"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Aerodynamics",
+      "source": "LCSH"
+    },
+    "pid": "A021001012",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001012"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308301"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11930830m"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "NC32a, NC32e, NC32d"
+        ]
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Gaz -Écoulement"
+      },
+      {
+        "authorized_access_point": "Mach, Nombre de"
+      },
+      {
+        "authorized_access_point": "Pneumatique"
+      },
+      {
+        "authorized_access_point": "Profils aérodynamiques"
+      },
+      {
+        "authorized_access_point": "Reynolds, Nombre de"
+      },
+      {
+        "authorized_access_point": "Souffleries aérodynamiques"
+      },
+      {
+        "authorized_access_point": "Tourbillons (mécanique des fluides)"
+      }
+    ],
+    "narrower": [
+      {
+        "authorized_access_point": "Aéroacoustique"
+      },
+      {
+        "authorized_access_point": "Aéroélasticité"
+      },
+      {
+        "authorized_access_point": "Bruit aérodynamique"
+      },
+      {
+        "authorized_access_point": "Cascades (dynamique des fluides)"
+      },
+      {
+        "authorized_access_point": "Charge aérodynamique"
+      },
+      {
+        "authorized_access_point": "Couche limite"
+      },
+      {
+        "authorized_access_point": "Décollement des écoulements"
+      },
+      {
+        "authorized_access_point": "Essais en soufflerie aérodynamique"
+      },
+      {
+        "authorized_access_point": "Flottement (aérodynamique)"
+      },
+      {
+        "authorized_access_point": "Portance"
+      },
+      {
+        "authorized_access_point": "Sillage (aérodynamique)"
+      },
+      {
+        "authorized_access_point": "Traînée (aérodynamique)"
+      },
+      {
+        "authorized_access_point": "Tremblement (aérodynamique)"
+      }
+    ],
+    "broader": [
+      {
+        "authorized_access_point": "Dynamique"
+      },
+      {
+        "authorized_access_point": "Fluides, Dynamique des"
+      },
+      {
+        "authorized_access_point": "Gaz, Dynamique des"
+      }
+    ],
+    "variant_access_point": [
+      "Aérodynamique subsonique",
+      "Avions - Aérodynamique",
+      "Carénage",
+      "Mécanique du vol",
+      "Profilage - Aérodynamique"
+    ],
+    "md5": "fee3e152a030befedd67d0696699a1d7"
+  },
+  {
+    "authorized_access_point": "Aérodynamique supersonique",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "530",
+        "name": "Physique"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Aerodynamics, Supersonic",
+      "source": "LCSH"
+    },
+    "pid": "A021001013",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001013"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308319"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11930831z"
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Avions supersoniques"
+      },
+      {
+        "authorized_access_point": "Compresseurs supersoniques"
+      },
+      {
+        "authorized_access_point": "Souffleries supersoniques"
+      },
+      {
+        "authorized_access_point": "Tuyères supersoniques"
+      }
+    ],
+    "narrower": [
+      {
+        "authorized_access_point": "Aérodynamique hypersonique"
+      },
+      {
+        "authorized_access_point": "Aérothermodynamique"
+      },
+      {
+        "authorized_access_point": "Bang sonique"
+      }
+    ],
+    "broader": [
+      {
+        "authorized_access_point": "Pression acoustique"
+      },
+      {
+        "authorized_access_point": "Vol à grande vitesse"
+      }
+    ],
+    "variant_access_point": [
+      "Écoulement supersonique",
+      "Vitesse supersonique",
+      "Vols supersoniques, Aérodynamique des"
+    ],
+    "md5": "9c0e39e3eaed0172653bbab8790d72eb"
+  },
+  {
+    "authorized_access_point": "Aérodynamique transsonique",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "530",
+        "name": "Physique"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Aerodynamics, Transonic",
+      "source": "LCSH"
+    },
+    "pid": "A021001014",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001014"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308326"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb119308329"
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Aérothermodynamique"
+      },
+      {
+        "authorized_access_point": "Pression acoustique"
+      },
+      {
+        "authorized_access_point": "Souffleries transsoniques"
+      },
+      {
+        "authorized_access_point": "Vol à grande vitesse"
+      }
+    ],
+    "variant_access_point": [
+      "Écoulement transsonique",
+      "Vitesses transsoniques",
+      "Vols transsoniques, Aérodynamique des"
+    ],
+    "md5": "c65550070d59216a2761d83b5bf3e09a"
+  },
+  {
+    "authorized_access_point": "Aéroglisseurs",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "330",
+        "name": "Économie politique"
+      },
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "600",
+        "name": "Technique"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Ground-effect machines",
+      "source": "LCSH"
+    },
+    "pid": "A021001016",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001016"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308365"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11930836p"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "NC32e"
+        ]
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Chemins de fer"
+      }
+    ],
+    "broader": [
+      {
+        "authorized_access_point": "Véhicules automobiles"
+      }
+    ],
+    "variant_access_point": [
+      "Aérotrains",
+      "Hovercrafts",
+      "Naviplanes",
+      "Véhicules à coussin d'air",
+      "Véhicules à effet de sol",
+      "Véhicules sur coussin d'air"
+    ],
+    "md5": "ceca3e34ad72cb16451d37444b63812e"
+  },
+  {
+    "authorized_access_point": "Agneau (viande)",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "590",
+        "name": "Zoologie"
+      },
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "630",
+        "name": "Agriculture"
+      },
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "640",
+        "name": "Économie domestique"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Lamb (Meat)",
+      "source": "LCSH"
+    },
+    "pid": "A021001017",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001017"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308486"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "dataSource",
+        "label": [
+          "Grand Robert de la langue française, 2001 (art. : Viande)",
+          "Larousse agricole / M. Mazoyer, 2002"
+        ]
+      },
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "NC32e"
+        ]
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Agneaux"
+      }
+    ],
+    "broader": [
+      {
+        "authorized_access_point": "Viande"
+      }
+    ],
+    "variant_access_point": [
+      "Agneaux (viande)",
+      "Viande d'agneau",
+      "Viande ovine"
+    ],
+    "md5": "f8e07a9f6504792f86ee01386a045089"
+  },
+  {
+    "authorized_access_point": "Agressivité",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "150",
+        "name": "Psychologie"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Aggressiveness",
+      "source": "LCSH"
+    },
+    "pid": "A021001018",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001018"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308493"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb119308491"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "NC32e, NC32f"
+        ]
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Colère"
+      },
+      {
+        "authorized_access_point": "Défense (psychologie)"
+      },
+      {
+        "authorized_access_point": "Hostilité (psychologie)"
+      },
+      {
+        "authorized_access_point": "Personnalité passive-agressive"
+      },
+      {
+        "authorized_access_point": "Violence"
+      }
+    ],
+    "narrower": [
+      {
+        "authorized_access_point": "Destructivité"
+      },
+      {
+        "authorized_access_point": "Incivilités"
+      }
+    ],
+    "broader": [
+      {
+        "authorized_access_point": "Caractère"
+      },
+      {
+        "authorized_access_point": "Personnalité"
+      }
+    ],
+    "variant_access_point": [
+      "Agression (psychologie)",
+      "Agressivité (psychologie)",
+      "Caractère agressif",
+      "Comportement agressif",
+      "Tempérament agressif"
+    ],
+    "md5": "bfd63dea5c845be1a374ffdaba833355"
+  },
+  {
+    "authorized_access_point": "Agriculture biologique",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "630",
+        "name": "Agriculture"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Organic farming",
+      "source": "LCSH"
+    },
+    "pid": "A021001021",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001021"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308529"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11930852x"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "dataSource",
+        "label": [
+          "Larousse agricole, 1981"
+        ]
+      },
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "NC32d"
+        ]
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Agriculture durable"
+      },
+      {
+        "authorized_access_point": "Aliments biologiques"
+      },
+      {
+        "authorized_access_point": "Biopesticides"
+      },
+      {
+        "authorized_access_point": "Élevage biologique"
+      }
+    ],
+    "narrower": [
+      {
+        "authorized_access_point": "Jardinage biologique"
+      },
+      {
+        "authorized_access_point": "Permaculture"
+      },
+      {
+        "authorized_access_point": "Viticulture biologique"
+      }
+    ],
+    "variant_access_point": [
+      "Agriculture biodynamique",
+      "Agriculture écologique",
+      "Agriculture organique",
+      "Agrobiologie",
+      "Biodynamie",
+      "Cultures biodynamiques",
+      "Cultures biologiques",
+      "Cultures écologiques",
+      "Cultures organiques"
+    ],
+    "md5": "ad05e425ebd87ba36c012220b3cffce0"
+  },
+  {
+    "authorized_access_point": "Airbus (avions)",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "330",
+        "name": "Économie politique"
+      },
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "600",
+        "name": "Technique"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Airbus aircraft",
+      "source": "LCSH"
+    },
+    "pid": "A021001023",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001023"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308543"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11930854m"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "dataSource",
+        "label": [
+          "EADS - http://www.eads.com (2005-09-09)"
+        ]
+      }
+    ],
+    "narrower": [
+      {
+        "authorized_access_point": "Airbus A300 (avion de transport à réaction)"
+      },
+      {
+        "authorized_access_point": "Airbus A310 (avion de transport à réaction)"
+      },
+      {
+        "authorized_access_point": "Airbus A320 (avion de transport à réaction)"
+      },
+      {
+        "authorized_access_point": "Airbus A340 (avion de transport à réaction)"
+      },
+      {
+        "authorized_access_point": "Airbus A350 (avion de transport à réaction)"
+      },
+      {
+        "authorized_access_point": "Airbus A380 (avion de transport à réaction)"
+      },
+      {
+        "authorized_access_point": "Airbus A400M Atlas (avion de transport à réaction)"
+      }
+    ],
+    "broader": [
+      {
+        "authorized_access_point": "Avions de transport à réaction"
+      }
+    ],
+    "variant_access_point": [
+      "Airbus (avions de transport à réaction)"
+    ],
+    "md5": "063a0b10bfe0e54ad34f6a8be1059e98"
+  },
+  {
+    "authorized_access_point": "Alchimie",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "130",
+        "name": "Parapsychologie, occultisme et ésotérisme"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Alchemy",
+      "source": "LCSH"
+    },
+    "pid": "A021001024",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001024"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308568"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb119308569"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "dataSource",
+        "label": [
+          "Grand Larousse universel",
+          "Dict. de l'ésotérisme / P. Riffard, 1993"
+        ]
+      },
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "NC32d"
+        ]
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Alchimistes"
+      }
+    ],
+    "narrower": [
+      {
+        "authorized_access_point": "Élixir de longue vie"
+      }
+    ],
+    "broader": [
+      {
+        "authorized_access_point": "Ésotérisme"
+      }
+    ],
+    "variant_access_point": [
+      "Art royal",
+      "Chimie hermétique",
+      "Chymie",
+      "Métaux, Transmutation des",
+      "Oeuf des sages",
+      "Pierre philosophale",
+      "Transmutation des métaux"
+    ],
+    "md5": "9e85f05d9c5a3cc6e48d4d96ac78d179"
+  },
+  {
+    "authorized_access_point": "Dialectes alémaniques",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "400",
+        "name": "Langues"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Alemannic dialects",
+      "source": "LCSH"
+    },
+    "pid": "A021001025",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001025"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308575"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11930857n"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "dataSource",
+        "label": [
+          "Grand Larousse universel : alémanique, groupe de dialectes du haut-allemand",
+          "L'aménagement linguistique dans le monde - http://www.tlfq.ulaval.ca (2009-01-05)"
+        ]
+      },
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "NC32d"
+        ]
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Noms géographiques alémaniques"
+      }
+    ],
+    "narrower": [
+      {
+        "authorized_access_point": "Alsacien (dialecte)"
+      },
+      {
+        "authorized_access_point": "Souabe (dialecte)"
+      },
+      {
+        "authorized_access_point": "Suisse alémanique (dialecte)"
+      },
+      {
+        "authorized_access_point": "Walser (dialecte)"
+      }
+    ],
+    "variant_access_point": [
+      "Alaman (dialecte)",
+      "Alémanique (dialecte)",
+      "Allémanique (dialecte)",
+      "Bas alémanique (dialecte)",
+      "Bas-allémanique (dialecte)",
+      "Haut alémanique (dialecte)",
+      "Haut-allémanique (dialecte)",
+      "Langues alémaniques"
+    ],
+    "md5": "b6b2244005c19eaa603dae9da2e61c7a"
+  },
+  {
+    "authorized_access_point": "Algèbre",
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "510",
+        "name": "Mathématiques"
+      }
+    ],
+    "closeMatch": {
+      "authorized_access_point": "Algebra",
+      "source": "LCSH"
+    },
+    "pid": "A021001026",
+    "identifiedBy": [
+      {
+        "type": "bf:Local",
+        "source": "RERO",
+        "value": "A021001026"
+      },
+      {
+        "type": "bf:Local",
+        "source": "BNF",
+        "value": "FRBNF119308582"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb119308580"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "seeAlsoReference",
+        "label": [
+          "Voir aussi aux vedettes commençant par les mots Algèbre ; Algèbres"
+        ]
+      },
+      {
+        "noteType": "REROtreatment",
+        "label": [
+          "NC32e"
+        ]
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Nombres hypercomplexes"
+      }
+    ],
+    "narrower": [
+      {
+        "authorized_access_point": "Algèbre différentielle"
+      },
+      {
+        "authorized_access_point": "Algèbre multilinéaire"
+      },
+      {
+        "authorized_access_point": "Algèbres non commutatives"
+      },
+      {
+        "authorized_access_point": "Algorithmes"
+      },
+      {
+        "authorized_access_point": "Analyse combinatoire"
+      },
+      {
+        "authorized_access_point": "Analyse diophantienne"
+      },
+      {
+        "authorized_access_point": "Analyse p-adique"
+      },
+      {
+        "authorized_access_point": "Analyse spinorielle"
+      },
+      {
+        "authorized_access_point": "Binôme, Théorème du"
+      },
+      {
+        "authorized_access_point": "Clones (algèbre)"
+      },
+      {
+        "authorized_access_point": "Combinaisons (mathématiques)"
+      },
+      {
+        "authorized_access_point": "Congruences et résidus"
+      },
+      {
+        "authorized_access_point": "Corps algébriques"
+      },
+      {
+        "authorized_access_point": "Déterminants (mathématiques)"
+      },
+      {
+        "authorized_access_point": "Distributivité (mathématiques)"
+      },
+      {
+        "authorized_access_point": "Dualité, Principe de (mathématiques)"
+      },
+      {
+        "authorized_access_point": "Exposants (algèbre)"
+      },
+      {
+        "authorized_access_point": "Élimination (algèbre)"
+      },
+      {
+        "authorized_access_point": "Équations algébriques"
+      },
+      {
+        "authorized_access_point": "Facteurs (algèbre)"
+      },
+      {
+        "authorized_access_point": "Fonctions symétriques"
+      },
+      {
+        "authorized_access_point": "Formes (mathématiques)"
+      },
+      {
+        "authorized_access_point": "Groupes, Théorie des"
+      },
+      {
+        "authorized_access_point": "Identités remarquables"
+      },
+      {
+        "authorized_access_point": "Logarithmes"
+      },
+      {
+        "authorized_access_point": "Modules (algèbre)"
+      },
+      {
+        "authorized_access_point": "Mutations (algèbre)"
+      },
+      {
+        "authorized_access_point": "Nombres, Théorie des"
+      },
+      {
+        "authorized_access_point": "Partitions (mathématiques)"
+      },
+      {
+        "authorized_access_point": "Permutations (mathématiques)"
+      },
+      {
+        "authorized_access_point": "Polynômes"
+      },
+      {
+        "authorized_access_point": "Probabilités"
+      },
+      {
+        "authorized_access_point": "Problèmes des mots (mathématiques)"
+      },
+      {
+        "authorized_access_point": "Produits infinis"
+      },
+      {
+        "authorized_access_point": "Représentations d'algèbres"
+      },
+      {
+        "authorized_access_point": "Séries (mathématiques)"
+      },
+      {
+        "authorized_access_point": "Structures algébriques ordonnées"
+      },
+      {
+        "authorized_access_point": "Suites (mathématiques)"
+      }
+    ],
+    "broader": [
+      {
+        "authorized_access_point": "Mathématiques"
+      }
+    ],
+    "variant_access_point": [
+      "Calcul algébrique",
+      "Structures algébriques"
+    ],
+    "md5": "e4028f9926adcfc526d98b6b677bc364"
+  }
+]

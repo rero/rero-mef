@@ -22,22 +22,20 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Persistent identifier minters."""
+"""Pytest configuration."""
 
-from __future__ import absolute_import, print_function, unicode_literals
+import pytest
 
 
-def id_minter(record_uuid, data, provider, pid_key='pid',
-              object_type='rec', recid_field=''):
-    """REROMEF id minter."""
-    # assert pid_key not in data
-    assert recid_field in data
-    pid_value = data[recid_field]
-    provider = provider.create(
-        object_type=object_type,
-        object_uuid=record_uuid,
-        pid_value=pid_value
-    )
-    pid = provider.pid
-    data[pid_key] = pid.pid_value
-    return pid
+@pytest.fixture(scope='module')
+def create_app(instance_path):
+    """Create test app."""
+    from invenio_app.factory import create_app as create_ui_api
+    return create_ui_api
+
+
+@pytest.fixture(scope='session')
+def empty_mef_record():
+    """Empty MEF record."""
+    json_record = {}
+    return json_record

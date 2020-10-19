@@ -24,7 +24,7 @@
 
 """Test RERO auth contribution."""
 
-from helpers import trans_prep
+from contributions_helpers import trans_prep
 
 
 def test_rero_identifier():

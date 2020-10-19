@@ -22,22 +22,29 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Persistent identifier minters."""
+"""Define relation between records and buckets."""
 
-from __future__ import absolute_import, print_function, unicode_literals
+from __future__ import absolute_import
+
+from invenio_db import db
+from invenio_pidstore.models import RecordIdentifier
+from invenio_records.models import RecordMetadataBase
 
 
-def id_minter(record_uuid, data, provider, pid_key='pid',
-              object_type='rec', recid_field=''):
-    """REROMEF id minter."""
-    # assert pid_key not in data
-    assert recid_field in data
-    pid_value = data[recid_field]
-    provider = provider.create(
-        object_type=object_type,
-        object_uuid=record_uuid,
-        pid_value=pid_value
+class ConceptsIdentifier(RecordIdentifier):
+    """Sequence generator for concepts Authority identifiers."""
+
+    __tablename__ = 'concept_id'
+    __mapper_args__ = {'concrete': True}
+
+    recid = db.Column(
+        db.BigInteger().with_variant(db.Integer, 'sqlite'),
+        primary_key=True,
+        autoincrement=True,
     )
-    pid = provider.pid
-    data[pid_key] = pid.pid_value
-    return pid
+
+
+class ConceptsMetadata(db.Model, RecordMetadataBase):
+    """Represent a record metadata."""
+
+    __tablename__ = 'concepts_metadata'

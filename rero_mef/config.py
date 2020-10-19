@@ -34,12 +34,15 @@ from __future__ import absolute_import, print_function
 
 from invenio_records_rest.facets import range_filter, terms_filter
 
+from .contributions.concepts.models import ConceptsIdentifier
 from .contributions.gnd.models import GndIdentifier
 from .contributions.idref.models import IdrefIdentifier
 from .contributions.marctojson.do_gnd_contribution import \
     Transformation as Gnd_transformation
 from .contributions.marctojson.do_idref_contribution import \
     Transformation as Idref_transformation
+from .contributions.marctojson.do_rero_concepts import \
+    Transformation as Concepts_transformation
 from .contributions.marctojson.do_rero_contribution import \
     Transformation as Rero_transformation
 from .contributions.mef.models import MefIdentifier
@@ -192,12 +195,14 @@ DEBUG_TB_INTERCEPT_REDIRECTS = False
 BULK_CHUNK_COUNT = 100000
 
 TRANSFORMATION = {
+    'concepts': Concepts_transformation,
     'gnd': Gnd_transformation,
-    'rero': Rero_transformation,
-    'idref': Idref_transformation
+    'idref': Idref_transformation,
+    'rero': Rero_transformation
 }
 
 IDENTIFIERS = {
+    'concepts': ConceptsIdentifier,
     'gnd': GndIdentifier,
     'idref': IdrefIdentifier,
     'mef': MefIdentifier,
@@ -336,10 +341,36 @@ RECORDS_REST_ENDPOINTS = dict(
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict(),
+    ),
+    concpt=dict(
+        pid_type='concpt',
+        pid_minter='concepts',
+        pid_fetcher='concepts',
+        search_class="rero_mef.contributions.concepts.api:ConceptsSearch",
+        indexer_class="rero_mef.contributions.concepts.api:ConceptsIndexer",
+        record_class="rero_mef.contributions.concepts.api:ConceptsRecord",
+        search_index='concepts',
+        search_type=None,
+        record_serializers={
+            'application/json': ('rero_mef.serializers'
+                                 ':json_v1_response'),
+        },
+        search_serializers={
+            'application/json': ('invenio_records_rest.serializers'
+                                 ':json_v1_search'),
+        },
+        search_factory_imp='rero_mef.query:and_search_factory',
+        list_route='/concepts/',
+        item_route=('/concepts/<pid(concepts, record_class='
+                    '"rero_mef.contributions.concepts.api:ConceptsRecord"):pid_value>'),
+        default_media_type='application/json',
+        max_result_window=MAX_RESULT_WINDOW,
+        error_handlers=dict(),
     )
 )
 
 RECORDS_JSON_SCHEMA = {
+    'concpt': '/concepts/concept-v0.0.1.json',
     'gnd': '/gnd/gnd-contribution-v0.0.1.json',
     'rero': '/rero/rero-contribution-v0.0.1.json',
     'idref': '/idref/idref-contribution-v0.0.1.json',
@@ -395,6 +426,23 @@ RECORDS_REST_FACETS = dict(
             'agent_type': terms_filter('bf:Agent'),
             'deleted': range_filter('deleted'),
         }
+    ),
+    concepts=dict(
+        aggs=dict(
+            classification=dict(
+                terms=dict(field='classification.name', size=30)
+            ),
+            classificationPortion=dict(
+                terms=dict(
+                    field='classification.classificationPortion', size=30
+                )
+            ),
+        ),
+        filters={
+            'classification_name': terms_filter('classification.name'),
+            'classificationPortion': terms_filter(
+                'classification.classificationPortion'
+            )
+        }
     )
-
 )

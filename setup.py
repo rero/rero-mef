@@ -85,47 +85,53 @@ setup(
             'rero_mef = rero_mef.config',
         ],
         'invenio_db.models': [
-            'viaf = rero_mef.contributions.viaf.models',
+            'concepts = rero_mef.contributions.concepts.models',
             'gnd = rero_mef.contributions.gnd.models',
-            'rero = rero_mef.contributions.rero.models',
+            'idref = rero_mef.contributions.idref.models',
             'mef = rero_mef.contributions.mef.models',
-            'idref = rero_mef.contributions.idref.models'
+            'rero = rero_mef.contributions.rero.models',
+            'viaf = rero_mef.contributions.viaf.models',
         ],
         'invenio_pidstore.minters': [
-            'viaf = rero_mef.contributions.viaf.minters:viaf_id_minter',
+            'concepts = rero_mef.contributions.concepts.minters:concepts_id_minter',
             'gnd = rero_mef.contributions.gnd.minters:gnd_id_minter',
-            'rero = rero_mef.contributions.rero.minters:rero_id_minter',
+            'idref = rero_mef.contributions.idref.minters:idref_id_minter',
             'mef = rero_mef.contributions.mef.minters:mef_id_minter',
-            'idref = rero_mef.contributions.idref.minters:idref_id_minter'
+            'rero = rero_mef.contributions.rero.minters:rero_id_minter',
+            'viaf = rero_mef.contributions.viaf.minters:viaf_id_minter',
 
         ],
         'invenio_pidstore.fetchers': [
-            'viaf = rero_mef.contributions.viaf.fetchers:viaf_id_fetcher',
+            'concepts = rero_mef.contributions.concepts.fetchers:concepts_id_fetcher',
             'gnd = rero_mef.contributions.gnd.fetchers:gnd_id_fetcher',
-            'rero = rero_mef.contributions.rero.fetchers:rero_id_fetcher',
+            'idref = rero_mef.contributions.idref.fetchers:idref_id_fetcher',
             'mef = rero_mef.contributions.mef.fetchers:mef_id_fetcher',
-            'idref = rero_mef.contributions.idref.fetchers:idref_id_fetcher'
+            'rero = rero_mef.contributions.rero.fetchers:rero_id_fetcher',
+            'viaf = rero_mef.contributions.viaf.fetchers:viaf_id_fetcher',
         ],
         'invenio_jsonschemas.schemas': [
             'common = rero_mef.jsonschemas',
-            'viaf = rero_mef.contributions.viaf.jsonschemas',
+            'concepts = rero_mef.contributions.concepts.jsonschemas',
             'gnd = rero_mef.contributions.gnd.jsonschemas',
-            'rero = rero_mef.contributions.rero.jsonschemas',
+            'idref = rero_mef.contributions.idref.jsonschemas',
             'mef = rero_mef.contributions.mef.jsonschemas',
-            'idref = rero_mef.contributions.idref.jsonschemas'
+            'rero = rero_mef.contributions.rero.jsonschemas',
+            'viaf = rero_mef.contributions.viaf.jsonschemas',
         ],
         'invenio_search.mappings': [
-            'viaf = rero_mef.contributions.viaf.mappings',
+            'concepts = rero_mef.contributions.concepts.mappings',
             'gnd = rero_mef.contributions.gnd.mappings',
-            'rero = rero_mef.contributions.rero.mappings',
+            'idref = rero_mef.contributions.idref.mappings',
             'mef = rero_mef.contributions.mef.mappings',
-            'idref = rero_mef.contributions.idref.mappings'
+            'rero = rero_mef.contributions.rero.mappings',
+            'viaf = rero_mef.contributions.viaf.mappings',
         ],
         'invenio_records.jsonresolver': [
+            'concepts = rero_mef.contributions.concepts.jsonresolvers.concepts_resolver',
             'gnd = rero_mef.contributions.gnd.jsonresolvers.gnd_resolver',
-            'rero = rero_mef.contributions.rero.jsonresolvers.rero_resolver',
+            'idref = rero_mef.contributions.idref.jsonresolvers.idref_resolver',
             'mef = rero_mef.contributions.mef.jsonresolvers.mef_resolver',
-            'idref = rero_mef.contributions.idref.jsonresolvers.idref_resolver'
+            'rero = rero_mef.contributions.rero.jsonresolvers.rero_resolver',
         ],
         'flask.commands': [
             'fixtures = rero_mef.cli:fixtures',

@@ -112,7 +112,7 @@ def create_or_update(agent, source, lazy, test_md5, enqueue, verbose):
     :param test_md5: Compaire md5 to find out if we have to update.
     :param verbose: Verbose.
     """
-    agent_message = 'Update authority person records: {agent}'.format(
+    agent_message = 'Update records: {agent}'.format(
         agent=agent
     )
     click.secho(agent_message, fg='green')
@@ -163,7 +163,7 @@ def delete(agent, source, lazy, enqueue, verbose):
     :param lazy: lazy reads file
     :param verbose: Verbose.
     """
-    agent_message = 'Delete authority person records: {agent}'.format(
+    agent_message = 'Delete records: {agent}'.format(
         agent=agent
     )
     click.secho(agent_message, fg='green')
@@ -270,7 +270,7 @@ def marc_to_json(agent, marc_file, json_file, json_deleted_file, verbose):
                         not_first_line = True
             else:
                 click.secho(
-                    '  Error can not transform marc in {agent}: {rec}'.format(
+                    '  Error can not transform marc in {agent}:\n{rec}'.format(
                         agent=agent,
                         rec=nice_record(record)
                     ),

@@ -24,7 +24,7 @@
 
 """Test GND auth person."""
 
-from helpers import trans_prep
+from contributions_helpers import trans_prep
 
 
 def test_gnd_deleted():

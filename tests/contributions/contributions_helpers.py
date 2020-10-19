@@ -47,12 +47,12 @@ def trans_prep(source, xml_part_to_add):
     records = marcxml.parse_xml_to_array(
         file_name, strict=False, normalize_form=None)
     trans = {
-        'gnd': Transformation_gnd(marc=records[0], logger=None,
-                                  verbose=False, transform=False),
-        'idref': Transformation_idref(marc=records[0], logger=None,
-                                      verbose=False, transform=False),
-        'rero': Transformation_rero(marc=records[0], logger=None,
-                                    verbose=False, transform=False)
+        'gnd': Transformation_gnd(
+            marc=records[0], logger=None, verbose=False, transform=False),
+        'idref': Transformation_idref(
+            marc=records[0], logger=None, verbose=False, transform=False),
+        'rero': Transformation_rero(
+            marc=records[0], logger=None, verbose=False, transform=False)
     }
     return trans.get(source)
 
