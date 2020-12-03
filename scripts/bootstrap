@@ -110,7 +110,9 @@ if ! $deploy ; then
     fi
 fi
 
-# BOOTSTRAP START
+# create virtualenv and upgrade pip
+info_msg "Upgrade pip"
+poetry run pip install --upgrade pip
 
 # install the application and all the dependencies
 info_msg "Install with command: ${cmd} ${flags[@]}"
@@ -123,19 +125,31 @@ if ! $deploy ; then
     fi
 fi
 
-# update pip
-pip install --upgrade pip
-
-# install assets utils
-virtualenv_path=`poetry env info -p`
-# info_msg "Install npm assets utils in: ${virtualenv_path}"
-npm i npm@latest -g --prefix "${virtualenv_path}" && npm install --prefix "${virtualenv_path}" --silent -g  node-sass@4.14.1 clean-css-cli@4.3.0 uglify-js@3.9.4 requirejs@2.3.6
+# collect static files and compile html/css assets
+# ------------------------------------------------
+# install the npm dependencies
+info_msg "Search static folder location"
+static_folder=$(poetry run invenio shell --no-term-title -c "print('static_folder:%s' % app.static_folder)"|grep static_folder| cut -d: -f2-)
 
 # build the web assets
 info_msg "Build web assets: collect"
 invenio collect
-info_msg "Build web assets: check (build command)"
+
+info_msg "Build web assets: using webpack for invenio-admin"
 invenio webpack buildall
+
+if $deploy ; then
+  if ! $ci ; then
+    info_msg "Clean web assets"
+    invenio webpack clean
+
+    info_msg "Clean npm cache"
+    npm cache clean --force
+
+    info_msg "Clean pip cache"
+    pip cache purge
+  fi
+fi
 
 success_msg "${PROGRAM} finished!"
 exit 0

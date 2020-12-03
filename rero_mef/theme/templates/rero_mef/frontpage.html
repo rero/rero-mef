@@ -60,5 +60,5 @@
 
 {%- block css %}
 {{ super() }}
-{% assets "rero_mef_css" %}<link href="{{ ASSET_URL }}" rel="stylesheet">{% endassets %}
+{{ webpack['global.css']}}
 {%- endblock css %}

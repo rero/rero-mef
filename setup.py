@@ -68,17 +68,17 @@ setup(
         'console_scripts': [
             'rero-mef = invenio_app.cli:cli',
         ],
-        'invenio_assets.bundles': [
-            'rero_mef_css = rero_mef.bundles:mef_css',
+        'invenio_assets.webpack': [
+            'rero_mef_css = rero_mef.theme.webpack:theme',
         ],
         'invenio_base.apps': [
             'rero-mef = rero_mef.ext:REROMEFAPP'
         ],
         'invenio_base.blueprints': [
-            'rero_mef = rero_mef.views:blueprint',
+            'rero_mef = rero_mef.theme.views:blueprint',
         ],
         'invenio_base.api_blueprints': [
-            'api_rero_mef = rero_mef.views:api_blueprint',
+            'api_rero_mef = rero_mef.theme.views:api_blueprint',
             'monitoring = rero_mef.monitoring:api_blueprint',
         ],
         'invenio_config.module': [
@@ -143,7 +143,7 @@ setup(
         ],
         'dojson.cli.dump': [
             'pjson = rero_mef.dojson.utils:dump'
-        ],
+        ]
     },
     classifiers=[
         'Environment :: Web Environment',
