@@ -29,7 +29,7 @@ from __future__ import absolute_import, print_function
 
 from flask import Blueprint, render_template
 
-from .version import __version__
+from ..version import __version__
 
 blueprint = Blueprint(
     'rero_mef',
