@@ -24,3 +24,8 @@ def test_version():
     """Test version import."""
     from rero_mef import __version__
     assert __version__
+
+
+
+def test():
+    print(test)

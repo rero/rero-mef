@@ -43,6 +43,8 @@ from .marctojson.do_rero_concepts import \
 from .mef.models import MefIdentifier
 from .viaf.models import ViafIdentifier
 
+APP_THEME = ['bootstrap3']
+
 # Rate limiting
 # =============
 #: Storage for ratelimiter.
