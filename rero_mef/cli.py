@@ -70,6 +70,7 @@ def fixtures():
 def utils():
     """Misc management commands."""
 
+
 utils.add_command(create_mef_and_agents_from_viaf)
 utils.add_command(create_mef_from_agent)
 utils.add_command(reindex_missing)

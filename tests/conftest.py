@@ -19,6 +19,8 @@
 
 import pytest
 
+pytest_plugins = ("celery.contrib.pytest", )
+
 
 @pytest.fixture(scope='module')
 def es(appctx):
