@@ -367,7 +367,8 @@ class Transformation(object):
         if self.marc.get_fields('210'):
             tag = '210'
             agent = 'bf:Organisation'
-            self.json_dict['conference'] = self.marc['210'].indicators[0] == 1
+            self.json_dict['conference'] = \
+                self.marc['210'].indicators[0] == '1'
             subfields = {'a': ', ', 'b': '. ', 'c': ', ', 'd': ' ; ',
                          'e': ' ; ', 'f': ' ; ', 'x': ' - -'}
             tag_grouping = [

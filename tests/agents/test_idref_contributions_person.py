@@ -494,6 +494,38 @@ def test_idref_authorized_access_point():
             'Brontë, Charlotte, écrivain, biographe, 1816-1855',
         'bf:Agent': 'bf:Person'
     }
+    """Test Authorized access point representing a organisation 210 $ab9"""
+    xml_part_to_add = """
+        <datafield ind1=" " ind2=" " tag="210">
+            <subfield code="9">0</subfield>
+            <subfield code="a">Stift Alter Dom Sankt Pauli</subfield>
+            <subfield code="c">Münster in Westfalen, Allemagne</subfield>
+        </datafield>
+     """
+    trans = trans_prep('idref', xml_part_to_add)
+    trans.trans_idref_authorized_access_point()
+    assert trans.json == {
+        'authorized_access_point': 'Stift Alter Dom Sankt Pauli ( Münster in '
+                                   'Westfalen, Allemagne )',
+        'bf:Agent': 'bf:Organisation',
+        'conference': False,
+    }
+    """Test Authorized access point representing a organisation 210 $ab9"""
+    xml_part_to_add = """
+        <datafield ind1="1" ind2=" " tag="210">
+            <subfield code="9">0</subfield>
+            <subfield code="a">Stift Alter Dom Sankt Pauli</subfield>
+            <subfield code="c">Münster in Westfalen, Allemagne</subfield>
+        </datafield>
+     """
+    trans = trans_prep('idref', xml_part_to_add)
+    trans.trans_idref_authorized_access_point()
+    assert trans.json == {
+        'authorized_access_point': 'Stift Alter Dom Sankt Pauli ( Münster in '
+                                   'Westfalen, Allemagne )',
+        'bf:Agent': 'bf:Organisation',
+        'conference': True,
+    }
 
 
 def test_idref_authorized_access_point_missing():
