@@ -33,6 +33,7 @@ from invenio_accounts.cli import commit, users
 from invenio_oaiharvester.cli import oaiharvester
 from invenio_oaiharvester.models import OAIHarvestConfig
 from invenio_records_rest.utils import obj_or_import_string
+from sqlitedict import SqliteDict
 from werkzeug.local import LocalProxy
 
 from .agents.cli import create_mef_and_agents_from_viaf, \
@@ -348,7 +349,7 @@ def valid_agent(params):
               help='metadata: CSV output file.')
 @click.option('-l', '--load_records', 'load_records', is_flag=True,
               default=False, help='To load csv files to database.')
-@click.option('-c' '--bulk_count', 'bulkcount', default=0, type=int,
+@click.option('-c', '--bulk_count', 'bulkcount', default=0, type=int,
               help='Set the bulk load chunk size.')
 @click.option('-r', '--reindex', 'reindex', help='add record to reindex.',
               is_flag=True, default=False)
@@ -532,7 +533,7 @@ def bulk_load(**kwargs):
                         fg='green'
                     )
                 oai_set_last_run(agent, last_run)
-        except Exception as err:
+        except Exception:
             pass
 
 
@@ -653,15 +654,17 @@ def csv_to_json(csv_metadata_file, json_output_file, indent, verbose):
 @click.option('-o', '--output', 'output', is_flag=True, default=False)
 @click.option('-I', '--indent', 'indent', type=click.INT, default=2)
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@click.option('-s', '--sqlite_dict', 'sqlite_dict', default='sqlite_dict.db')
 @with_appcontext
 def csv_diff(csv_metadata_file, csv_metadata_file_compair, agent, output,
-             indent, verbose):
+             indent, verbose, sqlite_dict):
     """Agencies record diff.
 
     :param csv_metadata_file: csv metadata file to compair.
     :param csv_metadata_file_compair: csv metadata file to compair too.
     :param agent: agent type to compair too.
     :param verbose: Verbose.
+    :param sqlite_dict: SqliteDict Db file name.
     """
     def get_pid_data(line):
         """Get json from CSV text line.
@@ -669,7 +672,7 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, agent, output,
         :param line: line of CSV text.
         :returns: data as json
         """
-        data = json.loads(line.split('\t')[3])
+        data = json.loads(line.split('\t')[3].replace('\\\\', '\\'))
         pid = data.get('pid')
         return pid, data
 
@@ -727,9 +730,9 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, agent, output,
         click.echo('Changed file: {name}'.format(name=file_name_diff))
         click.echo('Deleted file: {name}'.format(name=file_name_delete))
 
-    compaire_data = {}
-    length = number_records_in_file(csv_metadata_file_compair, 'csv')
+    compaire_data = SqliteDict(sqlite_dict, autocommit=True)
     if csv_metadata_file_compair and not agent:
+        length = number_records_in_file(csv_metadata_file_compair, 'csv')
         with open(csv_metadata_file_compair, 'r', buffering=1) as meta_file:
             label = 'Loading: {name}'.format(name=compair)
             with click.progressbar(meta_file, length=length,
@@ -748,7 +751,7 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, agent, output,
                 compaire_data[pid] = record
 
     with open(csv_metadata_file, 'r', buffering=1) as metadata_file:
-        for metadata_line in metadata_file:
+        for idx, metadata_line in enumerate(metadata_file):
             pid, data = get_pid_data(metadata_line)
             if pid in compaire_data:
                 if compaire_data[pid] != data:
@@ -760,6 +763,8 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, agent, output,
                         data=json.dumps(data, sort_keys=True)
                     ))
                     if output:
+                        if idx > 0:
+                            file_diff.write(',')
                         file_diff.write(intent_output(data, indent))
                 del(compaire_data[pid])
             else:
@@ -767,20 +772,26 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, agent, output,
                     data=json.dumps(data, sort_keys=True)
                 ))
                 if output:
+                    if idx > 0:
+                        file_new.write(',')
                     file_new.write(intent_output(data, indent))
+    idx = 0
     for pid, data in compaire_data.items():
         click.echo('DEL :\t{data}'.format(
             data=json.dumps(data, sort_keys=True)
         ))
         if output:
+            if idx > 0:
+                file_delete.write(',')
             file_delete.write(intent_output(data, indent))
+            idx += 1
 
     if output:
-        file_new.write(']')
+        file_new.write('\n]')
         file_new.close()
-        file_diff.write(']')
+        file_diff.write('\n]')
         file_diff.close()
-        file_delete.write(']')
+        file_delete.write('\n]')
         file_delete.close()
     sys.exit(0)
 

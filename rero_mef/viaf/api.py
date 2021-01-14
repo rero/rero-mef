@@ -20,6 +20,7 @@
 import click
 import requests
 from elasticsearch_dsl.query import Q
+from flask import current_app
 from invenio_db import db
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PersistentIdentifier
@@ -284,7 +285,6 @@ class ViafRecord(ReroMefRecord):
     def get_agents_records(self):
         """Get agents."""
         agents_record = {}
-        agents_pid_type = {}
         for agent, agent_data in get_agents_endpoints().items():
             record_class = obj_or_import_string(agent_data.get('record_class'))
             if record_class.viaf_pid_name in self:

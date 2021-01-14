@@ -35,15 +35,18 @@ def add_links(pid, record):
         viaf_pid = record.get('viaf_pid')
         if viaf_pid:
             links['viaf'] = '{scheme}://{host}/api/viaf/' + str(viaf_pid)
+            links['viaf.org'] = 'http://www.viaf.org/viaf/' + str(viaf_pid)
     elif pid.pid_type == "viaf":
-        mef_pid_search = MefSearch().filter(
-            'term', viaf_pid=record.get('pid')
-        ).source(['pid']).scan()
+        viaf_pid = record.get('pid')
+        mef_pid_search = MefSearch() \
+            .filter('term', viaf_pid=viaf_pid) \
+            .source(['pid']).scan()
         try:
             mef_pid = next(mef_pid_search).pid
             links['mef'] = '{scheme}://{host}/api/mef/' + str(mef_pid)
-        except:
+        except Exception:
             pass
+        links['viaf.org'] = 'http://www.viaf.org/viaf/' + str(viaf_pid)
     else:
         mef_pid = MefRecord.get_mef_by_agent_pid(
             record.pid,
@@ -59,7 +62,8 @@ def add_links(pid, record):
                 source('pid')
             viaf_pid = next(query.scan()).pid
             links['viaf'] = '{scheme}://{host}/api/viaf/' + str(viaf_pid)
-        except Exception as err:
+            links['viaf.org'] = 'http://www.viaf.org/viaf/' + str(viaf_pid)
+        except Exception:
             pass
 
     link_factory = default_links_factory_with_additional(links)

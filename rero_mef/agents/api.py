@@ -203,7 +203,7 @@ class AgentRecord(ReroMefRecord):
             if persistent_id.status == PIDStatus.DELETED:
                 return None, Action.ALREADYDELETED, None, Action.DISCARD, \
                     None, False
-        except Exception as err:
+        except Exception:
             pass
 
         record, action = cls.create_or_update(

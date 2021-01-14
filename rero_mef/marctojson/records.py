@@ -52,12 +52,12 @@ class MrcIterator(object):
             rec = self._marc_reader.__next__()
         except StopIteration:
             return None, None
-        except Exception as e:
+        except Exception as err:
             if not error:
                 error = []
-            error.append(e)
+            error.append(err)
             if self.exceptions:
-                raise(e)
+                raise Exception(err)
             rec, error = self.__next_valid__(error)
             return rec, error
         return rec, None
@@ -69,11 +69,11 @@ class MrcIterator(object):
             rec = self._marc_reader.__next__()
         except StopIteration:
             return None, None, True
-        except Exception as e:
-            return None, e, False
-            self.error = e
+        except Exception as err:
+            self.error = err
             if self.exceptions:
-                raise(e)
+                raise Exception(err)
+            return None, err, False
         return rec, '', False
 
     def __iter__(self):

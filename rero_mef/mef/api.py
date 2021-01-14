@@ -76,7 +76,7 @@ class MefRecord(ReroMefRecord):
             .source(['pid'])
         if search.count() > 1:
             current_app.logger.error(
-                'MULTIPLE MEF FOUND FOR: {agent} {pid}'.format(
+                'MULTIPLE MEF FOUND FOR: {agent_name} {agent_pid}'.format(
                     agent_name=agent_name,
                     agent_pid=agent_pid
                 )
@@ -316,6 +316,11 @@ class MefRecord(ReroMefRecord):
         self['deleted'] = pytz.utc.localize(datetime.now()).isoformat()
         self.update(data=self, dbcommit=dbcommit, reindex=reindex)
         return self
+
+    @property
+    def deleted(self):
+        """Get record deleted value."""
+        return self.get('deleted')
 
     @classmethod
     def create_deleted(cls, agent, dbcommit=False, reindex=False):
