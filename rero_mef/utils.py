@@ -32,6 +32,7 @@ import os
 import traceback
 from copy import deepcopy
 from datetime import datetime, timedelta
+from functools import wraps
 from io import StringIO
 from json import JSONDecodeError, JSONDecoder
 from time import sleep
@@ -43,6 +44,7 @@ import psycopg2
 import sqlalchemy
 from dateutil import parser
 from flask import current_app
+from invenio_cache.proxies import current_cache
 from invenio_db import db
 from invenio_oaiharvester.api import get_info_by_oai_name
 from invenio_oaiharvester.errors import InvenioOAIHarvesterConfigNotFound, \
@@ -190,6 +192,7 @@ class MyOAIItemIterator(OAIItemIterator):
                     token=self.resumption_token.token
                 )
                 current_app.logger.error(msg)
+                sleep(60)
             else:
                 self.next_resumption_token_and_items()
         else:
@@ -501,7 +504,7 @@ def oai_get_record(id, name, transformation, record_cls, access_token=None,
         record = request.GetRecord(**params)
     except Exception as err:
         if debug:
-            raise(err)
+            raise Exception(err)
         return None
     records = parse_xml_to_array(StringIO(record.raw))
     trans_record = transformation(records[0]).json
@@ -1421,3 +1424,34 @@ def get_diff_db_es_pids(agent, verbose=False):
             esp=len(pids_es_double)
         ))
     return pids_db, pids_es, pids_es_double
+
+
+def set_timestamp(name, **kwargs):
+    """Set timestamp in current cache.
+
+    Allows to timestamp functionality and monitoring of the changed
+    timestamps externaly via url requests.
+
+    :param name: name of time stamp.
+    :returns: time of time stamp
+    """
+    time_stamps = current_cache.get('timestamps')
+    if not time_stamps:
+        time_stamps = {}
+    utc_now = datetime.utcnow()
+    time_stamps[name] = {}
+    time_stamps[name]['time'] = utc_now
+    for key, value in kwargs.items():
+        time_stamps[name][key] = value
+    current_cache.set('timestamps', time_stamps)
+    return utc_now
+
+
+def settimestamp(func):
+    """Set timestamp function wrapper."""
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        result = func(*args, **kwargs)
+        set_timestamp(func.__name__, result=result)
+        return result
+    return wrapped

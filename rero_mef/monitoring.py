@@ -17,6 +17,7 @@
 
 """Monitoring utilities."""
 
+import time
 from functools import wraps
 
 import click
@@ -24,9 +25,11 @@ from elasticsearch.exceptions import NotFoundError
 from flask import Blueprint, current_app, jsonify, request, url_for
 from flask.cli import with_appcontext
 from flask_login import current_user
+from invenio_cache import current_cache
 from invenio_db import db
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
-from invenio_search import RecordsSearch
+from invenio_search import RecordsSearch, current_search_client
+from redis import Redis
 
 from .permissions import admin_permission
 from .utils import get_agent_class, progressbar
@@ -236,7 +239,7 @@ def missing_pids(doc_type):
             'invenio_records_rest.{doc_type}_list'.format(doc_type=doc_type),
             _external=True
         )
-    except:
+    except Exception:
         api_url = None
     mon = Monitoring.missing(doc_type)
     if mon.get('ERROR'):
@@ -269,6 +272,57 @@ def missing_pids(doc_type):
             else:
                 data['ES duplicate'][pid] = len(mon.get('ES duplicate'))
         return jsonify({'data': data})
+
+
+@api_blueprint.route('/redis')
+@check_authentication
+def redis():
+    """Displays redis info.
+
+    :return: jsonified redis info.
+    """
+    url = current_app.config.get('ACCOUNTS_SESSION_REDIS_URL',
+                                 'redis://localhost:6379')
+    redis = Redis.from_url(url)
+    info = redis.info()
+    return jsonify({'data': info})
+
+
+@api_blueprint.route('/timestamps')
+@check_authentication
+def timestamps():
+    """Get time stamps from current cache.
+
+    Makes the saved timestamps accessible via url requests.
+
+    :return: jsonified timestamps.
+    """
+    data = {}
+    time_stamps = current_cache.get('timestamps')
+    if time_stamps:
+        for name, values in time_stamps.items():
+            data[name] = {}
+            for key, value in values.items():
+                if key == 'time':
+                    data[name]['utctime'] = value.strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    )
+                    data[name]['unixtime'] = time.mktime(value.timetuple())
+                else:
+                    data[name][key] = value
+
+    return jsonify({'data': data})
+
+
+@api_blueprint.route('/es')
+@check_authentication
+def elastic_search():
+    """Displays elastic search cluster info.
+
+    :return: jsonified elastic search cluster info.
+    """
+    info = current_search_client.cluster.health()
+    return jsonify({'data': info})
 
 
 class Monitoring(object):
@@ -367,9 +421,9 @@ class Monitoring(object):
                 verbose=verbose
             )
             for hit in progress:
-                    if pids_es.get(hit.pid):
-                        pids_es_double.append(hit.pid)
-                    pids_es[hit.pid] = 1
+                if pids_es.get(hit.pid):
+                    pids_es_double.append(hit.pid)
+                pids_es[hit.pid] = 1
             agent_class = get_agent_class(doc_type)
             pids_db = []
             progress = progressbar(

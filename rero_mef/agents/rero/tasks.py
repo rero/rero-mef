@@ -55,5 +55,5 @@ def rero_get_record(id, verbose=False, debug=False):
             if verbose:
                 click.echo('ERROR get rero record: {err}'.format(err=err))
             if debug:
-                raise(err)
+                raise Exception(err)
     return trans_record

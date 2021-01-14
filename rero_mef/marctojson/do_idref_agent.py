@@ -57,14 +57,14 @@ def get_language_script(field):
         subfield_8 = field['8']
         language = subfield_8[3:6]
         test = languages[language]
-    except Exception as err:
+    except Exception:
         language = 'fre'
     try:
         subfield_7 = field['7']
         code = subfield_7[4:6]
         script_code = LANGUAGE_SCRIPT_CODES[code]
         test = languages[language][script_code]
-    except Exception as err:
+    except Exception:
         script_code = 'latn'
     return '{language}-{script_code}'.format(
         language=language,

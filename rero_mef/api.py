@@ -173,20 +173,32 @@ class ReroMefRecord(Record):
     def get_record_by_pid(cls, pid, with_deleted=False):
         """Get ils record by pid value."""
         assert cls.provider
-        try:
-            persistent_identifier = PersistentIdentifier.get(
-                cls.provider.pid_type,
-                pid
-            )
-            record = super().get_record(
-                persistent_identifier.object_uuid,
-                with_deleted=with_deleted
-            )
-            return record
-        except PIDDoesNotExistError:
-            return None
-        except NoResultFound:
-            return None
+        get_record_error_count = 0
+        get_record_ok = False
+        while not get_record_ok and get_record_error_count < 5:
+            try:
+                persistent_identifier = PersistentIdentifier.get(
+                    cls.provider.pid_type,
+                    pid
+                )
+                record = super().get_record(
+                    persistent_identifier.object_uuid,
+                    with_deleted=with_deleted
+                )
+                get_record_ok = True
+                return record
+            except PIDDoesNotExistError:
+                return None
+            except NoResultFound:
+                return None
+            except OperationalError:
+                get_record_error_count += 1
+                msg = 'Get record OperationalError: {count} {pid}'.format(
+                    count=get_record_error_count,
+                    pid=pid
+                )
+                current_app.logger.error(msg)
+                db.session.rollback()
 
     @classmethod
     def get_pid_by_id(cls, id):
@@ -266,7 +278,21 @@ class ReroMefRecord(Record):
     @classmethod
     def count(cls, with_deleted=False):
         """Get record count."""
-        return cls._get_all(with_deleted=with_deleted).count()
+        get_count_ok = False
+        get_count_count = 0
+        while not get_count_ok and get_count_count < 5:
+            try:
+                count = cls._get_all(with_deleted=with_deleted).count()
+                get_count_ok = True
+                return count
+            except OperationalError:
+                get_count_count += 1
+                msg = 'Get count OperationalError: {count}'.format(
+                    count=get_count_count,
+                )
+                current_app.logger.error(msg)
+                db.session.rollback()
+        raise OperationalError('Get count')
 
     @classmethod
     def index_all(cls):
@@ -460,8 +486,9 @@ class ReroMefIndexer(RecordIndexer):
                     uid=payload['id']
                 )
                 current_app.logger.error(msg)
+                db.session.rollback()
             except Exception as err:
-                raise(err)
+                raise Exception(err)
 
         index, doc_type = self.record_to_index(record)
 
