@@ -22,11 +22,12 @@ import time
 from celery import shared_task
 from flask import current_app
 from sickle import OAIResponse, Sickle
+from sickle.iterator import OAIItemIterator
 
 from .api import AgentIdrefRecord
 from ...marctojson.do_idref_agent import Transformation
-from ...utils import MyOAIItemIterator, oai_get_record, \
-    oai_process_records_from_dates, oai_save_records_from_dates
+from ...utils import oai_get_record, oai_process_records_from_dates, \
+    oai_save_records_from_dates
 
 
 class MySickle(Sickle):
@@ -74,7 +75,7 @@ def process_records_from_dates(from_date=None, until_date=None,
         name='idref',
         sickle=MySickle,
         max_retries=current_app.config.get('RERO_OAI_RETRIES', 0),
-        oai_item_iterator=MyOAIItemIterator,
+        oai_item_iterator=OAIItemIterator,
         transformation=Transformation,
         record_cls=AgentIdrefRecord,
         days_spann=30,
@@ -106,7 +107,7 @@ def save_records_from_dates(file_name, from_date=None, until_date=None,
         file_name=file_name,
         sickle=MySickle,
         max_retries=current_app.config.get('RERO_OAI_RETRIES', 0),
-        oai_item_iterator=MyOAIItemIterator,
+        oai_item_iterator=OAIItemIterator,
         days_spann=30,
         from_date=from_date,
         until_date=until_date,
