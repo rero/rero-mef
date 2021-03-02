@@ -884,12 +884,12 @@ def oaiharvester_info():
 
 
 @oaiharvester.command('get_last_run')
-@click.option('-a', '--agent', 'agent', default='',
+@click.option('-n', '--name', 'name', default='',
               help="Name of persistent configuration to use.")
 @with_appcontext
-def get_last_run(agent):
+def get_last_run(name):
     """Gets the lastrun for a OAI harvest configuration."""
-    return oai_get_last_run(name=agent, verbose=True)
+    return oai_get_last_run(name=name, verbose=True)
 
 
 @oaiharvester.command('set_last_run')

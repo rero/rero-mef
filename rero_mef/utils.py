@@ -56,8 +56,7 @@ from invenio_pidstore.models import PersistentIdentifier
 from invenio_records_rest.utils import obj_or_import_string
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from pymarc.marcxml import parse_xml_to_array
-from sickle import Sickle, oaiexceptions
-from sickle.iterator import OAIItemIterator
+from sickle import Sickle
 from sickle.oaiexceptions import NoRecordsMatch
 
 
@@ -148,58 +147,6 @@ def oai_set_last_run(name, date, verbose=False):
     return None
 
 
-class MyOAIItemIterator(OAIItemIterator):
-    """OAI item iterator with accessToken."""
-
-    def next_resumption_token_and_items(self):
-        """Get next resumtion token and items."""
-        self.resumption_token = self._get_resumption_token()
-        self._items = self.oai_response.xml.iterfind(
-            './/' + self.sickle.oai_namespace + self.element)
-
-    def _next_response(self):
-        """Get the next response from the OAI server."""
-        params = self.params
-        access_token = params.get('accessToken')
-        if self.resumption_token:
-            params = {
-                'resumptionToken': self.resumption_token.token,
-                'verb': self.verb
-            }
-        if access_token:
-            params['accessToken'] = access_token
-
-        self.oai_response = self.sickle.harvest(**params)
-        error = self.oai_response.xml.find(
-            './/' + self.sickle.oai_namespace + 'error')
-        if error is not None:
-            code = error.attrib.get('code', 'UNKNOWN')
-            description = error.text or ''
-            try:
-                raise getattr(
-                    oaiexceptions, code[0].upper() + code[1:])(description)
-            except AttributeError:
-                raise oaiexceptions.OAIError(description)
-        if self.resumption_token:
-            # Test we got a complete response ('resumptionToken' in xml)
-            resumption_token_element = self.oai_response.xml.find(
-                './/' + self.sickle.oai_namespace + 'resumptionToken')
-
-            if resumption_token_element is None:
-                msg = ('ERROR HARVESTING incomplete response:'
-                       '{cursor} {token}').format(
-                    cursor=self.resumption_token.cursor,
-                    token=self.resumption_token.token
-                )
-                current_app.logger.error(msg)
-                sleep(60)
-            else:
-                self.next_resumption_token_and_items()
-        else:
-            # first time
-            self.next_resumption_token_and_items()
-
-
 def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                                    transformation, record_cls, max_retries=0,
                                    access_token=None, days_spann=30,
@@ -215,6 +162,8 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
     :param until_date: The upper bound date for the harvesting (optional).
     """
     # data on IDREF Servers starts on 2000-10-01
+    if kwargs.get('kwargs', {}).get('online'):
+        online = kwargs.get('kwargs', {}).get('online')
     name = name
     days_spann = days_spann
     last_run = None
@@ -282,7 +231,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                             updated = '????'
                         rec = transformation(records[0]).json
                         pid = rec.get('pid')
-                        rec, action, m_record, m_action, v_record, online = \
+                        rec, action, m_record, m_action, v_record, v_online = \
                             record_cls.create_or_update_agent_mef_viaf(
                                 data=rec,
                                 dbcommit=True,
@@ -294,7 +243,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                         action_count[action.name] += 1
                         mef_action_count.setdefault(m_action.name, 0)
                         mef_action_count[m_action.name] += 1
-                        if online:
+                        if v_online:
                             viaf_online_count += 1
 
                         if verbose:
@@ -318,18 +267,20 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                                     m_pid=m_pid,
                                     m_action=m_action.value,
                                     v_pid=v_pid,
-                                    online=online,
+                                    online=v_online,
                                     updated=updated
                                 )
                             )
                     except Exception as err:
-                        msg = 'ERROR creating {name} {count}: {err}\n{rec}'
+                        msg = 'ERROR creating {name} {count}: {err}'
                         msg = msg.format(
                             name=name,
                             count=count,
-                            err=err,
-                            rec=rec
+                            err=err
                         )
+                        if rec:
+                            msg += '\n{rec}'.format(rec=rec)
+
                         current_app.logger.error(msg)
                         if debug:
                             traceback.print_exc()
