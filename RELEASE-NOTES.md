@@ -4,6 +4,33 @@ copyright: Copyright (C) 2020 RERO
 license: GNU Affero General Public License
 ---
 
+## v0.7.0
+
+## Data
+
+- Fixes `bf:Organisation` records with `conference=true`.
+
+### CLI
+
+- Improves `csv_diff` performance by using `pickeldb` to reduce memory usage
+  during `csv_diff` operation.
+
+### API
+
+- Improves DB error handling for `get_record_by_pid`.
+- Improves persistent identifier handling.
+- Corrects error management (raise of exceptions).
+
+### Monitoring
+
+- Monitors REDIS, timestamp and ElasticSearch.
+
+### Instance
+
+- Moves the license from the GPLv2 to the AGPLv3.
+- Upgrades Invenio to `v3.4`.
+- Upgrades dependencies.
+
 ## v0.6.0
 
 ### Metadata management
@@ -17,7 +44,6 @@ license: GNU Affero General Public License
 ### Search
 
 - Uses [ICU analysis][2] plugin for ElasticSearch.
-
 
 ### Authority file import
 
@@ -60,8 +86,8 @@ license: GNU Affero General Public License
 ## v0.2.0
 
 - Data:
-  -  Updates agents (source) data.
-  -  Improves transformation to `preferred_name` to keep regnal numbers.
+  - Updates agents (source) data.
+  - Improves transformation to `preferred_name` to keep regnal numbers.
 - Search:
   - Removes ES v2 mappings.
   - Adds source field to ES mappings.
@@ -78,7 +104,6 @@ license: GNU Affero General Public License
     PIDs.
   - [#33][i33]: Fixes variant name for a person transformation, to get
     complete variant name.
-
 
 [1]: README.rst
 [2]: https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html
