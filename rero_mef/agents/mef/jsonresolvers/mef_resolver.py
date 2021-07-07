@@ -23,7 +23,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 import jsonresolver
 
 from ..api import MefRecord
-from ...utils import get_host, resolve_record
+from ....utils import get_host, resolve_record
 
 
 @jsonresolver.route('/api/mef/<path:path>', host=get_host())

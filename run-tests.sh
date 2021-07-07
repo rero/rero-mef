@@ -63,8 +63,8 @@ if [[ -z "${VIRTUAL_ENV}" ]]; then
 fi
 
 set -e
-# | pipenv                     | 2018.11.2 | <2020.5.28               | 38334    |
-safety check --ignore 38334
+# Ignore 40459 until the next release of flask-caching will be available.
+safety check -i 40459
 info_msg "Test pydocstyle:"
 pydocstyle rero_mef tests docs
 info_msg "Test isort:"

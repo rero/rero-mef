@@ -19,8 +19,8 @@
 
 from celery import shared_task
 
+from .viaf.api import ViafRecord
 from ..utils import get_agent_class
-from ..viaf.api import ViafRecord
 
 
 @shared_task

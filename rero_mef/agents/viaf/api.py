@@ -34,7 +34,7 @@ from .models import ViafMetadata
 from .providers import ViafProvider
 from ..api import ReroMefIndexer, ReroMefRecord
 from ..mef.api import MefRecord
-from ..utils import get_agent_class, get_agents_endpoints, progressbar
+from ...utils import get_agent_class, get_agents_endpoints, progressbar
 
 
 class ViafSearch(RecordsSearch):

@@ -26,13 +26,13 @@ import click
 from celery.bin.control import inspect
 from flask.cli import with_appcontext
 
+from .mef.api import MefRecord
 from .tasks import \
     create_mef_and_agents_from_viaf as task_mef_and_agents_from_viaf
 from .tasks import create_mef_from_agent as task_mef_from_agent
-from ..mef.api import MefRecord
+from .viaf.api import ViafRecord
 from ..monitoring import Monitoring
 from ..utils import get_agent_class, get_agent_classes, progressbar
-from ..viaf.api import ViafRecord
 
 
 @click.group()

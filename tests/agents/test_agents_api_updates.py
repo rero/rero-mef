@@ -21,13 +21,13 @@ import mock
 
 from rero_mef.agents.gnd.api import AgentGndRecord
 from rero_mef.agents.idref.api import AgentIdrefRecord
+from rero_mef.agents.mef.api import MefRecord
 from rero_mef.agents.rero.api import AgentReroRecord
-from rero_mef.mef.api import MefRecord
-from rero_mef.viaf.api import ViafRecord
+from rero_mef.agents.viaf.api import ViafRecord
 
 
 @mock.patch(
-    'rero_mef.viaf.api.ViafRecord.get_online_viaf_record')
+    'rero_mef.agents.viaf.api.ViafRecord.get_online_viaf_record')
 def test_create_agent_updates(mock_get, app, gnd_record, rero_record,
                               idref_record):
     """Test create agent record with viaf links."""

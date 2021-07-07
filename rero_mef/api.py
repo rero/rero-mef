@@ -159,14 +159,17 @@ class ReroMefRecord(Record):
                     reindex=reindex
                 )
         else:
-            return_record = cls.create(
-                data=data,
-                id_=None,
-                delete_pid=False,
-                dbcommit=dbcommit,
-                reindex=reindex,
-            )
-            agent_action = Action.CREATE
+            try:
+                return_record = cls.create(
+                    data=data,
+                    id_=None,
+                    delete_pid=False,
+                    dbcommit=dbcommit,
+                    reindex=reindex,
+                )
+                agent_action = Action.CREATE
+            except Exception as err:
+                agent_action = Action.ERROR
         return return_record, agent_action
 
     @classmethod

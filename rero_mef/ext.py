@@ -21,7 +21,7 @@ from __future__ import absolute_import, print_function
 
 from invenio_indexer.signals import before_record_index
 
-from .mef.listner import enrich_mef_data
+from .agents.mef.listner import enrich_mef_data
 
 
 class REROMEFAPP(object):

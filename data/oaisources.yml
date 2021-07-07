@@ -17,4 +17,4 @@ gnd:
     baseurl: http://services.dnb.de/oai/repository
     metadataprefix: MARC21-xml
     comment: 'gnd'
-    setspecs: 'authorities'
+    setspecs: 'authorities:kongress authorities:koerperschaft authorities:person'

@@ -15,13 +15,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Identifier minters."""
+"""Persistent identifier fetchers."""
 
-from __future__ import absolute_import, print_function, unicode_literals
+
+from __future__ import absolute_import, print_function
 
 from functools import partial
 
-from .providers import ViafProvider
-from ..minters import id_minter
+from .providers import MefProvider
+from ...fetchers import id_fetcher
 
-viaf_id_minter = partial(id_minter, provider=ViafProvider, recid_field='pid')
+mef_id_fetcher = partial(id_fetcher, provider=MefProvider)

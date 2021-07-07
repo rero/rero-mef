@@ -31,7 +31,9 @@ from invenio_records_rest.facets import terms_filter
 
 from .agents.gnd.models import AgentGndIdentifier
 from .agents.idref.models import AgentIdrefIdentifier
+from .agents.mef.models import MefIdentifier
 from .agents.rero.models import AgentReroIdentifier
+from .agents.viaf.models import ViafIdentifier
 from .concepts.rero.models import ConceptReroIdentifier
 from .filter import exists_filter
 from .marctojson.do_gnd_agent import Transformation as AgentGndTransformation
@@ -40,8 +42,6 @@ from .marctojson.do_idref_agent import \
 from .marctojson.do_rero_agent import Transformation as AgentReroTransformation
 from .marctojson.do_rero_concepts import \
     Transformation as ConceptReroTransformation
-from .mef.models import MefIdentifier
-from .viaf.models import ViafIdentifier
 
 APP_THEME = ['bootstrap3']
 
@@ -220,9 +220,9 @@ RECORDS_REST_ENDPOINTS = dict(
         pid_type='mef',
         pid_minter='mef_id',
         pid_fetcher='mef_id',
-        search_class="rero_mef.mef.api:MefSearch",
-        indexer_class="rero_mef.mef.api:MefIndexer",
-        record_class="rero_mef.mef.api:MefRecord",
+        search_class="rero_mef.agents.mef.api:MefSearch",
+        indexer_class="rero_mef.agents.mef.api:MefIndexer",
+        record_class="rero_mef.agents.mef.api:MefRecord",
         search_index='mef',
         search_type=None,
         record_serializers={
@@ -236,7 +236,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/mef/',
         item_route=('/mef/<pid(mef, record_class='
-                    '"rero_mef.mef.api:MefRecord"):pid_value>'),
+                    '"rero_mef.agents.mef.api:MefRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict(),
@@ -245,9 +245,9 @@ RECORDS_REST_ENDPOINTS = dict(
         pid_type='viaf',
         pid_minter='viaf_id',
         pid_fetcher='viaf_id',
-        search_class="rero_mef.viaf.api:ViafSearch",
-        indexer_class="rero_mef.viaf.api:ViafIndexer",
-        record_class="rero_mef.viaf.api:ViafRecord",
+        search_class="rero_mef.agents.viaf.api:ViafSearch",
+        indexer_class="rero_mef.agents.viaf.api:ViafIndexer",
+        record_class="rero_mef.agents.viaf.api:ViafRecord",
         search_index='viaf',
         search_type=None,
         record_serializers={
@@ -261,7 +261,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/viaf/',
         item_route=('/viaf/<pid(viaf, record_class='
-                    '"rero_mef.viaf.api:ViafRecord"):pid_value>'),
+                    '"rero_mef.agents.viaf.api:ViafRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict(),

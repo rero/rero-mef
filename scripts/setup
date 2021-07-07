@@ -285,5 +285,5 @@ else
     esac
 fi
 
-success_msg "${PROGRAM} finished!"
+success_msg "${PROGRAM} finished"
 exit 0

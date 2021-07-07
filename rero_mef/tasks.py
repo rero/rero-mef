@@ -118,11 +118,13 @@ def create_or_update(index, record, agent, dbcommit=True, reindex=True,
             agent_action=agent_action.name
         )
         if agent_action.CREATE and agent in ['aidref', 'aggnd', 'agrero']:
+            if viaf_record:
+                v_pid = viaf_record['pid']
             message += ' mef: {m_pid} {m_action} |' \
                        ' viaf: {v_pid} {online}'.format(
                             m_pid=mef_record.pid,
                             m_action=mef_action.name,
-                            v_pid=viaf_record.pid,
+                            v_pid=v_pid,
                             online=got_online
                        )
         click.echo(message)
@@ -154,7 +156,7 @@ def delete(index, pid, agent, dbcommit=True, delindex=True, verbose=False):
                 pid=pid,
                 action=action
             )
-            current_app.logger.info(message)
+            click.echo(message)
     else:
         message = '{index:<10} Not found {agent} {pid:<38}'.format(
             index=index,
