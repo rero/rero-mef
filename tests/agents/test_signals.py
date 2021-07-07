@@ -18,8 +18,8 @@
 """Test signals."""
 
 from rero_mef.agents.gnd.api import AgentGndRecord
-from rero_mef.mef.api import MefSearch
-from rero_mef.viaf.api import ViafRecord
+from rero_mef.agents.mef.api import MefSearch
+from rero_mef.agents.viaf.api import ViafRecord
 
 
 def test_create_mef_from_agent_with_viaf_links(app, viaf_record, gnd_record):

@@ -96,13 +96,13 @@ class AgentRecord(ReroMefRecord):
     def create_or_update_mef_viaf_record(self, dbcommit=False, reindex=False,
                                          online=False):
         """Create or update MEF and VIAF record."""
-        from ..viaf.api import ViafRecord
+        from .viaf.api import ViafRecord
         ViafRecord.update_indexes()
         viaf_record, got_online = ViafRecord.get_viaf_by_agent(
             agent=self,
             online=online
         )
-        from ..mef.api import MefRecord
+        from .mef.api import MefRecord
         ref_string = MefRecord.build_ref_string(
             agent=self.agent,
             agent_pid=self.pid
@@ -142,7 +142,7 @@ class AgentRecord(ReroMefRecord):
 
     def delete_from_mef(self, dbcommit=False, reindex=False, verbose=False):
         """Delete agent from MEF record."""
-        from ..mef.api import MefRecord
+        from .mef.api import MefRecord
         mef_action = Action.DISCARD
         old_mef_pid = 'None'
         mef_record = MefRecord.get_mef_by_agent_pid(

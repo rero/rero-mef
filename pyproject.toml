@@ -6,7 +6,7 @@ authors = ["RERO <software@rero.ch>"]
 license = "GNU Affero General Public License v3.0"
 
 [tool.poetry.dependencies]
-python = ">= 3.6, < 3.7"
+python = ">= 3.6, <3.8"
 ## Python packages dependencies (order matters)
 #------------------------------------------------------------------------------
 ## Note: poetry evaluates the package constraints from the top to the bottom
@@ -46,6 +46,8 @@ invenio = {version = ">=3.4.0,<5.4.0", extras = ["base", "postgresql", "auth", "
 
 # TODO: jedi > 0.17 crashs the console
 jedi = "<0.18.0"
+# TODO: safety coverage | 5.5 | <6.0b1 | 41002
+coverage = {version = ">=6.0b1", allow-prereleases = true}
 
 ## RERO ILS specific python modules
 PyYAML = ">=5.3.1"
@@ -75,9 +77,10 @@ appnope = { version = "*", optional = true }
 bootstrap = "scripts:run('./scripts/bootstrap')"
 console = "scripts:run('./scripts/console')"
 run-tests = "scripts:run('./run-tests.sh')"
+tests = "scripts:run('pytest')"
+tests-debug = "scripts:run('pytest', '--no-cov', '-vv', '-s')"
 server = "scripts:run('./scripts/server')"
 setup = "scripts:run('./scripts/setup')"
-tests = "scripts:run('pytest')"
 update = "scripts:run('./scripts/update')"
 
 [build-system]

@@ -18,11 +18,18 @@
 """Poetry script utils."""
 
 import os
+# import subprocess
 import sys
 
+# def __getattr__(name):  # python 3.7+, otherwise define each script manually
+#     name = name.replace('_', '-')
+#     subprocess.run(
+#         ['python', '-u', '-m', name] + sys.argv[1:]
+#     )  # run whatever you like based on 'name'
 
-def run(prg_name):
+
+def run(prg_name, *args):  # python 3.7+, otherwise define each script manually
     def fn():
         # Replace current Python program by prg_name (same PID)
-        os.execvp(prg_name, [prg_name] + sys.argv[1:])
+        os.execvp(prg_name, [prg_name] + list(args) + sys.argv[1:])
     return fn

@@ -38,9 +38,10 @@ from werkzeug.local import LocalProxy
 
 from .agents.cli import create_mef_and_agents_from_viaf, \
     create_mef_from_agent, queue_count, reindex_missing, wait_empty_tasks
+from .agents.mef.models import MefIdentifier
+from .agents.viaf.api import ViafRecord, ViafSearch
 from .marctojson.helper import nice_record
 from .marctojson.records import RecordsCount
-from .mef.models import MefIdentifier
 from .tasks import create_or_update as task_create_or_update
 from .tasks import delete as task_delete
 from .tasks import process_bulk_queue as task_process_bulk_queue
@@ -51,7 +52,6 @@ from .utils import add_md5, add_oai_source, append_fixtures_new_identifiers, \
     export_json_records, get_agent_class, get_agent_classes, \
     get_agent_indexer_class, get_agent_search_class, number_records_in_file, \
     oai_get_last_run, oai_set_last_run, read_json_record
-from .viaf.api import ViafRecord, ViafSearch
 
 _datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
 
@@ -179,9 +179,10 @@ def delete(agent, source, lazy, enqueue, verbose):
                 verbose=verbose
             )
         else:
+            pid = record.get('pid')
             task_delete(
                 index=count,
-                pid=record.get('pid'),
+                pid=pid,
                 agent=agent,
                 dbcommit=True,
                 delindex=True,

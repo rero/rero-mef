@@ -31,7 +31,7 @@ from .minters import mef_id_minter
 from .models import MefMetadata
 from .providers import MefProvider
 from ..api import Action, ReroMefIndexer, ReroMefRecord
-from ..utils import get_agent_class, get_agent_classes, progressbar
+from ...utils import get_agent_class, get_agent_classes, progressbar
 
 
 class MefSearch(RecordsSearch):
@@ -265,7 +265,7 @@ class MefRecord(ReroMefRecord):
     @classmethod
     def get_all_missing_viaf_pids(cls, verbose=False):
         """Get all missing viaf pids."""
-        from ..viaf.api import ViafRecord
+        from .viaf.api import ViafRecord
         missing_pids = {}
         if verbose:
             click.echo('Get pids from viaf ...')

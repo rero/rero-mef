@@ -23,6 +23,6 @@ from __future__ import absolute_import, print_function
 from functools import partial
 
 from .providers import ViafProvider
-from ..fetchers import id_fetcher
+from ...fetchers import id_fetcher
 
 viaf_id_fetcher = partial(id_fetcher, provider=ViafProvider)

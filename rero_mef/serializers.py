@@ -23,9 +23,9 @@ from invenio_records_rest.schemas import RecordSchemaJSONV1
 from invenio_records_rest.serializers.json import JSONSerializer
 from invenio_records_rest.serializers.response import record_responsify
 
-from .mef.api import MefRecord, MefSearch
+from .agents.mef.api import MefRecord, MefSearch
+from .agents.viaf.api import ViafSearch
 from .utils import get_agent_classes
-from .viaf.api import ViafSearch
 
 
 def add_links(pid, record):

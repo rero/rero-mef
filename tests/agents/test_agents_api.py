@@ -20,7 +20,7 @@
 from rero_mef.agents.gnd.api import AgentGndRecord
 from rero_mef.agents.idref.api import AgentIdrefRecord
 from rero_mef.agents.rero.api import AgentReroRecord
-from rero_mef.viaf.api import ViafRecord
+from rero_mef.agents.viaf.api import ViafRecord
 
 
 def test_create_agent_record_with_viaf_links(
