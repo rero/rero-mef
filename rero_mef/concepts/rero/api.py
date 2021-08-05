@@ -51,20 +51,6 @@ class ConceptReroRecord(ConceptRecord):
     model_cls = ConceptReroMetadata
     name = 'rero'
 
-    # @classmethod
-    # def get_online_record(cls, id, verbose=False):
-    #     """Get online record."""
-    #     from .tasks import concepts_get_record
-    #     return concepts_get_record(id=id, verbose=verbose)
-
-    def reindex(self, forceindex=False):
-        """Reindex record."""
-        if forceindex:
-            result = ConceptReroIndexer(version_type='external_gte').index(self)
-        else:
-            result = ConceptReroIndexer().index(self)
-        return result
-
 
 class ConceptReroIndexer(ConceptIndexer):
     """ConceptsIndexer."""

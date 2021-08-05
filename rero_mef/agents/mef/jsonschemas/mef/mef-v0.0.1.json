@@ -20,20 +20,20 @@
       "minLength": 1
     },
     "viaf_pid": {
-      "title": "VIAF authority ID",
+      "title": "VIAF agent ID",
       "type": "string",
       "minLength": 1
     },
     "gnd": {
-      "title": "GND authority ID",
+      "title": "GND agent ID",
       "type": "object"
     },
     "rero": {
-      "title": "RERO authority ID",
+      "title": "RERO agent ID",
       "type": "object"
     },
     "idref": {
-      "title": "IDREF authority ID",
+      "title": "IDREF agent ID",
       "type": "object"
     },
     "deleted": {

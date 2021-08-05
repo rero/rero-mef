@@ -70,10 +70,6 @@ setup(
         'invenio_base.blueprints': [
             'rero_mef = rero_mef.theme.views:blueprint',
         ],
-        'invenio_base.api_blueprints': [
-            'api_rero_mef = rero_mef.theme.views:api_blueprint',
-            'monitoring = rero_mef.monitoring:api_blueprint',
-        ],
         'invenio_config.module': [
             'rero_mef = rero_mef.config',
         ],
@@ -83,6 +79,7 @@ setup(
             'agents_gnd = rero_mef.agents.gnd.models',
             'agents_idref = rero_mef.agents.idref.models',
             'agents_rero = rero_mef.agents.rero.models',
+            'concepts_mef = rero_mef.concepts.mef.models',
             'concepts_rero = rero_mef.concepts.rero.models',
         ],
         'invenio_pidstore.minters': [
@@ -91,7 +88,8 @@ setup(
             'agent_gnd_id = rero_mef.agents.gnd.minters:gnd_id_minter',
             'agent_idref_id = rero_mef.agents.idref.minters:idref_id_minter',
             'agent_rero_id = rero_mef.agents.rero.minters:rero_id_minter',
-            'concept_rero_id = rero_mef.concepts.rero.minters:rero_id_minter'
+            'concept_mef_id = rero_mef.concepts.mef.minters:mef_id_minter',
+            'concept_rero_id = rero_mef.concepts.rero.minters:rero_id_minter',
         ],
         'invenio_pidstore.fetchers': [
             'mef_id = rero_mef.agents.mef.fetchers:mef_id_fetcher',
@@ -99,7 +97,8 @@ setup(
             'agent_gnd_id = rero_mef.agents.gnd.fetchers:gnd_id_fetcher',
             'agent_idref_id = rero_mef.agents.idref.fetchers:idref_id_fetcher',
             'agent_rero_id = rero_mef.agents.rero.fetchers:rero_id_fetcher',
-            'concept_rero_id = rero_mef.concepts.rero.fetchers:rero_id_fetcher'
+            'concept_mef_id = rero_mef.concepts.mef.fetchers:mef_id_fetcher',
+            'concept_rero_id = rero_mef.concepts.rero.fetchers:rero_id_fetcher',
         ],
         'invenio_jsonschemas.schemas': [
             'common = rero_mef.jsonschemas',
@@ -108,7 +107,8 @@ setup(
             'agents_gnd = rero_mef.agents.gnd.jsonschemas',
             'agents_idref = rero_mef.agents.idref.jsonschemas',
             'agents_rero = rero_mef.agents.rero.jsonschemas',
-            'cocepts_rero = rero_mef.concepts.rero.jsonschemas'
+            'cocepts_mef = rero_mef.concepts.mef.jsonschemas',
+            'cocepts_rero = rero_mef.concepts.rero.jsonschemas',
         ],
         'invenio_search.mappings': [
             'mef = rero_mef.agents.mef.mappings',
@@ -116,34 +116,41 @@ setup(
             'agents_gnd = rero_mef.agents.gnd.mappings',
             'agents_idref = rero_mef.agents.idref.mappings',
             'agents_rero = rero_mef.agents.rero.mappings',
-            'concepts_rero = rero_mef.concepts.rero.mappings'
+            'concepts_mef = rero_mef.concepts.mef.mappings',
+            'concepts_rero = rero_mef.concepts.rero.mappings',
         ],
         'invenio_records.jsonresolver': [
             'mef = rero_mef.agents.mef.jsonresolvers.mef_resolver',
+            'viaf = rero_mef.agents.viaf.jsonresolvers.viaf_resolver',
             'agents_gnd = rero_mef.agents.gnd.jsonresolvers.gnd_resolver',
             'agents_idref = rero_mef.agents.idref.jsonresolvers.idref_resolver',
             'agents_rero = rero_mef.agents.rero.jsonresolvers.rero_resolver',
+            'concepts_mef = rero_mef.concepts.mef.jsonresolvers.mef_resolver',
             'concepts_rero = rero_mef.concepts.rero.jsonresolvers.rero_resolver',
         ],
         'invenio_base.api_blueprints': [
+            'api_rero_mef = rero_mef.theme.views:api_blueprint',
+            'api_monitoring = rero_mef.monitoring:api_blueprint',
             'api_agents_mef = rero_mef.agents.mef.views:api_blueprint',
             'api_agents_viaf = rero_mef.agents.viaf.views:api_blueprint',
             'api_agents_gnd = rero_mef.agents.gnd.views:api_blueprint',
             'api_agents_idref = rero_mef.agents.idref.views:api_blueprint',
-            'api_agents_rero = rero_mef.agents.rero.views:api_blueprint'
+            'api_agents_rero = rero_mef.agents.rero.views:api_blueprint',
         ],
         'flask.commands': [
             'fixtures = rero_mef.cli:fixtures',
             'utils = rero_mef.cli:utils',
             'celery = rero_mef.cli:celery',
             'agents = rero_mef.agents.cli:agents',
+            'concepts = rero_mef.concepts.cli:concepts',
+            'monitoring = rero_mef.monitoring:monitoring',
         ],
         'dojson.cli.rule': [
             'tomarc = dojson.contrib.to_marc21:to_marc21',
-            'idrefjson = rero_ebooks.dojson.from_unimarc.model:from_unimarc'
+            'idrefjson = rero_ebooks.dojson.from_unimarc.model:from_unimarc',
         ],
         'dojson.cli.dump': [
-            'pjson = rero_mef.dojson.utils:dump'
+            'pjson = rero_mef.dojson.utils:dump',
         ]
     },
     classifiers=[

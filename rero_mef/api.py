@@ -118,20 +118,22 @@ class ReroMefRecord(Record):
         return record
 
     def update_test_md5(self, data, dbcommit=False, reindex=False):
-        """Update existing record."""
-        return_record = self
-        if data.get('md5'):
-            data = add_md5(data)
-            data_md5 = data.get('md5', 'data')
-            agent_md5 = self.get('md5', 'agent')
-            if data_md5 == agent_md5:
-                # record has no changes
-                agent_action = Action.UPTODATE
-                return return_record, agent_action
+        """Update existing record.
+
+        :param data: Data to test MD5 changes.
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex record.
+        :returns: Record.
+        """
+        data = deepcopy(data)
+        data = add_md5(data)
+        if data.get('md5', 'data') == self.get('md5', 'agent'):
+            # record has no changes
+            return self, Action.UPTODATE
+        data = add_schema(data, self.name)
         return_record = self.replace(
             data=data, dbcommit=dbcommit, reindex=reindex)
-        agent_action = Action.UPDATE
-        return return_record, agent_action
+        return return_record, Action.UPDATE
 
     @classmethod
     def create_or_update(cls, data, id_=None, delete_pid=True, dbcommit=False,
@@ -297,14 +299,17 @@ class ReroMefRecord(Record):
     def index_all(cls):
         """Index all records."""
         ids = cls.get_all_ids()
-        cls.index_ids(ids)
-        return len(ids)
+        count = cls.index_ids(ids)
+        return count
 
     @classmethod
     def index_ids(cls, ids):
         """Index ids."""
+        count = 0
         for uuid in ids:
+            count += 1
             RecordIndexer().index(cls.get_record_by_id(uuid))
+        return count
 
     def delete(self, force=False, dbcommit=False, delindex=False):
         """Delete record and persistent identifier."""
@@ -341,20 +346,41 @@ class ReroMefRecord(Record):
         if reindex:
             self.reindex(forceindex=forceindex)
 
+    @classmethod
+    def get_indexer_class(cls):
+        """Get the indexer from config."""
+        try:
+            indexer = obj_or_import_string(
+                current_app.config['RECORDS_REST_ENDPOINTS'][
+                    cls.provider.pid_type
+                ]['indexer_class']
+            )
+        except Exception:
+            # provide default indexer if no indexer is defined in config.
+            indexer = ReroIndexer
+        return indexer
+
     def reindex(self, forceindex=False):
         """Reindex record."""
+        indexer = self.get_indexer_class()
         if forceindex:
-            result = RecordIndexer(version_type='external_gte').index(self)
+            result = indexer(version_type='external_gte').index(self)
         else:
-            result = RecordIndexer().index(self)
+            result = indexer().index(self)
         return result
 
     def delete_from_index(self):
         """Delete record from index."""
+        indexer = self.get_indexer_class()
         try:
-            RecordIndexer().delete(self)
+            indexer().delete(self)
         except NotFoundError:
-            pass
+            current_app.logger.warning(
+                'Can not delete from index {class_name}: {pid}'.format(
+                    class_name=self.__class__.__name__,
+                    pid=self.pid
+                )
+            )
 
     @property
     def pid(self):

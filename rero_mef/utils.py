@@ -275,36 +275,44 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                         except Exception as err:
                             updated = '????'
                         rec = transformation(records[0]).json
-                        pid = rec.get('pid')
-                        rec, action, m_record, m_action, v_record, v_online = \
-                            record_cls.create_or_update_agent_mef_viaf(
-                                data=rec,
-                                dbcommit=True,
-                                reindex=True,
-                                test_md5=test_md5,
-                                online=viaf_online,
-                                verbose=verbose
-                            )
-                        action_count.setdefault(action.name, 0)
-                        action_count[action.name] += 1
-                        mef_action_count.setdefault(m_action.name, 0)
-                        mef_action_count[m_action.name] += 1
-                        if v_online:
-                            viaf_online_count += 1
+                        if rec:
+                            pid = rec.get('pid')
+                            res = record_cls.create_or_update_agent_mef_viaf(
+                                    data=rec,
+                                    dbcommit=True,
+                                    reindex=True,
+                                    test_md5=test_md5,
+                                    online=viaf_online,
+                                    verbose=verbose
+                                )
+                            rec, action, m_record, m_action, v_record, \
+                                v_online = res
+                            action_count.setdefault(action.name, 0)
+                            action_count[action.name] += 1
+                            mef_action_count.setdefault(m_action.name, 0)
+                            mef_action_count[m_action.name] += 1
+                            if v_online:
+                                viaf_online_count += 1
 
-                        if verbose:
-                            m_pid = 'Non'
-                            if m_record:
-                                m_pid = m_record.pid
-                            v_pid = 'Non'
-                            if v_record:
-                                v_pid = v_record.pid
-                            click.echo(
-                                f'OAI {name} spec({spec}): {pid}'
-                                f' updated: {updated} {action}'
-                                f' | mef: {m_pid} {m_action}'
-                                f' | viaf: {v_pid} online: {v_online}'
-                            )
+                            if verbose:
+                                m_pid = 'Non'
+                                if m_record:
+                                    m_pid = m_record.pid
+                                v_pid = 'Non'
+                                if v_record:
+                                    v_pid = v_record.pid
+                                click.echo(
+                                    f'OAI {name} spec({spec}): {pid}'
+                                    f' updated: {updated} {action}'
+                                    f' | mef: {m_pid} {m_action}'
+                                    f' | viaf: {v_pid} online: {v_online}'
+                                )
+                        else:
+                            if verbose:
+                                click.echo(
+                                    f'NO TRANSFORMATION: {name} {count} '
+                                    f'{records[0]}'
+                                )
                     except Exception as err:
                         msg = f'Creating {name} {count}: {err}'
                         if rec:
@@ -352,8 +360,6 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
     :param until_date: The upper bound date for the harvesting (optional).
     """
     # data on IDREF Servers starts on 2000-10-01
-    name = name
-    days_spann = days_spann
     last_run = None
     url, metadata_prefix, last_run, setspecs = get_info_by_oai_name(name)
 
@@ -406,10 +412,6 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
                     for record in request.ListRecords(**params):
                         count += 1
                         records = parse_xml_to_array(StringIO(record.raw))
-                        record_id = '???'
-                        field_001 = records[0]['001']
-                        if field_001:
-                            record_id = field_001.data
                         if verbose:
                             from_date = my_from_date.strftime("%Y-%m-%d")
                             click.echo(
@@ -445,7 +447,6 @@ def oai_get_record(id, name, transformation, record_cls, access_token=None,
 
     :param identifier: identifier of record.
     """
-    name = name
     url, metadata_prefix, lastrun, setspecs = get_info_by_oai_name(name)
 
     request = Sickle(url)
@@ -491,7 +492,7 @@ def read_json_record(json_file, buf_size=1024, decoder=JSONDecoder()):
             try:
                 buffer = buffer.lstrip()
                 obj, pos = decoder.raw_decode(buffer)
-            except JSONDecodeError as err:
+            except JSONDecodeError:
                 break
             else:
                 yield obj
@@ -624,15 +625,6 @@ def pidstore_csv_line(agent, agent_pid, record_uuid, date):
     return pidstore_line + os.linesep
 
 
-def add_agent_to_json(mef_record, agent, agent_pid):
-    """Add agent ref to MEF record."""
-    from .agents.mef.api import AgentMefRecord
-    ref_string = AgentMefRecord.build_ref_string(
-        agent=agent, agent_pid=agent_pid
-    )
-    mef_record[agent] = {'$ref': ref_string}
-
-
 def raw_connection():
     """Return a raw connection to the database."""
     with current_app.app_context():
@@ -753,7 +745,7 @@ def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
             end_time = datetime.now()
             diff_time = end_time - start_time
             click.echo(
-                '{agent} copy from file: {count} {diff_time.seconds}s',
+                f'{agent} copy from file: {count} {diff_time.seconds}s',
                 nl=False
             )
         buffer.flush()
@@ -988,27 +980,27 @@ def get_entity_classes(without_mef_viaf=True):
     return agents
 
 
-def get_endpoint_class(agent, class_name):
-    """Get agent class from config."""
+def get_endpoint_class(entity, class_name):
+    """Get entity class from config."""
     endpoints = current_app.config.get('RECORDS_REST_ENDPOINTS', {})
-    endpoint = endpoints.get(agent, {})
+    endpoint = endpoints.get(entity, {})
     endpoint_class = obj_or_import_string(endpoint.get(class_name))
     return endpoint_class
 
 
-def get_entity_class(agent):
-    """Get agent record class from config."""
-    return get_endpoint_class(agent=agent, class_name='record_class')
+def get_entity_class(entity):
+    """Get entity record class from config."""
+    return get_endpoint_class(entity=entity, class_name='record_class')
 
 
-def get_entity_search_class(agent):
-    """Get agent search class from config."""
-    return get_endpoint_class(agent=agent, class_name='search_class')
+def get_entity_search_class(entity):
+    """Get entity search class from config."""
+    return get_endpoint_class(entity=entity, class_name='search_class')
 
 
-def get_entity_indexer_class(agent):
-    """Get agent indexer class from config."""
-    return get_endpoint_class(agent=agent, class_name='indexer_class')
+def get_entity_indexer_class(entity):
+    """Get entity indexer class from config."""
+    return get_endpoint_class(entity=entity, class_name='indexer_class')
 
 
 def write_link_json(
@@ -1131,6 +1123,18 @@ def set_timestamp(name, **kwargs):
         time_stamps[name][key] = value
     current_cache.set('timestamps', time_stamps)
     return utc_now
+
+
+def get_timestamp(name):
+    """Get timestamp in current cache.
+
+    :param name: name of time stamp.
+    :returns: time of time stamp
+    """
+    time_stamps = current_cache.get('timestamps')
+    if not time_stamps:
+        return None
+    return time_stamps.get(name)
 
 
 def settimestamp(func):

@@ -56,14 +56,14 @@ def get_language_script(field):
     try:
         subfield_8 = field['8']
         language = subfield_8[3:6]
-        test = languages[language]
+        _ = languages[language]
     except Exception:
         language = 'fre'
     try:
         subfield_7 = field['7']
         code = subfield_7[4:6]
         script_code = LANGUAGE_SCRIPT_CODES[code]
-        test = languages[language][script_code]
+        _ = languages[language][script_code]
     except Exception:
         script_code = 'latn'
     return f'{language}-{script_code}'
@@ -71,12 +71,14 @@ def get_language_script(field):
 
 def build_language_string_list_from_fields(
         record, tag, subfields, punctuation=',', spaced_punctuation=':;/-',
-        tag_grouping=[]):
+        tag_grouping=None):
     """Build a list of strings (one per field).
 
     from the given field tag and given subfields.
     the given separator is used as subfields delimiter.
     """
+    if not tag_grouping:
+        tag_grouping = []
     fields = record.get_fields(tag)
     field_string_list = []
     for field in fields:

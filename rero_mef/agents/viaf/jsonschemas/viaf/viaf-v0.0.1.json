@@ -33,6 +33,11 @@
       "title": "IDREF authority ID",
       "type": "string",
       "minLength": 1
+    },
+    "md5": {
+      "title": "MD5",
+      "type": "string",
+      "minLength": 1
     }
   }
 }

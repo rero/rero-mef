@@ -30,7 +30,7 @@
       ]
     },
     "md5": {
-      "title": "Md5",
+      "title": "MD5",
       "type": "string",
       "minLength": 1
     },
