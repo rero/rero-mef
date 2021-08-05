@@ -67,15 +67,15 @@ class Transformation(object):
         100 $d pos. 1-4 YYYY birth_date
         100 $d pos. 6-9 YYYY birth_date
         """
-        def format_100_date(date_str):
-            """DocString."""
-            date_formated = date_str
-            if len(date_str) == 8:
-                date_formated = \
-                    f'{date_str[0:4]}-{date_str[4:6]}-{date_str[6:8]}'
-            elif len(date_str) == 4:
-                date_formated = date_str[0:4]
-            return date_formated
+        # def format_100_date(date_str):
+        #     """DocString."""
+        #     date_formated = date_str
+        #     if len(date_str) == 8:
+        #         date_formated = \
+        #             f'{date_str[0:4]}-{date_str[4:6]}-{date_str[6:8]}'
+        #     elif len(date_str) == 4:
+        #         date_formated = date_str[0:4]
+        #     return date_formated
 
         if self.logger and self.verbose:
             self.logger.info(
@@ -208,6 +208,8 @@ class Transformation(object):
         punctuation = ''
         spaced_punctuation = ''
         subfields = {'a': ' ', 'b': ' ', 'c': ' '}
+        # TODO: This code is not working for mixed tags!
+        # Does 400, 410, 411 mixes exist?
         if self.marc.get_fields('410') or self.marc.get_fields('411'):
             subfields = {'a': ' ', 'b': ' ', 'd': ' '}
             if self.marc.get_fields('410'):
@@ -258,7 +260,7 @@ class Transformation(object):
             self.json_dict['variant_access_point'] = variant_access_points
 
     def trans_rero_parallel_access_point(self):
-        """Transformation variant_name 700/710/710."""
+        """Transformation parallel_access_point 700/710/710."""
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function', 'trans_rero_parallel_access_point')

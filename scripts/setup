@@ -65,14 +65,14 @@ function db_init () {
     # Purge celery
     celery -A rero_mef.celery purge -f
     # Clean redis
-    invenio utils flush_cache --yes-i-know || true
+    invenio utils flush-cache --yes-i-know || true
     invenio db destroy --yes-i-know || true
     invenio db init create
     invenio index destroy --force --yes-i-know || true
     invenio index init --force
     invenio index queue init purge
 
-    # Create admin role to rectict access
+    # Create roles to rectict access
     invenio roles create admin
     invenio access allow superuser-access role admin
     # create new admin user
@@ -81,6 +81,17 @@ function db_init () {
     invenio roles create -d 'Admins Group' admins
     invenio access allow admin-access role admins
     invenio roles add admin@rero.ch admins
+    # create new monitoring user
+    invenio roles create -d 'Monitoring Group' monitoring
+    invenio users create -a monitoring@rero.ch --password monitor
+    invenio roles add admin@rero.ch monitoring
+    invenio roles add monitoring@rero.ch monitoring
+    if [ -z ${INVENIO_RERO_ACCESS_TOKEN_MONITORING} ]
+    then
+        invenio utils tokens_create -n monitoring -u monitoring@rero.ch
+    else
+        invenio utils tokens_create -n monitoring -u monitoring@rero.ch -t ${INVENIO_RERO_ACCESS_TOKEN_MONITORING}
+    fi
 }
 
 function oai_init () {
@@ -113,6 +124,8 @@ function sample_load () {
       info_msg "Importing ${ENTITY} concept records:"
       dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY}
     done
+    info_msg "Creating MEF records:"
+    invenio concepts create-mef
 
     oai_init
 }
@@ -129,7 +142,7 @@ function deploy () {
     oai_init
     invenio utils runindex --raise-on-error --concurrency 8 --delayed
     invenio utils runindex --raise-on-error
-    invenio utils reindex-missing -v
+    # invenio utils reindex-missing -v
     invenio agents-counts
 }
 
@@ -160,9 +173,9 @@ function create_csv () {
     # Create VIAF CSV files from viaf.txt
     invenio agents create-csv-viaf ${OUTPUT_DIR}/viaf.txt ${OUTPUT_DIR}
 
-    info_msg "Create MEF CSV files from viaf_metadata.csv: ${OUTPUT_DIR}"
+    info_msg "Create MEF CSV files from viaf_pidstore.csv: ${OUTPUT_DIR}"
     # Create MEF CSV files from viaf_metadata.csv
-    invenio agents create-csv-mef ${OUTPUT_DIR}/viaf_pidstore.csv ${OUTPUT_DIR}
+    invenio agents create-csv-mef ${OUTPUT_DIR}/viaf_metadata.csv ${OUTPUT_DIR}
 }
 
 function create_and_load () {

@@ -34,6 +34,7 @@ from .agents.idref.models import AgentIdrefIdentifier
 from .agents.mef.models import AgentMefIdentifier
 from .agents.rero.models import AgentReroIdentifier
 from .agents.viaf.models import ViafIdentifier
+from .concepts.mef.models import ConceptMefIdentifier
 from .concepts.rero.models import ConceptReroIdentifier
 from .filter import exists_filter
 from .marctojson.do_gnd_agent import Transformation as AgentGndTransformation
@@ -190,19 +191,20 @@ DEBUG_TB_INTERCEPT_REDIRECTS = False
 BULK_CHUNK_COUNT = 100000
 
 TRANSFORMATION = {
-    'corero': ConceptReroTransformation,
     'aggnd': AgentGndTransformation,
     'aidref': AgentIdrefTransformation,
-    'agrero': AgentReroTransformation
+    'agrero': AgentReroTransformation,
+    'corero': ConceptReroTransformation
 }
 
 IDENTIFIERS = {
     'mef': AgentMefIdentifier,
     'viaf': ViafIdentifier,
-    'corero': ConceptReroIdentifier,
     'aggnd': AgentGndIdentifier,
     'aidref': AgentIdrefIdentifier,
-    'agrero': AgentReroIdentifier
+    'agrero': AgentReroIdentifier,
+    'comef': ConceptMefIdentifier,
+    'corero': ConceptReroIdentifier
 }
 
 AGENTS = [
@@ -212,7 +214,7 @@ AGENTS = [
 ]
 
 CONCEPTS = [
-    'corero',
+    'corero'
 ]
 
 RERO_MEF_APP_BASE_URL = 'https://mef.rero.ch'
@@ -236,8 +238,8 @@ RECORDS_REST_ENDPOINTS = dict(
         search_index='mef',
         search_type=None,
         record_serializers={
-            'application/json': ('rero_mef.serializers'
-                                 ':json_v1_response'),
+            'application/json': ('rero_mef.agents.mef.serializers'
+                                 ':json_v1_agent_mef_response'),
         },
         search_serializers={
             'application/json': ('invenio_records_rest.serializers'
@@ -261,8 +263,8 @@ RECORDS_REST_ENDPOINTS = dict(
         search_index='viaf',
         search_type=None,
         record_serializers={
-            'application/json': ('rero_mef.serializers'
-                                 ':json_v1_response'),
+            'application/json': ('rero_mef.agents.viaf.serializers'
+                                 ':json_v1_agent_viaf_response'),
         },
         search_serializers={
             'application/json': ('invenio_records_rest.serializers'
@@ -286,8 +288,8 @@ RECORDS_REST_ENDPOINTS = dict(
         search_index='agents_gnd',
         search_type=None,
         record_serializers={
-            'application/json': ('rero_mef.serializers'
-                                 ':json_v1_response'),
+            'application/json': ('rero_mef.agents.serializers'
+                                 ':json_v1_agent_response'),
         },
         search_serializers={
             'application/json': ('invenio_records_rest.serializers'
@@ -311,8 +313,8 @@ RECORDS_REST_ENDPOINTS = dict(
         search_index='agents_idref',
         search_type=None,
         record_serializers={
-            'application/json': ('rero_mef.serializers'
-                                 ':json_v1_response'),
+            'application/json': ('rero_mef.agents.serializers'
+                                 ':json_v1_agent_response'),
         },
         search_serializers={
             'application/json': ('invenio_records_rest.serializers'
@@ -337,8 +339,8 @@ RECORDS_REST_ENDPOINTS = dict(
         search_index='agents_rero',
         search_type=None,
         record_serializers={
-            'application/json': ('rero_mef.serializers'
-                                 ':json_v1_response'),
+            'application/json': ('rero_mef.agents.serializers'
+                                 ':json_v1_agent_response'),
         },
         search_serializers={
             'application/json': ('invenio_records_rest.serializers'
@@ -348,6 +350,32 @@ RECORDS_REST_ENDPOINTS = dict(
         list_route='/agents/rero/',
         item_route=('/agents/rero/<pid(agrero, record_class='
                     '"rero_mef.agents.rero.api:AgentReroRecord"):pid_value>'),
+        default_media_type='application/json',
+        max_result_window=MAX_RESULT_WINDOW,
+        error_handlers=dict(),
+    ),
+    comef=dict(
+        pid_type='comef',
+        pid_minter='concept_mef_id',
+        pid_fetcher='concept_mef_id',
+        search_class="rero_mef.concepts.mef.api:ConceptMefSearch",
+        indexer_class="rero_mef.concepts.mef.api:ConceptMefIndexer",
+        record_class="rero_mef.concepts.mef.api:ConceptMefRecord",
+        search_index='concepts_mef',
+        search_type=None,
+        record_serializers={
+            'application/json': ('rero_mef.concepts.mef.serializers'
+                                 ':json_v1_concept_mef_response'),
+        },
+        search_serializers={
+            'application/json': ('invenio_records_rest.serializers'
+                                 ':json_v1_search'),
+        },
+        search_factory_imp='rero_mef.query:and_search_factory',
+        list_route='/concepts/mef/',
+        item_route=('/concepts/mef/<pid(comef, record_class='
+                    '"rero_mef.concepts.mef.api:ConceptMefRecord")'
+                    ':pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict(),
@@ -362,8 +390,8 @@ RECORDS_REST_ENDPOINTS = dict(
         search_index='concepts_rero',
         search_type=None,
         record_serializers={
-            'application/json': ('rero_mef.serializers'
-                                 ':json_v1_response'),
+            'application/json': ('rero_mef.concepts.serializers'
+                                 ':json_v1_concept_response'),
         },
         search_serializers={
             'application/json': ('invenio_records_rest.serializers'
@@ -380,8 +408,19 @@ RECORDS_REST_ENDPOINTS = dict(
     )
 )
 
+RERO_AGENTS = [
+    'aggnd',
+    'aidref',
+    'agrero'
+]
+
+RERO_CONCEPTS = [
+    'corero'
+]
+
 RECORDS_JSON_SCHEMA = {
     'corero': '/concepts_rero/rero-concept-v0.0.1.json',
+    'comef': '/concepts_mef/mef-concept-v0.0.1.json',
     'aggnd': '/agents_gnd/gnd-agent-v0.0.1.json',
     'agrero': '/agents_rero/rero-agent-v0.0.1.json',
     'aidref': '/agents_idref/idref-agent-v0.0.1.json',
@@ -468,6 +507,22 @@ RECORDS_REST_FACETS = dict(
         filters={
             'agent_type': terms_filter('bf:Agent'),
             'deleted': exists_filter('deleted'),
+        }
+    ),
+    concepts_mef=dict(
+        aggs=dict(
+            sources=dict(
+                terms=dict(field='sources', size=30)
+            ),
+            deleted=dict(
+                filter=dict(exists=dict(field="deleted"))
+            ),
+        ),
+        filters={
+            'agent_type': terms_filter('type'),
+            'agent_sources': terms_filter('sources'),
+            'deleted': exists_filter('deleted'),
+            'rero_double': terms_filter('rero.pid')
         }
     ),
     concepts_rero=dict(

@@ -24,7 +24,7 @@ from ..utils import get_entity_class
 
 
 @shared_task
-def create_from_viaf(pid, dbcommit=True, reindex=True,
+def task_create_mef_from_viaf_agent(pid, dbcommit=True, reindex=True,
                                     test_md5=False, online=False,
                                     verbose=False):
     """Create MEF and agents from VIAF task.
@@ -49,15 +49,14 @@ def create_from_viaf(pid, dbcommit=True, reindex=True,
 
 
 @shared_task
-def create_mef(pid, agent, dbcommit=True, reindex=True,
-                          online=False):
+def task_create_mef_for_agent(pid, agent, dbcommit=True, reindex=True,
+                              online=False):
     """Create MEF from agent task.
 
     :param pid: pid for agent to use
     :param agent: agent
     :param dbcommit: db commit or not
     :param reindex: reindex or not
-    :param test_md5: test md5 or not
     :param online: get VIAF online if not exist
     :returns: no return
     """
@@ -70,12 +69,15 @@ def create_mef(pid, agent, dbcommit=True, reindex=True,
                 reindex=reindex,
                 online=online
             )
-    mef_pid = 'Non'
-    if mef_record:
-        mef_pid = mef_record.pid
-    viaf_pid = 'Non'
-    if viaf_record:
-        viaf_pid = viaf_record.pid
+        mef_pid = 'Non'
+        if mef_record:
+            mef_pid = mef_record.pid
+        viaf_pid = 'Non'
+        if viaf_record:
+            viaf_pid = viaf_record.pid
 
-    actions = f'mef: {mef_pid} {mef_action.value} viaf: {viaf_pid} {online}'
-    return f'Create MEF from {agent} pid: {pid} | {actions}'
+        actions = f'mef: {mef_pid} {mef_action.value} ' \
+            'viaf: {viaf_pid} {online}'
+        return f'Create MEF from {agent} pid: {pid} | {actions}'
+    else:
+        return f'Not found agent {agent}:{pid}'

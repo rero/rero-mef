@@ -17,9 +17,9 @@
 
 """Utilities."""
 
-import datetime
 import json
 import os
+from datetime import datetime
 from uuid import uuid4
 
 import click
@@ -31,7 +31,7 @@ from ..utils import get_entity_classes, metadata_csv_line, \
 
 def write_mef_files(pid, data, pidstore, metadata, ids):
     """Write MEF metadata, pidstore and ids file.
-    
+
     :param pid: Pid for data.
     :param data: Corresponding data to write.
     :param pidstore: Pidstore file.
@@ -50,10 +50,10 @@ def write_mef_files(pid, data, pidstore, metadata, ids):
 
 def init_agent_pids(input_directory, verbose):
     """Init agent data.
-    
+
     :param input_directory: Input directory to look for agent pidstore files.
     :param verbose: Verbose.
-    :returns: Dictionary with agent name and associated pids and dictonary with 
+    :returns: Dictionary with agent name and associated pids and dictonary with
               VIAF agent pid names.
     """
     pids = {}
@@ -82,7 +82,7 @@ def init_agent_pids(input_directory, verbose):
 
 
 def create_mef_files(
-    viaf_pidstore_file,
+    viaf_metadata_file_name,
     input_directory,
     mef_pidstore_file_name,
     mef_metadata_file_name,
@@ -98,7 +98,7 @@ def create_mef_files(
     :param mef_ids_file_name: MEF ids output file name.
     :param verbose: Verbose.
     :returns: count of processed MEF records.
-    """    
+    """
     if verbose:
         click.echo('Start ***')
     pids, viaf_agent_pid_names = init_agent_pids(input_directory, verbose)
@@ -111,16 +111,16 @@ def create_mef_files(
         schemas = current_app.config.get('RECORDS_JSON_SCHEMA')
         base_url = current_app.config.get('RERO_MEF_APP_BASE_URL')
         schema = (f'{base_url}'
-                    f'{current_app.config.get("JSONSCHEMAS_ENDPOINT")}'
-                    f'{schemas["mef"]}')
+                  f'{current_app.config.get("JSONSCHEMAS_ENDPOINT")}'
+                  f'{schemas["mef"]}')
         # Create MEF with VIAF
         if verbose:
             click.echo(
-                f'  Create MEF with VIAF pid: {viaf_pidstore_file}'
+                f'  Create MEF with VIAF pid: {viaf_metadata_file_name}'
             )
         progress = progressbar(
-            items=open(str(viaf_pidstore_file), 'r', encoding='utf-8'),
-            length=number_records_in_file(viaf_pidstore_file, 'csv'),
+            items=open(str(viaf_metadata_file_name), 'r', encoding='utf-8'),
+            length=number_records_in_file(viaf_metadata_file_name, 'csv'),
             verbose=verbose
         )
         for line in progress:
@@ -146,6 +146,7 @@ def create_mef_files(
                     metadata=metadata,
                     ids=ids
                 )
+
         # Create MEF without VIAF
         length = sum([len(p) for p in pids.values()])
         if verbose:
@@ -179,7 +180,7 @@ def create_viaf_files(
     verbose=False
 ):
     """Create VIAF CSV file to load.
-    
+
     :param viaf_input_file: VIAF input source file name.
     :param viaf_pidstore_file_name: VIAF pidstore output file name.
     :param viaf_metadata_file_name: VIAF metadata output file name.
@@ -187,7 +188,7 @@ def create_viaf_files(
     :returns: count of processed VIAF records.
     """
     if verbose:
-        click.echo('Start ***')
+        click.echo('  Start ...')
 
     agent_pid = 0
     corresponding_data = {}

@@ -51,7 +51,7 @@ class Logger:
 
         """
         self.name = name
-        # create logger with "spam_application"
+        # create logger
         self.logger = logging.getLogger(name)
         if log_master:
             self.logger.setLevel(log_level)

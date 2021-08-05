@@ -22,11 +22,11 @@ from __future__ import absolute_import, print_function
 import os
 
 import click
+from flask import current_app
 from flask.cli import with_appcontext
 
 from .mef.api import AgentMefRecord
-from .tasks import create_from_viaf as task_mef_and_agents_from_viaf
-from .tasks import create_mef as task_mef_from_agent
+from .tasks import task_create_mef_for_agent, task_create_mef_from_viaf_agent
 from .utils import create_mef_files, create_viaf_files
 from .viaf.api import AgentViafRecord
 from ..utils import get_entity_class, get_entity_classes, progressbar
@@ -77,7 +77,7 @@ def create_from_viaf(test_md5, enqueue, online, verbose, progress, wait,
         )
     for pid in progress_bar:
         if enqueue:
-            task = task_mef_and_agents_from_viaf.delay(
+            task = task_create_mef_from_viaf_agent.delay(
                 pid=pid,
                 dbcommit=True,
                 reindex=True,
@@ -86,7 +86,7 @@ def create_from_viaf(test_md5, enqueue, online, verbose, progress, wait,
             )
             click.echo(f'viaf pid: {pid} task:{task}')
         else:
-            task_mef_and_agents_from_viaf(
+            task_create_mef_from_viaf_agent(
                 pid=pid,
                 dbcommit=True,
                 reindex=True,
@@ -127,14 +127,12 @@ def create_from_viaf(test_md5, enqueue, online, verbose, progress, wait,
 @with_appcontext
 def create_mef(pid_type, enqueue, online, verbose, progress, wait, missing):
     """Create MEF from agents."""
+    AGENTS = current_app.config.get('AGENTS', [])
     if missing:
         missing_pids, to_much_pids = \
-            AgentMefRecord.get_all_missing_agents_pids(
-                agents=pid_type,
-                verbose=progress
-            )
+            AgentMefRecord.get_all_missing_pids(pid_type, verbose=progress)
     for agent in pid_type:
-        if agent not in ['aidref', 'aggnd', 'agrero']:
+        if agent not in AGENTS:
             click.secho(
                 f'Error create MEF from {agent}. Wrong agent!',
                 fg='red'
@@ -162,7 +160,7 @@ def create_mef(pid_type, enqueue, online, verbose, progress, wait, missing):
                 )
             for pid in progress_bar:
                 if enqueue:
-                    task = task_mef_from_agent.delay(
+                    task = task_create_mef_for_agent.delay(
                         pid=pid,
                         agent=agent,
                         dbcommit=True,
@@ -172,7 +170,7 @@ def create_mef(pid_type, enqueue, online, verbose, progress, wait, missing):
                     if verbose:
                         click.echo(f'{agent} pid: {pid} task:{task}')
                 else:
-                    msg = task_mef_from_agent(
+                    msg = task_create_mef_for_agent(
                         pid=pid,
                         agent=agent,
                         dbcommit=True,
@@ -235,7 +233,7 @@ def create_csv_mef(viaf_metadata_file, output_directory, verbose):
     :param output_directory: Output directory.
     :param verbose: Verbose.
     """
-    click.secho(f'  Create MEF CSV files from JSON.', err=True)
+    click.secho(f'  Create MEF CSV files from VIAF metadata.', err=True)
     pidstore = os.path.join(output_directory, 'mef_pidstore.csv')
     metadata = os.path.join(output_directory, 'mef_metadata.csv')
     ids = os.path.join(output_directory, 'mef_id.csv')
@@ -247,7 +245,7 @@ def create_csv_mef(viaf_metadata_file, output_directory, verbose):
     message = f'  CSV output files: {pidstore}, {metadata}'
 
     count = create_mef_files(
-            viaf_pidstore_file=viaf_metadata_file,
+            viaf_metadata_file_name=viaf_metadata_file,
             input_directory=output_directory,
             mef_pidstore_file_name=pidstore,
             mef_metadata_file_name=metadata,

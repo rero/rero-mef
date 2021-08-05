@@ -84,7 +84,7 @@ class Transformation(object):
             data_075_a = self.marc['075']['a'].strip()
             if data_075_a:
                 self.json_dict['bnf_type'] = data_075_a
-        except:
+        except Exception as err:
             pass
 
     def trans_rero_authorized_access_point(self):
@@ -174,7 +174,7 @@ class Transformation(object):
                     'authorized_access_point': subfield_a,
                     'source': subfield_v
                 }
-        except:
+        except Exception as err:
             pass
 
     def trans_rero_note(self):
