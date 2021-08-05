@@ -20,14 +20,15 @@
 from flask import Blueprint, redirect, request, url_for
 
 api_blueprint = Blueprint(
-    'api_viaf',
+    'api_agents_viaf',
     __name__,
     url_prefix='/viaf'
 )
 
 
 @api_blueprint.route('')
-def redirect_idref_list():
+@api_blueprint.route('/')
+def redirect_list():
     """Redirect list to new address."""
     return redirect(
         url_for('invenio_records_rest.viaf_list', **request.args),
@@ -36,7 +37,7 @@ def redirect_idref_list():
 
 
 @api_blueprint.route('/<pid>')
-def redirect_idref_item(pid):
+def redirect_item(pid):
     """Redirect item to new address."""
     return redirect(
         url_for(

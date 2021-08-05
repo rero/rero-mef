@@ -16,15 +16,12 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 """API for manipulating records."""
 
-from copy import deepcopy
-
 import click
 from flask import current_app
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 from invenio_search import current_search
 
-from ..api import Action, ReroIndexer, ReroMefRecord, ReroMefRecordError
-from ..utils import add_md5, add_schema
+from ..api import Action, ReroIndexer, ReroMefRecord
 
 
 class AgentRecord(ReroMefRecord):
@@ -58,40 +55,20 @@ class AgentRecord(ReroMefRecord):
     def update_indexes(cls):
         """Update indexes."""
         try:
-            index = f'agents_{cls.agent}'
+            index = f'agents_{cls.name}'
             current_search.flush_and_refresh(index=index)
         except Exception as err:
             current_app.logger.error(f'ERROR flush and refresh: {err}')
 
-    def update_test_md5(self, data, dbcommit=False, reindex=False):
-        """Update existing record."""
-        return_record = self
-        if not data.get('md5'):
-            data = add_md5(data)
-        if data.get('md5', 'data') == self.get('md5', 'agent'):
-            # record has no changes
-            return return_record, Action.UPTODATE
-        data = add_schema(data, self.agent)
-        return_record = self.update(
-            data=data, dbcommit=dbcommit, reindex=reindex)
-        return return_record, Action.UPDATE
-
-    def replace_test_md5(self, data, dbcommit=False, reindex=False):
-        """Replace data in record."""
-        new_data = deepcopy(data)
-        pid = new_data.get('pid')
-        if not pid:
-            raise ReroMefRecordError.PidMissing(f'missing pid={self.pid}')
-        self.clear()
-        self, action = self.update_test_md5(
-            data=new_data, dbcommit=dbcommit, reindex=reindex)
-        if action == Action.UPTODATE:
-            self = new_data
-        return self
-
     def create_or_update_mef_viaf_record(self, dbcommit=False, reindex=False,
                                          online=False):
-        """Create or update MEF and VIAF record."""
+        """Create or update MEF and VIAF record.
+
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex record.
+        :param online: Try to get VIAF record online.
+        :returns: MEF record, MEF action, VIAF record, VIAF
+        """
         from .viaf.api import AgentViafRecord
         AgentViafRecord.update_indexes()
         viaf_record, got_online = AgentViafRecord.get_viaf_by_agent(
@@ -104,10 +81,7 @@ class AgentRecord(ReroMefRecord):
             agent_pid=self.pid
         )
         mef_data = {self.agent: {'$ref': ref_string}}
-        mef_record = AgentMefRecord.get_mef_by_agent_pid(
-            agent_pid=self.pid,
-            agent_name=self.name
-        )
+        mef_record = AgentMefRecord.get_mef_by_entity_pid(self.pid, self.name)
         if viaf_record:
             mef_data['viaf_pid'] = viaf_record.pid
             if not mef_record:
@@ -142,10 +116,7 @@ class AgentRecord(ReroMefRecord):
         from .mef.api import AgentMefRecord
         mef_action = Action.DISCARD
         old_mef_pid = 'None'
-        mef_record = AgentMefRecord.get_mef_by_agent_pid(
-            agent_pid=self.pid,
-            agent_name=self.name
-        )
+        mef_record = AgentMefRecord.get_mef_by_entity_pid(self.pid, self.name)
         if mef_record:
             old_mef_pid = mef_record.pid
             if not mef_record.deleted:
@@ -157,7 +128,7 @@ class AgentRecord(ReroMefRecord):
                     reindex=reindex
                 )
                 mef_record = AgentMefRecord.create_deleted(
-                    agent=self,
+                    record=self,
                     dbcommit=dbcommit,
                     reindex=reindex
                 )
@@ -166,7 +137,7 @@ class AgentRecord(ReroMefRecord):
         else:
             # MEF record is missing create one
             mef_record = AgentMefRecord.create_deleted(
-                agent=self,
+                record=self,
                 dbcommit=dbcommit,
                 reindex=reindex
             )
@@ -209,36 +180,38 @@ class AgentRecord(ReroMefRecord):
             reindex=reindex,
             test_md5=test_md5
         )
-        if record.deleted:
-            mef_record, mef_action = record.delete_from_mef(
-                dbcommit=dbcommit,
-                reindex=reindex,
-                verbose=verbose
-            )
-            # record.delete(
-            #     dbcommit=dbcommit,
-            #     delindex=True,
-            # )
-            # record = None
-            action = Action.DELETE
-            viaf_record = None
-            online = False
+        if action == Action.ERROR:
+            return None, action, None, Action.ERROR, None, False
         else:
-            if action == Action.UPTODATE:
-                mef_record = AgentMefRecord.get_mef_by_agent_pid(
-                    agent_pid=record.pid,
-                    agent_name=record.name
+            if record.deleted:
+                mef_record, mef_action = record.delete_from_mef(
+                    dbcommit=dbcommit,
+                    reindex=reindex,
+                    verbose=verbose
                 )
-                mef_action = Action.UPTODATE
-                viaf_record, online = AgentViafRecord.get_viaf_by_agent(record)
+                # record.delete(
+                #     dbcommit=dbcommit,
+                #     delindex=True,
+                # )
+                # record = None
+                action = Action.DELETE
+                viaf_record = None
+                online = False
             else:
-                mef_record, mef_action, viaf_record, online = \
-                    record.create_or_update_mef_viaf_record(
-                        dbcommit=dbcommit,
-                        reindex=reindex,
-                        online=online
-                    )
-        return record, action, mef_record, mef_action, viaf_record, online
+                if action == Action.UPTODATE:
+                    mef_record = AgentMefRecord.get_mef_by_entity_pid(
+                        record.pid, record.name)
+                    mef_action = Action.UPTODATE
+                    viaf_record, online = AgentViafRecord.get_viaf_by_agent(
+                        record)
+                else:
+                    mef_record, mef_action, viaf_record, online = \
+                        record.create_or_update_mef_viaf_record(
+                            dbcommit=dbcommit,
+                            reindex=reindex,
+                            online=online
+                        )
+            return record, action, mef_record, mef_action, viaf_record, online
 
     @classmethod
     def get_online_record(cls, id, verbose=False):
@@ -246,6 +219,7 @@ class AgentRecord(ReroMefRecord):
 
         Has to be overloaded in agent class.
         """
+        raise NotImplementedError()
 
     @property
     def deleted(self):

@@ -26,6 +26,5 @@ def test_version():
     assert __version__
 
 
-
 def test():
     print(test)

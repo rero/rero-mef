@@ -31,7 +31,7 @@ from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 from invenio_search import RecordsSearch, current_search_client
 from redis import Redis
 
-from .permissions import admin_permission
+from .permissions import monitoring_permission
 from .utils import get_entity_class, progressbar
 
 api_blueprint = Blueprint(
@@ -42,12 +42,12 @@ api_blueprint = Blueprint(
 
 
 def check_authentication(func):
-    """Decorator to check authentication for items HTTP API."""
+    """Decorator to check authentication for monitoring HTTP API."""
     @wraps(func)
     def decorated_view(*args, **kwargs):
         if not current_user.is_authenticated:
             return jsonify({'status': 'error: Unauthorized'}), 401
-        if not admin_permission.require().can():
+        if not monitoring_permission.require().can():
             return jsonify({'status': 'error: Forbidden'}), 403
         return func(*args, **kwargs)
     return decorated_view
@@ -340,8 +340,8 @@ class Monitoring(object):
             5. elasticsearch count
         """
         result = ''
-        msg_head = 'DB - ES  {"type":>6} {"count":>10}'
-        msg_head += f'  {"index":>25} {"count":>10}\n'
+        msg_head = f'DB - ES  {"type":>6} {"count":>10}'
+        msg_head += f'  {"index":>25} {"count_es":>10}\n'
         msg_head += f'{"":-^64s}\n'
 
         for doc_type, info in sorted(self.info().items()):

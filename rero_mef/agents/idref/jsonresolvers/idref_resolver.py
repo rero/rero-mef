@@ -26,7 +26,7 @@ from ..api import AgentIdrefRecord
 from ....utils import get_host, resolve_record
 
 
-@jsonresolver.route('/api/idref/<path:path>', host=get_host())
+@jsonresolver.route('/api/agents/idref/<path:path>', host=get_host())
 def resolve_idref(path):
     """Resolve IDREF records."""
     return resolve_record(path, AgentIdrefRecord)

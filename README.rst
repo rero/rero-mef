@@ -18,14 +18,21 @@
  RERO MEF
 ==========
 
-.. image:: https://img.shields.io/travis/rero/rero-mef.svg
-        :target: https://travis-ci.org/rero/rero-mef
+.. image:: https://github.com/rero/rero-mef/workflows/build/badge.svg
+        :alt: Github actions status
+        :target: https://github.com/rero/rero-mef/actions?query=workflow%3Abuild
 
 .. image:: https://img.shields.io/coveralls/rero/rero-mef.svg
-        :target: https://coveralls.io/r/rero/rero-mef
+        :alt: Coveralls
+        :target: https://coveralls.io/rero/rero-mef
 
-.. image:: https://img.shields.io/github/license/rero/rero-mef.svg
-        :target: https://github.com/rero/rero-mef/blob/master/LICENSE
+.. image:: https://img.shields.io/github/tag/rero/rero-mef.svg
+        :alt: Release Number
+        :target: https://github.com/rero/rero-mef/releases/latest
+
+.. image:: https://img.shields.io/badge/License-AGPL%20v3-blue.svg
+        :alt: License
+        :target: http://www.gnu.org/licenses/agpl-3.0.html
 
 MEF (Multilingual Entity File) server with records for persons, works, etc. for reuse in integrated library systems (ILS).
 

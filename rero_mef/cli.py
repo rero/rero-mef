@@ -32,13 +32,17 @@ from flask import current_app
 from flask.cli import with_appcontext
 from flask_security.confirmable import confirm_user
 from invenio_accounts.cli import commit, users
+from invenio_db import db
 from invenio_oaiharvester.cli import oaiharvester
 from invenio_oaiharvester.models import OAIHarvestConfig
+from invenio_oauth2server.cli import process_scopes, process_user
+from invenio_oauth2server.models import Client, Token
 from invenio_records_rest.utils import obj_or_import_string
 from invenio_search.cli import es_version_check
 from invenio_search.proxies import current_search, current_search_client
 from sqlitedict import SqliteDict
 from werkzeug.local import LocalProxy
+from werkzeug.security import gen_salt
 
 from .marctojson.records import RecordsCount
 from .monitoring import Monitoring
@@ -251,6 +255,9 @@ def marc_to_json(entity, marc_file, json_file, error_file, verbose):
                 fg='yellow'
             )
 
+    json_file.close()
+    json_deleted_file.close()
+
     click.secho(
         f'  Number of {entity} JSON records created: {count_created}.',
         fg='green',
@@ -366,7 +373,7 @@ def load_csv(entity, pidstore_file, metadata_file, ids_file, bulk_count,
 
 @fixtures.command()
 @click.argument('output_directory')
-@click.option('-e', '--entitiy', 'entities', multiple=True,
+@click.option('-e', '--entity', 'entities', multiple=True,
               default=['aggnd', 'aidref', 'agrero', 'corero', 'mef', 'viaf'])
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @with_appcontext
@@ -447,7 +454,7 @@ def csv_to_json(csv_metadata_file, json_output_file, indent, verbose):
 @with_appcontext
 def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
              indent, verbose, sqlite_dict):
-    """Agencies record diff.
+    """Entities record diff.
 
     :param csv_metadata_file: CSV metadata file to compair.
     :param csv_metadata_file_compair: CSV metadata file to compair too.
@@ -489,17 +496,14 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
     if output:
         file_name = os.path.splitext(csv_metadata_file)[0]
         file_name_new = f'{file_name}_new.json'
-        file_new = open(file_name_new, 'w')
-        file_new.write('[')
+        file_new = JsonWriter(file_name_new)
         file_name_diff = f'{file_name}_changed.json'
-        file_diff = open(file_name_diff, 'w')
-        file_diff.write('[')
+        file_diff = JsonWriter(file_name_diff)
         file_name_delete = f'{file_name}_delete.json'
-        file_delete = open(file_name_delete, 'w')
-        file_delete.write('[')
+        file_delete = JsonWriter(file_name_delete)
         click.echo(f'New     file: {file_name_new}')
-        click.echo(f'Changed file: {file_name_new}')
-        click.echo(f'Deleted file: {file_name_new}')
+        click.echo(f'Changed file: {file_name_diff}')
+        click.echo(f'Deleted file: {file_name_delete}')
 
     compaire_data = SqliteDict(sqlite_dict, autocommit=True)
     if csv_metadata_file_compair and not entity:
@@ -521,6 +525,7 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
                 pid = record.pid
                 compaire_data[pid] = record
 
+    db.session.close()
     with open(csv_metadata_file, 'r', buffering=1) as metadata_file:
         for metadata_line in metadata_file:
             pid, data = get_pid_data(metadata_line)
@@ -548,7 +553,9 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
             click.echo(f'DEL :\t{json.dumps(data, sort_keys=True)}')
         if output:
             file_delete.write(data)
-
+    file_new.close()
+    file_diff.close()
+    file_delete.close()
     sys.exit(0)
 
 
@@ -595,7 +602,7 @@ def add_oai_source_config(name, baseurl, metadataprefix, setspecs, comment,
 @with_appcontext
 def init_oai_harvest_config(configfile, update):
     """Init OAIHarvestConfig."""
-    configs = yaml.load(configfile)
+    configs = yaml.load(configfile, Loader=yaml.FullLoader)
     for name, values in sorted(configs.items()):
         baseurl = values['baseurl']
         metadataprefix = values.get('metadataprefix', 'marc21')
@@ -948,7 +955,7 @@ def wait_empty_tasks(delay, verbose=False):
             f'Waiting: {next(spinner)}\r',
             nl=False
         )
-    # TODO: we have to find a way do get the remaining queue count from 
+    # TODO: we have to find a way do get the remaining queue count from
     # rabbitmq. The cellery queue could be empty but not the rabbitmq
     # queue. try to get the queue count twice with a delay of 5 seconds
     # to be more sure the cellery and rabbitmy queue is empty.
@@ -1020,7 +1027,7 @@ def manual_confirm_user(user):
 @with_appcontext
 def reindex_missing(entities, verbose):
     """Reindex entities missing in ES.
- 
+
     :param entities: entity type to compair too.
     :param verbose: Verbose.
     """
@@ -1054,3 +1061,72 @@ def reindex_missing(entities, verbose):
                         f'  {entity} record not found: {pid}',
                         fg='red'
                     )
+
+
+def create_personal(
+        name, user_id, scopes=None, is_internal=False, access_token=None):
+    """Create a personal access token.
+
+    A token that is bound to a specific user and which doesn't expire, i.e.
+    similar to the concept of an API key.
+
+    :param name: Client name.
+    :param user_id: User ID.
+    :param scopes: The list of permitted scopes. (Default: ``None``)
+    :param is_internal: If ``True`` it's a internal access token.
+            (Default: ``False``)
+    :param access_token: personalized access_token.
+    :returns: A new access token.
+    """
+    with db.session.begin_nested():
+        scopes = " ".join(scopes) if scopes else ""
+
+        client = Client(
+            name=name,
+            user_id=user_id,
+            is_internal=True,
+            is_confidential=False,
+            _default_scopes=scopes
+        )
+        client.gen_salt()
+
+        if not access_token:
+            access_token = gen_salt(
+                current_app.config.get(
+                    'OAUTH2SERVER_TOKEN_PERSONAL_SALT_LEN')
+            )
+        token = Token(
+            client_id=client.client_id,
+            user_id=user_id,
+            access_token=access_token,
+            expires=None,
+            _scopes=scopes,
+            is_personal=True,
+            is_internal=is_internal,
+        )
+
+        db.session.add(client)
+        db.session.add(token)
+
+    return token
+
+
+@utils.command('tokens_create')
+@click.option('-n', '--name', required=True)
+@click.option(
+    '-u', '--user', required=True, callback=process_user,
+    help='User ID or email.')
+@click.option(
+    '-s', '--scope', 'scopes', multiple=True, callback=process_scopes)
+@click.option('-i', '--internal', is_flag=True)
+@click.option(
+    '-t', '--access_token', 'access_token', required=False,
+    help='personalized access_token.')
+@with_appcontext
+def tokens_create(name, user, scopes, internal, access_token):
+    """Create a personal OAuth token."""
+    token = create_personal(
+        name, user.id, scopes=scopes, is_internal=internal,
+        access_token=access_token)
+    db.session.commit()
+    click.secho(token.access_token, fg='blue')

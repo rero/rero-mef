@@ -117,10 +117,10 @@ class AgentViafRecord(ReroMefRecord):
             return cls.get_record_by_pid(viaf_pid), False
         pid = agent.get('pid')
         viaf_pid_name = agent.viaf_pid_name
-        result = AgentViafSearch().filter(
-            {'term': {viaf_pid_name: pid}}).source(['pid']).scan()
+        query = AgentViafSearch() \
+            .filter({'term': {viaf_pid_name: pid}})
         try:
-            viaf_pid = next(result).pid
+            viaf_pid = next(query.source(['pid']).scan()).pid
             return cls.get_record_by_pid(viaf_pid), False
         except StopIteration:
             if online:
@@ -148,7 +148,15 @@ class AgentViafRecord(ReroMefRecord):
     def create_mef_and_agents(self, dbcommit=False, reindex=False,
                               test_md5=False, online=False,
                               verbose=False):
-        """Create MEF and agents records."""
+        """Create MEF and agents records.
+
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex record.
+        :param test_md5: Test MD% (not used).
+        :param online: Search online for new VIAF record.
+        :param verbose: Verbose.
+        :returns: Actions.
+        """
         actions = {}
         for agent, agent_data in get_agents_endpoints().items():
             record_class = obj_or_import_string(agent_data.get('record_class'))
@@ -219,10 +227,15 @@ class AgentViafRecord(ReroMefRecord):
             current_app.logger.error(f'ERROR flush and refresh: {err}')
 
     def delete(self, dbcommit=False, delindex=False, online=False):
-        """Delete record and persistent identifier."""
+        """Delete record and persistent identifier.
+
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex record.
+        :param online: Search online for new VIAF record.
+        :returns: MEF actions message.
+        """
         agents_records = self.get_agents_records()
         # delete viaf_pid from MEF record
-        from ..mef.api import AgentMefRecord
         mef_record = AgentMefRecord.get_mef_by_viaf_pid(self.pid)
         if mef_record:
             mef_record.pop('viaf_pid', None)
@@ -278,7 +291,12 @@ class AgentViafRecord(ReroMefRecord):
 
     @classmethod
     def get_missing_agent_pids(cls, agent, verbose=False):
-        """Get all missing pids defined in VIAF."""
+        """Get all missing pids defined in VIAF.
+
+        :param agent: Agent to search for missing pids.
+        :param verbose: Verbose.
+        :returns: Agent pids without VIAF, VIAF pids without agent
+        """
         pids_db = {}
         pids_viaf = []
         record_class = get_entity_class(agent)
@@ -294,9 +312,9 @@ class AgentViafRecord(ReroMefRecord):
         if verbose:
             click.echo(f'Get pids from VIAF with {agent} ...')
         agent_pid_name = f'{agent}_pid'
-        query = AgentViafSearch().filter('bool', should=[
-            Q('exists', field=agent_pid_name)
-        ]).source(['pid', agent_pid_name])
+        query = AgentViafSearch() \
+            .filter('bool', should=[Q('exists', field=agent_pid_name)]) \
+            .source(['pid', agent_pid_name])
         progress = progressbar(
             items=query.scan(),
             length=query.count(),
