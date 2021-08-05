@@ -63,8 +63,11 @@ if [[ -z "${VIRTUAL_ENV}" ]]; then
 fi
 
 set -e
-# Ignore 40459 until the next release of flask-caching will be available.
-safety check -i 40459
+#+============================+===========+==========================+==========+
+#| sqlalchemy-utils           | 0.35.0    | >=0.27.0                 | 42194    |
+#| flask-caching              | 1.10.1    | <=1.10.1                 | 40459    |
+#+==============================================================================+
+safety check -i 40459 -i 42194
 info_msg "Test pydocstyle:"
 pydocstyle rero_mef tests docs
 info_msg "Test isort:"

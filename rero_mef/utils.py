@@ -625,15 +625,6 @@ def pidstore_csv_line(agent, agent_pid, record_uuid, date):
     return pidstore_line + os.linesep
 
 
-def add_agent_to_json(mef_record, agent, agent_pid):
-    """Add agent ref to MEF record."""
-    from .agents.mef.api import AgentMefRecord
-    ref_string = AgentMefRecord.build_ref_string(
-        agent=agent, agent_pid=agent_pid
-    )
-    mef_record[agent] = {'$ref': ref_string}
-
-
 def raw_connection():
     """Return a raw connection to the database."""
     with current_app.app_context():
@@ -754,7 +745,7 @@ def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
             end_time = datetime.now()
             diff_time = end_time - start_time
             click.echo(
-                '{agent} copy from file: {count} {diff_time.seconds}s',
+                f'{agent} copy from file: {count} {diff_time.seconds}s',
                 nl=False
             )
         buffer.flush()
@@ -989,27 +980,27 @@ def get_entity_classes(without_mef_viaf=True):
     return agents
 
 
-def get_endpoint_class(agent, class_name):
-    """Get agent class from config."""
+def get_endpoint_class(entity, class_name):
+    """Get entity class from config."""
     endpoints = current_app.config.get('RECORDS_REST_ENDPOINTS', {})
-    endpoint = endpoints.get(agent, {})
+    endpoint = endpoints.get(entity, {})
     endpoint_class = obj_or_import_string(endpoint.get(class_name))
     return endpoint_class
 
 
-def get_entity_class(agent):
-    """Get agent record class from config."""
-    return get_endpoint_class(agent=agent, class_name='record_class')
+def get_entity_class(entity):
+    """Get entity record class from config."""
+    return get_endpoint_class(entity=entity, class_name='record_class')
 
 
-def get_entity_search_class(agent):
-    """Get agent search class from config."""
-    return get_endpoint_class(agent=agent, class_name='search_class')
+def get_entity_search_class(entity):
+    """Get entity search class from config."""
+    return get_endpoint_class(entity=entity, class_name='search_class')
 
 
-def get_entity_indexer_class(agent):
-    """Get agent indexer class from config."""
-    return get_endpoint_class(agent=agent, class_name='indexer_class')
+def get_entity_indexer_class(entity):
+    """Get entity indexer class from config."""
+    return get_endpoint_class(entity=entity, class_name='indexer_class')
 
 
 def write_link_json(
@@ -1132,6 +1123,18 @@ def set_timestamp(name, **kwargs):
         time_stamps[name][key] = value
     current_cache.set('timestamps', time_stamps)
     return utc_now
+
+
+def get_timestamp(name):
+    """Get timestamp in current cache.
+
+    :param name: name of time stamp.
+    :returns: time of time stamp
+    """
+    time_stamps = current_cache.get('timestamps')
+    if not time_stamps:
+        return None
+    return time_stamps.get(name)
 
 
 def settimestamp(func):

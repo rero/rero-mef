@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Schema for MEF concepts",
+  "type": "object",
+  "required": [
+    "$schema",
+    "pid"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "title": "Schema",
+      "description": "Schema for MEF concept record.",
+      "type": "string",
+      "minLength": 7
+    },
+    "pid": {
+      "title": "Mef concept ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "rero": {
+      "title": "RERO concept ID",
+      "type": "object"
+    },
+    "deleted": {
+      "title": "Deletion date",
+      "type": "string"
+    }
+  }
+}

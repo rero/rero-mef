@@ -212,13 +212,13 @@ class Transformation(object):
                         dates_per_tag[subfields_4]['death_date'] = death_date
 
         if self.marc.get_fields('110') or self.marc.get_fields('111'):
+            date_of_establishment = get_date(dates_per_tag, 'birth_date')
+            date_of_termination = get_date(dates_per_tag, 'death_date')
             dates_per_tag.pop('100', None)
             dates_per_tag.pop('datl', None)
             dates_per_tag.pop('datx', None)
-            date_of_establishment = get_date(dates_per_tag, 'birth_date')
             if date_of_establishment:
                 self.json_dict['date_of_establishment'] = date_of_establishment
-            date_of_termination = get_date(dates_per_tag, 'death_date')
             if date_of_termination:
                 self.json_dict['date_of_termination'] = date_of_termination
         else:
