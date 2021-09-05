@@ -169,7 +169,16 @@ class MyOAIItemIterator(OAIItemIterator):
         if access_token:
             params['accessToken'] = access_token
 
-        self.oai_response = self.sickle.harvest(**params)
+        count = 0
+        while count < 5:
+            try:
+                self.oai_response = self.sickle.harvest(**params)
+                xml = self.oai_response.xml
+                count = 5
+            except Exception as err:
+                count += 1
+                current_app.logger.error(f'Sickle harvest {count} {err}')
+                sleep(60)
         error = self.oai_response.xml.find(
             './/' + self.sickle.oai_namespace + 'error')
         if error is not None:
@@ -205,8 +214,9 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                                    access_token=None, days_spann=30,
                                    from_date=None, until_date=None,
                                    ignore_deleted=False, dbcommit=True,
-                                   reindex=True, test_md5=True, online=False,
-                                   verbose=False, debug=False, **kwargs):
+                                   reindex=True, test_md5=True,
+                                   verbose=False, debug=False,
+                                   viaf_online=False, **kwargs):
     """Harvest multiple records from an OAI repo.
 
     :param name: The name of the OAIHarvestConfig to use instead of passing
@@ -215,10 +225,6 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
     :param until_date: The upper bound date for the harvesting (optional).
     """
     # data on IDREF Servers starts on 2000-10-01
-    if kwargs.get('kwargs', {}).get('online'):
-        online = kwargs.get('kwargs', {}).get('online')
-    name = name
-    days_spann = days_spann
     last_run = None
     url, metadata_prefix, last_run, setspecs = get_info_by_oai_name(name)
 
@@ -280,7 +286,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                                 records[0]['005'].data,
                                 '%Y%m%d%H%M%S.%f'
                             )
-                        except:
+                        except Exception as err:
                             updated = '????'
                         rec = transformation(records[0]).json
                         pid = rec.get('pid')
@@ -289,7 +295,8 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                                 data=rec,
                                 dbcommit=True,
                                 reindex=True,
-                                online=online,
+                                test_md5=test_md5,
+                                online=viaf_online,
                                 verbose=verbose
                             )
                         action_count.setdefault(action.name, 0)
@@ -325,7 +332,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                                 )
                             )
                     except Exception as err:
-                        msg = 'ERROR creating {name} {count}: {err}'
+                        msg = 'Creating {name} {count}: {err}'
                         msg = msg.format(
                             name=name,
                             count=count,
