@@ -22,12 +22,11 @@ import time
 from celery import shared_task
 from flask import current_app
 from sickle import OAIResponse, Sickle
-from sickle.iterator import OAIItemIterator
 
 from .api import AgentIdrefRecord
 from ...marctojson.do_idref_agent import Transformation
-from ...utils import oai_get_record, oai_process_records_from_dates, \
-    oai_save_records_from_dates
+from ...utils import MyOAIItemIterator, oai_get_record, \
+    oai_process_records_from_dates, oai_save_records_from_dates
 
 
 class MySickle(Sickle):
@@ -62,7 +61,8 @@ class MySickle(Sickle):
 def process_records_from_dates(from_date=None, until_date=None,
                                ignore_deleted=False, dbcommit=True,
                                reindex=True, test_md5=True,
-                               verbose=False, debug=False, **kwargs):
+                               verbose=False, debug=False, viaf_online=False,
+                               **kwargs):
     """Harvest multiple records from an OAI repo.
 
     :param name: The name of the OAIHarvestConfig to use instead of passing
@@ -75,7 +75,7 @@ def process_records_from_dates(from_date=None, until_date=None,
         name='idref',
         sickle=MySickle,
         max_retries=current_app.config.get('RERO_OAI_RETRIES', 0),
-        oai_item_iterator=OAIItemIterator,
+        oai_item_iterator=MyOAIItemIterator,
         transformation=Transformation,
         record_cls=AgentIdrefRecord,
         days_spann=30,
@@ -83,10 +83,11 @@ def process_records_from_dates(from_date=None, until_date=None,
         until_date=until_date,
         ignore_deleted=ignore_deleted,
         dbcommit=dbcommit,
-        reindex=dbcommit,
+        reindex=reindex,
         test_md5=test_md5,
         verbose=verbose,
         debug=debug,
+        viaf_online=viaf_online,
         kwargs=kwargs
     )
 
@@ -107,7 +108,7 @@ def save_records_from_dates(file_name, from_date=None, until_date=None,
         file_name=file_name,
         sickle=MySickle,
         max_retries=current_app.config.get('RERO_OAI_RETRIES', 0),
-        oai_item_iterator=OAIItemIterator,
+        oai_item_iterator=MyOAIItemIterator,
         days_spann=30,
         from_date=from_date,
         until_date=until_date,

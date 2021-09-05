@@ -68,11 +68,11 @@ class AgentRecord(ReroMefRecord):
     def update_test_md5(self, data, dbcommit=False, reindex=False):
         """Update existing record."""
         return_record = self
-        if data.get('md5'):
+        if not data.get('md5'):
             data = add_md5(data)
-            if data.get('md5', 'data') == self.get('md5', 'agent'):
-                # record has no changes
-                return return_record, Action.UPTODATE
+        if data.get('md5', 'data') == self.get('md5', 'agent'):
+            # record has no changes
+            return return_record, Action.UPTODATE
         data = add_schema(data, self.agent)
         return_record = self.update(
             data=data, dbcommit=dbcommit, reindex=reindex)
@@ -195,6 +195,9 @@ class AgentRecord(ReroMefRecord):
                                         test_md5=False, online=False,
                                         verbose=False):
         """Create or update agent, Mef and Viaf record."""
+        from rero_mef.agents.mef.api import MefRecord
+        from rero_mef.agents.viaf.api import ViafRecord
+
         try:
             persistent_id = PersistentIdentifier.query.filter_by(
                 pid_type=cls.provider.pid_type,
@@ -229,12 +232,20 @@ class AgentRecord(ReroMefRecord):
             viaf_record = None
             online = False
         else:
-            mef_record, mef_action, viaf_record, online = \
-                record.create_or_update_mef_viaf_record(
-                    dbcommit=dbcommit,
-                    reindex=reindex,
-                    online=online
+            if action == Action.UPTODATE:
+                mef_record = MefRecord.get_mef_by_agent_pid(
+                    agent_pid=record.pid,
+                    agent_name=record.name
                 )
+                mef_action = Action.UPTODATE
+                viaf_record, online = ViafRecord.get_viaf_by_agent(record)
+            else:
+                mef_record, mef_action, viaf_record, online = \
+                    record.create_or_update_mef_viaf_record(
+                        dbcommit=dbcommit,
+                        reindex=reindex,
+                        online=online
+                    )
         return record, action, mef_record, mef_action, viaf_record, online
 
     @classmethod

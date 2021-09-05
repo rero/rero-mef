@@ -919,11 +919,13 @@ def set_last_run(name, date):
               help="Enqueue harvesting and return immediately.")
 @click.option('-5', '--md5', 'test_md5', is_flag=True, default=False,
               help='Compaire md5 to find out if we have to update')
+@click.option('-o', '--viaf_online', 'viaf_online', is_flag=True,
+              default=False, help='Get online VIAF record if missing')
 @click.option('-d', '--debug', 'debug', is_flag=True, default=False,
               help='Print debug informations')
 @with_appcontext
 def harvestname(name, from_date, until_date, arguments, quiet, enqueue,
-                test_md5, debug):
+                test_md5, debug, viaf_online):
     """Harvest records from an OAI repository.
 
     :param name: Name of persistent configuration to use.
@@ -934,6 +936,7 @@ def harvestname(name, from_date, until_date, arguments, quiet, enqueue,
     :param quiet: Surpress output.
     :param enqueue: Enqueue harvesting and return immediately.
     :param test_md5: Compaire md5 to find out if we have to update.
+    :param viaf_online: Get online VIAF record if missing.
     """
     click.secho('Harvest {name} ...'.format(name=name), fg='green')
     arguments = dict(x.split('=', 1) for x in arguments)
@@ -953,6 +956,7 @@ def harvestname(name, from_date, until_date, arguments, quiet, enqueue,
                 test_md5=test_md5,
                 verbose=(not quiet),
                 debug=debug,
+                viaf_online=viaf_online,
                 **arguments
             )
             click.echo("Scheduled job {id}".format(id=job.id))
@@ -963,6 +967,7 @@ def harvestname(name, from_date, until_date, arguments, quiet, enqueue,
                 test_md5=test_md5,
                 verbose=(not quiet),
                 debug=debug,
+                viaf_online=viaf_online,
                 **arguments
             )
             click.echo(('Count: {count}'
