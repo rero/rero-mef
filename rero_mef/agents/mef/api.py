@@ -30,11 +30,11 @@ from .fetchers import mef_id_fetcher
 from .minters import mef_id_minter
 from .models import MefMetadata
 from .providers import MefProvider
-from ..api import Action, ReroMefIndexer, ReroMefRecord
+from ..api import Action, ReroIndexer, ReroMefRecord
 from ...utils import get_agent_class, get_agent_classes, progressbar
 
 
-class MefSearch(RecordsSearch):
+class AgentMefSearch(RecordsSearch):
     """RecordsSearch."""
 
     class Meta:
@@ -48,7 +48,7 @@ class MefSearch(RecordsSearch):
         default_filter = None
 
 
-class MefRecord(ReroMefRecord):
+class AgentMefRecord(ReroMefRecord):
     """Mef Authority class."""
 
     minter = mef_id_minter
@@ -60,26 +60,28 @@ class MefRecord(ReroMefRecord):
     def build_ref_string(cls, agent_pid, agent):
         """Build url for agent's api."""
         with current_app.app_context():
-            ref_string = '{url}/api/{agent}/{pid}'.format(
-                url=current_app.config.get('RERO_MEF_APP_BASE_URL'),
-                agent=agent,
-                pid=agent_pid
-            )
+            ref_string = (f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
+                          f'/api/{agent}/{agent_pid}')
             return ref_string
 
+    def reindex(self, forceindex=False):
+        """Reindex record."""
+        if forceindex:
+            result = AgentMefIndexer(version_type='external_gte').index(self)
+        else:
+            result = AgentMefIndexer().index(self)
+        return result
+    
     @classmethod
     def get_mef_by_agent_pid(cls, agent_pid, agent_name, pid_only=False):
         """Get mef record by agent pid value."""
-        key = '{agent_name}.pid'.format(agent_name=agent_name)
-        search = MefSearch() \
+        key = f'{agent_name}.pid'
+        search = AgentMefSearch() \
             .filter('term', **{key: agent_pid}) \
             .source(['pid'])
         if search.count() > 1:
             current_app.logger.error(
-                'MULTIPLE MEF FOUND FOR: {agent_name} {agent_pid}'.format(
-                    agent_name=agent_name,
-                    agent_pid=agent_pid
-                )
+                f'MULTIPLE MEF FOUND FOR: {agent_name} {agent_pid}'
             )
         try:
             mef_pid = next(search.scan()).pid
@@ -93,9 +95,8 @@ class MefRecord(ReroMefRecord):
     @classmethod
     def get_all_mef_pids_by_agent(cls, agent):
         """Get all mef pids for agent."""
-        key = '{agent}{identifier}'.format(
-            agent=agent, identifier='.pid')
-        search = MefSearch()
+        key = f'{agent}.pid'
+        search = AgentMefSearch()
         results = search.filter(
             'exists',
             field=key
@@ -108,7 +109,7 @@ class MefRecord(ReroMefRecord):
     @classmethod
     def get_mef_by_viaf_pid(cls, viaf_pid):
         """Get mef record by agent pid value."""
-        search = MefSearch()
+        search = AgentMefSearch()
         result = search.filter(
             'term', viaf_pid=viaf_pid).source(['pid']).scan()
         try:
@@ -120,7 +121,7 @@ class MefRecord(ReroMefRecord):
     @classmethod
     def get_all_pids_without_agents_viaf(cls):
         """Get all pids for records without agents and viaf pids."""
-        query = MefSearch()\
+        query = AgentMefSearch()\
             .filter('bool', must_not=[Q('exists', field="viaf_pid")]) \
             .filter('bool', must_not=[Q('exists', field="gnd")]) \
             .filter('bool', must_not=[Q('exists', field="idref")]) \
@@ -133,7 +134,7 @@ class MefRecord(ReroMefRecord):
     @classmethod
     def get_all_pids_without_viaf(cls):
         """Get all pids for records without viaf pid."""
-        query = MefSearch()\
+        query = AgentMefSearch()\
             .filter('bool', must_not=[Q('exists', field="viaf_pid")])\
             .filter('bool', should=[Q('exists', field="gnd")]) \
             .filter('bool', should=[Q('exists', field="idref")]) \
@@ -155,14 +156,14 @@ class MefRecord(ReroMefRecord):
         missing_pids = {}
         for agent in agents:
             if verbose:
-                click.echo('Calculating {agent}:'.format(agent=agent))
+                click.echo(f'Calculating {agent}:')
             pids[agent] = {}
             multiple_pids[agent] = {}
             missing_pids[agent] = []
 
             agent_class = get_agent_class(agent)
             agent_name = agent_class.name
-            search = MefSearch().filter('exists', field=agent_name)
+            search = AgentMefSearch().filter('exists', field=agent_name)
             progress = progressbar(
                 items=search.scan(),
                 length=search.count(),
@@ -195,19 +196,19 @@ class MefRecord(ReroMefRecord):
         #     agent_class = get_agent_class(agent)
         #     if agent_class:
         #         agent_name = agent_class.name
-        #         search = MefSearch()
+        #         search = AgentMefSearch()
         #         search.aggs.bucket(
         #             'MULTIPLE',
         #             'terms',
-        #             field='{agent}.pid'.format(agent=agent_name),
+        #             field=f'{agent_name}.pid',
         #             min_doc_count=2,
         #             size=size
         #         )
         #         res = search.execute()
         #         for values in res.aggregations.MULTIPLE.buckets:
         #             agent_pid = values.key
-        #             field = '{agent}.pid'.format(agent=agent_name)
-        #             search = MefSearch().filter(
+        #             field = f'{agent_name}.pid'
+        #             search = AgentMefSearch().filter(
         #                 Q('term', **{field: agent_pid}))
         #             mef_pids = []
         #             for hit in search:
@@ -232,9 +233,7 @@ class MefRecord(ReroMefRecord):
                 used_classes[agent_classe] = agent_classes[agent_classe]
         for agent, agent_class in used_classes.items():
             if verbose:
-                click.echo(
-                    'Get pids from {agent} ...'.format(agent=agent)
-                )
+                click.echo(f'Get pids from {agent} ...')
             missing_pids[agent] = {}
             progress = progressbar(
                 items=agent_class.get_all_pids(),
@@ -246,8 +245,8 @@ class MefRecord(ReroMefRecord):
         if verbose:
             click.echo('Get pids from mef and calculate missing ...')
         progress = progressbar(
-            items=MefSearch().filter('match_all').source().scan(),
-            length=MefSearch().filter('match_all').source().count(),
+            items=AgentMefSearch().filter('match_all').source().scan(),
+            length=AgentMefSearch().filter('match_all').source().count(),
             verbose=verbose
         )
         for hit in progress:
@@ -265,13 +264,13 @@ class MefRecord(ReroMefRecord):
     @classmethod
     def get_all_missing_viaf_pids(cls, verbose=False):
         """Get all missing viaf pids."""
-        from .viaf.api import ViafRecord
+        from ..viaf.api import AgentViafRecord
         missing_pids = {}
         if verbose:
             click.echo('Get pids from viaf ...')
         progress = progressbar(
-            items=ViafRecord.get_all_pids(),
-            length=ViafRecord.count(),
+            items=AgentViafRecord.get_all_pids(),
+            length=AgentViafRecord.count(),
             verbose=verbose
         )
         for pid in progress:
@@ -279,8 +278,8 @@ class MefRecord(ReroMefRecord):
         if verbose:
             click.echo('Get pids from mef and calculate missing ...')
         progress = progressbar(
-            items=MefSearch().filter('match_all').source().scan(),
-            length=MefSearch().filter('match_all').source().count(),
+            items=AgentMefSearch().filter('match_all').source().scan(),
+            length=AgentMefSearch().filter('match_all').source().count(),
             verbose=True
         )
         for hit in progress:
@@ -298,7 +297,7 @@ class MefRecord(ReroMefRecord):
         #     data = self.dumps()
         # data['_deleted'] = pytz.utc.localize(self.created).isoformat()
         #
-        # indexer = MefIndexer()
+        # indexer = AgentMefIndexer()
         # index, doc_type = indexer.record_to_index(self)
         # print('---->', index, doc_type)
         # body = indexer._prepare_record(data, index, doc_type)
@@ -339,9 +338,7 @@ class MefRecord(ReroMefRecord):
         try:
             current_search.flush_and_refresh(index='mef')
         except Exception as err:
-            current_app.logger.error(
-                'ERROR flush and refresh: {err}'.format(err=err)
-            )
+            current_app.logger.error(f'ERROR flush and refresh: {err}')
 
     def delete_agent(self, agent_record, dbcommit=False, reindex=False):
         """Delete Agency from record."""
@@ -354,14 +351,14 @@ class MefRecord(ReroMefRecord):
                 reindex=reindex
             )
             if reindex:
-                MefRecord.update_indexes()
+                AgentMefRecord.update_indexes()
         return self, action
 
 
-class MefIndexer(ReroMefIndexer):
-    """MefIndexer."""
+class AgentMefIndexer(ReroIndexer):
+    """AgentMefIndexer."""
 
-    record_cls = MefRecord
+    record_cls = AgentMefRecord
 
     def bulk_index(self, record_id_iterator):
         """Bulk index records.

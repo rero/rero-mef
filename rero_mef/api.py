@@ -128,7 +128,7 @@ class ReroMefRecord(Record):
                 # record has no changes
                 agent_action = Action.UPTODATE
                 return return_record, agent_action
-        return_record = self.update(
+        return_record = self.replace(
             data=data, dbcommit=dbcommit, reindex=reindex)
         agent_action = Action.UPDATE
         return return_record, agent_action
@@ -153,7 +153,7 @@ class ReroMefRecord(Record):
                 )
             else:
                 agent_action = Action.UPDATE
-                return_record = agent_record.update(
+                return_record = agent_record.replace(
                     data=data,
                     dbcommit=dbcommit,
                     reindex=reindex
@@ -196,10 +196,8 @@ class ReroMefRecord(Record):
                 return None
             except OperationalError:
                 get_record_error_count += 1
-                msg = 'Get record OperationalError: {count} {pid}'.format(
-                    count=get_record_error_count,
-                    pid=pid
-                )
+                msg = (f'Get record OperationalError: '
+                       f'{get_record_error_count} {pid}')
                 current_app.logger.error(msg)
                 db.session.rollback()
 
@@ -290,9 +288,7 @@ class ReroMefRecord(Record):
                 return count
             except OperationalError:
                 get_count_count += 1
-                msg = 'Get count OperationalError: {count}'.format(
-                    count=get_count_count,
-                )
+                msg = f'Get count OperationalError: {get_count_count}'
                 current_app.logger.error(msg)
                 db.session.rollback()
         raise OperationalError('Get count')
@@ -334,9 +330,7 @@ class ReroMefRecord(Record):
         new_data = deepcopy(data)
         pid = new_data.get('pid')
         if not pid:
-            raise ReroMefRecordError.PidMissing(
-                'missing pid={pid}'.format(pid=self.pid)
-            )
+            raise ReroMefRecordError.PidMissing(f'missing pid={self.pid}')
         self.clear()
         self = self.update(new_data, dbcommit=dbcommit, reindex=reindex)
         return self
@@ -380,7 +374,7 @@ class ReroMefRecord(Record):
         return metadata, identifier
 
 
-class ReroMefIndexer(RecordIndexer):
+class ReroIndexer(RecordIndexer):
     """Indexing class for mef."""
 
     index_error = {}
@@ -459,7 +453,7 @@ class ReroMefIndexer(RecordIndexer):
                 message.reject()
                 uid = payload.get('id', '???')
                 current_app.logger.error(
-                    "Failed to index record {uid}".format(uid=uid),
+                    f"Failed to index record {uid}",
                     exc_info=True)
 
     def _index_action(self, payload):
@@ -477,17 +471,13 @@ class ReroMefIndexer(RecordIndexer):
             except StatementError:
                 db.session.rollback()
                 get_record_error_count += 1
-                msg = 'INDEX ACTION StatementError: {count} {uid}'.format(
-                    count=get_record_error_count,
-                    uid=payload['id']
-                )
+                msg = ('INDEX ACTION StatementError: '
+                       f'{get_record_error_count} {payload["id"]}')
                 current_app.logger.error(msg)
             except OperationalError:
                 get_record_error_count += 1
-                msg = 'INDEX ACTION OperationalError: {count} {uid}'.format(
-                    count=get_record_error_count,
-                    uid=payload['id']
-                )
+                msg = ('INDEX ACTION OperationalError: '
+                       f'{get_record_error_count} {payload["id"]}')
                 current_app.logger.error(msg)
                 db.session.rollback()
             except Exception as err:

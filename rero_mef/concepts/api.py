@@ -19,7 +19,7 @@
 from flask import current_app
 from invenio_search import current_search
 
-from ..api import ReroMefIndexer, ReroMefRecord
+from ..api import ReroIndexer, ReroMefRecord
 
 
 class ConceptRecord(ReroMefRecord):
@@ -37,13 +37,11 @@ class ConceptRecord(ReroMefRecord):
     def update_indexes(cls):
         """Update indexes."""
         try:
-            index = 'concepts_{concept}'.format(concept=cls.concept)
+            index = 'fconcepts_{cls.concept}'
             current_search.flush_and_refresh(index=index)
         except Exception as err:
-            current_app.logger.error(
-                'ERROR flush and refresh: {err}'.format(err=err)
-            )
+            current_app.logger.error(f'ERROR flush and refresh: {err}')
 
 
-class ConceptIndexer(ReroMefIndexer):
+class ConceptIndexer(ReroIndexer):
     """Indexing class for agents."""

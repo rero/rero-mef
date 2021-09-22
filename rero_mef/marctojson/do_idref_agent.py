@@ -66,10 +66,7 @@ def get_language_script(field):
         test = languages[language][script_code]
     except Exception:
         script_code = 'latn'
-    return '{language}-{script_code}'.format(
-        language=language,
-        script_code=script_code
-    )
+    return f'{language}-{script_code}'
 
 
 def build_language_string_list_from_fields(

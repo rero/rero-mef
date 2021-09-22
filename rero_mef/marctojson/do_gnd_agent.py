@@ -155,12 +155,8 @@ class Transformation(object):
             """Format date from field 100."""
             date_formated = date_str
             if len(date_str) == 8:
-                date_data = {
-                    'year': date_str[0:4],
-                    'month': date_str[4:6],
-                    'day': date_str[6:8]
-                }
-                date_formated = '{year}-{month}-{day}'.format(**date_data)
+                date_formated = \
+                    f'{date_str[0:4]}-{date_str[4:6]}-{date_str[6:8]}'
             elif len(date_str) == 4:
                 date_formated = date_str[0:4]
             return date_formated

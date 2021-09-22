@@ -125,6 +125,13 @@ setup(
             'agents_rero = rero_mef.agents.rero.jsonresolvers.rero_resolver',
             'concepts_rero = rero_mef.concepts.rero.jsonresolvers.rero_resolver',
         ],
+        'invenio_base.api_blueprints': [
+            'api_agents_mef = rero_mef.agents.mef.views:api_blueprint',
+            'api_agents_viaf = rero_mef.agents.viaf.views:api_blueprint',
+            'api_agents_gnd = rero_mef.agents.gnd.views:api_blueprint',
+            'api_agents_idref = rero_mef.agents.idref.views:api_blueprint',
+            'api_agents_rero = rero_mef.agents.rero.views:api_blueprint'
+        ],
         'flask.commands': [
             'fixtures = rero_mef.cli:fixtures',
             'utils = rero_mef.cli:utils',

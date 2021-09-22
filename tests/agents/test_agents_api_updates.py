@@ -21,13 +21,13 @@ import mock
 
 from rero_mef.agents.gnd.api import AgentGndRecord
 from rero_mef.agents.idref.api import AgentIdrefRecord
-from rero_mef.agents.mef.api import MefRecord
+from rero_mef.agents.mef.api import AgentMefRecord
 from rero_mef.agents.rero.api import AgentReroRecord
-from rero_mef.agents.viaf.api import ViafRecord
+from rero_mef.agents.viaf.api import AgentViafRecord
 
 
 @mock.patch(
-    'rero_mef.agents.viaf.api.ViafRecord.get_online_viaf_record')
+    'rero_mef.agents.viaf.api.AgentViafRecord.get_online_viaf_record')
 def test_create_agent_updates(mock_get, app, gnd_record, rero_record,
                               idref_record):
     """Test create agent record with viaf links."""
@@ -38,8 +38,8 @@ def test_create_agent_updates(mock_get, app, gnd_record, rero_record,
         'gnd_pid': '100769527xxx'
     }
     # create first record no viaf and mef records exist
-    assert MefRecord.count() == 0
-    assert ViafRecord.count() == 0
+    assert AgentMefRecord.count() == 0
+    assert AgentViafRecord.count() == 0
     record, action, m_record, m_action, v_record, online = \
         AgentIdrefRecord.create_or_update_agent_mef_viaf(
             data=idref_record,
@@ -49,18 +49,18 @@ def test_create_agent_updates(mock_get, app, gnd_record, rero_record,
         )
     assert action.name == 'CREATE'
     assert record['pid'] == '069774331'
-    assert MefRecord.count() == 1
-    assert ViafRecord.count() == 1
+    assert AgentMefRecord.count() == 1
+    assert AgentViafRecord.count() == 1
     assert online
 
     # we should have a mef and viaf record now
-    mef_pid = list(MefRecord.get_all_pids())[-1]
-    mef_record = MefRecord.get_record_by_pid(mef_pid)
+    mef_pid = list(AgentMefRecord.get_all_pids())[-1]
+    mef_record = AgentMefRecord.get_record_by_pid(mef_pid)
     assert mef_record.get('pid') == '1'
     assert mef_record.get('viaf_pid') == '37268949'
     assert 'idref' in mef_record
-    viaf_pid = list(ViafRecord.get_all_pids())[-1]
-    viaf_record = ViafRecord.get_record_by_pid(viaf_pid)
+    viaf_pid = list(AgentViafRecord.get_all_pids())[-1]
+    viaf_record = AgentViafRecord.get_record_by_pid(viaf_pid)
     assert viaf_record.get('pid') == '37268949'
     assert viaf_record.get('idref_pid') == '069774331'
 
@@ -79,13 +79,13 @@ def test_create_agent_updates(mock_get, app, gnd_record, rero_record,
             reindex=True,
             online=True
         )
-    mef_pid = list(MefRecord.get_all_pids())[-1]
-    mef_record = MefRecord.get_record_by_pid(mef_pid)
+    mef_pid = list(AgentMefRecord.get_all_pids())[-1]
+    mef_record = AgentMefRecord.get_record_by_pid(mef_pid)
     assert mef_record.get('pid') == '2'
     assert mef_record.get('viaf_pid') == '66739143'
     assert 'gnd' in mef_record
-    viaf_pid = list(ViafRecord.get_all_pids())[-1]
-    viaf_record = ViafRecord.get_record_by_pid(viaf_pid)
+    viaf_pid = list(AgentViafRecord.get_all_pids())[-1]
+    viaf_record = AgentViafRecord.get_record_by_pid(viaf_pid)
     assert viaf_record.get('pid') == '66739143'
     assert viaf_record.get('gnd_pid') == '12391664X'
 
@@ -97,17 +97,17 @@ def test_create_agent_updates(mock_get, app, gnd_record, rero_record,
             online=True
         )
 
-    mef_pid = list(MefRecord.get_all_pids())[-1]
-    mef_record = MefRecord.get_record_by_pid(mef_pid)
+    mef_pid = list(AgentMefRecord.get_all_pids())[-1]
+    mef_record = AgentMefRecord.get_record_by_pid(mef_pid)
     assert mef_record.get('pid') == '2'
     assert mef_record.get('viaf_pid') == '66739143'
     assert 'rero' in mef_record
-    viaf_pid = list(ViafRecord.get_all_pids())[-1]
-    viaf_record = ViafRecord.get_record_by_pid(viaf_pid)
+    viaf_pid = list(AgentViafRecord.get_all_pids())[-1]
+    viaf_record = AgentViafRecord.get_record_by_pid(viaf_pid)
     assert viaf_record.get('pid') == '66739143'
     assert viaf_record.get('rero_pid') == 'A023655346'
 
-    mef_record = MefRecord.get_mef_by_viaf_pid(viaf_pid)
+    mef_record = AgentMefRecord.get_mef_by_viaf_pid(viaf_pid)
     assert mef_record == {
         'pid': '2',
         'viaf_pid': '66739143',
@@ -125,8 +125,8 @@ def test_create_agent_updates(mock_get, app, gnd_record, rero_record,
     }
     mock_get.return_value = new_viaf_record
     rec, msg = viaf_record.delete(dbcommit=True, delindex=True, online=True)
-    assert ViafRecord.get_record_by_pid(new_viaf_pid) == new_viaf_record
-    mef_record = MefRecord.get_mef_by_viaf_pid(new_viaf_pid)
+    assert AgentViafRecord.get_record_by_pid(new_viaf_pid) == new_viaf_record
+    mef_record = AgentMefRecord.get_mef_by_viaf_pid(new_viaf_pid)
     assert mef_record == {
         'viaf_pid': 'xxxxxxxx',
         'gnd': {'$ref': 'https://mef.rero.ch/api/gnd/12391664X'},

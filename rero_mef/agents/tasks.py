@@ -19,7 +19,7 @@
 
 from celery import shared_task
 
-from .viaf.api import ViafRecord
+from .viaf.api import AgentViafRecord
 from ..utils import get_agent_class
 
 
@@ -37,7 +37,7 @@ def create_mef_and_agents_from_viaf(pid, dbcommit=True, reindex=True,
     :param verbose: verbose or not
     :returns: string with pid and actions
     """
-    viaf_record = ViafRecord.get_record_by_pid(pid)
+    viaf_record = AgentViafRecord.get_record_by_pid(pid)
     actions = viaf_record.create_mef_and_agents(
         dbcommit=dbcommit,
         reindex=reindex,
@@ -63,12 +63,13 @@ def create_mef_from_agent(pid, agent, dbcommit=True, reindex=True,
     """
     agent_class = get_agent_class(agent)
     agent_record = agent_class.get_record_by_pid(pid)
-    mef_record, mef_action, viaf_record, online = \
-        agent_record.create_or_update_mef_viaf_record(
-            dbcommit=dbcommit,
-            reindex=reindex,
-            online=online
-        )
+    if agent_record:
+        mef_record, mef_action, viaf_record, online = \
+            agent_record.create_or_update_mef_viaf_record(
+                dbcommit=dbcommit,
+                reindex=reindex,
+                online=online
+            )
     mef_pid = 'Non'
     if mef_record:
         mef_pid = mef_record.pid
@@ -76,16 +77,5 @@ def create_mef_from_agent(pid, agent, dbcommit=True, reindex=True,
     if viaf_record:
         viaf_pid = viaf_record.pid
 
-    actions = 'mef: {m_pid} {m_action} viaf: {v_pid} {online}'.format(
-        m_pid=mef_pid,
-        m_action=mef_action.value,
-        v_pid=viaf_pid,
-        online=online
-    )
-
-    msg = 'Create MEF from {agent} pid: {pid} | {actions}'.format(
-        agent=agent,
-        pid=pid,
-        actions=actions
-    )
-    return msg
+    actions = f'mef: {mef_pid} {mef_action.value} viaf: {viaf_pid} {online}'
+    return f'Create MEF from {agent} pid: {pid} | {actions}'

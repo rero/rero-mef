@@ -34,14 +34,7 @@ def rero_get_record(id, verbose=False, debug=False):
     http://data.rero.ch/
     http://data.rero.ch/02-A000069866/marcxml
     """
-    base_url = 'http://data.rero.ch/02-'
-    query_id = '{id}'.format(id=id)
-    format = '/marcxml'
-    url = '{base_url}{query_id}{format}'.format(
-        base_url=base_url,
-        query_id=query_id,
-        format=format
-    )
+    url = f'http://data.rero.ch/02-{id}/marcxml'
     trans_record = None
     response = requests.get(url)
     if response.status_code == requests.codes.ok:
@@ -50,10 +43,10 @@ def rero_get_record(id, verbose=False, debug=False):
             if records:
                 trans_record = Transformation(records[0]).json
                 if verbose:
-                    click.echo('API-rero get: {id}'.format(id=id))
+                    click.echo(f'API-rero get: {id}')
         except Exception as err:
             if verbose:
-                click.echo('ERROR get rero record: {err}'.format(err=err))
+                click.echo(f'ERROR get rero record: {err}')
             if debug:
                 raise Exception(err)
     return trans_record

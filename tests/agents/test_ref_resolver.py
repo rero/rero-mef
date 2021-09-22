@@ -19,9 +19,9 @@
 
 from rero_mef.agents.gnd.api import AgentGndRecord
 from rero_mef.agents.idref.api import AgentIdrefRecord
-from rero_mef.agents.mef.api import MefRecord
+from rero_mef.agents.mef.api import AgentMefRecord
 from rero_mef.agents.rero.api import AgentReroRecord
-from rero_mef.agents.viaf.api import ViafRecord
+from rero_mef.agents.viaf.api import AgentViafRecord
 
 
 def test_ref_resolvers(
@@ -29,7 +29,7 @@ def test_ref_resolvers(
     """Test ref resolvers."""
 
     # VIAF record
-    record, action = ViafRecord.create_or_update(
+    record, action = AgentViafRecord.create_or_update(
         data=viaf_record,
         dbcommit=True,
         reindex=True
@@ -67,7 +67,7 @@ def test_ref_resolvers(
     idref_pid = record.get('pid')
 
     # MEF record
-    mef_rec_resolved = MefRecord.get_mef_by_viaf_pid(
+    mef_rec_resolved = AgentMefRecord.get_mef_by_viaf_pid(
         viaf_pid=viaf_pid
     )
     mef_rec_resolved = mef_rec_resolved.replace_refs()

@@ -20,16 +20,16 @@
 from rero_mef.agents.gnd.api import AgentGndRecord
 from rero_mef.agents.idref.api import AgentIdrefRecord
 from rero_mef.agents.rero.api import AgentReroRecord
-from rero_mef.agents.viaf.api import ViafRecord
+from rero_mef.agents.viaf.api import AgentViafRecord
 
 
 def test_create_agent_record_with_viaf_links(
         app, viaf_record, gnd_record, rero_record, idref_record):
     """Test create agent record with viaf links."""
-    returned_record, action = ViafRecord.create_or_update(
+    returned_record, action = AgentViafRecord.create_or_update(
         viaf_record, dbcommit=True, reindex=True
     )
-    ViafRecord.update_indexes()
+    AgentViafRecord.update_indexes()
     assert action.name == 'CREATE'
     assert returned_record['pid'] == '66739143'
     assert returned_record['gnd_pid'] == '12391664X'

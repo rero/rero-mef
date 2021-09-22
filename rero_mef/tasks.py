@@ -21,7 +21,7 @@ import click
 from celery import shared_task
 from flask import current_app
 
-from .api import ReroMefIndexer
+from .api import ReroIndexer
 from .utils import get_agent_class
 
 
@@ -38,7 +38,7 @@ def process_bulk_queue(version_type=None, es_bulk_kwargs=None,
             successful and a list of error responses.
     Note: You can start multiple versions of this task.
     """
-    return ReroMefIndexer(version_type=version_type).process_bulk_queue(
+    return ReroIndexer(version_type=version_type).process_bulk_queue(
         es_bulk_kwargs=es_bulk_kwargs, stats_only=stats_only)
 
 
@@ -48,7 +48,7 @@ def index_record(record_uuid):
 
     :param record_uuid: The record UUID.
     """
-    return ReroMefIndexer().index_by_id(record_uuid)
+    return ReroIndexer().index_by_id(record_uuid)
 
 
 @shared_task(ignore_result=True)
@@ -57,7 +57,7 @@ def delete_record(record_uuid):
 
     :param record_uuid: The record UUID.
     """
-    return ReroMefIndexer().delete_by_id(record_uuid)
+    return ReroIndexer().delete_by_id(record_uuid)
 
 
 @shared_task(ignore_result=True)
@@ -110,23 +110,12 @@ def create_or_update(index, record, agent, dbcommit=True, reindex=True,
         id_type = 'uuid:'
         id = returned_record.id
     if verbose:
-        message = '{index:<10} {agent} {type} {id} {agent_action}'.format(
-            index=index,
-            agent=agent,
-            type=id_type,
-            id=str(id),
-            agent_action=agent_action.name
-        )
+        message = f'{index:<10} {agent} {type} {id} {agent_action.name}'
         if agent_action.CREATE and agent in ['aidref', 'aggnd', 'agrero']:
             if viaf_record:
                 v_pid = viaf_record['pid']
-            message += ' mef: {m_pid} {m_action} |' \
-                       ' viaf: {v_pid} {online}'.format(
-                            m_pid=mef_record.pid,
-                            m_action=mef_action.name,
-                            v_pid=v_pid,
-                            online=got_online
-                       )
+            message += (f' mef: {mef_record.pid} {mef_action.name} |'
+                        f' viaf: {v_pid} {got_online}')
         click.echo(message)
     return id_type, str(id), str(agent_action)
 
@@ -150,18 +139,7 @@ def delete(index, pid, agent, dbcommit=True, delindex=True, verbose=False):
         result, action = agent_record.delete(dbcommit=dbcommit,
                                              delindex=delindex)
         if verbose:
-            message = '{index:<10} Deleted {agent} {pid:<38} {action}'.format(
-                index=index,
-                agent=agent,
-                pid=pid,
-                action=action
-            )
-            click.echo(message)
+            click.echo(f'{index:<10} Deleted {agent} {pid:<38} {action}')
     else:
-        message = '{index:<10} Not found {agent} {pid:<38}'.format(
-            index=index,
-            agent=agent,
-            pid=pid,
-        )
-        current_app.logger.warning(message)
+        current_app.logger.warning(f'{index:<10} Not found {agent} {pid:<38}')
     return action

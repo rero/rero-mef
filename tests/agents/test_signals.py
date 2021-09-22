@@ -18,13 +18,13 @@
 """Test signals."""
 
 from rero_mef.agents.gnd.api import AgentGndRecord
-from rero_mef.agents.mef.api import MefSearch
-from rero_mef.agents.viaf.api import ViafRecord
+from rero_mef.agents.mef.api import AgentMefSearch
+from rero_mef.agents.viaf.api import AgentViafRecord
 
 
 def test_create_mef_from_agent_with_viaf_links(app, viaf_record, gnd_record):
     """Test create MEF record from agent with viaf links."""
-    v_record, action = ViafRecord.create_or_update(
+    v_record, action = AgentViafRecord.create_or_update(
         viaf_record, dbcommit=True, reindex=True
     )
     assert action.name == 'CREATE'
@@ -43,7 +43,7 @@ def test_create_mef_from_agent_with_viaf_links(app, viaf_record, gnd_record):
     assert action.name == 'CREATE'
     assert record['pid'] == '12391664X'
 
-    query = MefSearch(). \
+    query = AgentMefSearch(). \
         filter('term', gnd__pid='12391664X'). \
         source('sources').scan()
     assert next(query).sources == ['gnd']

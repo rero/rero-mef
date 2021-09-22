@@ -171,8 +171,6 @@ def check_es_db_counts():
                 'api_monitoring.check_es_db_counts', _external=True)}
             for info, count in doc_type_data.items():
                 if info == 'db_es':
-                    msg = 'There are {count} items from {info} missing in ES.'
-                    msg = msg.format(count=count, info=doc_type)
                     links[doc_type] = url_for(
                         'api_monitoring.missing_pids',
                         doc_type=doc_type,
@@ -183,11 +181,10 @@ def check_es_db_counts():
                         'links': links,
                         'code': 'DB_ES_COUNTER_MISSMATCH',
                         'title': "DB items counts don't match ES items count.",
-                        'details': msg
+                        'details': f'There are {count} items from '
+                                   f'{doc_type} missing in ES.'
                     })
                 elif info == 'db-':
-                    msg = 'There are {count} items from {info} missing in DB.'
-                    msg = msg.format(count=count, info=doc_type)
                     links[doc_type] = url_for(
                         'api_monitoring.missing_pids',
                         doc_type=doc_type,
@@ -198,11 +195,10 @@ def check_es_db_counts():
                         'links': links,
                         'code': 'DB_ES_UNEQUAL',
                         'title': "DB items unequal ES items.",
-                        'details': msg
+                        'details': f'There are {count} items from '
+                                   f'{doc_type} missing in DB.'
                     })
                 elif info == 'es-':
-                    msg = 'There are {count} items from {info} missing in ES.'
-                    msg = msg.format(count=count, info=doc_type)
                     links[doc_type] = url_for(
                         'api_monitoring.missing_pids',
                         doc_type=doc_type,
@@ -213,7 +209,8 @@ def check_es_db_counts():
                         'links': links,
                         'code': 'DB_ES_UNEQUAL',
                         'title': "DB items unequal ES items.",
-                        'details': msg
+                        'details': f'There are {count} items from '
+                                   f'{doc_type} missing in ES.'
                     })
         result['errors'] = errors
     return jsonify(result)
@@ -236,7 +233,7 @@ def missing_pids(doc_type):
     """
     try:
         api_url = url_for(
-            'invenio_records_rest.{doc_type}_list'.format(doc_type=doc_type),
+            f'invenio_records_rest.{doc_type}_list',
             _external=True
         )
     except Exception:
@@ -255,19 +252,17 @@ def missing_pids(doc_type):
         data = {'DB': [], 'ES': [], 'ES duplicate': []}
         for pid in mon.get('DB'):
             if api_url:
-                data['DB'].append(
-                    '{api_url}?q=pid:{pid}'.format(api_url=api_url, pid=pid))
+                data['DB'].append(f'{api_url}?q=pid:{pid}')
             else:
                 data['DB'].append(pid)
         for pid in mon.get('ES'):
             if api_url:
-                data['ES'].append(
-                    '{api_url}{pid}'.format(api_url=api_url, pid=pid))
+                data['ES'].append(f'{api_url}{pid}')
             else:
                 data['ES'].append(pid)
         for pid in mon.get('ES duplicate'):
             if api_url:
-                url = '{api_url}?q=pid:{pid}'.format(api_url=api_url, pid=pid)
+                url = f'{api_url}?q=pid:{pid}'
                 data['ES duplicate'][url] = len(mon.get('ES duplicate'))
             else:
                 data['ES duplicate'][pid] = len(mon.get('ES duplicate'))
@@ -345,28 +340,16 @@ class Monitoring(object):
             5. elasticsearch count
         """
         result = ''
-        msg_head = 'DB - ES  {doc_type:>6} {count_db:>10}'.format(
-            doc_type='type',
-            count_db='count'
-        )
-        msg_head += '  {index:>25} {count_es:>10}\n'.format(
-            index='index',
-            count_es='count'
-        )
-        msg_head += '{:-^64s}\n'.format('')
+        msg_head = 'DB - ES  {"type":>6} {"count":>10}'
+        msg_head += f'  {"index":>25} {"count":>10}\n'
+        msg_head += f'{"":-^64s}\n'
 
         for doc_type, info in sorted(self.info().items()):
-            msg = '{db_es:>7}  {doc_type:>6} {count_db:>10}'.format(
-                db_es=info.get('db-es', ''),
-                doc_type=doc_type,
-                count_db=info.get('db', ''),
-            )
+            msg = (f'{info.get("db-es", ""):>7}  {doc_type:>6} '
+                   f'{info.get("db", ""):>10}')
             index = info.get('index', '')
             if index:
-                msg += '  {index:>25} {count_es:>10}'.format(
-                    index=index,
-                    count_es=info.get('es', '')
-                )
+                msg += f'  {index:>25} {info.get("es", ""):>10}'
             result += msg + '\n'
         return msg_head + result
 
@@ -381,7 +364,7 @@ class Monitoring(object):
         :return: item count.
         """
         if not current_app.config.get('RECORDS_REST_ENDPOINTS').get(doc_type):
-            return 'No >>{doc_type}<< in DB'.format(doc_type=doc_type)
+            return f'No >>{doc_type}<< in DB'
         query = PersistentIdentifier.query.filter_by(pid_type=doc_type)
         if not with_deleted:
             query = query.filter_by(status=PIDStatus.REGISTERED)
@@ -399,7 +382,7 @@ class Monitoring(object):
         try:
             result = RecordsSearch(index=index).query().count()
         except NotFoundError:
-            result = 'No >>{index}<< in ES'.format(index=index)
+            result = f'No >>{index}<< in ES'
         return result
 
     @classmethod
@@ -523,9 +506,7 @@ class Monitoring(object):
                 'ES duplicate': pids_es_double
             }
         else:
-            return {'ERROR': 'Document type not found: {doc_type}'.format(
-                doc_type=doc_type
-            )}
+            return {f'ERROR': 'Document type not found: {doc_type}'}
 
     @classmethod
     def print_missing(cls, doc_type):
@@ -538,18 +519,15 @@ class Monitoring(object):
                 if info == 'ES duplicate':
                     msg = 'duplicate in ES'
                 else:
-                    msg = 'pids missing in {info}'.format(info=info)
+                    msg = f'pids missing in {info}'
                 click.secho(
-                    '{doc_type}: {msg}:'.format(doc_type=doc_type, msg=msg),
+                    f'{doc_type}: {msg}:',
                     fg='red'
                 )
                 if info == 'ES duplicate':
                     pid_counts = []
                     for pid, count in data.items():
-                        pid_counts.append('{pid}: {count}'.format(
-                            pid=pid,
-                            count=count
-                        ))
+                        pid_counts.append(f'{pid}: {count}')
                     click.echo(', '.join(pid_counts))
                 else:
                     click.echo(', '.join(data))
@@ -577,30 +555,17 @@ def es_db_counts_cli(missing):
     """
     missing_doc_types = []
     mon = Monitoring()
-    msg_head = 'DB - ES  {doc_type:>6} {count_db:>10}'.format(
-        doc_type='type',
-        count_db='count'
-    )
-    msg_head += '  {index:>25} {count_es:>10}\n'.format(
-        index='index',
-        count_es='count'
-    )
-    msg_head += '{:-^64s}'.format('')
+    msg_head = f'DB - ES  {"type":>6} {"count":>10}'
+    msg_head += f'  {"index":>25} {"count_es":>10}\n'
+    msg_head += f'{"":-^64s}'
     click.echo(msg_head)
     info = mon.info(with_deleted=False, difference_db_es=False)
     for doc_type in sorted(info):
         db_es = info[doc_type].get('db-es', '')
-        msg = '{db_es:>7}  {doc_type:>6} {count_db:>10}'.format(
-            db_es=db_es,
-            doc_type=doc_type,
-            count_db=info[doc_type].get('db', ''),
-        )
+        msg = f'{db_es:>7}  {doc_type:>6} {info[doc_type].get("db", ""):>10}'
         index = info[doc_type].get('index', '')
         if index:
-            msg += '  {index:>25} {count_es:>10}'.format(
-                index=index,
-                count_es=info[doc_type].get('es', '')
-            )
+            msg += f'  {index:>25} {info[doc_type].get("es", ""):>10}'
         if db_es not in [0, '']:
             click.secho(msg, fg='red')
         else:

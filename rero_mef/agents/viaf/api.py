@@ -32,12 +32,12 @@ from .fetchers import viaf_id_fetcher
 from .minters import viaf_id_minter
 from .models import ViafMetadata
 from .providers import ViafProvider
-from ..api import ReroMefIndexer, ReroMefRecord
-from ..mef.api import MefRecord
+from ..api import ReroIndexer, ReroMefRecord
+from ..mef.api import AgentMefRecord
 from ...utils import get_agent_class, get_agents_endpoints, progressbar
 
 
-class ViafSearch(RecordsSearch):
+class AgentViafSearch(RecordsSearch):
     """RecordsSearch."""
 
     class Meta:
@@ -51,7 +51,7 @@ class ViafSearch(RecordsSearch):
         default_filter = None
 
 
-class ViafRecord(ReroMefRecord):
+class AgentViafRecord(ReroMefRecord):
     """Viaf Authority class."""
 
     minter = viaf_id_minter
@@ -81,12 +81,8 @@ class ViafRecord(ReroMefRecord):
         if format == 'link':
             viaf_format = '/justlinks.json'
             format = 'raw'
-        url = '{viaf_url}/{viaf_source_code}|{pid}{format}'.format(
-            viaf_url='http://www.viaf.org/viaf/sourceID',
-            viaf_source_code=viaf_source_code,
-            pid=pid,
-            format=viaf_format
-        )
+        url = (f'http://www.viaf.org/viaf/sourceID/'
+               f'{viaf_source_code}|{pid}{viaf_format}')
         response = requests.get(url)
         result = {}
         if response.status_code == requests.codes.ok:
@@ -105,6 +101,7 @@ class ViafRecord(ReroMefRecord):
         if result.get(source_code.get(viaf_source_code)) == pid:
             return result
 
+
     @classmethod
     def get_viaf_by_agent(cls, agent, online=False):
         """Get viaf record by agent.
@@ -112,15 +109,15 @@ class ViafRecord(ReroMefRecord):
         :param agent: Agency do get corresponding viaf record.
         :param online: Try to get viaf record online if not exist.
         """
-        if isinstance(agent, MefRecord):
+        if isinstance(agent, AgentMefRecord):
             viaf_pid = agent.get('viaf_pid')
             return cls.get_record_by_pid(viaf_pid), False
-        if isinstance(agent, ViafRecord):
+        if isinstance(agent, AgentViafRecord):
             viaf_pid = agent.get('pid')
             return cls.get_record_by_pid(viaf_pid), False
         pid = agent.get('pid')
         viaf_pid_name = agent.viaf_pid_name
-        result = ViafSearch().filter(
+        result = AgentViafSearch().filter(
             {'term': {viaf_pid_name: pid}}).source(['pid']).scan()
         try:
             viaf_pid = next(result).pid
@@ -155,7 +152,7 @@ class ViafRecord(ReroMefRecord):
         actions = {}
         for agent, agent_data in get_agents_endpoints().items():
             record_class = obj_or_import_string(agent_data.get('record_class'))
-            pid_value = self.get('{agent}_pid'.format(agent=record_class.name))
+            pid_value = self.get(f'{record_class.name}_pid')
             if pid_value:
                 agent_class = obj_or_import_string(
                     agent_data.get('record_class')
@@ -204,20 +201,12 @@ class ViafRecord(ReroMefRecord):
             msgs = []
             for key, value in actions.items():
                 msgs.append(
-                    '{key}: {pid} {action} mef: {m_pid} {m_action}'.format(
-                        key=key,
-                        pid=value['pid'],
-                        action=value['action'],
-                        m_pid=value['m_pid'],
-                        m_action=value['m_action']
-                    )
+                    f'{key}: {value["pid"]} {value["action"]} '
+                    f'mef: {value["m_pid"]} {value["m_action"]}'
                 )
             if msgs:
                 click.echo(
-                    '  Create MEF from viaf pid: {pid} | {actions}'.format(
-                        pid=self.pid,
-                        actions=' | '.join(msgs)
-                    )
+                    f'  Create MEF from viaf pid: {pid} | {actions}'
                 )
         return actions
 
@@ -227,16 +216,14 @@ class ViafRecord(ReroMefRecord):
         try:
             current_search.flush_and_refresh(index='viaf')
         except Exception as err:
-            current_app.logger.error(
-                'ERROR flush and refresh: {err}'.format(err=err)
-            )
+            current_app.logger.error(f'ERROR flush and refresh: {err}')
 
     def delete(self, dbcommit=False, delindex=False, online=False):
         """Delete record and persistent identifier."""
         agents_records = self.get_agents_records()
         # delete viaf_pid from Mef record
-        from ..mef.api import MefRecord
-        mef_record = MefRecord.get_mef_by_viaf_pid(self.pid)
+        from ..mef.api import AgentMefRecord
+        mef_record = AgentMefRecord.get_mef_by_viaf_pid(self.pid)
         if mef_record:
             mef_record.pop('viaf_pid', None)
             mef_record.replace(mef_record, dbcommit=dbcommit, reindex=True)
@@ -271,15 +258,10 @@ class ViafRecord(ReroMefRecord):
                 else:
                     viaf_pid = 'Non'
                 mef_actions.append(
-                    '{type}: {apid} mef: {pid} {action} viaf: {viaf}'.format(
-                        type=pid_type,
-                        apid=agent_record.pid,
-                        pid=mef_record.pid,
-                        action=mef_action.value,
-                        viaf=viaf_pid
-                    )
-                )
-                MefRecord.update_indexes()
+                    f'{pid_type}: {agent_record.pid} '
+                    f'mef: {mef_record.pid} {mef_action.value} '
+                    f'viaf: {viaf_pid}')
+                AgentMefRecord.update_indexes()
         return result, '; '.join(mef_actions)
 
     def get_agents_records(self):
@@ -301,9 +283,7 @@ class ViafRecord(ReroMefRecord):
         pids_viaf = []
         record_class = get_agent_class(agent)
         if verbose:
-            click.echo(
-                'Get pids from {agent} ...'.format(agent=agent)
-            )
+            click.echo(f'Get pids from {agent} ...')
         progress = progressbar(
             items=record_class.get_all_pids(),
             length=record_class.count(),
@@ -312,11 +292,9 @@ class ViafRecord(ReroMefRecord):
         for pid in progress:
             pids_db[pid] = 1
         if verbose:
-            click.echo(
-                'Get pids from viaf with {agent} ...'.format(agent=agent)
-            )
-        agent_pid_name = '{agent}_pid'.format(agent=agent)
-        query = ViafSearch().filter('bool', should=[
+            click.echo(f'Get pids from viaf with {agent} ...')
+        agent_pid_name = f'{agent}_pid'
+        query = AgentViafSearch().filter('bool', should=[
             Q('exists', field=agent_pid_name)
         ]).source(['pid', agent_pid_name])
         progress = progressbar(
@@ -335,10 +313,10 @@ class ViafRecord(ReroMefRecord):
         return pids_db, pids_viaf
 
 
-class ViafIndexer(ReroMefIndexer):
+class AgentViafIndexer(ReroIndexer):
     """ViafIndexer."""
 
-    record_cls = ViafRecord
+    record_cls = AgentViafRecord
 
     def bulk_index(self, record_id_iterator):
         """Bulk index records.
