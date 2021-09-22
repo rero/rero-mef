@@ -47,7 +47,7 @@ def and_search_factory(self, search, query_parser=None):
         search = search.query(query_parser(query_string))
     except SyntaxError:
         current_app.logger.debug(
-            'Failed parsing query: {0}'.format(request.values.get('q', '')),
+            f'Failed parsing query: {request.values.get("q", "")}',
             exc_info=True,
         )
         raise InvalidQueryRESTError()
@@ -59,4 +59,10 @@ def and_search_factory(self, search, query_parser=None):
         urlkwargs.add(key, value)
 
     urlkwargs.add('q', query_string)
+
+    # include deleted
+    deleted = request.args.get('deleted')
+    if not deleted:
+        search = search.filter('bool', must_not=[Q('exists', field='deleted')])
+
     return search, urlkwargs

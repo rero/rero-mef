@@ -22,11 +22,11 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import jsonresolver
 
-from ..api import MefRecord
+from ..api import AgentMefRecord
 from ....utils import get_host, resolve_record
 
 
-@jsonresolver.route('/api/mef/<path:path>', host=get_host())
+@jsonresolver.route('/api/agents/mef/<path:path>', host=get_host())
 def resolve_mef(path):
     """Resolve Mef records."""
-    return resolve_record(path, MefRecord)
+    return resolve_record(path, AgentMefRecord)

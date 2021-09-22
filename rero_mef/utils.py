@@ -34,7 +34,7 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from functools import wraps
 from io import StringIO
-from json import JSONDecodeError, JSONDecoder
+from json import JSONDecodeError, JSONDecoder, dumps
 from time import sleep
 from uuid import uuid4
 
@@ -100,16 +100,11 @@ def oai_get_last_run(name, verbose=False):
         oai_source = get_oaiharvest_object(name)
         lastrun_date = oai_source.lastrun
         if verbose:
-            click.echo('OAI {name}: last run: {last_run}'.format(
-                name=name,
-                last_run=lastrun_date
-            ))
+            click.echo(f'OAI {name}: last run: {lastrun_date}')
         return lastrun_date
     except InvenioOAIHarvesterConfigNotFound:
         if verbose:
-            click.echo(('ERROR OAI config not found: {name}').format(
-                    name=name,
-            ))
+            click.echo((f'ERROR OAI config not found: {name}'))
         return None
 
 
@@ -129,22 +124,14 @@ def oai_set_last_run(name, date, verbose=False):
         oai_source.save()
         db.session.commit()
         if verbose:
-            click.echo('OAI {name}: set last run: {last_run}'.format(
-                name=name,
-                last_run=lastrun_date
-            ))
+            click.echo(f'OAI {name}: set last run: {lastrun_date}')
         return lastrun_date
     except InvenioOAIHarvesterConfigNotFound:
         if verbose:
-            click.echo(('ERROR OAI config not found: {name}').format(
-                name=name,
-            ))
+            click.echo(f'ERROR OAI config not found: {name}')
     except parser.ParserError as err:
         if verbose:
-            click.echo(('OAI set lastrun {name}: {err}').format(
-                name=name,
-                err=err
-            ))
+            click.echo(f'OAI set lastrun {name}: {err}')
     return None
 
 
@@ -195,12 +182,11 @@ class MyOAIItemIterator(OAIItemIterator):
                 './/' + self.sickle.oai_namespace + 'resumptionToken')
 
             if resumption_token_element is None:
-                msg = ('ERROR HARVESTING incomplete response:'
-                       '{cursor} {token}').format(
-                    cursor=self.resumption_token.cursor,
-                    token=self.resumption_token.token
+                current_app.logger.error(
+                    f'ERROR HARVESTING incomplete response: '
+                    f'{self.resumption_token.cursor} '
+                    f'{self.resumption_token.token}'
                 )
-                current_app.logger.error(msg)
                 sleep(60)
             else:
                 self.next_resumption_token_and_items()
@@ -314,32 +300,15 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                             if v_record:
                                 v_pid = v_record.pid
                             click.echo(
-                                (
-                                    'OAI {name} spec({spec}): {pid}'
-                                    ' updated: {updated} {action}'
-                                    ' | mef: {m_pid} {m_action}'
-                                    ' | viaf: {v_pid} online: {online}'
-                                ).format(
-                                    name=name,
-                                    spec=spec,
-                                    pid=pid,
-                                    action=action.value,
-                                    m_pid=m_pid,
-                                    m_action=m_action.value,
-                                    v_pid=v_pid,
-                                    online=v_online,
-                                    updated=updated
-                                )
+                                f'OAI {name} spec({spec}): {pid}'
+                                f' updated: {updated} {action}'
+                                f' | mef: {m_pid} {m_action}'
+                                f' | viaf: {v_pid} online: {v_online}'
                             )
                     except Exception as err:
-                        msg = 'Creating {name} {count}: {err}'
-                        msg = msg.format(
-                            name=name,
-                            count=count,
-                            err=err
-                        )
+                        msg = f'Creating {name} {count}: {err}'
                         if rec:
-                            msg += '\n{rec}'.format(rec=rec)
+                            msg += f'\n{rec}'
 
                         current_app.logger.error(msg)
                         if debug:
@@ -355,23 +324,14 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
 
             my_from_date = my_from_date + timedelta(days=days_spann + 1)
             if verbose:
+                from_date = my_from_date.strftime("%Y-%m-%d")
                 click.echo(
-                    ('OAI {name} {spec}: {from_d} .. +{days_spann}').format(
-                        name=name,
-                        spec=spec,
-                        from_d=my_from_date.strftime("%Y-%m-%d"),
-                        days_spann=days_spann
-                    )
+                    f'OAI {name} {spec}: {from_date} .. +{days_spann}'
                 )
 
     if update_last_run:
         if verbose:
-            click.echo(
-                ('OAI {name}: update last run: {last_run}').format(
-                    name=name,
-                    last_run=last_run_date
-                )
-            )
+            click.echo(f'OAI {name}: update last run: {last_run}')
         oai_source = get_oaiharvest_object(name)
         oai_source.update_lastrun(last_run_date)
         oai_source.save()
@@ -451,16 +411,10 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
                         if field_001:
                             record_id = field_001.data
                         if verbose:
+                            from_date = my_from_date.strftime("%Y-%m-%d")
                             click.echo(
-                                'OAI {name} spec({spec}): {from_d} '
-                                'count:{count:>10} = {id}'.format(
-                                    name=name,
-                                    spec=spec,
-                                    from_d=my_from_date.strftime("%Y-%m-%d"),
-                                    days_spann=days_spann,
-                                    count=count,
-                                    id=record_id
-                                )
+                                f'OAI {name} spec({spec}): {from_date} '
+                                f'count:{count:>10} = {id}'
                             )
                         rec = records[0]
                         rec.leader = rec.leader[0:9] + 'a' + rec.leader[10:]
@@ -474,20 +428,12 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
 
                 my_from_date = my_from_date + timedelta(days=days_spann + 1)
                 if verbose:
+                    from_date=my_from_date.strftime("%Y-%m-%d")
                     click.echo(
-                        'OAI {name} spec({spec}): '
-                        '{from_d} .. +{days_spann}'.format(
-                            name=name,
-                            spec=spec,
-                            from_d=my_from_date.strftime("%Y-%m-%d"),
-                            days_spann=days_spann
-                        )
+                        f'OAI {name} spec({spec}): {from_date} .. +{days_spann}'
                     )
     if verbose:
-        click.echo('OAI {name}: {count}'.format(
-            name=name,
-            count=count
-        ))
+        click.echo(f'OAI {name}: {count}')
     return count
 
 
@@ -509,8 +455,7 @@ def oai_get_record(id, name, transformation, record_cls, access_token=None,
 
     params['metadataPrefix'] = metadata_prefix
     setspecs = setspecs.split()
-    params['identifier'] = '{identifier}{id}'.format(identifier=identifier,
-                                                     id=id)
+    params['identifier'] = f'{identifier}{id}'
     try:
         record = request.GetRecord(**params)
     except Exception as err:
@@ -520,12 +465,7 @@ def oai_get_record(id, name, transformation, record_cls, access_token=None,
     records = parse_xml_to_array(StringIO(record.raw))
     trans_record = transformation(records[0]).json
     if verbose:
-        click.echo(
-            'OAI-{name} get: {id}'.format(
-                name=name,
-                id=id
-            )
-        )
+        click.echo(f'OAI-{name} get: {id}')
     return trans_record
 
 
@@ -583,41 +523,25 @@ def export_json_records(pids, pid_type, output_file_name, indent=2,
         .get(pid_type).get('record_class')
     )
     count = 0
-    output = '['
-    offset = '{character:{indent}}'.format(character=' ', indent=indent)
-    with open(output_file_name, 'w') as outfile:
-        for pid in pids:
-            try:
-                rec = record_class.get_record_by_pid(pid)
-                count += 1
-                if verbose:
-                    msg = '{count: <8} {pid_type} export {pid}:{id}'.format(
-                        count=count,
-                        pid_type=pid_type,
-                        pid=rec.pid,
-                        id=rec.id
-                    )
-                    click.echo(msg)
-
-                outfile.write(output)
-                if count > 1:
-                    outfile.write(',')
-                if not schema:
-                    rec.pop('$schema', None)
-                    persons_sources = current_app.config.get(
-                        'RERO_ILS_PERSONS_SOURCES', [])
-                    for persons_source in persons_sources:
-                        rec[persons_sources].pop('$schema', None)
-                output = ''
-                lines = json.dumps(rec, indent=indent).split('\n')
-                for line in lines:
-                    output += '\n{offset}{line}'.format(
-                        offset=offset, line=line)
-            except Exception as err:
-                click.echo(err)
-                click.echo('ERROR: Can not export pid:{pid}'.format(pid=pid))
-        outfile.write(output)
-        outfile.write('\n]\n')
+    outfile = JsonWriter(output_file_name, indent=indent)
+    for pid in pids:
+        try:
+            rec = record_class.get_record_by_pid(pid)
+            count += 1
+            if verbose:
+                click.echo(
+                    f'{count: <8} {pid_type} export {rec.pid}:{rec.id}'
+                )
+            if not schema:
+                rec.pop('$schema', None)
+                persons_sources = current_app.config.get(
+                    'RERO_ILS_PERSONS_SOURCES', [])
+                for persons_source in persons_sources:
+                    rec[persons_source].pop('$schema', None)
+            outfile.write(rec)
+        except Exception as err:
+            click.echo(err)
+            click.echo(f'ERROR: Can not export pid:{pid}')
 
 
 def number_records_in_file(json_file, type):
@@ -702,8 +626,8 @@ def pidstore_csv_line(agent, agent_pid, record_uuid, date):
 
 def add_agent_to_json(mef_record, agent, agent_pid):
     """Add agent ref to mef record."""
-    from .mef.api import MefRecord
-    ref_string = MefRecord.build_ref_string(
+    from .agents.mef.api import AgentMefRecord
+    ref_string = AgentMefRecord.build_ref_string(
         agent=agent, agent_pid=agent_pid
     )
     mef_record[agent] = {'$ref': ref_string}
@@ -732,9 +656,9 @@ def db_copy_from(buffer, table, columns):
             sep='\t'
         )
         connection.commit()
-    except psycopg2.DataError as error:
-        current_app.logger.error('data load error: {0}'.format(error))
-    # cursor.execute('VACUUM ANALYSE {table}'.format(table=table))
+    except psycopg2.DataError as err:
+        current_app.logger.error(f'data load error: {err}')
+    # cursor.execute(f'VACUUM ANALYSE {table}')
     # cursor.close()
     connection.close()
 
@@ -751,11 +675,9 @@ def db_copy_to(filehandle, table, columns):
             sep='\t'
         )
         cursor.connection.commit()
-    except psycopg2.DataError as error:
-        current_app.logger.error(
-            'data load error: {0}'.format(error)
-        )
-    cursor.execute('VACUUM ANALYSE {table}'.format(table=table))
+    except psycopg2.DataError as err:
+        current_app.logger.error(f'data load error: {err}')
+    cursor.execute(f'VACUUM ANALYSE {table}')
     cursor.close()
     connection.close()
 
@@ -763,19 +685,16 @@ def db_copy_to(filehandle, table, columns):
 def bulk_index(agent, uuids, verbose=False):
     """Bulk index records."""
     if verbose:
-        click.echo(' add to index: {count}'.format(count=len(uuids)))
+        click.echo(f' add to index: {len(uuids)}')
     retry = True
     minutes = 1
-    from .api import ReroMefIndexer
+    from .api import ReroIndexer
     while retry:
         try:
-            ReroMefIndexer().bulk_index(uuids, doc_type=agent)
+            ReroIndexer().bulk_index(uuids, doc_type=agent)
             retry = False
         except Exception as exc:
-            msg = 'Bulk Index Error: retry in {minutes} min {exc}'.format(
-                exc=exc,
-                minutes=minutes
-            )
+            msg = f'Bulk Index Error: retry in {minutes} min {exc}'
             current_app.logger.error(msg)
             if verbose:
                 click.secho(msg, fg='red')
@@ -810,11 +729,7 @@ def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
                     diff_time = end_time - start_time
                     start_time = end_time
                     click.echo(
-                        '{agent} copy from file: {count} {time}s'.format(
-                            agent=agent,
-                            count=count,
-                            time=diff_time.seconds
-                        ),
+                        f'{agent} copy from file: {count} {diff_time.seconds}s',
                         nl=False
                     )
                 db_copy_from(buffer=buffer, table=table, columns=columns)
@@ -837,11 +752,7 @@ def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
             end_time = datetime.now()
             diff_time = end_time - start_time
             click.echo(
-                '{agent} copy from file: {count} {time}s'.format(
-                    agent=agent,
-                    count=count,
-                    time=diff_time.seconds
-                ),
+                '{agent} copy from file: {count} {diff_time.seconds}s',
                 nl=False
             )
         buffer.flush()
@@ -935,10 +846,7 @@ def bulk_save_agent(agent, file_name, table, columns, verbose=False):
 def bulk_save_agent_metadata(agent, file_name, verbose=False):
     """Bulk save agent data from metadata table."""
     if verbose:
-        click.echo('{agent} save to file: {filename}'.format(
-            agent=agent,
-            filename=file_name
-        ))
+        click.echo(f'{agent} save to file: {file_name}')
     agent_class = get_agent_class(agent)
     metadata, identifier = agent_class.get_metadata_identifier_names()
     columns = (
@@ -960,10 +868,7 @@ def bulk_save_agent_metadata(agent, file_name, verbose=False):
 def bulk_save_agent_pids(agent, file_name, verbose=False):
     """Bulk save agent data from pids table."""
     if verbose:
-        click.echo('{agent} save to file: {filename}'.format(
-            agent=agent,
-            filename=file_name
-        ))
+        click.echo(f'{agent} save to file: {file_name}')
     table = 'pidstore_pid'
     columns = (
         'created',
@@ -992,10 +897,7 @@ def bulk_save_agent_pids(agent, file_name, verbose=False):
 def bulk_save_agent_ids(agent, file_name, verbose=False):
     """Bulk save agent data from id table."""
     if verbose:
-        click.echo('{agent} save to file: {filename}'.format(
-            agent=agent,
-            filename=file_name
-        ))
+        click.echo(f'{agent} save to file: {file_name}')
     agent_class = get_agent_class(agent)
     metadata, identifier = agent_class.get_metadata_identifier_names()
     columns = ('recid', )
@@ -1034,19 +936,17 @@ def add_schema(record, agent):
     with current_app.app_context():
         schemas = current_app.config.get('RECORDS_JSON_SCHEMA')
         if agent in schemas:
-            record['$schema'] = '{base_url}{endpoint}{schema}'.format(
-                base_url=current_app.config.get('RERO_MEF_APP_BASE_URL'),
-                endpoint=current_app.config.get('JSONSCHEMAS_ENDPOINT'),
-                schema=schemas[agent]
-            )
+            base_url=current_app.config.get('RERO_MEF_APP_BASE_URL')
+            endpoint=current_app.config.get('JSONSCHEMAS_ENDPOINT')
+            schema=schemas[agent]
+            record['$schema'] = f'{base_url}{endpoint}{schema}'
     return record
 
 
 def create_agent_csv_file(input_file, agent, pidstore, metadata):
     """Create agent csv file to load."""
     if agent == 'mef':
-        agent_id_file = open('{agent}_id'.format(agent=agent),
-                             'w', encoding='utf-8')
+        agent_id_file = open(f'{agent}_id', 'w', encoding='utf-8')
     with \
             open(input_file, 'r', encoding='utf-8') as agent_file, \
             open(metadata, 'w', encoding='utf-8') as agent_metadata_file, \
@@ -1155,11 +1055,7 @@ def write_link_json(
         )
         metadata_file.write(metadata_csv_line(json_dump, record_uuid, date))
         if verbose:
-            msg = '  {agent}: {data}'.format(
-                agent=agent,
-                data=json_dump
-            )
-            click.echo(msg)
+            click.echo(f'  {agent}: {json_dump}')
     return write_to_file
 
 
@@ -1182,15 +1078,10 @@ def create_mef_files(
         viaf_pid_name = agent_classe.viaf_pid_name
         if viaf_pid_name:
             viaf_agent_pid_names[viaf_pid_name] = name
-            file_name = os.path.join(
-                input_directory,
-                '{agent}_pidstore.csv'.format(agent=agent)
-            )
+            file_name = os.path.join(input_directory, f'{agent}_pidstore.csv')
             if os.path.exists(file_name):
                 if verbose:
-                    click.echo('  Read pids from: {name}'.format(
-                        name=file_name)
-                    )
+                    click.echo(f'  Read pids from: {file_name}')
                 length = number_records_in_file(file_name, 'csv')
                 pids[name] = {}
                 progress = progressbar(
@@ -1215,15 +1106,13 @@ def create_mef_files(
             ) as mef_ids_file:
                 schemas = current_app.config.get('RECORDS_JSON_SCHEMA')
                 base_url = current_app.config.get('RERO_MEF_APP_BASE_URL')
-                schema = '{base_url}{endpoint}{schema}'.format(
-                    base_url=base_url,
-                    endpoint=current_app.config.get('JSONSCHEMAS_ENDPOINT'),
-                    schema=schemas['mef']
-                )
+                schema = (f'{base_url}'
+                          f'{current_app.config.get("JSONSCHEMAS_ENDPOINT")}'
+                          f'{schemas["mef"]}')
                 if verbose:
-                    click.echo('  Create MEF with VIAF pid: {name}'.format(
-                        name=viaf_pidstore_file
-                    ))
+                    click.echo(
+                        f'  Create MEF with VIAF pid: {viaf_pidstore_file}'
+                    )
                 progress = progressbar(
                     items=open(str(viaf_pidstore_file), 'r', encoding='utf-8'),
                     length=number_records_in_file(viaf_pidstore_file, 'csv'),
@@ -1242,11 +1131,7 @@ def create_mef_files(
                             if pids.get(name, {}).get(agent_pid):
                                 corresponding_data['viaf_pid'] = viaf_pid
                                 pids[name].pop(agent_pid)
-                                url = '{base_url}/api/{name}/{pid}'.format(
-                                    base_url=base_url,
-                                    name=name,
-                                    pid=agent_pid
-                                )
+                                url = f'{base_url}/api/{name}/{pid}'
                                 corresponding_data[name] = {'$ref': url}
                     if corresponding_data.get('viaf_pid'):
                         # Write MEF with VIAF to file
@@ -1267,9 +1152,7 @@ def create_mef_files(
                 for agent in pids:
                     length += len(pids[agent])
                 if verbose:
-                    click.echo('  Create MEF without VIAF pid: {count}'.format(
-                        count=length
-                    ))
+                    click.echo(f'  Create MEF without VIAF pid: {length}')
                 progress = progressbar(
                     items=pids,
                     length=length,
@@ -1277,11 +1160,7 @@ def create_mef_files(
                 )
                 for agent in progress:
                     for pid in pids[agent]:
-                        url = '{base_url}/api/{agent}/{pid}'.format(
-                            base_url=base_url,
-                            agent=agent,
-                            pid=pid
-                        )
+                        url = f'{base_url}/api/{agent}/{pid}'
                         corresponding_data = {
                             'pid': str(mef_pid),
                             '$schema': schema,
@@ -1300,7 +1179,7 @@ def create_mef_files(
                         mef_ids_file.write(str(mef_pid) + os.linesep)
                         mef_pid += 1
     if verbose:
-        click.echo('  MEF records created: {count}'.format(count=mef_pid-1))
+        click.echo(f'  MEF records created: {mef_pid-1}')
 
 
 def create_viaf_files(
@@ -1367,7 +1246,7 @@ def create_viaf_files(
                 if written:
                     count += 1
     if verbose:
-        click.echo('  Viaf records created: {count}'.format(count=count))
+        click.echo(f'  Viaf records created: {count}')
 
 
 def append_fixtures_new_identifiers(identifier, pids, pid_type):
@@ -1401,7 +1280,7 @@ def get_diff_db_es_pids(agent, verbose=False):
     record_class = get_agent_class(agent)
     count = record_class.count()
     if verbose:
-        click.echo('Get pids from DB: {count}'.format(count=count))
+        click.echo(f'Get pids from DB: {count}')
     progress = progressbar(
         items=record_class.get_all_pids(),
         length=count,
@@ -1412,7 +1291,7 @@ def get_diff_db_es_pids(agent, verbose=False):
     search_class = get_agent_search_class(agent)
     count = search_class().source('pid').count()
     if verbose:
-        click.echo('Get pids from ES: {count}'.format(count=count))
+        click.echo(f'Get pids from ES: {count}')
     progress = progressbar(
         items=search_class().source('pid').scan(),
         length=count,
@@ -1429,11 +1308,8 @@ def get_diff_db_es_pids(agent, verbose=False):
     pids_db = [v for v in pids_db]
     pids_es = [v for v in pids_es]
     if verbose:
-        click.echo('Counts  DB: {dbc} ES: {esc} ES+: {esp}'.format(
-            dbc=len(pids_db),
-            esc=len(pids_es),
-            esp=len(pids_es_double)
-        ))
+        click.echo(f'Counts  DB: {len(pids_db)} ES: {len(pids_es)} '
+                   f'ES+: {len(pids_es_double)}')
     return pids_db, pids_es, pids_es_double
 
 
@@ -1466,3 +1342,45 @@ def settimestamp(func):
         set_timestamp(func.__name__, result=result)
         return result
     return wrapped
+
+
+class JsonWriter(object):
+    """Json Writer."""
+
+    count = 0
+
+    def __init__(self, filename, indent=2):
+        """Constructor.
+
+        :params filename: File name of the file to be written.
+        :param indent: indentation.
+        """
+        self.indent = indent
+        self.file_handle = open(filename, 'w')
+        self.file_handle.write('[')
+
+    def __del__(self):
+        """Destructor."""
+        if self.file_handle:
+            self.file_handle.write('\n]')
+            self.file_handle.close()
+            self.file_handle = None
+
+    def write(self, data):
+        """Write data to file.
+
+        :param data: JSON data to write into the file.
+        """
+        if self.count > 0:
+            self.file_handle.write(',')
+        if self.indent:
+            for line in dumps(data, indent=self.indent).split('\n'):
+                self.file_handle.write(f'\n{" ".ljust(self.indent)}')
+                self.file_handle.write(line)
+        else:
+            self.file_handle.write(dumps(data), separators=(',', ':'))
+        self.count += 1
+
+    def close(self):
+        """Close file."""
+        self.__del__()

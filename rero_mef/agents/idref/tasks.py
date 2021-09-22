@@ -44,10 +44,8 @@ class MySickle(Sickle):
                     and http_response.status_code in self.retry_status_codes:
                 retry_after = self.get_retry_after(http_response)
                 current_app.logger.warning(
-                    "HTTP {code}! Retrying after {after} seconds...".format(
-                        code=http_response.status_code,
-                        after=retry_after
-                    )
+                    f'HTTP {http_response.status_code}! '
+                    f'Retrying after {retry_after} seconds...'
                 )
                 time.sleep(retry_after)
                 http_response = self._request(kwargs)

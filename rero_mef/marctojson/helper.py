@@ -1323,7 +1323,7 @@ def nice_record(record, ctrl=False):
     leader = record.leader
     if ctrl:
         leader = replace_ctrl(leader)
-    nice = 'ldr: {leader}'.format(leader=leader)
+    nice = f'ldr: {leader}'
     for field in record:
         nice += '%s: %s' % (field.tag, nice_marc_field(field, ctrl)) + '\n'
     return nice

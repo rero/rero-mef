@@ -23,8 +23,8 @@ from invenio_records_rest.schemas import RecordSchemaJSONV1
 from invenio_records_rest.serializers.json import JSONSerializer
 from invenio_records_rest.serializers.response import record_responsify
 
-from .agents.mef.api import MefRecord, MefSearch
-from .agents.viaf.api import ViafSearch
+from .agents.mef.api import AgentMefRecord, AgentMefSearch
+from .agents.viaf.api import AgentViafSearch
 from .utils import get_agent_classes
 
 
@@ -34,34 +34,36 @@ def add_links(pid, record):
     if pid.pid_type == 'mef':
         viaf_pid = record.get('viaf_pid')
         if viaf_pid:
-            links['viaf'] = '{scheme}://{host}/api/viaf/' + str(viaf_pid)
+            links['viaf'] = '{scheme}://{host}/api/agents/viaf/' \
+                 + str(viaf_pid)
             links['viaf.org'] = 'http://www.viaf.org/viaf/' + str(viaf_pid)
     elif pid.pid_type == "viaf":
         viaf_pid = record.get('pid')
-        mef_pid_search = MefSearch() \
+        mef_pid_search = AgentMefSearch() \
             .filter('term', viaf_pid=viaf_pid) \
             .source(['pid']).scan()
         try:
             mef_pid = next(mef_pid_search).pid
-            links['mef'] = '{scheme}://{host}/api/mef/' + str(mef_pid)
+            links['mef'] = '{scheme}://{host}/api/agents/mef/' + str(mef_pid)
         except Exception:
             pass
         links['viaf.org'] = 'http://www.viaf.org/viaf/' + str(viaf_pid)
     else:
-        mef_pid = MefRecord.get_mef_by_agent_pid(
+        mef_pid = AgentMefRecord.get_mef_by_agent_pid(
             record.pid,
             record.name,
             pid_only=True
         )
         if mef_pid:
-            links['mef'] = '{scheme}://{host}/api/mef/' + str(mef_pid)
+            links['mef'] = '{scheme}://{host}/api/agents/mef/' + str(mef_pid)
         try:
             viaf_pid_name = record.viaf_pid_name
-            query = ViafSearch(). \
+            query = AgentViafSearch(). \
                 filter({'term': {viaf_pid_name: pid.pid_value}}). \
                 source('pid')
             viaf_pid = next(query.scan()).pid
-            links['viaf'] = '{scheme}://{host}/api/viaf/' + str(viaf_pid)
+            links['viaf'] = '{scheme}://{host}/api/agents/viaf/' \
+                + str(viaf_pid)
             links['viaf.org'] = 'http://www.viaf.org/viaf/' + str(viaf_pid)
         except Exception:
             pass
@@ -78,7 +80,7 @@ def local_link(agent, name, record):
         if ref:
             my_pid = ref.split('/')[-1]
             url = url_for(
-                'invenio_records_rest.{agent}_item'.format(agent=agent),
+                f'invenio_records_rest.{agent}_item',
                 pid_value=my_pid,
                 _external=True
             )

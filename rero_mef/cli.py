@@ -39,19 +39,19 @@ from werkzeug.local import LocalProxy
 from .agents.cli import create_mef_and_agents_from_viaf, \
     create_mef_from_agent, queue_count, reindex_missing, wait_empty_tasks
 from .agents.mef.models import MefIdentifier
-from .agents.viaf.api import ViafRecord, ViafSearch
 from .marctojson.helper import nice_record
 from .marctojson.records import RecordsCount
 from .tasks import create_or_update as task_create_or_update
 from .tasks import delete as task_delete
 from .tasks import process_bulk_queue as task_process_bulk_queue
-from .utils import add_md5, add_oai_source, append_fixtures_new_identifiers, \
-    bulk_load_agent_ids, bulk_load_agent_metadata, bulk_load_agent_pids, \
-    bulk_save_agent_ids, bulk_save_agent_metadata, bulk_save_agent_pids, \
-    create_agent_csv_file, create_mef_files, create_viaf_files, \
-    export_json_records, get_agent_class, get_agent_classes, \
-    get_agent_indexer_class, get_agent_search_class, number_records_in_file, \
-    oai_get_last_run, oai_set_last_run, read_json_record
+from .utils import JsonWriter, add_md5, add_oai_source, \
+    append_fixtures_new_identifiers, bulk_load_agent_ids, \
+    bulk_load_agent_metadata, bulk_load_agent_pids, bulk_save_agent_ids, \
+    bulk_save_agent_metadata, bulk_save_agent_pids, create_agent_csv_file, \
+    create_mef_files, create_viaf_files, export_json_records, \
+    get_agent_class, get_agent_classes, get_agent_indexer_class, \
+    number_records_in_file, oai_get_last_run, oai_set_last_run, \
+    read_json_record
 
 _datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
 
@@ -103,9 +103,7 @@ def create_or_update(agent, source, lazy, test_md5, enqueue, online, verbose):
     :param online: Try to get viaf online if not exist.
     :param verbose: Verbose.
     """
-    agent_message = 'Update records: {agent}'.format(
-        agent=agent
-    )
+    agent_message = f'Update records: {agent}'
     click.secho(agent_message, fg='green')
     if lazy:
         # try to lazy read json file (slower, better memory management)
@@ -156,9 +154,7 @@ def delete(agent, source, lazy, enqueue, verbose):
     :param lazy: lazy reads file
     :param verbose: Verbose.
     """
-    agent_message = 'Delete authority person records: {agent}'.format(
-        agent=agent
-    )
+    agent_message = f'Delete authority person records: {agent}'
     click.secho(agent_message, fg='green')
     if lazy:
         # try to lazy read json file (slower, better memory management)
@@ -192,12 +188,12 @@ def delete(agent, source, lazy, enqueue, verbose):
     #     if enqueue:
     #         wait_empty_tasks(delay=3, verbose=True)
     #     count = 0
-    #     for pid in MefRecord.get_all_empty_pids():
+    #     for pid in AgentMefRecord.get_all_empty_pids():
     #         count += 1
-    #         mef_record = MefRecord.get_record_by_pid(pid)
+    #         mef_record = AgentMefRecord.get_record_by_pid(pid)
     #         mef_record.delete(dbcommit=True, delindex=True)
     #     click.secho(
-    #         'Mef records deleted: {count}'.format(count=count),
+    #         f'Mef records deleted: {count}',
     #         fg='yellow'
     #     )
 
@@ -209,23 +205,17 @@ def marc_to_json(agent, marc_file, json_file, json_deleted_file, verbose):
         records = []
         try:
             records = RecordsCount(str(marc_file))
-        except Exception as error:
-            agent_message = 'Marc file not found for {ag}:{err}'.format(
-                ag=agent, err=error
-            )
+        except Exception as err:
+            agent_message = f'Marc file not found for {agent}:{err}'
             click.secho(agent_message, fg='red', err=True)
 
         if json_file:
-            json_file = open(json_file, 'w', encoding='utf8')
-            json_deleted_file = open(json_deleted_file, 'w', encoding='utf8')
+            json_file = JsonWriter(json_file)
+            json_deleted_file = JsonWriter(json_deleted_file)
         else:
             json_file = sys.stdout
             json_deleted_file = sys.stderr
 
-        json_file.write('[\n')
-        json_deleted_file.write('[\n')
-        not_first_line = False
-        not_first_deleted = False
         pids = {}
         for record, count in records:
             data = transformation[agent](
@@ -237,37 +227,22 @@ def marc_to_json(agent, marc_file, json_file, json_deleted_file, verbose):
                 pid = data.json.get('pid')
                 if pids.get(pid):
                     click.secho(
-                        '  Error duplicate pid in {agent}: {pid}'.format(
-                            agent=agent,
-                            pid=pid
-                        ),
+                        f'  Error duplicate pid in {agent}: {pid}',
                         fg='red'
                     )
                 else:
                     pids[pid] = 1
                     add_md5(data.json)
                     if data.json.get('deleted'):
-                        if not_first_deleted:
-                            json_deleted_file.write(',\n')
-                        json.dump(data.json, json_deleted_file,
-                                  ensure_ascii=False, indent=2)
-                        not_first_deleted = True
+                        json.dump(data.json,)
                     else:
-                        if not_first_line:
-                            json_file.write(',\n')
-                        json.dump(data.json, json_file, ensure_ascii=False,
-                                  indent=2)
-                        not_first_line = True
+                        json_file.write(data.json)
             else:
                 click.secho(
-                    'Error transformation marc {agent}:\n{rec}'.format(
-                        agent=agent,
-                        rec=nice_record(record)
-                    ),
+                    f'Error transformation marc {agent}:\n'
+                    f'{nice_record(record)}',
                     fg='yellow'
                 )
-        json_file.write('\n]\n')
-        json_deleted_file.write('\n]\n')
 
 
 def agent_membership(params):
@@ -385,25 +360,19 @@ def bulk_load(**kwargs):
     input_directory = params['input_directory']
     output_directory = params['output_directory']
 
-    message = ' Tasks for agent: {agent}'.format(agent=agent)
+    message = f' Tasks for agent: {agent}'
     click.secho(message, err=True)
 
     if 'marctojson' in params and params['marctojson']:
-        marc_file = '{dir}/{file}'.format(
-            dir=input_directory, file=params['marc_file'])
-        json_file = '{dir}/{file}'.format(
-            dir=output_directory, file=params['json_file'])
-        json_deleted_file = '{file_name}_deleted{ext}'.format(
-            file_name=os.path.splitext(json_file)[0],
-            ext=os.path.splitext(json_file)[-1]
+        marc_file = f'{input_directory}/{params["marc_file"]}'
+        json_file = f'{output_directory}/{params["json_file"]}'
+        json_deleted_file = (f'{os.path.splitext(json_file)[0]}'
+                             f'_deleted{os.path.splitext(json_file)[-1]}')
+        click.secho(
+            f' Transform {agent} MARC to JSON. '
+            f'{json_file} {json_deleted_file}',
+            err=True
         )
-        message = \
-            ' Transform {agent} MARC to JSON. {file} {deleted_file}'.format(
-                agent=agent,
-                file=json_file,
-                deleted_file=json_deleted_file
-            )
-        click.secho(message, err=True)
         marc_to_json(
             agent=agent,
             marc_file=marc_file,
@@ -412,35 +381,33 @@ def bulk_load(**kwargs):
             verbose=verbose
         )
 
-        message = '  Number of {agent} JSON records created: {nbr}.'.format(
-            agent=agent,
-            nbr=number_records_in_file(json_file, 'json')
+        click.secho(
+            f'  Number of {agent} JSON records created: '
+            f'{number_records_in_file(json_file, "json")}.',
+            fg='green',
+            err=True
         )
-        click.secho(message, fg='green', err=True)
-        message = '  Number of {agent} JSON records deleted: {nbr}. '.format(
-            agent=agent,
-            nbr=number_records_in_file(json_deleted_file, 'json')
+        click.secho(
+            f'  Number of {agent} JSON records deleted: '
+            f'{number_records_in_file(json_deleted_file, "json")}.',
+            fg='green',
+            err=True
         )
-        click.secho(message, fg='green', err=True)
 
     if 'csv_action' in params and params['csv_action']:
-        message = '  Create {agent} CSV files from JSON. '.format(
-            agent=agent
+        message = f'  Create {agent} CSV files from JSON.'
+        click.secho(message, err=True)
+        json_file = f'{input_directory}/{params["json_file"]}'
+        pidstore = f'{output_directory}/{params["csv_pidstore_file"]}'
+        metadata = '{output_directory}/{params["csv_metadata_file"]}'
+        click.secho(
+            f'  JSON input file: {json_file} ',
+            err=True
         )
-        click.secho(message, err=True)
-        json_file = '{dir}/{file}'.format(
-            dir=input_directory, file=params['json_file'])
-        pidstore = '{dir}/{file}'.format(
-            dir=output_directory, file=params['csv_pidstore_file'])
-        metadata = '{dir}/{file}'.format(
-            dir=output_directory, file=params['csv_metadata_file'])
-        message = '  JSON input file: {file} '.format(file=json_file)
-        click.secho(message, err=True)
-        message = '  CSV output files: {pidstore}, {metadata}'.format(
-            pidstore=pidstore, metadata=metadata)
+        message = f'  CSV output files: {pidstore}, {metadata}'
         if agent == 'mef':
             ids = os.path.join(output_directory, 'mef_id.csv')
-            message += ', {ids}'.format(ids=ids)
+            message += f', {ids}'
         click.secho(message, err=True)
 
         if params['agent_is_source']:
@@ -462,75 +429,71 @@ def bulk_load(**kwargs):
                     mef_ids_file_name=ids,
                     verbose=verbose
                 )
-        message = \
-            '  Number of {agent} records created in pidstore: {nbr}. '.format(
-                agent=agent,
-                nbr=number_records_in_file(pidstore, 'csv')
-            )
-        click.secho(message, fg='green', err=True)
-        message = \
-            '  Number of {agent} records created in metadata: {nbr}. '.format(
-                agent=agent,
-                nbr=number_records_in_file(metadata, 'csv')
-            )
-        click.secho(message, fg='green', err=True)
+        click.secho(
+            f'  Number of {agent} records created in pidstore: '
+            f'{number_records_in_file(pidstore, "csv")}. ',
+            fg='green',
+            err=True)
+        click.secho(
+            f'  Number of {agent} records created in metadata: '
+            f'{number_records_in_file(metadata, "csv")}. ',
+            fg='green',
+            err=True)
         if agent == 'mef':
-            message = \
-                '  Number of {agent} records created in ids: {nbr}. '.format(
-                    agent=agent,
-                    nbr=number_records_in_file(ids, 'csv')
-                )
-            click.secho(message, fg='green', err=True)
+            click.secho(
+                f'  Number of {agent} records created in ids: '
+                f'{number_records_in_file(ids, "csv")}. ',
+                fg='green',
+                err=True
+            )
 
     if 'db_action' in params and params['db_action']:
-        message = '  Load {agent} CSV files into database. '.format(
-            agent=agent
-        )
+        message = f'  Load {agent} CSV files into database. '
         click.secho(message, err=True)
         pidstore = os.path.join(input_directory, params['csv_pidstore_file'])
         metadata = os.path.join(input_directory, params['csv_metadata_file'])
-        message = '  CSV input files: {pidstore}|{metadata} '.format(
-            pidstore=pidstore, metadata=metadata)
-        click.secho(message, err=True)
+        click.secho(f'  CSV input files: {pidstore}|{metadata} ', err=True)
 
-        message = '  Number of records in pidstore to load: {number}. '.format(
-            number=number_records_in_file(pidstore, 'csv'))
-        click.secho(message, fg='green', err=True)
+        click.secho(
+            '  Number of records in pidstore to load: '
+            f'{number_records_in_file(pidstore, "csv")}.',
+            fg='green',
+            err=True
+        )
 
         bulk_load_agent_pids(agent, pidstore, bulk_count=bulk_count,
                              verbose=verbose)
 
-        message = '  Number of records in metadata to load: {number}. '.format(
-            number=number_records_in_file(metadata, 'csv'))
-        click.secho(message, fg='green', err=True)
+        click.secho(
+            f'  Number of records in metadata to load: '
+            f'{number_records_in_file(metadata, "csv")}.',
+            fg='green',
+            err=True
+        )
 
         bulk_load_agent_metadata(agent, metadata, bulk_count=bulk_count,
                                  verbose=verbose, reindex=reindex)
         if agent == 'mef':
-            ids_file_name = os.path.join(
-                input_directory,
-                '{agent}_id.csv'.format(agent=agent)
-            )
+            ids_file_name = os.path.join(input_directory, f'{agent}_id.csv')
             if os.path.exists(ids_file_name):
-                message = '  {msg}: {number}. '.format(
-                    msg='Number of records in id to load: {number}',
-                    number=number_records_in_file(ids_file_name, 'csv'))
-                click.secho(message, fg='green', err=True)
+                click.secho(
+                    'Number of records in id to load: '
+                    f'{number_records_in_file(ids_file_name, "csv")}',
+                    fg='green',
+                    err=True
+                )
 
                 bulk_load_agent_ids(agent, ids_file_name,
                                     bulk_count=bulk_count, verbose=verbose)
                 append_fixtures_new_identifiers(MefIdentifier, [], 'mef')
         # set last run if file exist
-        file_name = os.path.join(
-            output_directory,
-            '{agent}_last_run.txt'.format(agent=agent)
-        )
+        file_name = os.path.join(output_directory, f'{agent}_last_run.txt')
         try:
             with open(file_name) as last_run_file:
                 last_run = last_run_file.readline()
                 if verbose:
                     click.secho(
-                        '  Set last run: {lastrun}'.format(lastrun=last_run),
+                        f'  Set last run: {last_run}',
                         fg='green'
                     )
                 oai_set_last_run(agent, last_run)
@@ -553,48 +516,29 @@ def bulk_save(agents, output_directory, verbose):
     """
     for agent in agents:
         click.secho(
-            'Save {agent} CSV files to directory: {path}'.format(
-                agent=agent,
-                path=output_directory,
-            ),
+            f'Save {agent} CSV files to directory: {output_directory}',
             fg='green'
         )
-        file_name = os.path.join(
-            output_directory,
-            '{agent}_metadata.csv'.format(agent=agent)
-        )
+        file_name = os.path.join(output_directory, f'{agent}_metadata.csv')
         if verbose:
-            click.echo(
-                '  Save metadata: {file_name}'.format(file_name=file_name))
+            click.echo(f'  Save metadata: {file_name}')
         bulk_save_agent_metadata(agent, file_name=file_name, verbose=False)
-        file_name = os.path.join(
-            output_directory,
-            '{agent}_pidstore.csv'.format(agent=agent)
-        )
+        file_name = os.path.join(output_directory, f'{agent}_pidstore.csv')
         if verbose:
-            click.echo(
-                '  Save pidstore: {file_name}'.format(file_name=file_name))
+            click.echo(f'  Save pidstore: {file_name}')
         bulk_save_agent_pids(agent, file_name=file_name, verbose=False)
         if agent == 'mef':
-            file_name = os.path.join(
-                output_directory,
-                '{agent}_id.csv'.format(agent=agent)
-            )
+            file_name = os.path.join(output_directory, f'{agent}_id.csv')
             if verbose:
-                click.echo(
-                    '  Save id: {file_name}'.format(file_name=file_name))
+                click.echo(f'  Save id: {file_name}')
             bulk_save_agent_ids(agent, file_name=file_name, verbose=False)
         last_run = oai_get_last_run(agent)
         if last_run:
-            file_name = os.path.join(
-                output_directory,
-                '{agent}_last_run.txt'.format(agent=agent)
-            )
+            file_name = os.path.join(output_directory, f'{agent}_last_run.txt')
             if verbose:
-                click.echo(
-                    '  Save last run: {file_name}'.format(file_name=file_name))
+                click.echo(f'  Save last run: {file_name}')
             with open(file_name, 'w') as last_run_file:
-                last_run_file.write('{lastrun}'.format(lastrun=last_run))
+                last_run_file.write(f'{last_run}')
 
 
 @fixtures.command('csv_to_json')
@@ -612,39 +556,16 @@ def csv_to_json(csv_metadata_file, json_output_file, indent, verbose):
     :param verbose: Verbose.
     """
     click.secho(
-        'CSV to json transform: {meta} -> {json}'.format(
-            meta=csv_metadata_file,
-            json=json_output_file
-        ),
+        f'CSV to json transform: {csv_metadata_file} -> {csv_metadata_file}',
         fg='green'
     )
-    output = '['
-    offset = '{character:{indent}}'.format(character=' ', indent=indent)
     with open(csv_metadata_file) as metadata_file:
-        with open(json_output_file, 'w') as output_file:
-            count = 0
-            for metadata_line in metadata_file:
-                count += 1
-                output_file.write(output)
-                if count > 1:
-                    output_file.write(',')
-                data = json.loads(metadata_line.split('\t')[3])
-                if verbose:
-                    click.echo('{count:<10}: {pid}\t{data}'.format(
-                        count=count,
-                        pid=data['pid'],
-                        data=data
-                    ))
-
-                output = ''
-                lines = json.dumps(data, indent=indent).split('\n')
-                for line in lines:
-                    output += '\n{offset}{line}'.format(
-                        offset=offset,
-                        line=line
-                    )
-            output_file.write(output)
-            output_file.write('\n]\n')
+        output_file = JsonWriter(json_output_file, indent=indent)
+        for count, metadata_line in enumerate(metadata_file, 1):
+            data = json.loads(metadata_line.split('\t')[3])
+            if verbose:
+                click.echo(f'{count:<10}: {data["pid"]}\t{data}')
+            output_file.write(data)
 
 
 @fixtures.command('csv_diff')
@@ -687,21 +608,6 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, agent, output,
         pid = data.get('pid')
         return pid, data
 
-    offset = '{character:{indent}}'.format(character=' ', indent=indent)
-
-    def intent_output(data, intent):
-        """Creates intented output.
-
-        :param data: data to output.
-        :param intent: intent to use.
-        :returns: intented data.
-        """
-        output = ''
-        lines = json.dumps(data, indent=indent).split('\n')
-        for line in lines:
-            output += '\n{offset}{line}'.format(offset=offset, line=line)
-        return output
-
     if csv_metadata_file_compair and not agent:
         compair = csv_metadata_file_compair
     elif agent:
@@ -710,32 +616,29 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, agent, output,
         click.secho('One of -a or -d parameter mandatory', fg='red')
         sys.exit(1)
     click.secho(
-        'CSV diff: {first} <-> {second}'.format(
-            first=compair,
-            second=csv_metadata_file
-        ),
+        f'CSV diff: {compair} <-> {csv_metadata_file}',
         fg='green'
     )
     if output:
         file_name = os.path.splitext(csv_metadata_file)[0]
-        file_name_new = '{name}_new.json'.format(name=file_name)
+        file_name_new = f'{file_name}_new.json'
         file_new = open(file_name_new, 'w')
         file_new.write('[')
-        file_name_diff = '{name}_changed.json'.format(name=file_name)
+        file_name_diff = f'{file_name}_changed.json'
         file_diff = open(file_name_diff, 'w')
         file_diff.write('[')
-        file_name_delete = '{name}_delete.json'.format(name=file_name)
+        file_name_delete = f'{file_name}_delete.json'
         file_delete = open(file_name_delete, 'w')
         file_delete.write('[')
-        click.echo('New     file: {name}'.format(name=file_name_new))
-        click.echo('Changed file: {name}'.format(name=file_name_diff))
-        click.echo('Deleted file: {name}'.format(name=file_name_delete))
+        click.echo(f'New     file: {file_name_new}')
+        click.echo(f'Changed file: {file_name_new}')
+        click.echo(f'Deleted file: {file_name_new}')
 
     compaire_data = SqliteDict(sqlite_dict, autocommit=True)
     if csv_metadata_file_compair and not agent:
         length = number_records_in_file(csv_metadata_file_compair, 'csv')
         with open(csv_metadata_file_compair, 'r', buffering=1) as meta_file:
-            label = 'Loading: {name}'.format(name=compair)
+            label = f'Loading: {compair}'
             with click.progressbar(meta_file, length=length,
                                    label=label) as metadata:
                 for metadata_line in metadata:
@@ -752,48 +655,33 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, agent, output,
                 compaire_data[pid] = record
 
     with open(csv_metadata_file, 'r', buffering=1) as metadata_file:
-        for idx, metadata_line in enumerate(metadata_file):
+        for metadata_line in metadata_file:
             pid, data = get_pid_data(metadata_line)
             if pid in compaire_data:
                 if compaire_data[pid] != data:
-                    click.echo('DIFF: ')
-                    click.echo(' old:\t{data}'.format(
-                        data=json.dumps(compaire_data[pid], sort_keys=True)
-                    ))
-                    click.echo(' new:\t{data}'.format(
-                        data=json.dumps(data, sort_keys=True)
-                    ))
+                    if verbose:
+                        click.echo('DIFF: ')
+                        click.echo(
+                            ' old:\t'
+                            f'{json.dumps(compaire_data[pid], sort_keys=True)}'
+                        )
+                        click.echo(
+                            f' new:\t{json.dumps(data, sort_keys=True)}')
                     if output:
-                        if idx > 0:
-                            file_diff.write(',')
-                        file_diff.write(intent_output(data, indent))
+                        file_diff.write(data)
                 del(compaire_data[pid])
             else:
-                click.echo('NEW :\t{data}'.format(
-                    data=json.dumps(data, sort_keys=True)
-                ))
+                if verbose:
+                    click.echo(f'NEW :\t{json.dumps(data, sort_keys=True)}')
                 if output:
-                    if idx > 0:
-                        file_new.write(',')
-                    file_new.write(intent_output(data, indent))
-    idx = 0
-    for pid, data in compaire_data.items():
-        click.echo('DEL :\t{data}'.format(
-            data=json.dumps(data, sort_keys=True)
-        ))
-        if output:
-            if idx > 0:
-                file_delete.write(',')
-            file_delete.write(intent_output(data, indent))
-            idx += 1
+                    file_new.write(data)
 
-    if output:
-        file_new.write('\n]')
-        file_new.close()
-        file_diff.write('\n]')
-        file_diff.close()
-        file_delete.write('\n]')
-        file_delete.close()
+    for pid, data in compaire_data.items():
+        if verbose:
+            click.echo(f'DEL :\t{json.dumps(data, sort_keys=True)}')
+        if output:
+            file_delete.write(data)
+
     sys.exit(0)
 
 
@@ -820,7 +708,7 @@ def add_oai_source_config(name, baseurl, metadataprefix, setspecs, comment,
     :param comment: Comment
     :param update: update config
     """
-    click.echo('Add OAIHarvestConfig: {0} '.format(name), nl=False)
+    click.echo(f'Add OAIHarvestConfig: {name} ', nl=False)
     msg = add_oai_source(
         name=name,
         baseurl=baseurl,
@@ -847,7 +735,7 @@ def init_oai_harvest_config(configfile, update):
         setspecs = values.get('setspecs', '')
         comment = values.get('comment', '')
         click.echo(
-            'Add OAIHarvestConfig: {0} {1} '.format(name, baseurl), nl=False
+            f'Add OAIHarvestConfig: {name} {baseurl} ', nl=False
         )
         msg = add_oai_source(
             name=name,
@@ -877,11 +765,11 @@ def oaiharvester_info():
     oais = OAIHarvestConfig.query.all()
     for oai in oais:
         click.echo(oai.name)
-        click.echo('\tlastrun       : {lastrun}'.format(lastrun=oai.lastrun))
-        click.echo('\tbaseurl       : {baseurl}'.format(baseurl=oai.baseurl))
-        click.echo('\tmetadataprefix: {pre}'.format(pre=oai.metadataprefix))
-        click.echo('\tcomment       : {comment}'.format(comment=oai.comment))
-        click.echo('\tsetspecs      : {sets}'.format(sets=oai.setspecs))
+        click.echo(f'\tlastrun       : {oai.lastrun}')
+        click.echo(f'\tbaseurl       : {oai.baseurl}')
+        click.echo(f'\tmetadataprefix: {oai.metadataprefix}')
+        click.echo(f'\tcomment       : {oai.comment}')
+        click.echo(f'\tsetspecs      : {oai.setspecs}')
 
 
 @oaiharvester.command('get_last_run')
@@ -938,12 +826,10 @@ def harvestname(name, from_date, until_date, arguments, quiet, enqueue,
     :param test_md5: Compaire md5 to find out if we have to update.
     :param viaf_online: Get online VIAF record if missing.
     """
-    click.secho('Harvest {name} ...'.format(name=name), fg='green')
+    click.secho(f'Harvest {name} ...', fg='green')
     arguments = dict(x.split('=', 1) for x in arguments)
     harvest_task = obj_or_import_string(
-        'rero_mef.agents.{nam}.tasks:process_records_from_dates'.format(
-            nam=name
-        )
+        f'rero_mef.agents.{name}.tasks:process_records_from_dates'
     )
     count = 0
     action_count = {}
@@ -959,7 +845,7 @@ def harvestname(name, from_date, until_date, arguments, quiet, enqueue,
                 viaf_online=viaf_online,
                 **arguments
             )
-            click.echo("Scheduled job {id}".format(id=job.id))
+            click.echo(f'Scheduled job {job.id}')
         else:
             count, action_count, mef_action_count = harvest_task(
                 from_date=from_date,
@@ -970,12 +856,9 @@ def harvestname(name, from_date, until_date, arguments, quiet, enqueue,
                 viaf_online=viaf_online,
                 **arguments
             )
-            click.echo(('Count: {count}'
-                        ' agent: {a_counts} mef: {m_counts}').format(
-                count=count,
-                a_counts=action_count,
-                m_counts=mef_action_count
-            ))
+            click.echo(
+                f'Count: {count} agent: {action_count} mef: {mef_action_count}'
+            )
 
 
 @oaiharvester.command('save')
@@ -1000,11 +883,9 @@ def save(output_file_name, name, from_date, until_date, quiet, enqueue):
     :param quiet: Surpress output.
     :param enqueue: Enqueue harvesting and return immediately.
     """
-    click.secho('Harvest {name} ...'.format(name=name), fg='green')
+    click.secho(f'Harvest {name} ...', fg='green')
     save_task = obj_or_import_string(
-        'rero_mef.agents.{name}.tasks:save_records_from_dates'.format(
-            name=name
-        )
+        f'rero_mef.agents.{name}.tasks:save_records_from_dates'
     )
     count = 0
     if save_task:
@@ -1015,7 +896,7 @@ def save(output_file_name, name, from_date, until_date, quiet, enqueue):
                 until_date=until_date,
                 verbose=(not quiet)
             )
-            click.echo("Scheduled job {id}".format(id=job.id))
+            click.echo(f'Scheduled job {job.id}')
         else:
             count = save_task(
                 file_name=output_file_name,
@@ -1023,55 +904,10 @@ def save(output_file_name, name, from_date, until_date, quiet, enqueue):
                 until_date=until_date,
                 verbose=(not quiet)
             )
-            click.echo('Count: {count}'.format(count=count))
+            click.echo(f'Count: {count}')
 
 
 @utils.command('export')
-@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
-@click.option('-t', '--pid_type', 'pid_type', default='doc')
-@click.option('-o', '--outfile', 'outfile', required=True)
-@click.option('-i', '--pidfile', 'pidfile', type=click.File('r'),
-              default=None)
-@click.option('-I', '--indent', 'indent', type=click.INT, default=2)
-@click.option('-s', '--schema', 'schema', is_flag=True, default=False)
-@with_appcontext
-def export(verbose, pid_type, outfile, pidfile, indent, schema):
-    """Export one record into JSON format.
-
-    :param verbose: verbose
-    :param pid_type: record type
-    :param outfile: Json output file
-    :param pidfile: files with pids to extract
-    :param indent: indent for output
-    :param schema: do not delete $schema
-    """
-    click.secho(
-        'Export {pid_type} records: {file_name}'.format(
-            pid_type=pid_type,
-            file_name=outfile.name
-        ),
-        fg='green'
-    )
-    record_class = obj_or_import_string(
-        current_app.config
-        .get('RECORDS_REST_ENDPOINTS')
-        .get(pid_type).get('record_class')
-    )
-    if pidfile:
-        pids = pidfile
-    else:
-        pids = record_class.get_all_pids()
-    export_json_records(
-        pids=pids,
-        pid_type=pid_type,
-        output_file_name=outfile,
-        indent=indent,
-        schema=schema,
-        verbose=verbose
-    )
-
-
-@utils.command('export_agents')
 @click.argument('output_path')
 @click.option('-t', '--pid-type', 'pid_type', multiple=True,
               default=['viaf', 'mef', 'aggnd', 'aidref', 'agrero', 'corero'])
@@ -1079,7 +915,7 @@ def export(verbose, pid_type, outfile, pidfile, indent, schema):
 @click.option('-I', '--indent', 'indent', type=click.INT, default=2)
 @click.option('-s', '--schema', 'schema', is_flag=True, default=False)
 @with_appcontext
-def export_agents(output_path, pid_type, verbose, indent, schema):
+def export(output_path, pid_type, verbose, indent, schema):
     """Export multiple records into JSON format.
 
     :param pid_type: record type
@@ -1089,13 +925,9 @@ def export_agents(output_path, pid_type, verbose, indent, schema):
     :param schema: do not delete $schema
     """
     for p_type in pid_type:
-        output_file_name = os.path.join(
-            output_path, '{pid_type}.json'.format(pid_type=p_type))
+        output_file_name = os.path.join(output_path, f'{p_type}.json')
         click.secho(
-            'Export {pid_type} records: {file_name}'.format(
-                pid_type=p_type,
-                file_name=output_file_name
-            ),
+            f'Export {pid_type} records: {output_file_name}',
             fg='green'
         )
         record_class = obj_or_import_string(
@@ -1147,8 +979,9 @@ def run(delayed, concurrency, with_stats, version_type=None, queue=None,
     }
     if delayed:
         click.secho(
-            'Starting {0} tasks for indexing records...'.format(concurrency),
-            fg='green')
+            f'Starting {concurrency} tasks for indexing records...',
+            fg='green'
+        )
         if queue is not None:
             celery_kwargs.update({'queue': queue})
         for c in range(0, concurrency):
@@ -1157,8 +990,10 @@ def run(delayed, concurrency, with_stats, version_type=None, queue=None,
                 es_bulk_kwargs={'raise_on_error': raise_on_error},
                 stats_only=not with_stats
             )
-            click.secho('index async: {process_id}'.format(
-                process_id=process_id), fg='yellow')
+            click.secho(
+                f'index async: {process_id}',
+                fg='yellow'
+            )
     else:
         click.secho('Indexing records...', fg='green')
         indexed, error = task_process_bulk_queue(
@@ -1166,8 +1001,10 @@ def run(delayed, concurrency, with_stats, version_type=None, queue=None,
             es_bulk_kwargs={'raise_on_error': raise_on_error},
             stats_only=not with_stats
         )
-        click.secho('indexed: {indexed}, error: {error}'.format(
-            indexed=indexed, error=error), fg='yellow')
+        click.secho(
+            f'indexed: {indexed}, error: {error}',
+            fg='yellow'
+        )
 
 
 @utils.command('reindex')
@@ -1185,7 +1022,7 @@ def reindex(pid_type, no_info):
     """
     for type in pid_type:
         click.secho(
-            'Sending {type} to indexing queue ...'.format(type=type),
+            f'Sending {type} to indexing queue ...',
             fg='green'
         )
         agent_class = get_agent_class(type)
@@ -1203,7 +1040,7 @@ def reindex(pid_type, no_info):
 def celery_task_count():
     """Count entries in celery tasks."""
     click.secho(
-        'Celery tasks active: {count}'.format(count=queue_count()),
+        f'Celery tasks active: {queue_count()}',
         fg='green'
     )
 
@@ -1227,72 +1064,6 @@ def flush_cache():
     red = redis.StrictRedis.from_url(current_app.config['CACHE_REDIS_URL'])
     red.flushall()
     click.secho('Redis cache cleared!', fg='red')
-
-
-@utils.command('agent_counts')
-@with_appcontext
-def agent_counts():
-    """Display agent DB and ES counts."""
-    def display_counts(agent, db_count, es_count):
-        """Display DB, Es and SB - ES counts."""
-        click.echo(
-            '{agent:<6} count DB: {db_count:>10}'
-            '  ES: {es_count:>10}  DB-ES: {db_es_count:>10}'.format(
-                agent=agent,
-                db_count=db_count,
-                es_count=es_count,
-                db_es_count=db_count-es_count
-            )
-        )
-    click.secho('Display agent counts:', fg='green')
-    agents_count = {}
-    agents_deleted = {}
-    for name, agent_class in get_agent_classes().items():
-        search_class = get_agent_search_class(name)
-        db_count = agent_class.count()
-        agents_count[name] = db_count
-        display_counts(
-            agent=name.upper(),
-            db_count=db_count,
-            es_count=search_class().filter('match_all').source('pid').count()
-        )
-        deleted = search_class().filter('exists', field='deleted').count()
-        agents_deleted[name] = deleted
-
-    display_counts(
-        agent='VIAF',
-        db_count=ViafRecord.count(),
-        es_count=ViafSearch().filter('match_all').source('pid').count()
-    )
-    for name, agent_class in get_agent_classes().items():
-        field = getattr(agent_class, 'viaf_pid_name')
-        if field:
-            count = ViafSearch().filter('exists', field=field).count()
-            click.echo('         {name:<6}: {count:>10}'.format(
-                name=name.upper(),
-                count=count
-            ))
-    from .mef.api import MefRecord, MefSearch
-    display_counts(
-        agent='MEF',
-        db_count=MefRecord.count(),
-        es_count=MefSearch().filter('match_all').source('pid').count()
-    )
-    for name, agent_class in get_agent_classes().items():
-        field = getattr(agent_class, 'viaf_pid_name')
-        if field:
-            count = MefSearch(). \
-                filter('exists', field=agent_class.name).count()
-            click.echo(
-                '         {name:<6}: {count:>10}'
-                ' -DB: {diff:>10}'
-                ' deleted: {d_count}'.format(
-                    name=name.upper(),
-                    count=count,
-                    diff=count-agents_count[name],
-                    d_count=agents_deleted[name]
-                )
-            )
 
 
 @users.command('confirm')

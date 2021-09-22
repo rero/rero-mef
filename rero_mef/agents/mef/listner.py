@@ -17,7 +17,7 @@
 
 """Signals connector for MEF records."""
 
-from .api import MefSearch
+from .api import AgentMefSearch
 
 
 def enrich_mef_data(sender, json=None, record=None, index=None, doc_type=None,
@@ -29,15 +29,10 @@ def enrich_mef_data(sender, json=None, record=None, index=None, doc_type=None,
     :param index: The index in which the record will be indexed.
     :param doc_type: The doc_type for the record.
     """
-    if index.split('-')[0] == MefSearch.Meta.index:
+    if index.split('-')[0] == AgentMefSearch.Meta.index:
         sources = []
-        if 'rero' in json:
-            sources.append('rero')
-            json['type'] = json['rero']['bf:Agent']
-        if 'gnd' in json:
-            sources.append('gnd')
-            json['type'] = json['gnd']['bf:Agent']
-        if 'idref' in json:
-            sources.append('idref')
-            json['type'] = json['idref']['bf:Agent']
+        for agent in ['rero', 'gnd', 'idref']:
+            if agent in json and json[agent]:
+                sources.append(agent)
+                json['type'] = json[agent]['bf:Agent']
         json['sources'] = sources

@@ -15,12 +15,31 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Version information for RERO MEF.
+"""Agent GND views."""
 
-This file is imported by ``rero_mef.__init__``,
-and parsed by ``setup.py``.
-"""
+from flask import Blueprint, redirect, request, url_for
 
-from __future__ import absolute_import, print_function
+api_blueprint = Blueprint(
+    'api_gnd',
+    __name__,
+    url_prefix='/gnd'
+)
 
-__version__ = '0.7.2'
+
+@api_blueprint.route('')
+def redirect_idref_list():
+    """Redirect list to new address."""
+    return redirect(
+        url_for('invenio_records_rest.aidref_list', **request.args),
+        code=308
+    )
+
+
+@api_blueprint.route('/<pid>')
+def redirect_idref_item(pid):
+    """Redirect item to new address."""
+    return redirect(
+        url_for(
+            'invenio_records_rest.aidref_item', pid_value=pid, **request.args),
+        code=308
+    )

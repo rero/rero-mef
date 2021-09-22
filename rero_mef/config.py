@@ -220,9 +220,9 @@ RECORDS_REST_ENDPOINTS = dict(
         pid_type='mef',
         pid_minter='mef_id',
         pid_fetcher='mef_id',
-        search_class="rero_mef.agents.mef.api:MefSearch",
-        indexer_class="rero_mef.agents.mef.api:MefIndexer",
-        record_class="rero_mef.agents.mef.api:MefRecord",
+        search_class="rero_mef.agents.mef.api:AgentMefSearch",
+        indexer_class="rero_mef.agents.mef.api:AgentMefIndexer",
+        record_class="rero_mef.agents.mef.api:AgentMefRecord",
         search_index='mef',
         search_type=None,
         record_serializers={
@@ -234,9 +234,9 @@ RECORDS_REST_ENDPOINTS = dict(
                                  ':json_v1_search'),
         },
         search_factory_imp='rero_mef.query:and_search_factory',
-        list_route='/mef/',
-        item_route=('/mef/<pid(mef, record_class='
-                    '"rero_mef.agents.mef.api:MefRecord"):pid_value>'),
+        list_route='/agents/mef/',
+        item_route=('agents//mef/<pid(mef, record_class='
+                    '"rero_mef.agents.mef.api:AgentMefRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict(),
@@ -245,9 +245,9 @@ RECORDS_REST_ENDPOINTS = dict(
         pid_type='viaf',
         pid_minter='viaf_id',
         pid_fetcher='viaf_id',
-        search_class="rero_mef.agents.viaf.api:ViafSearch",
-        indexer_class="rero_mef.agents.viaf.api:ViafIndexer",
-        record_class="rero_mef.agents.viaf.api:ViafRecord",
+        search_class="rero_mef.agents.viaf.api:AgentViafSearch",
+        indexer_class="rero_mef.agents.viaf.api:AgentViafIndexer",
+        record_class="rero_mef.agents.viaf.api:AgentViafRecord",
         search_index='viaf',
         search_type=None,
         record_serializers={
@@ -259,9 +259,9 @@ RECORDS_REST_ENDPOINTS = dict(
                                  ':json_v1_search'),
         },
         search_factory_imp='rero_mef.query:and_search_factory',
-        list_route='/viaf/',
-        item_route=('/viaf/<pid(viaf, record_class='
-                    '"rero_mef.agents.viaf.api:ViafRecord"):pid_value>'),
+        list_route='/agents/viaf/',
+        item_route=('/agents/viaf/<pid(viaf, record_class='
+                    '"rero_mef.agents.viaf.api:AgentViafRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict(),
@@ -284,8 +284,8 @@ RECORDS_REST_ENDPOINTS = dict(
                                  ':json_v1_search'),
         },
         search_factory_imp='rero_mef.query:and_search_factory',
-        list_route='/gnd/',
-        item_route=('/gnd/<pid(aggnd, record_class='
+        list_route='/agents/gnd/',
+        item_route=('/agents/gnd/<pid(aggnd, record_class='
                     '"rero_mef.agents.gnd.api:AgentGndRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
@@ -309,9 +309,10 @@ RECORDS_REST_ENDPOINTS = dict(
                                  ':json_v1_search'),
         },
         search_factory_imp='rero_mef.query:and_search_factory',
-        list_route='/idref/',
-        item_route=('/idref/<pid(aidref, record_class='
-                    '"rero_mef.agents.idref.api:AgentIdrefRecord"):pid_value>'),
+        list_route='/agents/idref/',
+        item_route=(
+            '/agents/idref/<pid(aidref, record_class='
+            '"rero_mef.agents.idref.api:AgentIdrefRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict()
@@ -334,8 +335,8 @@ RECORDS_REST_ENDPOINTS = dict(
                                  ':json_v1_search'),
         },
         search_factory_imp='rero_mef.query:and_search_factory',
-        list_route='/rero/',
-        item_route=('/rero/<pid(agrero, record_class='
+        list_route='/agents/rero/',
+        item_route=('/agents/rero/<pid(agrero, record_class='
                     '"rero_mef.agents.rero.api:AgentReroRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
@@ -360,8 +361,9 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/concepts/rero/',
-        item_route=('/concepts/rero/<pid(corero, record_class='
-                    '"rero_mef.concepts.rero.api:ConceptReroRecord"):pid_value>'),
+        item_route=(
+            '/concepts/rero/<pid(corero, record_class='
+            '"rero_mef.concepts.rero.api:ConceptReroRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict(),
