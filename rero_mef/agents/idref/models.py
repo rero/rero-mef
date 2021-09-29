@@ -25,7 +25,7 @@ from invenio_records.models import RecordMetadataBase
 
 
 class AgentIdrefIdentifier(RecordIdentifier):
-    """Sequence generator for Idref Authority identifiers."""
+    """Sequence generator for IDREF agent identifiers."""
 
     __tablename__ = 'agent_idref_id'
     __mapper_args__ = {'concrete': True}

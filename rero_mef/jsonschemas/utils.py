@@ -41,7 +41,7 @@ class JsonLoader(JsonRefLoader):
         See: github invenio-jsonschemas ext.py.
         :param uri: The URI of the JSON document to load.
         :param kwargs: Keyword arguments passed to json.loads().
-        :returns: resolved json schema.
+        :returns: resolved JSON schema.
         """
         path = current_jsonschemas.url_to_path(uri)
         if path:

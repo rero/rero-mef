@@ -28,7 +28,7 @@ from ..utils import add_md5, add_schema
 
 
 class AgentRecord(ReroMefRecord):
-    """Authority Record class."""
+    """Agent Record class."""
 
     name = None
     agent = None
@@ -186,7 +186,7 @@ class AgentRecord(ReroMefRecord):
                                         dbcommit=False, reindex=False,
                                         test_md5=False, online=False,
                                         verbose=False):
-        """Create or update agent, Mef and Viaf record."""
+        """Create or update agent, MEF and VIAF record."""
         from rero_mef.agents.mef.api import AgentMefRecord
         from rero_mef.agents.viaf.api import AgentViafRecord
 

@@ -46,7 +46,7 @@ def rero_get_record(id, verbose=False, debug=False):
                     click.echo(f'API-rero get: {id}')
         except Exception as err:
             if verbose:
-                click.echo(f'ERROR get rero record: {err}')
+                click.echo(f'ERROR get RERO record: {err}')
             if debug:
                 raise Exception(err)
     return trans_record

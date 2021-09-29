@@ -29,5 +29,5 @@ from ..api import AgentGndRecord
 
 @jsonresolver.route('/api/gnd/<path:path>', host=get_host())
 def resolve_gnd(path):
-    """Resolve Gnd records."""
+    """Resolve GND records."""
     return resolve_record(path, AgentGndRecord)

@@ -22,7 +22,7 @@ from celery import shared_task
 from flask import current_app
 
 from .api import ReroIndexer
-from .utils import get_agent_class
+from .utils import get_entity_class
 
 
 @shared_task(ignore_result=True)
@@ -68,7 +68,7 @@ def mef_viaf_record(pid, agent, dbcommit=False, reindex=False):
     :param dbcommit: commit changes to db
     :param reindex: reindex the records
     """
-    record_class = get_agent_class(agent)
+    record_class = get_entity_class(agent)
     if record_class:
         record = record_class.get_record_by_pid(pid)
         if record:
@@ -79,7 +79,7 @@ def mef_viaf_record(pid, agent, dbcommit=False, reindex=False):
 
 
 @shared_task
-def create_or_update(index, record, agent, dbcommit=True, reindex=True,
+def create_or_update(index, record, entity, dbcommit=True, reindex=True,
                      online=False, test_md5=False, verbose=False):
     """Create or update record task.
 
@@ -90,13 +90,13 @@ def create_or_update(index, record, agent, dbcommit=True, reindex=True,
     :param reindex: reindex or not
     :param test_md5: test md5 or not
     :param verbose: verbose or not
-    :returns: id type, pid or id, agent action, mef action
+    :returns: id type, pid or id, agent action, MEF action
     """
-    agent_class = get_agent_class(agent)
-    returned_record, agent_action = agent_class.create_or_update(
+    entity_class = get_entity_class(entity)
+    returned_record, agent_action = entity_class.create_or_update(
         data=record, dbcommit=dbcommit, reindex=reindex, test_md5=test_md5
     )
-    if agent in ['aidref', 'aggnd', 'agrero']:
+    if entity in ['aidref', 'aggnd', 'agrero']:
         if agent_action.CREATE:
             mef_record, mef_action, viaf_record, got_online = returned_record.\
                 create_or_update_mef_viaf_record(
@@ -110,8 +110,8 @@ def create_or_update(index, record, agent, dbcommit=True, reindex=True,
         id_type = 'uuid:'
         id = returned_record.id
     if verbose:
-        message = f'{index:<10} {agent} {type} {id} {agent_action.name}'
-        if agent_action.CREATE and agent in ['aidref', 'aggnd', 'agrero']:
+        message = f'{index:<10} {entity} {id_type} {id} {agent_action.name}'
+        if agent_action.CREATE and entity in ['aidref', 'aggnd', 'agrero']:
             if viaf_record:
                 v_pid = viaf_record['pid']
             message += (f' mef: {mef_record.pid} {mef_action.name} |'
@@ -121,7 +121,7 @@ def create_or_update(index, record, agent, dbcommit=True, reindex=True,
 
 
 @shared_task
-def delete(index, pid, agent, dbcommit=True, delindex=True, verbose=False):
+def delete(index, pid, entity, dbcommit=True, delindex=True, verbose=False):
     """Delete record task.
 
     :param index: index of record
@@ -132,14 +132,14 @@ def delete(index, pid, agent, dbcommit=True, delindex=True, verbose=False):
     :param verbose: verbose or not
     :returns: action
     """
-    agent_class = get_agent_class(agent)
+    agent_class = get_entity_class(entity)
     agent_record = agent_class.get_record_by_pid(pid)
     action = None
     if agent_record:
         result, action = agent_record.delete(dbcommit=dbcommit,
                                              delindex=delindex)
         if verbose:
-            click.echo(f'{index:<10} Deleted {agent} {pid:<38} {action}')
+            click.echo(f'{index:<10} Deleted {entity} {pid:<38} {action}')
     else:
-        current_app.logger.warning(f'{index:<10} Not found {agent} {pid:<38}')
+        current_app.logger.warning(f'{index:<10} Not found {entity} {pid:<38}')
     return action

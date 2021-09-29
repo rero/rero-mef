@@ -33,7 +33,7 @@ __license__ = "Internal Use Only"
 # ----------------------------------- Classes ---------------------------------
 # MrcIterator ----
 class Transformation(object):
-    """Transformation skeleton for marc to json."""
+    """Transformation skeleton for MARC to json."""
 
     def __init__(self, marc, logger=None, verbose=False, transform=True):
         """Constructor."""

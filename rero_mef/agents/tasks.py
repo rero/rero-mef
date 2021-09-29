@@ -20,16 +20,16 @@
 from celery import shared_task
 
 from .viaf.api import AgentViafRecord
-from ..utils import get_agent_class
+from ..utils import get_entity_class
 
 
 @shared_task
-def create_mef_and_agents_from_viaf(pid, dbcommit=True, reindex=True,
+def create_from_viaf(pid, dbcommit=True, reindex=True,
                                     test_md5=False, online=False,
                                     verbose=False):
     """Create MEF and agents from VIAF task.
 
-    :param pid: pid for viaf to use
+    :param pid: pid for VIAF to use
     :param dbcommit: db commit or not
     :param reindex: reindex or not
     :param test_md5: test md5 or not
@@ -49,7 +49,7 @@ def create_mef_and_agents_from_viaf(pid, dbcommit=True, reindex=True,
 
 
 @shared_task
-def create_mef_from_agent(pid, agent, dbcommit=True, reindex=True,
+def create_mef(pid, agent, dbcommit=True, reindex=True,
                           online=False):
     """Create MEF from agent task.
 
@@ -58,10 +58,10 @@ def create_mef_from_agent(pid, agent, dbcommit=True, reindex=True,
     :param dbcommit: db commit or not
     :param reindex: reindex or not
     :param test_md5: test md5 or not
-    :param online: get viaf online if not exist
+    :param online: get VIAF online if not exist
     :returns: no return
     """
-    agent_class = get_agent_class(agent)
+    agent_class = get_entity_class(agent)
     agent_record = agent_class.get_record_by_pid(pid)
     if agent_record:
         mef_record, mef_action, viaf_record, online = \

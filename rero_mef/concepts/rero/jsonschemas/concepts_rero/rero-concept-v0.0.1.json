@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Schema for rero concept",
+  "title": "Schema for RERO concept",
   "type": "object",
   "required": [
     "$schema",

@@ -28,5 +28,5 @@ from ....utils import get_host, resolve_record
 
 @jsonresolver.route('/api/rero/<path:path>', host=get_host())
 def resolve_rero(path):
-    """Resolve Rero records."""
+    """Resolve RERO records."""
     return resolve_record(path, AgentReroRecord)

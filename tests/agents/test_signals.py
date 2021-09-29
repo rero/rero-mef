@@ -22,8 +22,8 @@ from rero_mef.agents.mef.api import AgentMefSearch
 from rero_mef.agents.viaf.api import AgentViafRecord
 
 
-def test_create_mef_from_agent_with_viaf_links(app, viaf_record, gnd_record):
-    """Test create MEF record from agent with viaf links."""
+def test_create_mef_with_viaf_links(app, viaf_record, gnd_record):
+    """Test create MEF record from agent with VIAF links."""
     v_record, action = AgentViafRecord.create_or_update(
         viaf_record, dbcommit=True, reindex=True
     )

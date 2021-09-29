@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Marctojsons transformer for Idref records."""
+"""Marctojsons transformer for IDREF records."""
 
 from datetime import datetime
 
@@ -134,7 +134,7 @@ def build_language_string_list_from_fields(
 
 
 class Transformation(object):
-    """Transformation unimarc to json for idref autority person."""
+    """Transformation UNIMARC to JSON for IDREF autority person."""
 
     def __init__(self, marc, logger=None, verbose=False, transform=True):
         """Constructor."""

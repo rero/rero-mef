@@ -50,6 +50,8 @@ jedi = "<0.18.0"
 coverage = {version = ">=6.0b1", allow-prereleases = true}
 # TODO celery 5.0.6 can not start forground worker
 celery = "<5.0.6"
+# TODO jsonschema 4.0.0 is not working with invenio because there is a new parameter type!
+jsonschema = "<4.0.0"
 
 ## RERO ILS specific python modules
 PyYAML = ">=5.3.1"

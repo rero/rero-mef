@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Schema for viaf authority",
+  "title": "Schema for VIAF authority",
   "type": "object",
   "required": [
     "$schema",
@@ -10,27 +10,27 @@
   "properties": {
     "$schema": {
       "title": "Schema",
-      "description": "Schema to viaf authority record.",
+      "description": "Schema to VIAF authority record.",
       "type": "string",
       "minLength": 7
     },
     "pid": {
-      "title": "Viaf record ID",
+      "title": "VIAF record ID",
       "type": "string",
       "minLength": 1
     },
     "gnd_pid": {
-      "title": "Gnd authority ID",
+      "title": "GND authority ID",
       "type": "string",
       "minLength": 1
     },
     "rero_pid": {
-      "title": "Rero authority ID",
+      "title": "RERO authority ID",
       "type": "string",
       "minLength": 1
     },
     "idref_pid": {
-      "title": "Idref authority ID",
+      "title": "IDREF authority ID",
       "type": "string",
       "minLength": 1
     }

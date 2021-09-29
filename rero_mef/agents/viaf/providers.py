@@ -26,7 +26,7 @@ from .models import ViafIdentifier
 
 
 class ViafProvider(BaseProvider):
-    """Viaf identifier provider."""
+    """VIAF identifier provider."""
 
     pid_type = 'viaf'
     """Type of persistent identifier."""
@@ -42,4 +42,4 @@ class ViafProvider(BaseProvider):
     """
 
     default_status = PIDStatus.REGISTERED
-    """Viaf IDs are by default registered immediately."""
+    """VIAF IDs are by default registered immediately."""

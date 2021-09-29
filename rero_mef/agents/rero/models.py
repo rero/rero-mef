@@ -25,7 +25,7 @@ from invenio_records.models import RecordMetadataBase
 
 
 class AgentReroIdentifier(RecordIdentifier):
-    """Sequence generator for rero Authority identifiers."""
+    """Sequence generator for RERO agent identifiers."""
 
     __tablename__ = 'agent_rero_id'
     __mapper_args__ = {'concrete': True}

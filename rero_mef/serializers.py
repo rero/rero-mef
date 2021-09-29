@@ -25,11 +25,11 @@ from invenio_records_rest.serializers.response import record_responsify
 
 from .agents.mef.api import AgentMefRecord, AgentMefSearch
 from .agents.viaf.api import AgentViafSearch
-from .utils import get_agent_classes
+from .utils import get_entity_classes
 
 
 def add_links(pid, record):
-    """Add mef link to agents."""
+    """Add MEF link to agents."""
     links = {}
     if pid.pid_type == 'mef':
         viaf_pid = record.get('viaf_pid')
@@ -110,7 +110,7 @@ class ReroMefSerializer(JSONSerializer):
                 sources.append('idref')
             record['sources'] = sources
 
-        agent_classes = get_agent_classes()
+        agent_classes = get_entity_classes()
         for agent, agent_classe in agent_classes.items():
             if agent in ['aidref', 'aggnd', 'agrero']:
                 local_link(agent, agent_classe.name, record)

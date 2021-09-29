@@ -25,7 +25,7 @@ from invenio_records.models import RecordMetadataBase
 
 
 class AgentGndIdentifier(RecordIdentifier):
-    """Sequence generator for gnd Authority identifiers."""
+    """Sequence generator for GND Authority identifiers."""
 
     __tablename__ = 'agent_gnd_id'
     __mapper_args__ = {'concrete': True}

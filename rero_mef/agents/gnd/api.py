@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""API for manipulating gnd agent."""
+"""API for manipulating GND agent."""
 
 from invenio_search.api import RecordsSearch
 
@@ -41,7 +41,7 @@ class AgentGndSearch(RecordsSearch):
 
 
 class AgentGndRecord(AgentRecord):
-    """Gnd Authority class."""
+    """Gnd agent class."""
 
     minter = gnd_id_minter
     fetcher = gnd_id_fetcher
