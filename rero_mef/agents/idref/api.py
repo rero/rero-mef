@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""API for manipulating idref agent."""
+"""API for manipulating IDREF agent."""
 
 from invenio_search.api import RecordsSearch
 
@@ -41,7 +41,7 @@ class AgentIdrefSearch(RecordsSearch):
 
 
 class AgentIdrefRecord(AgentRecord):
-    """Idref Authority class."""
+    """Idref agent class."""
 
     minter = idref_id_minter
     fetcher = idref_id_fetcher

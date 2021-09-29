@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""API for manipulating rero agent."""
+"""API for manipulating RERO agent."""
 
 from invenio_search.api import RecordsSearch
 
@@ -41,7 +41,7 @@ class AgentReroSearch(RecordsSearch):
 
 
 class AgentReroRecord(AgentRecord):
-    """Rero Authority class."""
+    """Rero agent class."""
 
     minter = rero_id_minter
     fetcher = rero_id_fetcher

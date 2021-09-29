@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""API for manipulating viaf record."""
+"""API for manipulating VIAF record."""
 
 import click
 import requests
@@ -34,7 +34,8 @@ from .models import ViafMetadata
 from .providers import ViafProvider
 from ..api import ReroIndexer, ReroMefRecord
 from ..mef.api import AgentMefRecord
-from ...utils import get_agent_class, get_agents_endpoints, progressbar
+from ..utils import get_agents_endpoints
+from ...utils import get_entity_class, progressbar
 
 
 class AgentViafSearch(RecordsSearch):
@@ -52,7 +53,7 @@ class AgentViafSearch(RecordsSearch):
 
 
 class AgentViafRecord(ReroMefRecord):
-    """Viaf Authority class."""
+    """VIAF agent class."""
 
     minter = viaf_id_minter
     fetcher = viaf_id_fetcher
@@ -66,8 +67,8 @@ class AgentViafRecord(ReroMefRecord):
         Get's the VIAF record from:
         http://www.viaf.org/viaf/sourceID/{source_code}|{pid}
 
-        :param viaf_source_code: Authority source code
-        :param pid: pid for authority source code
+        :param viaf_source_code: agent source code
+        :param pid: pid for agent source code
         :param format: raw = get the not transformed VIAF record
                        link = get the VIAF link record
         :returns: VIAF record as json
@@ -97,17 +98,16 @@ class AgentViafRecord(ReroMefRecord):
                 text = source.get('#text', '|').split('|')
                 if text[0] in source_code:
                     result[source_code[text[0]]] = text[1]
-        # make sure we got a viaf with the same pid for source
+        # make sure we got a VIAF with the same pid for source
         if result.get(source_code.get(viaf_source_code)) == pid:
             return result
 
-
     @classmethod
     def get_viaf_by_agent(cls, agent, online=False):
-        """Get viaf record by agent.
+        """Get VIAF record by agent.
 
-        :param agent: Agency do get corresponding viaf record.
-        :param online: Try to get viaf record online if not exist.
+        :param agent: Agency do get corresponding VIAF record.
+        :param online: Try to get VIAF record online if not exist.
         """
         if isinstance(agent, AgentMefRecord):
             viaf_pid = agent.get('viaf_pid')
@@ -206,7 +206,7 @@ class AgentViafRecord(ReroMefRecord):
                 )
             if msgs:
                 click.echo(
-                    f'  Create MEF from viaf pid: {pid} | {actions}'
+                    f'  Create MEF from VIAF pid: {pid} | {actions}'
                 )
         return actions
 
@@ -221,13 +221,13 @@ class AgentViafRecord(ReroMefRecord):
     def delete(self, dbcommit=False, delindex=False, online=False):
         """Delete record and persistent identifier."""
         agents_records = self.get_agents_records()
-        # delete viaf_pid from Mef record
+        # delete viaf_pid from MEF record
         from ..mef.api import AgentMefRecord
         mef_record = AgentMefRecord.get_mef_by_viaf_pid(self.pid)
         if mef_record:
             mef_record.pop('viaf_pid', None)
             mef_record.replace(mef_record, dbcommit=dbcommit, reindex=True)
-        # delete Viaf record
+        # delete VIAF record
         persistent_identifier = self.get_persistent_identifier(self.id)
         result = super().delete(force=True)
         if dbcommit:
@@ -242,9 +242,9 @@ class AgentViafRecord(ReroMefRecord):
 
         mef_actions = []
         if mef_record:
-            # delete associated mef record
+            # delete associated MEF record
             mef_record.delete(dbcommit=dbcommit, delindex=delindex)
-            # recreate mef and viaf records for agents
+            # recreate MEF and VIAF records for agents
             for pid_type, agent_record in agents_records.items():
                 record, action, mef_record, mef_action, viaf_record, online = \
                     agent_record.create_or_update_agent_mef_viaf(
@@ -281,7 +281,7 @@ class AgentViafRecord(ReroMefRecord):
         """Get all missing pids defined in VIAF."""
         pids_db = {}
         pids_viaf = []
-        record_class = get_agent_class(agent)
+        record_class = get_entity_class(agent)
         if verbose:
             click.echo(f'Get pids from {agent} ...')
         progress = progressbar(
@@ -292,7 +292,7 @@ class AgentViafRecord(ReroMefRecord):
         for pid in progress:
             pids_db[pid] = 1
         if verbose:
-            click.echo(f'Get pids from viaf with {agent} ...')
+            click.echo(f'Get pids from VIAF with {agent} ...')
         agent_pid_name = f'{agent}_pid'
         query = AgentViafSearch().filter('bool', should=[
             Q('exists', field=agent_pid_name)

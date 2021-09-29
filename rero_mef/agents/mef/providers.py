@@ -22,7 +22,7 @@ from __future__ import absolute_import, print_function
 from invenio_pidstore.models import PIDStatus
 from invenio_pidstore.providers.base import BaseProvider
 
-from .models import MefIdentifier
+from .models import AgentMefIdentifier
 
 
 class MefProvider(BaseProvider):
@@ -31,7 +31,7 @@ class MefProvider(BaseProvider):
     pid_type = 'mef'
     """Type of persistent identifier."""
 
-    pid_identifier = MefIdentifier.__tablename__
+    pid_identifier = AgentMefIdentifier.__tablename__
     """Identifier for table name"""
 
     pid_provider = None
@@ -46,9 +46,9 @@ class MefProvider(BaseProvider):
 
     @classmethod
     def create(cls, object_type=None, object_uuid=None, **kwargs):
-        """Create a new Mef Authority identifier."""
+        """Create a new MEF agent identifier."""
         assert 'pid_value' not in kwargs
-        kwargs['pid_value'] = str(MefIdentifier.next())
+        kwargs['pid_value'] = str(AgentMefIdentifier.next())
         kwargs.setdefault('status', cls.default_status)
         if object_type and object_uuid:
             kwargs['status'] = PIDStatus.REGISTERED

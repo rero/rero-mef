@@ -25,7 +25,7 @@ from invenio_records.models import RecordMetadataBase
 
 
 class ViafIdentifier(RecordIdentifier):
-    """Sequence generator for Viaf Authority identifiers."""
+    """Sequence generator for VAIF agent identifiers."""
 
     __tablename__ = 'viaf_id'
     __mapper_args__ = {'concrete': True}

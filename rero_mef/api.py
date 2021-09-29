@@ -82,7 +82,7 @@ class ReroMefRecordError:
 
 
 class ReroMefRecord(Record):
-    """Authority Record class."""
+    """Entity Record class."""
 
     minter = None
     fetcher = None

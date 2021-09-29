@@ -428,9 +428,10 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
 
                 my_from_date = my_from_date + timedelta(days=days_spann + 1)
                 if verbose:
-                    from_date=my_from_date.strftime("%Y-%m-%d")
+                    from_date = my_from_date.strftime("%Y-%m-%d")
                     click.echo(
-                        f'OAI {name} spec({spec}): {from_date} .. +{days_spann}'
+                        f'OAI {name} spec({spec}): '
+                        f'{from_date} .. +{days_spann}'
                     )
     if verbose:
         click.echo(f'OAI {name}: {count}')
@@ -470,9 +471,9 @@ def oai_get_record(id, name, transformation, record_cls, access_token=None,
 
 
 def read_json_record(json_file, buf_size=1024, decoder=JSONDecoder()):
-    """Read lasy json records from file.
+    """Read lasy JSON records from file.
 
-    :param json_file: json file handle
+    :param json_file: JSON file handle
     :param buf_size: buffer size for file read
     :param decoder: decoder to use for decoding
     :return: record Generator
@@ -625,7 +626,7 @@ def pidstore_csv_line(agent, agent_pid, record_uuid, date):
 
 
 def add_agent_to_json(mef_record, agent, agent_pid):
-    """Add agent ref to mef record."""
+    """Add agent ref to MEF record."""
     from .agents.mef.api import AgentMefRecord
     ref_string = AgentMefRecord.build_ref_string(
         agent=agent, agent_pid=agent_pid
@@ -729,7 +730,8 @@ def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
                     diff_time = end_time - start_time
                     start_time = end_time
                     click.echo(
-                        f'{agent} copy from file: {count} {diff_time.seconds}s',
+                        f'{agent} copy from file: '
+                        f'{count} {diff_time.seconds}s',
                         nl=False
                     )
                 db_copy_from(buffer=buffer, table=table, columns=columns)
@@ -770,10 +772,10 @@ def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
     gc.collect()
 
 
-def bulk_load_agent_metadata(agent, metadata, bulk_count=0, verbose=True,
-                             reindex=False):
+def bulk_load_metadata(agent, metadata, bulk_count=0, verbose=True,
+                       reindex=False):
     """Bulk load agent data to metadata table."""
-    agent_class = get_agent_class(agent)
+    agent_class = get_entity_class(agent)
     table, identifier = agent_class.get_metadata_identifier_names()
     columns = (
         'created',
@@ -793,8 +795,7 @@ def bulk_load_agent_metadata(agent, metadata, bulk_count=0, verbose=True,
     )
 
 
-def bulk_load_agent_pids(agent, pidstore, bulk_count=0, verbose=True,
-                         reindex=False):
+def bulk_load_pids(agent, pidstore, bulk_count=0, verbose=True, reindex=False):
     """Bulk load agent data to metadata table."""
     table = 'pidstore_pid'
     columns = (
@@ -817,9 +818,9 @@ def bulk_load_agent_pids(agent, pidstore, bulk_count=0, verbose=True,
     )
 
 
-def bulk_load_agent_ids(agent, ids, bulk_count=0, verbose=True, reindex=False):
+def bulk_load_ids(agent, ids, bulk_count=0, verbose=True, reindex=False):
     """Bulk load agent data to id table."""
-    agent_class = get_agent_class(agent)
+    agent_class = get_entity_class(agent)
     metadata, identifier = agent_class.get_metadata_identifier_names()
     columns = ('recid', )
     bulk_load_agent(
@@ -843,11 +844,11 @@ def bulk_save_agent(agent, file_name, table, columns, verbose=False):
         )
 
 
-def bulk_save_agent_metadata(agent, file_name, verbose=False):
+def bulk_save_metadata(agent, file_name, verbose=False):
     """Bulk save agent data from metadata table."""
     if verbose:
         click.echo(f'{agent} save to file: {file_name}')
-    agent_class = get_agent_class(agent)
+    agent_class = get_entity_class(agent)
     metadata, identifier = agent_class.get_metadata_identifier_names()
     columns = (
         'created',
@@ -865,7 +866,7 @@ def bulk_save_agent_metadata(agent, file_name, verbose=False):
     )
 
 
-def bulk_save_agent_pids(agent, file_name, verbose=False):
+def bulk_save_pids(agent, file_name, verbose=False):
     """Bulk save agent data from pids table."""
     if verbose:
         click.echo(f'{agent} save to file: {file_name}')
@@ -894,11 +895,11 @@ def bulk_save_agent_pids(agent, file_name, verbose=False):
     os.remove(tmp_file_name)
 
 
-def bulk_save_agent_ids(agent, file_name, verbose=False):
+def bulk_save_ids(agent, file_name, verbose=False):
     """Bulk save agent data from id table."""
     if verbose:
         click.echo(f'{agent} save to file: {file_name}')
-    agent_class = get_agent_class(agent)
+    agent_class = get_entity_class(agent)
     metadata, identifier = agent_class.get_metadata_identifier_names()
     columns = ('recid', )
     bulk_save_agent(
@@ -936,17 +937,16 @@ def add_schema(record, agent):
     with current_app.app_context():
         schemas = current_app.config.get('RECORDS_JSON_SCHEMA')
         if agent in schemas:
-            base_url=current_app.config.get('RERO_MEF_APP_BASE_URL')
-            endpoint=current_app.config.get('JSONSCHEMAS_ENDPOINT')
-            schema=schemas[agent]
+            base_url = current_app.config.get('RERO_MEF_APP_BASE_URL')
+            endpoint = current_app.config.get('JSONSCHEMAS_ENDPOINT')
+            schema = schemas[agent]
             record['$schema'] = f'{base_url}{endpoint}{schema}'
     return record
 
 
-def create_agent_csv_file(input_file, agent, pidstore, metadata):
-    """Create agent csv file to load."""
-    if agent == 'mef':
-        agent_id_file = open(f'{agent}_id', 'w', encoding='utf-8')
+def create_csv_file(input_file, agent, pidstore, metadata):
+    """Create agent CSV file to load."""
+    count = 0
     with \
             open(input_file, 'r', encoding='utf-8') as agent_file, \
             open(metadata, 'w', encoding='utf-8') as agent_metadata_file, \
@@ -969,11 +969,11 @@ def create_agent_csv_file(input_file, agent, pidstore, metadata):
             agent_pids_file.write(
                 pidstore_csv_line(agent, record['pid'], record_uuid, date)
             )
-            if agent == 'mef':
-                agent_id_file.write(record['pid'] + os.linesep)
+            count += 1
+    return count
 
 
-def get_agent_classes(without_mef_viaf=True):
+def get_entity_classes(without_mef_viaf=True):
     """Get agent classes from config."""
     agents = {}
     endpoints = deepcopy(current_app.config.get('RECORDS_REST_ENDPOINTS', {}))
@@ -997,17 +997,17 @@ def get_endpoint_class(agent, class_name):
     return endpoint_class
 
 
-def get_agent_class(agent):
+def get_entity_class(agent):
     """Get agent record class from config."""
     return get_endpoint_class(agent=agent, class_name='record_class')
 
 
-def get_agent_search_class(agent):
+def get_entity_search_class(agent):
     """Get agent search class from config."""
     return get_endpoint_class(agent=agent, class_name='search_class')
 
 
-def get_agent_indexer_class(agent):
+def get_entity_indexer_class(agent):
     """Get agent indexer class from config."""
     return get_endpoint_class(agent=agent, class_name='indexer_class')
 
@@ -1021,7 +1021,7 @@ def write_link_json(
     agent_pid,
     verbose=False
 ):
-    """Write a json record into file."""
+    """Write a JSON record into file."""
     json_data = {}
     key_per_catalog_id = {
         'DNB': 'gnd_pid',
@@ -1041,7 +1041,7 @@ def write_link_json(
     add_schema(json_dump, 'viaf')
     json_dump['pid'] = agent_pid
     del(json_dump['viaf_pid'])
-    # only save viaf data with used pids
+    # only save VIAF data with used pids
     if agent == 'viaf':
         write_to_file = write_to_file_viaf
     else:
@@ -1059,196 +1059,6 @@ def write_link_json(
     return write_to_file
 
 
-def create_mef_files(
-    viaf_pidstore_file,
-    input_directory,
-    mef_pidstore_file_name,
-    mef_metadata_file_name,
-    mef_ids_file_name,
-    verbose=False
-):
-    """Create MEF csv file to load."""
-    if verbose:
-        click.echo('Start ***')
-    pids = {}
-    agent_classes = get_agent_classes()
-    viaf_agent_pid_names = {}
-    for agent, agent_classe in agent_classes.items():
-        name = agent_classe.name
-        viaf_pid_name = agent_classe.viaf_pid_name
-        if viaf_pid_name:
-            viaf_agent_pid_names[viaf_pid_name] = name
-            file_name = os.path.join(input_directory, f'{agent}_pidstore.csv')
-            if os.path.exists(file_name):
-                if verbose:
-                    click.echo(f'  Read pids from: {file_name}')
-                length = number_records_in_file(file_name, 'csv')
-                pids[name] = {}
-                progress = progressbar(
-                    items=open(file_name, 'r'),
-                    length=length,
-                    verbose=verbose
-                )
-                for line in progress:
-                    pid = line.split('\t')[3]
-                    pids[name][pid] = 1
-
-    mef_pid = 1
-    corresponding_data = {}
-    with open(
-        mef_pidstore_file_name, 'w', encoding='utf-8'
-    ) as mef_pidstore:
-        with open(
-            mef_metadata_file_name, 'w', encoding='utf-8'
-        ) as mef_metadata:
-            with open(
-                mef_ids_file_name, 'w', encoding='utf-8'
-            ) as mef_ids_file:
-                schemas = current_app.config.get('RECORDS_JSON_SCHEMA')
-                base_url = current_app.config.get('RERO_MEF_APP_BASE_URL')
-                schema = (f'{base_url}'
-                          f'{current_app.config.get("JSONSCHEMAS_ENDPOINT")}'
-                          f'{schemas["mef"]}')
-                if verbose:
-                    click.echo(
-                        f'  Create MEF with VIAF pid: {viaf_pidstore_file}'
-                    )
-                progress = progressbar(
-                    items=open(str(viaf_pidstore_file), 'r', encoding='utf-8'),
-                    length=number_records_in_file(viaf_pidstore_file, 'csv'),
-                    verbose=verbose
-                )
-                for line in progress:
-                    viaf_data = json.loads(line.split('\t')[3])
-                    viaf_pid = viaf_data['pid']
-                    corresponding_data = {
-                        'pid': str(mef_pid),
-                        '$schema': schema
-                    }
-                    for viaf_pid_name, name in viaf_agent_pid_names.items():
-                        agent_pid = viaf_data.get(viaf_pid_name)
-                        if agent_pid:
-                            if pids.get(name, {}).get(agent_pid):
-                                corresponding_data['viaf_pid'] = viaf_pid
-                                pids[name].pop(agent_pid)
-                                url = f'{base_url}/api/{name}/{pid}'
-                                corresponding_data[name] = {'$ref': url}
-                    if corresponding_data.get('viaf_pid'):
-                        # Write MEF with VIAF to file
-                        mef_uuid = str(uuid4())
-                        date = str(datetime.utcnow())
-                        mef_pidstore.write(
-                            pidstore_csv_line(
-                                'mef', str(mef_pid), mef_uuid, date)
-                        )
-                        mef_metadata.write(
-                            metadata_csv_line(
-                                corresponding_data, mef_uuid, date)
-                        )
-                        mef_ids_file.write(str(mef_pid) + os.linesep)
-                        mef_pid += 1
-                # Create MEF without VIAF
-                length = 0
-                for agent in pids:
-                    length += len(pids[agent])
-                if verbose:
-                    click.echo(f'  Create MEF without VIAF pid: {length}')
-                progress = progressbar(
-                    items=pids,
-                    length=length,
-                    verbose=verbose
-                )
-                for agent in progress:
-                    for pid in pids[agent]:
-                        url = f'{base_url}/api/{agent}/{pid}'
-                        corresponding_data = {
-                            'pid': str(mef_pid),
-                            '$schema': schema,
-                            agent: {'$ref': url}
-                        }
-                        mef_uuid = str(uuid4())
-                        date = str(datetime.utcnow())
-                        mef_pidstore.write(
-                            pidstore_csv_line('mef', str(mef_pid), mef_uuid,
-                                              date)
-                        )
-                        mef_metadata.write(
-                            metadata_csv_line(corresponding_data, mef_uuid,
-                                              date)
-                        )
-                        mef_ids_file.write(str(mef_pid) + os.linesep)
-                        mef_pid += 1
-    if verbose:
-        click.echo(f'  MEF records created: {mef_pid-1}')
-
-
-def create_viaf_files(
-    viaf_input_file,
-    viaf_pidstore_file_name,
-    viaf_metadata_file_name,
-    verbose=False
-):
-    """Create VIAF csv file to load."""
-    if verbose:
-        click.echo('Start ***')
-
-    agent_pid = 0
-    corresponding_data = {}
-    count = 0
-    with open(
-        viaf_pidstore_file_name, 'w', encoding='utf-8'
-    ) as viaf_pidstore:
-        with open(
-            viaf_metadata_file_name, 'w', encoding='utf-8'
-        ) as viaf_metadata:
-            with open(
-                str(viaf_input_file), 'r', encoding='utf-8'
-            ) as viaf_in_file:
-                # get first viaf_pid
-                row = viaf_in_file.readline()
-                fields = row.rstrip().split('\t')
-                assert len(fields) == 2
-                previous_viaf_pid = fields[0].split('/')[-1]
-                viaf_in_file.seek(0)
-                for row in viaf_in_file:
-                    fields = row.rstrip().split('\t')
-                    assert len(fields) == 2
-                    viaf_pid = fields[0].split('/')[-1]
-                    if viaf_pid != previous_viaf_pid:
-                        agent_pid += 1
-                        written = write_link_json(
-                            agent='viaf',
-                            pidstore_file=viaf_pidstore,
-                            metadata_file=viaf_metadata,
-                            viaf_pid=previous_viaf_pid,
-                            corresponding_data=corresponding_data,
-                            agent_pid=str(agent_pid),
-                            verbose=verbose
-                        )
-                        if written:
-                            count += 1
-                        corresponding_data = {}
-                        previous_viaf_pid = viaf_pid
-                    corresponding = fields[1].split('|')
-                    if len(corresponding) == 2:
-                        corresponding_data[corresponding[0]] = corresponding[1]
-                # save the last record
-                agent_pid += 1
-                written = write_link_json(
-                    agent='viaf',
-                    pidstore_file=viaf_pidstore,
-                    metadata_file=viaf_metadata,
-                    viaf_pid=previous_viaf_pid,
-                    corresponding_data=corresponding_data,
-                    agent_pid=str(agent_pid),
-                    verbose=verbose
-                )
-                if written:
-                    count += 1
-    if verbose:
-        click.echo(f'  Viaf records created: {count}')
-
-
 def append_fixtures_new_identifiers(identifier, pids, pid_type):
     """Insert pids into the indentifier table and update its sequence."""
     with db.session.begin_nested():
@@ -1262,22 +1072,12 @@ def append_fixtures_new_identifiers(identifier, pids, pid_type):
         identifier._set_sequence(max_pid)
 
 
-def get_agents_endpoints(without_mef_viaf=True):
-    """Get all agents from config."""
-    agents = deepcopy(current_app.config.get('RECORDS_REST_ENDPOINTS', {}))
-    if without_mef_viaf:
-        agents.pop('mef', None)
-        agents.pop('viaf', None)
-    agents.pop('corero', None)
-    return agents
-
-
 def get_diff_db_es_pids(agent, verbose=False):
     """Get differences between DB and ES pids."""
     pids_db = {}
     pids_es = {}
     pids_es_double = []
-    record_class = get_agent_class(agent)
+    record_class = get_entity_class(agent)
     count = record_class.count()
     if verbose:
         click.echo(f'Get pids from DB: {count}')
@@ -1288,7 +1088,7 @@ def get_diff_db_es_pids(agent, verbose=False):
     )
     for pid in progress:
         pids_db[pid] = 1
-    search_class = get_agent_search_class(agent)
+    search_class = get_entity_search_class(agent)
     count = search_class().source('pid').count()
     if verbose:
         click.echo(f'Get pids from ES: {count}')

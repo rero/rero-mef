@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""API for manipulating mef records."""
+"""API for manipulating MEF records."""
 
 from datetime import datetime
 
@@ -28,10 +28,10 @@ from invenio_search.api import RecordsSearch
 
 from .fetchers import mef_id_fetcher
 from .minters import mef_id_minter
-from .models import MefMetadata
+from .models import AgentMefMetadata
 from .providers import MefProvider
 from ..api import Action, ReroIndexer, ReroMefRecord
-from ...utils import get_agent_class, get_agent_classes, progressbar
+from ...utils import get_entity_class, get_entity_classes, progressbar
 
 
 class AgentMefSearch(RecordsSearch):
@@ -49,12 +49,12 @@ class AgentMefSearch(RecordsSearch):
 
 
 class AgentMefRecord(ReroMefRecord):
-    """Mef Authority class."""
+    """Mef agent class."""
 
     minter = mef_id_minter
     fetcher = mef_id_fetcher
     provider = MefProvider
-    model_cls = MefMetadata
+    model_cls = AgentMefMetadata
 
     @classmethod
     def build_ref_string(cls, agent_pid, agent):
@@ -71,10 +71,10 @@ class AgentMefRecord(ReroMefRecord):
         else:
             result = AgentMefIndexer().index(self)
         return result
-    
+
     @classmethod
     def get_mef_by_agent_pid(cls, agent_pid, agent_name, pid_only=False):
-        """Get mef record by agent pid value."""
+        """Get MEF record by agent pid value."""
         key = f'{agent_name}.pid'
         search = AgentMefSearch() \
             .filter('term', **{key: agent_pid}) \
@@ -94,7 +94,11 @@ class AgentMefRecord(ReroMefRecord):
 
     @classmethod
     def get_all_mef_pids_by_agent(cls, agent):
-        """Get all mef pids for agent."""
+        """Get all MEF pids for agent.
+    
+        :param agent: Agent to search pid for.
+        :returns: Generator of agent pids.
+        """
         key = f'{agent}.pid'
         search = AgentMefSearch()
         results = search.filter(
@@ -108,7 +112,11 @@ class AgentMefRecord(ReroMefRecord):
 
     @classmethod
     def get_mef_by_viaf_pid(cls, viaf_pid):
-        """Get mef record by agent pid value."""
+        """Get MEF record by agent pid value.
+        
+        :param viaf_pid: VIAF pid.
+        :returns: Associated MEF record.
+        """
         search = AgentMefSearch()
         result = search.filter(
             'term', viaf_pid=viaf_pid).source(['pid']).scan()
@@ -120,7 +128,10 @@ class AgentMefRecord(ReroMefRecord):
 
     @classmethod
     def get_all_pids_without_agents_viaf(cls):
-        """Get all pids for records without agents and viaf pids."""
+        """Get all pids for records without agents and VIAF pids.
+        
+        :returns: Generator of MEF pids without agent links and without VIAF. 
+        """
         query = AgentMefSearch()\
             .filter('bool', must_not=[Q('exists', field="viaf_pid")]) \
             .filter('bool', must_not=[Q('exists', field="gnd")]) \
@@ -133,7 +144,10 @@ class AgentMefRecord(ReroMefRecord):
 
     @classmethod
     def get_all_pids_without_viaf(cls):
-        """Get all pids for records without viaf pid."""
+        """Get all pids for records without VIAF pid.
+        
+        :returns: Generator of MEF pids without VIAF pid.
+        """
         query = AgentMefSearch()\
             .filter('bool', must_not=[Q('exists', field="viaf_pid")])\
             .filter('bool', should=[Q('exists', field="gnd")]) \
@@ -150,7 +164,12 @@ class AgentMefRecord(ReroMefRecord):
         agents=['aggnd', 'aidref', 'agrero'],
         verbose=False
     ):
-        """Get agent pids with multiple mef records."""
+        """Get agent pids with multiple MEF records.
+        
+        :params agents: Agents default=['aggnd', 'aidref', 'agrero'].
+        :param verbose: Verbose.
+        :returns: pids, multiple pids, missing pids.     
+        """
         pids = {}
         multiple_pids = {}
         missing_pids = {}
@@ -161,7 +180,7 @@ class AgentMefRecord(ReroMefRecord):
             multiple_pids[agent] = {}
             missing_pids[agent] = []
 
-            agent_class = get_agent_class(agent)
+            agent_class = get_entity_class(agent)
             agent_name = agent_class.name
             search = AgentMefSearch().filter('exists', field=agent_name)
             progress = progressbar(
@@ -193,7 +212,7 @@ class AgentMefRecord(ReroMefRecord):
         # multiple_pids = {}
         # for agent in agents:
         #     multiple_pids[agent] = {}
-        #     agent_class = get_agent_class(agent)
+        #     agent_class = get_entity_class(agent)
         #     if agent_class:
         #         agent_name = agent_class.name
         #         search = AgentMefSearch()
@@ -223,11 +242,16 @@ class AgentMefRecord(ReroMefRecord):
         agents=['aggnd', 'aidref', 'agrero'],
         verbose=False
     ):
-        """Get all missing agents."""
+        """Get all missing agents.
+        
+        :params agents: Agents default=['aggnd', 'aidref', 'agrero'].
+        :param verbose: Verbose.
+        :returns: missing pids, to much pids.        
+        """
         missing_pids = {}
         to_much_pids = {}
         used_classes = {}
-        agent_classes = get_agent_classes()
+        agent_classes = get_entity_classes()
         for agent_classe in agent_classes:
             if agent_classe in agents:
                 used_classes[agent_classe] = agent_classes[agent_classe]
@@ -243,7 +267,7 @@ class AgentMefRecord(ReroMefRecord):
             for pid in progress:
                 missing_pids[agent][pid] = 1
         if verbose:
-            click.echo('Get pids from mef and calculate missing ...')
+            click.echo('Get pids from MEF and calculate missing ...')
         progress = progressbar(
             items=AgentMefSearch().filter('match_all').source().scan(),
             length=AgentMefSearch().filter('match_all').source().count(),
@@ -263,11 +287,11 @@ class AgentMefRecord(ReroMefRecord):
 
     @classmethod
     def get_all_missing_viaf_pids(cls, verbose=False):
-        """Get all missing viaf pids."""
+        """Get all missing VIAF pids."""
         from ..viaf.api import AgentViafRecord
         missing_pids = {}
         if verbose:
-            click.echo('Get pids from viaf ...')
+            click.echo('Get pids from VIAF ...')
         progress = progressbar(
             items=AgentViafRecord.get_all_pids(),
             length=AgentViafRecord.count(),
@@ -276,7 +300,7 @@ class AgentMefRecord(ReroMefRecord):
         for pid in progress:
             missing_pids[pid] = 1
         if verbose:
-            click.echo('Get pids from mef and calculate missing ...')
+            click.echo('Get pids from MEF and calculate missing ...')
         progress = progressbar(
             items=AgentMefSearch().filter('match_all').source().scan(),
             length=AgentMefSearch().filter('match_all').source().count(),

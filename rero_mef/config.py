@@ -31,7 +31,7 @@ from invenio_records_rest.facets import terms_filter
 
 from .agents.gnd.models import AgentGndIdentifier
 from .agents.idref.models import AgentIdrefIdentifier
-from .agents.mef.models import MefIdentifier
+from .agents.mef.models import AgentMefIdentifier
 from .agents.rero.models import AgentReroIdentifier
 from .agents.viaf.models import ViafIdentifier
 from .concepts.rero.models import ConceptReroIdentifier
@@ -197,13 +197,23 @@ TRANSFORMATION = {
 }
 
 IDENTIFIERS = {
-    'mef': MefIdentifier,
+    'mef': AgentMefIdentifier,
     'viaf': ViafIdentifier,
     'corero': ConceptReroIdentifier,
     'aggnd': AgentGndIdentifier,
     'aidref': AgentIdrefIdentifier,
     'agrero': AgentReroIdentifier
 }
+
+AGENTS = [
+    'aggnd',
+    'aidref',
+    'agrero'
+]
+
+CONCEPTS = [
+    'corero',
+]
 
 RERO_MEF_APP_BASE_URL = 'https://mef.rero.ch'
 

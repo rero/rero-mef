@@ -30,14 +30,14 @@ from rero_mef.agents.viaf.api import AgentViafRecord
     'rero_mef.agents.viaf.api.AgentViafRecord.get_online_viaf_record')
 def test_create_agent_updates(mock_get, app, gnd_record, rero_record,
                               idref_record):
-    """Test create agent record with viaf links."""
+    """Test create agent record with VIAF links."""
     # we have to mock the access to viaf
     mock_get.return_value = {
         'pid': '37268949',
         'idref_pid': '069774331',
         'gnd_pid': '100769527xxx'
     }
-    # create first record no viaf and mef records exist
+    # create first record no VIAF and MEF records exist
     assert AgentMefRecord.count() == 0
     assert AgentViafRecord.count() == 0
     record, action, m_record, m_action, v_record, online = \
@@ -53,7 +53,7 @@ def test_create_agent_updates(mock_get, app, gnd_record, rero_record,
     assert AgentViafRecord.count() == 1
     assert online
 
-    # we should have a mef and viaf record now
+    # we should have a MEF and VIAF record now
     mef_pid = list(AgentMefRecord.get_all_pids())[-1]
     mef_record = AgentMefRecord.get_record_by_pid(mef_pid)
     assert mef_record.get('pid') == '1'
@@ -64,7 +64,7 @@ def test_create_agent_updates(mock_get, app, gnd_record, rero_record,
     assert viaf_record.get('pid') == '37268949'
     assert viaf_record.get('idref_pid') == '069774331'
 
-    # we have to mock the access to viaf
+    # we have to mock the access to VIAF
     mock_get.return_value = {
         'pid': '66739143',
         'gnd_pid': '12391664X',

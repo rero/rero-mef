@@ -19,65 +19,25 @@
 
 from __future__ import absolute_import, print_function
 
-import itertools
-from time import sleep
+import os
 
 import click
-from celery.bin.control import inspect
 from flask.cli import with_appcontext
 
 from .mef.api import AgentMefRecord
-from .tasks import \
-    create_mef_and_agents_from_viaf as task_mef_and_agents_from_viaf
-from .tasks import create_mef_from_agent as task_mef_from_agent
+from .tasks import create_from_viaf as task_mef_and_agents_from_viaf
+from .tasks import create_mef as task_mef_from_agent
+from .utils import create_mef_files, create_viaf_files
 from .viaf.api import AgentViafRecord
-from ..monitoring import Monitoring
-from ..utils import get_agent_class, get_agent_classes, progressbar
+from ..utils import get_entity_class, get_entity_classes, progressbar
 
 
 @click.group()
-def utils():
-    """Misc management commands."""
+def agents():
+    """Agent management commands."""
 
 
-def queue_count():
-    """Count tasks in celery."""
-    inspector = inspect()
-    task_count = 0
-    reserved = inspector.reserved()
-    if reserved:
-        for key, values in reserved.items():
-            task_count += len(values)
-    active = inspector.active()
-    if active:
-        task_count = sum(active.values())
-    return task_count
-
-
-def wait_empty_tasks(delay, verbose=False):
-    """Wait for tasks to be empty."""
-    if verbose:
-        spinner = itertools.cycle(['-', '\\', '|', '/'])
-        click.echo(
-            f'Waiting: {next(spinner)}\r',
-            nl=False
-        )
-    count = queue_count()
-    sleep(5)
-    count += queue_count()
-    while count:
-        if verbose:
-            click.echo(
-                f'Waiting: {next(spinner)}\r',
-                nl=False
-            )
-        sleep(delay)
-        count = queue_count()
-        sleep(5)
-        count += queue_count()
-
-
-@utils.command('create_mef_and_agents_from_viaf')
+@agents.command()
 @click.option('-5', '--md5', 'test_md5', is_flag=True, default=False,
               help='Compaire md5 to find out if we have to update')
 @click.option('-k', '--enqueue', 'enqueue', is_flag=True, default=False,
@@ -88,15 +48,15 @@ def wait_empty_tasks(delay, verbose=False):
 @click.option('-w', '--wait', 'wait', is_flag=True, default=False)
 @click.option('-m', '--missing', 'missing', is_flag=True, default=False)
 @with_appcontext
-def create_mef_and_agents_from_viaf(test_md5, enqueue, online, verbose,
-                                    progress, wait, missing):
-    """Create Mef and agents from viaf."""
+def create_from_viaf(test_md5, enqueue, online, verbose, progress, wait,
+                     missing):
+    """Create MEF and agents from viaf."""
     click.secho(
         'Create MEF and Agency from VIAF.',
         fg='green'
     )
     counts = {}
-    agent_classes = get_agent_classes(without_mef_viaf=False)
+    agent_classes = get_entity_classes(without_mef_viaf=False)
     for name, agent_class in agent_classes.items():
         counts[name] = {}
         counts[name]['old'] = agent_class.count()
@@ -135,8 +95,9 @@ def create_mef_and_agents_from_viaf(test_md5, enqueue, online, verbose,
                 verbose=verbose
             )
     if wait:
+        from ..cli import wait_empty_tasks
         wait_empty_tasks(delay=3, verbose=True)
-        for name, agent_class in get_agent_classes(
+        for name, agent_class in get_entity_classes(
             without_mef_viaf=False
         ).items():
             counts[name]['new'] = agent_class.count()
@@ -153,7 +114,7 @@ def create_mef_and_agents_from_viaf(test_md5, enqueue, online, verbose,
         )
 
 
-@utils.command('create_mef_from_agent')
+@agents.command()
 @click.option('-t', '--pid_type', 'pid_type', multiple=True,
               default=['aidref', 'aggnd', 'agrero'])
 @click.option('-k', '--enqueue', 'enqueue', is_flag=True, default=False,
@@ -164,14 +125,14 @@ def create_mef_and_agents_from_viaf(test_md5, enqueue, online, verbose,
 @click.option('-w', '--wait', 'wait', is_flag=True, default=False)
 @click.option('-m', '--missing', 'missing', is_flag=True, default=False)
 @with_appcontext
-def create_mef_from_agent(pid_type, enqueue, online, verbose, progress, wait,
-                          missing):
-    """Create Mef from agents."""
+def create_mef(pid_type, enqueue, online, verbose, progress, wait, missing):
+    """Create MEF from agents."""
     if missing:
-        missing_pids, to_much_pids = AgentMefRecord.get_all_missing_agents_pids(
-            agents=pid_type,
-            verbose=progress
-        )
+        missing_pids, to_much_pids = \
+            AgentMefRecord.get_all_missing_agents_pids(
+                agents=pid_type,
+                verbose=progress
+            )
     for agent in pid_type:
         if agent not in ['aidref', 'aggnd', 'agrero']:
             click.secho(
@@ -183,7 +144,7 @@ def create_mef_from_agent(pid_type, enqueue, online, verbose, progress, wait,
                 f'Create MEF from {agent}.',
                 fg='green'
             )
-            agent_class = get_agent_class(agent)
+            agent_class = get_entity_class(agent)
             counts = {}
             counts[agent] = agent_class.count()
             counts['mef'] = AgentMefRecord.count()
@@ -221,6 +182,7 @@ def create_mef_from_agent(pid_type, enqueue, online, verbose, progress, wait,
                     if verbose:
                         click.echo(msg)
             if wait:
+                from ..cli import wait_empty_tasks
                 wait_empty_tasks(delay=3, verbose=True)
                 click.secho(
                     f'COUNTS: mef: {counts["mef"]}|{AgentMefRecord.count()}'
@@ -229,37 +191,71 @@ def create_mef_from_agent(pid_type, enqueue, online, verbose, progress, wait,
                 )
 
 
-@utils.command('reindex_missing')
-@click.option('-a', '--agents', 'agents', multiple=True,
-              default=['aggnd', 'aidref', 'agrero', 'mef', 'viaf', 'corero'])
+@agents.command()
+@click.argument('viaf_file')
+@click.argument('output_directory')
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @with_appcontext
-def reindex_missing(agents, verbose):
-    """Reindex agents missing in ES."""
-    for agent in agents:
-        click.secho(
-            f'Reindex missing {agent} from ES.',
-            fg='green'
+def create_csv_viaf(viaf_file, output_directory, verbose):
+    """Create VIAF CSV from VIAF source text file.
+
+    :param viaf_file: VIAF source text file.
+    :param output_directory: Output directory.
+    :param verbose: Verbose.
+    """
+    click.secho(f'  Create VIAF CSV files.', err=True)
+    pidstore = os.path.join(output_directory, 'viaf_pidstore.csv')
+    metadata = os.path.join(output_directory, 'viaf_metadata.csv')
+    click.secho(
+        f'  VIAF input file: {viaf_file} ',
+        err=True
+    )
+
+    count = create_viaf_files(
+        viaf_input_file=viaf_file,
+        viaf_pidstore_file_name=pidstore,
+        viaf_metadata_file_name=metadata,
+        verbose=verbose
+    )
+    click.secho(
+        f'  Number of VIAF records created: {count}.',
+        fg='green',
+        err=True)
+
+
+@agents.command()
+@click.argument('viaf_metadata_file')
+@click.argument('output_directory')
+@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@with_appcontext
+def create_csv_mef(viaf_metadata_file, output_directory, verbose):
+    """Create MEF CSV from INVENIO metadata file.
+
+    :param viaf_metadata_file: VIAF metadata CSV file.
+    :param output_directory: Output directory.
+    :param verbose: Verbose.
+    """
+    click.secho(f'  Create MEF CSV files from JSON.', err=True)
+    pidstore = os.path.join(output_directory, 'mef_pidstore.csv')
+    metadata = os.path.join(output_directory, 'mef_metadata.csv')
+    ids = os.path.join(output_directory, 'mef_id.csv')
+
+    click.secho(
+        f'  VIAF input file: {viaf_metadata_file} ',
+        err=True
+    )
+    message = f'  CSV output files: {pidstore}, {metadata}'
+
+    count = create_mef_files(
+            viaf_pidstore_file=viaf_metadata_file,
+            input_directory=output_directory,
+            mef_pidstore_file_name=pidstore,
+            mef_metadata_file_name=metadata,
+            mef_ids_file_name=ids,
+            verbose=verbose
         )
-        agent_class = get_agent_class(agent)
-        pids_es, pids_db, pids_es_double, index = \
-            Monitoring.get_es_db_missing_pids(doc_type=agent, verbose=verbose)
-        if verbose:
-            click.secho(
-                f'  {agent} ES: {len(pids_es)} DB: {len(pids_db)} '
-                f'Double:{len(pids_es_double)}'
-            )
-            progress_bar = progressbar(
-                items=pids_db,
-                length=len(pids_db),
-                verbose=verbose
-            )
-            for pid in progress_bar:
-                rec = agent_class.get_record_by_pid(pid)
-                if rec:
-                    rec.reindex()
-                else:
-                    click.secho(
-                        f'  {agent} record not found: {pid}',
-                        fg='red'
-                    )
+
+    click.secho(
+        f'  Number of MEF records created: {count}.',
+        fg='green',
+        err=True)

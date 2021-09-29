@@ -87,31 +87,31 @@ function oai_init () {
     info_msg "OAI init"
     # init oaiharvester config from file
     invenio oaiharvester initconfig ./data/oaisources.yml
-    # we got the last gnd files on 10 2020 from here:
+    # we got the last GND files on 10 2020 from here:
     # https://data.dnb.de/GND/
-    invenio oaiharvester set_last_run -n gnd -d 2020-06-21
+    invenio oaiharvester set-last-run -n gnd -d 2020-06-21
     # we got the last idref files on 10 2020 with:
     # invenio oaiharvester save idref.mrc -n idref -f 1990-01-01
-    invenio oaiharvester set_last_run -n idref -d 2020-10-01
+    invenio oaiharvester set-last-run -n idref -d 2020-10-01
 }
 
 function sample_load () {
     SCHEMA="http://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json"
-    info_msg "Importing viaf records:"
-    dojson -i ./data/viaf.json | invenio fixtures create_or_update viaf
+    info_msg "Importing VIAF records:"
+    dojson -i ./data/viaf.json | invenio fixtures create-or-update viaf
 
-    for AGENT in aggnd aidref agrero
+    for ENTITY in aggnd aidref agrero
     do
-      info_msg "Importing ${AGENT} agent records:"
-      dojson -i ./data/${AGENT}.json | invenio fixtures create_or_update ${AGENT}
+      info_msg "Importing ${ENTITY} agent records:"
+      dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY}
     done
     info_msg "Creating MEF records:"
-    invenio utils create_mef_from_agent
+    invenio agents create-mef
 
-    for AGENT in corero
+    for ENTITY in corero
     do
-      info_msg "Importing ${AGENT} concept records:"
-      dojson -i ./data/${AGENT}.json | invenio fixtures create_or_update ${AGENT}
+      info_msg "Importing ${ENTITY} concept records:"
+      dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY}
     done
 
     oai_init
@@ -121,25 +121,26 @@ function deploy () {
     INPUT_DIR=$1
     info_msg "Start loading CSV records to database: ${INPUT_DIR}"
     # Load agents CSV files to db
-    for AGENT in aggnd aidref agrero corero viaf mef
+    for ENTITY in aggnd aidref agrero corero viaf
     do
-        invenio fixtures bulk_load ${AGENT} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENT}_pidstore.csv --csv_metadata_file ${AGENT}_metadata.csv --verbose --reindex
+        invenio fixtures load-csv ${ENTITY} ${INPUT_DIR}/${ENTITY}_pidstore.csv ${INPUT_DIR}/${ENTITY}_metadata.csv --verbose --reindex
     done
+    invenio fixtures load-csv mef ${INPUT_DIR}/mef_pidstore.csv ${INPUT_DIR}/mef_metadata.csv --ids_file ${INPUT_DIR}/mef_id.csv --verbose --reindex
     oai_init
     invenio utils runindex --raise-on-error --concurrency 8 --delayed
     invenio utils runindex --raise-on-error
-    invenio utils reindex_missing -v
-    invenio utils agent_counts
+    invenio utils reindex-missing -v
+    invenio agents-counts
 }
 
 function create_json () {
     INPUT_DIR=$1
     OUTPUT_DIR=$2
     info_msg "Start creating json: ${INPUT_DIR} ${OUTPUT_DIR}"
-    # Transform marc files to json
-    for AGENT in aggnd aidref agrero corero
+    # Transform MARC files to json
+    for ENTITY in aggnd aidref agrero corero
     do
-        invenio fixtures bulk_load ${AGENT} ${INPUT_DIR} ${OUTPUT_DIR} --marc_file ${AGENT}.mrc --json_file ${AGENT}.json &
+        invenio fixtures marc-to-json ${ENTITY} ${INPUT_DIR}/${ENTITY}.mrc ${OUTPUT_DIR}/${ENTITY}.json --error_file ${OUTPUT_DIR}/${ENTITY}_error.mrc &
     done
     trap 'jobs -p | xargs kill' EXIT
     wait
@@ -149,25 +150,25 @@ function create_csv () {
     OUTPUT_DIR=$1
     info_msg "Start creating csv: ${OUTPUT_DIR}"
     # Create CSV files from json
-    for AGENT in aggnd aidref agrero corero
+    for ENTITY in aggnd aidref agrero corero
     do
-        invenio fixtures bulk_load ${AGENT} ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file ${AGENT}.json --csv_pidstore_file ${AGENT}_pidstore.csv --csv_metadata_file ${AGENT}_metadata.csv &
+        invenio fixtures create-csv ${ENTITY} ${OUTPUT_DIR}/${ENTITY}.json ${OUTPUT_DIR} &
     done
     trap 'jobs -p | xargs kill' EXIT
     wait
-    info_msg "Create viaf CSV files from viaf.txt: ${OUTPUT_DIR}"
-    # Create viaf CSV files from viaf.txt
-    invenio fixtures bulk_load viaf ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file viaf.txt --csv_pidstore_file viaf_pidstore.csv --csv_metadata_file viaf_metadata.csv
-    info_msg "Create mef CSV files from viaf_metadata.csv: ${OUTPUT_DIR}"
-    # Create mef CSV files from viaf_metadata.csv
-    invenio fixtures bulk_load mef ${OUTPUT_DIR} ${OUTPUT_DIR} --json_file viaf_metadata.csv --csv_pidstore_file mef_pidstore.csv --csv_metadata_file mef_metadata.csv
+    info_msg "Create VIAF CSV files from viaf.txt: ${OUTPUT_DIR}"
+    # Create VIAF CSV files from viaf.txt
+    invenio agents create-csv-viaf ${OUTPUT_DIR}/viaf.txt ${OUTPUT_DIR}
+
+    info_msg "Create MEF CSV files from viaf_metadata.csv: ${OUTPUT_DIR}"
+    # Create MEF CSV files from viaf_metadata.csv
+    invenio agents create-csv-mef ${OUTPUT_DIR}/viaf_pidstore.csv ${OUTPUT_DIR}
 }
 
-function bulk_load () {
+function create_and_load () {
     INPUT_DIR=$1
     OUTPUT_DIR=$2
-    info_msg "Start bulk loading: ${INPUT_DIR} ${OUTPUT_DIR}"
-    # Transform marc files to json
+    # Transform MARC files to json
     create_json ${INPUT_DIR} ${OUTPUT_DIR}
 
     # Create CSV files from json
@@ -183,36 +184,36 @@ function viaf_init () {
     info_msg "Start loading from VIAF file: ${INPUT_DIR}"
     db_init
     oai_init
-    AGENT=viaf
-    invenio fixtures bulk_load ${AGENT} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${AGENT}_pidstore.csv --csv_metadata_file ${AGENT}_metadata.csv --verbose --reindex
+    ENTITY=viaf
+    invenio fixtures bulk-load ${ENTITY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${ENTITY}_pidstore.csv --csv_metadata_file ${ENTITY}_metadata.csv --verbose --reindex
     invenio utils runindex --raise-on-error --concurrency 8 --delayed
     invenio utils runindex --raise-on-error
-    invenio utils create_mef_and_agents_from_viaf --online --progress
+    invenio utils create-from-viaf --online --progress
 }
 
 function usage () {
     msg "Usage: "
     msg " [./scripts/setup]"
-    msg "    Load prepared json files available in git/data"
+    msg "    Load prepared JSON files available in git/data"
     msg " "
     msg " [./scripts/setup --db_init]"
     msg " "
     msg " [./scripts/setup --deploy INPUT_DIR]"
-    msg "    INPUT_DIR where csv files are found. "
+    msg "    INPUT_DIR where CSV files are found. "
     msg " "
-    msg " [./scripts/setup --bulk_load INPUT_DIR OUTPUT_DIR]"
-    msg "    INPUT_DIR where marc files are found. "
+    msg " [./scripts/setup --create_and_load INPUT_DIR OUTPUT_DIR]"
+    msg "    INPUT_DIR where MARC files are found. "
     msg "    OUTPUT_DIR directory for output file"
     msg " "
     msg " [./scripts/setup --create_json INPUT_DIR OUTPUT_DIR]"
-    msg "    INPUT_DIR where marc files are found. "
+    msg "    INPUT_DIR where MARC files are found. "
     msg "    OUTPUT_DIR directory for output file"
     msg " "
     msg " [./scripts/setup --create_csv INPUT_OUTPUT_DIR]"
     msg "    INPUT_OUTPUT_DIR directory for input and output file"
     msg " "
     msg " [./scripts/setup --viaf_init INPUT_DIR]"
-    msg "    INPUT_DIR directory for VIAF csv files"
+    msg "    INPUT_DIR directory for VIAF CSV files"
 
 }
 
@@ -238,13 +239,13 @@ else
                 deploy $2
             fi
             ;;
-        '--bulk_load')
+        '--create_and_load')
             if [ -z "$2" ] || [ -z "$3" ]; then
                 error_msg "Invalid input arguments. "
                 usage
                 exit 3
             else
-                bulk_load $2 $3
+                create_and_load $2 $3
             fi
             ;;
         '--create_json')

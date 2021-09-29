@@ -136,6 +136,7 @@ setup(
             'fixtures = rero_mef.cli:fixtures',
             'utils = rero_mef.cli:utils',
             'celery = rero_mef.cli:celery',
+            'agents = rero_mef.agents.cli:agents',
         ],
         'dojson.cli.rule': [
             'tomarc = dojson.contrib.to_marc21:to_marc21',

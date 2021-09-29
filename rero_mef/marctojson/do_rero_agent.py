@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Marctojsons transformer for Rero records."""
+"""Marctojsons transformer for RERO records."""
 
 
 import re
@@ -24,7 +24,7 @@ from rero_mef.marctojson.helper import build_string_list_from_fields
 
 
 class Transformation(object):
-    """Transformation marc21 to json for RERO autority person."""
+    """Transformation MARC21 to JSON for RERO autority person."""
 
     def __init__(self, marc, logger=None, verbose=False, transform=True):
         """Constructor."""

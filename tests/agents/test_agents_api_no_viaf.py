@@ -24,7 +24,7 @@ from rero_mef.agents.rero.api import AgentReroRecord
 
 def test_create_agent_record_no_viaf_links(
         app, gnd_record, rero_record, idref_record):
-    """Test create agent record without viaf links."""
+    """Test create agent record without VIAF links."""
     record, action, m_record, m_action, v_record, online = \
         AgentGndRecord.create_or_update_agent_mef_viaf(
             data=gnd_record,

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Schema for mef authority",
+  "title": "Schema for MEF authority",
   "type": "object",
   "required": [
     "$schema",
@@ -10,7 +10,7 @@
   "properties": {
     "$schema": {
       "title": "Schema",
-      "description": "Schema to mef authority record.",
+      "description": "Schema to MEF authority record.",
       "type": "string",
       "minLength": 7
     },
@@ -20,20 +20,20 @@
       "minLength": 1
     },
     "viaf_pid": {
-      "title": "Viaf authority ID",
+      "title": "VIAF authority ID",
       "type": "string",
       "minLength": 1
     },
     "gnd": {
-      "title": "Gnd authority ID",
+      "title": "GND authority ID",
       "type": "object"
     },
     "rero": {
-      "title": "Rero authority ID",
+      "title": "RERO authority ID",
       "type": "object"
     },
     "idref": {
-      "title": "Idref authority ID",
+      "title": "IDREF authority ID",
       "type": "object"
     },
     "deleted": {

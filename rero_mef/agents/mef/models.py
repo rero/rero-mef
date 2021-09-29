@@ -24,8 +24,8 @@ from invenio_pidstore.models import RecordIdentifier
 from invenio_records.models import RecordMetadataBase
 
 
-class MefIdentifier(RecordIdentifier):
-    """Sequence generator for mef Authority identifiers."""
+class AgentMefIdentifier(RecordIdentifier):
+    """Sequence generator for MEF agent identifiers."""
 
     __tablename__ = 'mef_id'
     __mapper_args__ = {'concrete': True}
@@ -37,7 +37,7 @@ class MefIdentifier(RecordIdentifier):
     )
 
 
-class MefMetadata(db.Model, RecordMetadataBase):
+class AgentMefMetadata(db.Model, RecordMetadataBase):
     """Represent a record metadata."""
 
     __tablename__ = 'mef_metadata'

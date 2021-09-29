@@ -22,12 +22,6 @@ import re
 
 # ---------------------------- Modules ----------------------------------------
 
-__author__ = "Peter Weber <Peter.Weber@rero.ch>"
-__version__ = "0.0.0"
-__copyright__ = "Copyright (c) 2009-2011 Rero, Johnny Mariethoz"
-__license__ = "Internal Use Only"
-
-
 LANGUAGES = {
     'aar': 1,
     'abk': 1,
@@ -1256,7 +1250,7 @@ def replace_ctrl(text):
 
 
 def nice_field(field, ctrl=False, tab=False):
-    """Changes marc 21 strings to more visible strings 1Fa -> $a with tag."""
+    """Changes MARC21 strings to more visible strings 1Fa -> $a with tag."""
     res = ''
     try:
         if tab:
@@ -1271,7 +1265,7 @@ def nice_field(field, ctrl=False, tab=False):
 
 
 def nice_marc_field(field, ctrl=False, tab=False):
-    """Changes marc 21 strings to more visible strings 1Fa -> $a."""
+    """Changes MARC21 strings to more visible strings 1Fa -> $a."""
     res = ''
     field = copy.deepcopy(field)
     try:
@@ -1319,7 +1313,7 @@ def nice_marc_field(field, ctrl=False, tab=False):
 
 
 def nice_record(record, ctrl=False):
-    """Make nice marc record."""
+    """Make nice MARC record."""
     leader = record.leader
     if ctrl:
         leader = replace_ctrl(leader)

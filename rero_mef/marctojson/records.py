@@ -34,7 +34,7 @@ __license__ = "Internal Use Only"
 # ----------------------------------- Classes ---------------------------------
 # MrcIterator ----
 class MrcIterator(object):
-    """Iterator to get marc records from mrc file."""
+    """Iterator to get MARC records from mrc file."""
 
     def __init__(self, file_name, exceptions=False):
         """DocString."""
@@ -47,7 +47,7 @@ class MrcIterator(object):
         self.exceptions = exceptions
 
     def __next_valid__(self, error):
-        """Get next valid marc record."""
+        """Get next valid MARC record."""
         try:
             rec = self._marc_reader.__next__()
         except StopIteration:
@@ -63,7 +63,7 @@ class MrcIterator(object):
         return rec, None
 
     def __next__(self):
-        """Get next marc record."""
+        """Get next MARC record."""
         self.error = ''
         try:
             rec = self._marc_reader.__next__()

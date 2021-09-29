@@ -25,7 +25,7 @@ from rero_mef.agents.viaf.api import AgentViafRecord
 
 def test_create_agent_record_with_viaf_links(
         app, viaf_record, gnd_record, rero_record, idref_record):
-    """Test create agent record with viaf links."""
+    """Test create agent record with VIAF links."""
     returned_record, action = AgentViafRecord.create_or_update(
         viaf_record, dbcommit=True, reindex=True
     )
@@ -97,7 +97,7 @@ def test_create_agent_record_with_viaf_links(
 
 def test_update_agent_record_with_viaf_links(
         app, viaf_record, gnd_record, rero_record, idref_record):
-    """Test create agent record with viaf links."""
+    """Test create agent record with VIAF links."""
     returned_record, action = AgentGndRecord.create_or_update(
         gnd_record, dbcommit=True, reindex=True
     )
@@ -119,7 +119,7 @@ def test_update_agent_record_with_viaf_links(
 
 def test_uptodate_agent_record_with_viaf_links_md5(
         app, viaf_record, gnd_record, rero_record, idref_record):
-    """Test create agent record with viaf links."""
+    """Test create agent record with VIAF links."""
     returned_record, action = AgentGndRecord.create_or_update(
         gnd_record, dbcommit=True, reindex=True, test_md5=True
     )

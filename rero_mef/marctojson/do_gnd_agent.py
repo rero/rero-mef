@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Marctojsons transformer for Gnd records."""
+"""Marctojsons transformer for GND records."""
 # https://www.dnb.de/EN/Professionell/Metadatendienste/Datenbezug/GND_Aenderungsdienst/gndAenderungsdienst_node.html
 
 import re
@@ -35,7 +35,7 @@ PUNCTUATION_POLICY = {
 
 
 class Transformation(object):
-    """Transformation marc21 to json for gnd autority person."""
+    """Transformation MARC21 to JSON for GND autority person."""
 
     def __init__(self, marc, logger=None, verbose=False, transform=True):
         """Constructor."""

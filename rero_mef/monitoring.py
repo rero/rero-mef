@@ -32,7 +32,7 @@ from invenio_search import RecordsSearch, current_search_client
 from redis import Redis
 
 from .permissions import admin_permission
-from .utils import get_agent_class, progressbar
+from .utils import get_entity_class, progressbar
 
 api_blueprint = Blueprint(
     'api_monitoring',
@@ -407,7 +407,7 @@ class Monitoring(object):
                 if pids_es.get(hit.pid):
                     pids_es_double.append(hit.pid)
                 pids_es[hit.pid] = 1
-            agent_class = get_agent_class(doc_type)
+            agent_class = get_entity_class(doc_type)
             pids_db = []
             progress = progressbar(
                 items=agent_class.get_all_pids(with_deleted=with_deleted),
@@ -426,7 +426,7 @@ class Monitoring(object):
     def info(cls, with_deleted=False, difference_db_es=False):
         """Info.
 
-        Get count details for all records rest endpoints in json format.
+        Get count details for all records rest endpoints in JSON format.
 
         :param with_deleted: count also deleted items in database.
         :return: dictionair with database, elasticsearch and databse minus

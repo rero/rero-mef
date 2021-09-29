@@ -23,7 +23,7 @@ from ..api import ReroIndexer, ReroMefRecord
 
 
 class ConceptRecord(ReroMefRecord):
-    """Authority Record class."""
+    """Concept record class."""
 
     name = None
     concept = None
