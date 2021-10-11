@@ -35,6 +35,8 @@ from invenio_accounts.cli import commit, users
 from invenio_oaiharvester.cli import oaiharvester
 from invenio_oaiharvester.models import OAIHarvestConfig
 from invenio_records_rest.utils import obj_or_import_string
+from invenio_search.cli import es_version_check
+from invenio_search.proxies import current_search, current_search_client
 from sqlitedict import SqliteDict
 from werkzeug.local import LocalProxy
 
@@ -900,6 +902,28 @@ def reindex(pid_type, no_info):
             'Execute "runindex" command to process the queue!',
             fg='yellow'
         )
+
+
+@utils.command('update_mapping')
+@click.option('--aliases', '-a', multiple=True, help='all if not specified')
+@with_appcontext
+@es_version_check
+def update_mapping(aliases):
+    """Update the mapping of a given alias."""
+    if not aliases:
+        aliases = current_search.aliases.keys()
+    for alias in aliases:
+        for index, f_mapping in iter(
+            current_search.aliases.get(alias).items()
+        ):
+            mapping = json.load(open(f_mapping))
+            res = current_search_client.indices.put_mapping(
+                mapping.get('mappings'), index)
+            if res.get('acknowledged'):
+                click.secho(
+                    f'index: {index} has been sucessfully updated', fg='green')
+            else:
+                click.secho(f'error: {res}', fg='red')
 
 
 def queue_count():
