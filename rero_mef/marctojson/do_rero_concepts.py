@@ -21,7 +21,7 @@ from rero_mef.marctojson.helper import build_string_list_from_fields
 
 
 class Transformation(object):
-    """Transformation MARC21 to JSON for RERO autority person."""
+    """Transformation MARC21 to JSON for RERO concepts."""
 
     def __init__(self, marc, logger=None, verbose=False, transform=True):
         """Constructor."""
@@ -29,12 +29,13 @@ class Transformation(object):
         self.logger = logger
         self.verbose = verbose
         self.json_dict = {}
+        self.needs_tags = ['150', '155']
         if transform:
             self._transform()
 
     def _transform(self):
         """Call the transformation functions."""
-        if self.marc.get_fields('150') or self.marc.get_fields('155'):
+        if self.marc.get_fields(*self.needs_tags):
             for func in dir(self):
                 if func.startswith('trans'):
                     func = getattr(self, func)
@@ -77,7 +78,7 @@ class Transformation(object):
             self.json_dict['identifiedBy'] = identifiers
 
     def trans_rero_bnf_type(self):
-        """Transformation bnf type from field 035."""
+        """Transformation bnf type from field 075."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_rero_bnf_type')
         try:

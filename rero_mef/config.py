@@ -37,6 +37,8 @@ from .agents.viaf.models import ViafIdentifier
 from .concepts.mef.models import ConceptMefIdentifier
 from .concepts.rero.models import ConceptReroIdentifier
 from .filter import exists_filter
+from .marctojson.do_bnf_concepts import \
+    Transformation as ConceptBnfTransformation
 from .marctojson.do_gnd_agent import Transformation as AgentGndTransformation
 from .marctojson.do_idref_agent import \
     Transformation as AgentIdrefTransformation
@@ -194,7 +196,8 @@ TRANSFORMATION = {
     'aggnd': AgentGndTransformation,
     'aidref': AgentIdrefTransformation,
     'agrero': AgentReroTransformation,
-    'corero': ConceptReroTransformation
+    'corero': ConceptReroTransformation,
+    'cobnf': ConceptBnfTransformation
 }
 
 IDENTIFIERS = {

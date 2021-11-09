@@ -43,6 +43,7 @@ class Transformation(object):
         self.logger = logger
         self.verbose = verbose
         self.json_dict = {}
+        self.needs_tags = []
         self.punctuation = marc.leader[18]
         if transform:
             self._transform()

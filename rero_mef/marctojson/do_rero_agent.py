@@ -32,14 +32,13 @@ class Transformation(object):
         self.logger = logger
         self.verbose = verbose
         self.json_dict = {}
+        self.needs_tags = ['100', '110', '111']
         if transform:
             self._transform()
 
     def _transform(self):
         """Call the transformation functions."""
-        if self.marc.get_fields('100') \
-                or self.marc.get_fields('110') \
-                or self.marc.get_fields('111'):
+        if self.marc.get_fields(*self.needs_tags):
             for func in dir(self):
                 if func.startswith('trans'):
                     func = getattr(self, func)

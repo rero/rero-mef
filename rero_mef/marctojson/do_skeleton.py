@@ -41,6 +41,7 @@ class Transformation(object):
         self.logger = logger
         self.verbose = verbose
         self.json_dict = {}
+        self.needs_tags = []
         if transform:
             self._transform()
 

@@ -183,17 +183,18 @@ def delete(entity, source, lazy, enqueue, verbose):
 
 
 @fixtures.command()
-@click.argument('entity')
+@click.argument('transform')
 @click.argument('marc_file')
 @click.argument('json_file')
-@click.option('-e', '--error_file', 'error_file', default=None,
-              type=click.File('wb'))
-@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@click.option('-e', '--error_file', default=None, type=click.File('wb'))
+@click.option('-p', '--no_pid_duplicat_test', is_flag=True, default=False)
+@click.option('-v', '--verbose', is_flag=True, default=False)
 @with_appcontext
-def marc_to_json(entity, marc_file, json_file, error_file, verbose):
+def marc_to_json(transform, marc_file, json_file, error_file,
+                 no_pid_duplicat_test, verbose):
     """Entity MARC to JSON.
 
-    :param entity: entity [aidref, aggnd, agrero, corero].
+    :param transform: transform.
     :param marc_file: MARC input file.
     :param json_file: JSON output file.
     :param verbose: Verbose.
@@ -201,7 +202,7 @@ def marc_to_json(entity, marc_file, json_file, error_file, verbose):
     json_deleted_file_name = (f'{os.path.splitext(json_file)[0]}'
                               f'_deleted{os.path.splitext(json_file)[-1]}')
     click.secho(
-        f' Transform {entity} MARC to JSON. '
+        f' Transform {transform} MARC to JSON. '
         f'{json_file} {json_deleted_file_name}',
         err=True
     )
@@ -217,7 +218,7 @@ def marc_to_json(entity, marc_file, json_file, error_file, verbose):
         records = RecordsCount(str(marc_file))
     except Exception as err:
         click.secho(
-            f'Marc file not found for {entity}:{err}',
+            f'Marc file not found for {transform}:{err}',
             fg='red',
             err=True
         )
@@ -225,16 +226,16 @@ def marc_to_json(entity, marc_file, json_file, error_file, verbose):
     pids = {}
     count_errors = 0
     for record, count in records:
-        data = transformation[entity](
+        data = transformation[transform](
             marc=record,
             logger=current_app.logger,
             verbose=True
         )
         if data.json:
             pid = data.json.get('pid')
-            if pids.get(pid):
+            if pids.get(pid) and no_pid_duplicat_test:
                 click.secho(
-                    f'  {count:8} Error duplicate pid in {entity}: {pid}',
+                    f'  {count:8} Error duplicate pid in {transform}: {pid}',
                     fg='red'
                 )
             else:
@@ -250,28 +251,28 @@ def marc_to_json(entity, marc_file, json_file, error_file, verbose):
             count_errors += 1
             if error_file:
                 error_file.write(record.as_marc())
-            click.secho(
-                f'{count:8} Error transformation MARC {entity}',
-                fg='yellow'
-            )
+            msg = f'{count:8} Error transformation MARC ({transform}) '
+            if data.needs_tags:
+                msg += f'no needed tag found: {data.needs_tags}'
+            click.secho(msg, fg='yellow')
 
     json_file.close()
     json_deleted_file.close()
 
     click.secho(
-        f'  Number of {entity} JSON records created: {count_created}.',
+        f'  Number of {transform} JSON records created: {count_created}.',
         fg='green',
         err=True
     )
     if count_deleted:
         click.secho(
-            f'  Number of {entity} JSON records deleted: {count_deleted}.',
+            f'  Number of {transform} JSON records deleted: {count_deleted}.',
             fg='yellow',
             err=True
         )
     if count_errors:
         click.secho(
-            f'  Number of {entity} MARC records errors: {count_errors}.',
+            f'  Number of {transform} MARC records errors: {count_errors}.',
             fg='red',
             err=True
         )
