@@ -455,7 +455,6 @@ def oai_get_record(id, name, transformation, record_cls, access_token=None,
         params['accessToken'] = access_token
 
     params['metadataPrefix'] = metadata_prefix
-    setspecs = setspecs.split()
     params['identifier'] = f'{identifier}{id}'
     try:
         record = request.GetRecord(**params)
