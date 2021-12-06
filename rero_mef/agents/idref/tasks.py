@@ -23,7 +23,7 @@ from celery import shared_task
 from flask import current_app
 from sickle import OAIResponse, Sickle
 
-from .api import AgentIdrefRecord
+from .api import AgentIdrefRecord, AgentIdrefSearch
 from ...marctojson.do_idref_agent import Transformation
 from ...utils import MyOAIItemIterator, oai_get_record, \
     oai_process_records_from_dates, oai_save_records_from_dates
@@ -126,3 +126,35 @@ def idref_get_record(id, verbose=False, debug=False):
         verbose=verbose,
         debug=debug
     )
+
+
+@shared_task
+def create_redirect_to(dbcommit=True, reindex=True):
+    """Find all redirect from and creates redirect to."""
+    query = AgentIdrefSearch() \
+        .filter('term', relation_pid__type='redirect_from') \
+        .params(preserve_order=True) \
+        .sort({'_updated': {'order': 'desc'}}) \
+        .source(['pid', 'relation_pid']) \
+        .scan()
+    changed = 0
+    for hit in query:
+        idref = AgentIdrefRecord.get_record_by_pid(hit.relation_pid.value)
+        if idref:
+            if idref.get('relation_pid', {}).get('type') == 'redirect_to':
+                current_app.logger.info(
+                    f'Has redirect {hit.relation_pid.value} IDREF: {hit.pid}'
+                )
+            else:
+                # add redirect to:
+                idref['relation_pid'] = {
+                    'type': 'redirect_to',
+                    'value': hit.pid
+                }
+                changed += 1
+                idref.update(data=idref, dbcommit=dbcommit, reindex=reindex)
+        else:
+            current_app.logger.warning(
+                f'No redirect found {hit.relation_pid.value} IDREF: {hit.pid}'
+            )
+    return changed

@@ -18,6 +18,7 @@
 
 import click
 from flask import current_app
+from invenio_db import db
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 from invenio_search import current_search
 
@@ -225,6 +226,30 @@ class AgentRecord(ReroMefRecord):
     def deleted(self):
         """Get record deleted value."""
         return self.get('deleted')
+
+    def get_latest(self):
+        """Get latest record."""
+        return self
+
+    def create_redirect(self, dbcomit=True, delindex=True):
+        """Create redirect."""
+        latest = self.get_latest()
+        if self != latest:
+            # TODO: do we have to update the MEF record?
+            # mef_record = AgentMefRecord.get_mef_by_entity_pid(
+            #     self.pid, self.name)
+            # if mef_record:
+            #     mef_record[self.name] = {
+            #         '$ref': self.build_ref_string(latest.pid, self.name)}
+            #     mef_record.update(data=mef_record, dbcommit=dbcommit,
+            #                       reindex=reindex)
+            persistent_identifier = self.persistent_identifier
+            self.delete(dbcommit=dbcomit, delindex=delindex)
+            # we have to reregister the persistent identifier for the redirect
+            persistent_identifier.status = PIDStatus.REGISTERED
+            db.session.commit()
+            persistent_identifier.redirect(latest.persistent_identifier)
+            return latest
 
 
 class AgentIndexer(ReroIndexer):

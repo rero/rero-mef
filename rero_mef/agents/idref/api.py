@@ -17,6 +17,8 @@
 
 """API for manipulating IDREF agent."""
 
+from elasticsearch_dsl import Q
+from flask import current_app
 from invenio_search.api import RecordsSearch
 
 from .fetchers import idref_id_fetcher
@@ -56,6 +58,24 @@ class AgentIdrefRecord(AgentRecord):
         """Get online record."""
         from .tasks import idref_get_record
         return idref_get_record(id=id, verbose=verbose)
+
+    def get_latest(self):
+        """Get latest record."""
+        query = AgentIdrefSearch() \
+            .filter('term', relation_pid__type='redirect_from') \
+            .filter('term', relation_pid__value=self.pid) \
+            .filter('bool', must_not=[Q('exists', field='deleted')])
+        if query.count() > 1:
+            multiple = [hit.pid for hit in query.source('pid').scan()]
+            # generate warning but get one redirect afterwards
+            current_app.logger.warning(
+                f'Multiple redirect from: {self.pid} -> {multiple}')
+        if query.count():
+            # TODO: We should use the newest record for multiple records
+            hit = next(query.source('pid').scan())
+            newer = self.get_record_by_pid(hit.pid)
+            return newer.get_latest()
+        return self
 
 
 class AgentIdrefIndexer(AgentIndexer):

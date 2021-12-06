@@ -57,6 +57,15 @@ class AgentGndRecord(AgentRecord):
         from .tasks import gnd_get_record
         return gnd_get_record(id=id, verbose=verbose)
 
+    def get_latest(self):
+        """Get latest record."""
+        relation_pid = self.get('relation_pid')
+        if self.get('relation_pid'):
+            newer = self.get_record_by_pid(relation_pid['value'])
+            if newer:
+                return newer.get_latest()
+        return self
+
 
 class AgentGndIndexer(AgentIndexer):
     """GndIndexer."""
