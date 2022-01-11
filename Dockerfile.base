@@ -14,7 +14,7 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-FROM python:3.6-slim-stretch
+FROM python:3.9-slim-buster
 
 LABEL maintainer="software@rero.ch"
 LABEL description="MEF (Multilingual Entity File) server with records for persons, works, etc. for reuse in integrated library systems (ILS)."
