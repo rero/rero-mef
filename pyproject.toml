@@ -6,7 +6,7 @@ authors = ["RERO <software@rero.ch>"]
 license = "GNU Affero General Public License v3.0"
 
 [tool.poetry.dependencies]
-python = ">= 3.6, <3.8"
+python = ">= 3.6, <3.10"
 ## Python packages dependencies (order matters)
 #------------------------------------------------------------------------------
 ## Note: poetry evaluates the package constraints from the top to the bottom

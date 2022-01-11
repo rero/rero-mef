@@ -16,17 +16,17 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Setup node
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: '12'
 
     - name: Docker compose up
       run: docker-compose up -d
 
-    - name: Set up Python 3.6
+    - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
-        python-version: 3.6
+        python-version: 3.9
 
     # - name: Allow unsecure commands
     #   # needed by dschep/install-poetry-action@v1.3

@@ -26,7 +26,7 @@ from setuptools import find_packages, setup
 
 readme = open('README.rst').read()
 
-INVENIO_VERSION = "3.2.1"
+INVENIO_VERSION = "3.4.1"
 
 packages = find_packages()
 
@@ -154,7 +154,7 @@ setup(
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.9',
         'Development Status :: 3 - Alpha',
     ],
 )
