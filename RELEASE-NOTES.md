@@ -4,9 +4,24 @@ copyright: Copyright (C) 2020 RERO
 license: GNU Affero General Public License
 ---
 
+## v0.8.0
+
+### Data and API
+
+- Implements concepts to MEF
+
+### Instance
+
+- Upgrades Python to `v3.9`
+- Upgrades Elastic Search to `v7.10.2`
+
+### Fixes
+
+- Several code optimizations and fixes
+
 ## v0.7.0
 
-## Data
+### Data
 
 - Fixes `bf:Organisation` records with `conference=true`.
 

@@ -1,5 +1,40 @@
 # Changelog
 
+## [v0.8.0](https://github.com/rero/rero-mef/tree/v0.8.0) (2022-02-08)
+
+[Full Changelog](https://github.com/rero/rero-mef/compare/v0.7.0...v0.8.0)
+
+**Merged pull requests:**
+
+- security: Add configuration. [\#75](https://github.com/rero/rero-mef/pull/75) ([rerowep](https://github.com/rerowep))
+- dependencies: update the dependencies lock file [\#74](https://github.com/rero/rero-mef/pull/74) ([rerowep](https://github.com/rerowep))
+- agent GND: fix selection for organisation/person [\#72](https://github.com/rero/rero-mef/pull/72) ([rerowep](https://github.com/rerowep))
+- indexer: update mapping [\#70](https://github.com/rero/rero-mef/pull/70) ([rerowep](https://github.com/rerowep))
+- concepts: add MEF [\#69](https://github.com/rero/rero-mef/pull/69) ([rerowep](https://github.com/rerowep))
+- agents: improve the CLI [\#68](https://github.com/rero/rero-mef/pull/68) ([rerowep](https://github.com/rerowep))
+- records: rename classes [\#67](https://github.com/rero/rero-mef/pull/67) ([rerowep](https://github.com/rerowep))
+- harvester: use MyOAIItemIterator [\#66](https://github.com/rero/rero-mef/pull/66) ([rerowep](https://github.com/rerowep))
+- global: update dependencies & several improvements [\#65](https://github.com/rero/rero-mef/pull/65) ([rerowep](https://github.com/rerowep))
+
+## [v0.7.0](https://github.com/rero/rero-mef/tree/v0.7.0) (2021-04-22)
+
+[Full Changelog](https://github.com/rero/rero-mef/compare/v0.6.0...v0.7.0)
+
+**Fixed bugs:**
+
+- several: improves several things [\#63](https://github.com/rero/rero-mef/pull/63) ([rerowep](https://github.com/rerowep))
+
+**Closed issues:**
+
+- Is the license the one we want? [\#45](https://github.com/rero/rero-mef/issues/45)
+
+**Merged pull requests:**
+
+- release: v0.7.0 [\#64](https://github.com/rero/rero-mef/pull/64) ([iGormilhit](https://github.com/iGormilhit))
+- oai: harvesting [\#60](https://github.com/rero/rero-mef/pull/60) ([rerowep](https://github.com/rerowep))
+- dependencies: upgrade invenio to version 3.4 [\#57](https://github.com/rero/rero-mef/pull/57) ([rerowep](https://github.com/rerowep))
+- license: move from GPLv2 to AGPLv3 [\#56](https://github.com/rero/rero-mef/pull/56) ([rerowep](https://github.com/rerowep))
+
 ## [v0.6.0](https://github.com/rero/rero-ebooks/tree/v0.6.0) (2021-04-21)
 
 [Full Changelog](https://github.com/rero/rero-ebooks/compare/v0.5.0...v0.6.0)
