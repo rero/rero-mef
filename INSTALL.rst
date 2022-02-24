@@ -50,7 +50,7 @@ build all static assets):
 
 .. code-block:: console
 
-    $ poetry run bootstrap
+    $ poetry run poe bootstrap
 
 Next, create database tables, search indexes and message queues:
 

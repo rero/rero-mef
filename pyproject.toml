@@ -39,10 +39,10 @@ invenio-oaiserver = ">=1.2.0,<1.3.0"
 invenio-pidstore = ">=1.2.1,<1.3.0"
 invenio-records-rest = ">=1.8.0,<1.9.0"
 invenio-records-ui= ">=1.2.0,<1.3.0"
-invenio-records = ">=1.4.0,<1.6.0"
+invenio-records = ">=1.5.0,<1.7.0"
 
 ## Default from Invenio
-invenio = {version = ">=3.4.0,<5.4.0", extras = ["base", "postgresql", "auth", "elasticsearch7", "docs", "tests" ]}
+invenio = {version = ">=3.4.0,<3.5.0", extras = ["base", "postgresql", "auth", "elasticsearch7", "docs", "tests" ]}
 
 # TODO: jedi > 0.17 crashs the console
 jedi = "<0.18.0"
@@ -64,6 +64,7 @@ psycopg2-binary = ">2.9.0"
 # sentry
 invenio-logging = { version = ">=1.3.0,<1.4.0", extras = ["sentry-sdk", "sentry"] }
 python-dotenv = "^0.13.0"
+WTForms = "<3.0.0"
 
 [tool.poetry.dev-dependencies]
 ## Python packages development dependencies (order matters)
@@ -77,15 +78,115 @@ mock = ">=2.0.0"
 autoflake = ">=1.3.1"
 appnope = { version = "*", optional = true }
 
-[tool.poetry.scripts]
-bootstrap = "scripts:run('./scripts/bootstrap')"
-console = "scripts:run('./scripts/console')"
-run-tests = "scripts:run('./run-tests.sh')"
-tests = "scripts:run('pytest')"
-tests-debug = "scripts:run('pytest', '--no-cov', '-vv', '-s')"
-server = "scripts:run('./scripts/server')"
-setup = "scripts:run('./scripts/setup')"
-update = "scripts:run('./scripts/update')"
+[project.console_scripts]
+rero-ils = "invenio_app.cli:cli"
+
+[tool.poetry.plugins."invenio_celery.tasks"]
+rero_mef = "rero_mef.tasks"
+agents = "rero_mef.agents.tasks"
+idref = "rero_mef.agents.idref.tasks"
+gnd = "rero_mef.agents.gnd.tasks"
+
+[tool.poetry.plugins."invenio_assets.webpack"]
+rero_mef_css = "rero_mef.theme.webpack:theme"
+
+[tool.poetry.plugins."invenio_base.apps"]
+rero-mef = "rero_mef.ext:REROMEFAPP"
+
+[tool.poetry.plugins."invenio_base.blueprints"]
+rero_mef = "rero_mef.theme.views:blueprint"
+
+[tool.poetry.plugins."invenio_config.module"]
+rero_mef = "rero_mef.config"
+
+[tool.poetry.plugins."invenio_db.models"]
+mef = "rero_mef.agents.mef.models"
+viaf = "rero_mef.agents.viaf.models"
+agents_gnd = "rero_mef.agents.gnd.models"
+agents_idref = "rero_mef.agents.idref.models"
+agents_rero = "rero_mef.agents.rero.models"
+concepts_mef = "rero_mef.concepts.mef.models"
+concepts_rero = "rero_mef.concepts.rero.models"
+
+[tool.poetry.plugins."invenio_pidstore.minters"]
+mef_id = "rero_mef.agents.mef.minters:mef_id_minter"
+viaf_id = "rero_mef.agents.viaf.minters:viaf_id_minter"
+agent_gnd_id = "rero_mef.agents.gnd.minters:gnd_id_minter"
+agent_idref_id = "rero_mef.agents.idref.minters:idref_id_minter"
+agent_rero_id = "rero_mef.agents.rero.minters:rero_id_minter"
+concept_mef_id = "rero_mef.concepts.mef.minters:mef_id_minter"
+concept_rero_id = "rero_mef.concepts.rero.minters:rero_id_minter"
+
+[tool.poetry.plugins."invenio_pidstore.fetchers"]
+mef_id = "rero_mef.agents.mef.fetchers:mef_id_fetcher"
+viaf_id = "rero_mef.agents.viaf.fetchers:viaf_id_fetcher"
+agent_gnd_id = "rero_mef.agents.gnd.fetchers:gnd_id_fetcher"
+agent_idref_id = "rero_mef.agents.idref.fetchers:idref_id_fetcher"
+agent_rero_id = "rero_mef.agents.rero.fetchers:rero_id_fetcher"
+concept_mef_id = "rero_mef.concepts.mef.fetchers:mef_id_fetcher"
+concept_rero_id = "rero_mef.concepts.rero.fetchers:rero_id_fetcher"
+
+[tool.poetry.plugins."invenio_jsonschemas.schemas"]
+common = "rero_mef.jsonschemas"
+mef = "rero_mef.agents.mef.jsonschemas"
+viaf = "rero_mef.agents.viaf.jsonschemas"
+agents_gnd = "rero_mef.agents.gnd.jsonschemas"
+agents_idref = "rero_mef.agents.idref.jsonschemas"
+agents_rero = "rero_mef.agents.rero.jsonschemas"
+cocepts_mef = "rero_mef.concepts.mef.jsonschemas"
+cocepts_rero = "rero_mef.concepts.rero.jsonschemas"
+
+[tool.poetry.plugins."invenio_search.mappings"]
+mef = "rero_mef.agents.mef.mappings"
+viaf = "rero_mef.agents.viaf.mappings"
+agents_gnd = "rero_mef.agents.gnd.mappings"
+agents_idref = "rero_mef.agents.idref.mappings"
+agents_rero = "rero_mef.agents.rero.mappings"
+concepts_mef = "rero_mef.concepts.mef.mappings"
+concepts_rero = "rero_mef.concepts.rero.mappings"
+
+[tool.poetry.plugins."invenio_records.jsonresolver"]
+mef = "rero_mef.agents.mef.jsonresolvers.mef_resolver"
+viaf = "rero_mef.agents.viaf.jsonresolvers.viaf_resolver"
+agents_gnd = "rero_mef.agents.gnd.jsonresolvers.gnd_resolver"
+agents_idref = "rero_mef.agents.idref.jsonresolvers.idref_resolver"
+agents_rero = "rero_mef.agents.rero.jsonresolvers.rero_resolver"
+concepts_mef = "rero_mef.concepts.mef.jsonresolvers.mef_resolver"
+concepts_rero = "rero_mef.concepts.rero.jsonresolvers.rero_resolver"
+
+[tool.poetry.plugins."invenio_base.api_blueprints"]
+api_rero_mef = "rero_mef.theme.views:api_blueprint"
+api_monitoring = "rero_mef.monitoring:api_blueprint"
+api_agents_mef = "rero_mef.agents.mef.views:api_blueprint"
+api_agents_viaf = "rero_mef.agents.viaf.views:api_blueprint"
+api_agents_gnd = "rero_mef.agents.gnd.views:api_blueprint"
+api_agents_idref = "rero_mef.agents.idref.views:api_blueprint"
+api_agents_rero = "rero_mef.agents.rero.views:api_blueprint"
+
+[tool.poetry.plugins."flask.commands"]
+fixtures = "rero_mef.cli:fixtures"
+utils = "rero_mef.cli:utils"
+celery = "rero_mef.cli:celery"
+agents = "rero_mef.agents.cli:agents"
+concepts = "rero_mef.concepts.cli:concepts"
+monitoring = "rero_mef.monitoring:monitoring"
+
+[tool.poetry.plugins."dojson.cli.rule"]
+tomarc = "dojson.contrib.to_marc21:to_marc21"
+idrefjson = "rero_ebooks.dojson.from_unimarc.model:from_unimarc"
+
+[tool.poetry.plugins."dojson.cli.dump"]
+pjson = "rero_mef.dojson.utils:dump"
+
+[tool.poe.tasks]
+bootstrap = {cmd = "./scripts/bootstrap", help = "Runs bootstrap"}
+console = {cmd = "./scripts/console", help = "Opens invenio shell"}
+run_tests = {cmd = "./run-tests.sh", help = "Runs all tests"}
+tests = {cmd = "pytest", help = "pytest"}
+tests_debug = {cmd = "./scripts/pytest -s --v --no-cov", help = "pytest -s --v --no-cov"}
+server = {cmd = "./scripts/server", help = "Starts the server "}
+setup = {cmd = "./scripts/setup", help = "Runs setup"}
+update = {cmd = "./scripts/update", help = "Runs update"}
 
 [build-system]
 requires = ["poetry>=0.12"]
