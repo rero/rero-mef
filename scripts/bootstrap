@@ -107,6 +107,9 @@ fi
 info_msg "Upgrade pip"
 poetry run pip install --upgrade pip
 
+info_msg "Install poethepoet"
+poetry run pip install poethepoet
+
 # install the application and all the dependencies
 info_msg "Install with command: ${cmd} ${flags[@]}"
 ${cmd} ${flags[@]}

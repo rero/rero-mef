@@ -32,4 +32,4 @@ RUN chown -R invenio:invenio ${WORKING_DIR}
 USER 1000
 
 ENV INVENIO_COLLECT_STORAGE='flask_collect.storage.file'
-RUN poetry run bootstrap --deploy
+RUN poetry run ./scripts/bootstrap --deploy

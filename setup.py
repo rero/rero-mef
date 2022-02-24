@@ -55,8 +55,8 @@ setup(
         'invenio_celery.tasks': [
             'rero_mef = rero_mef.tasks',
             'agents = rero_mef.agents.tasks',
-            'idref = rero_mef.agents.idref.tasks'
-            'gnd = rero_mef.agents.gnd.tasks'
+            'idref = rero_mef.agents.idref.tasks',
+            'gnd = rero_mef.agents.gnd.tasks',
         ],
         'console_scripts': [
             'rero-mef = invenio_app.cli:cli',
@@ -65,7 +65,7 @@ setup(
             'rero_mef_css = rero_mef.theme.webpack:theme',
         ],
         'invenio_base.apps': [
-            'rero-mef = rero_mef.ext:REROMEFAPP'
+            'rero-mef = rero_mef.ext:REROMEFAPP',
         ],
         'invenio_base.blueprints': [
             'rero_mef = rero_mef.theme.views:blueprint',
