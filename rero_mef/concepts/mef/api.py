@@ -27,6 +27,7 @@ from .models import ConceptMefMetadata
 from .providers import ConceptMefProvider
 from ...api import ReroIndexer
 from ...api_mef import EntityMefRecord
+from ...utils import mef_get_all_missing_entity_pids
 
 
 class ConceptMefSearch(RecordsSearch):
@@ -75,6 +76,17 @@ class ConceptMefRecord(EntityMefRecord):
             current_app.logger.error(
                 'ERROR flush and refresh: {err}'.format(err=err)
             )
+
+    @classmethod
+    def get_all_missing_concepts_pids(cls, agent, verbose=False):
+        """Get all missing agent pids.
+
+        :param agent: agent name to get the missing pids.
+        :param verbose: Verbose.
+        :returns: Missing VIAF pids.
+        """
+        return mef_get_all_missing_entity_pids(mef_class=cls, entity=agent,
+                                               verbose=verbose)
 
     def replace_refs(self):
         """Replace $ref with real data."""

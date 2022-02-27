@@ -17,6 +17,7 @@
 
 """Tasks used by  RERO-MEF."""
 
+import click
 from celery import shared_task
 
 from .viaf.api import AgentViafRecord
@@ -38,13 +39,17 @@ def task_create_mef_from_viaf_agent(pid, dbcommit=True, reindex=True,
     :returns: string with pid and actions
     """
     viaf_record = AgentViafRecord.get_record_by_pid(pid)
-    actions = viaf_record.create_mef_and_agents(
-        dbcommit=dbcommit,
-        reindex=reindex,
-        test_md5=test_md5,
-        online=online,
-        verbose=verbose
-    )
+    action = 'NO VIAF'
+    if viaf_record:
+        actions = viaf_record.create_mef_and_agents(
+            dbcommit=dbcommit,
+            reindex=reindex,
+            test_md5=test_md5,
+            online=online,
+            verbose=verbose
+        )
+    else:
+        click.secho(f'{action}: {pid}', fg='red')
     return actions
 
 

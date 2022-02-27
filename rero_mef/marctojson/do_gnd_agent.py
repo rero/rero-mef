@@ -49,16 +49,9 @@ class Transformation(object):
 
     def _transform(self):
         """Call the transformation functions."""
-        # test if organisation or person but not family
-        is_organisation_person = False
-        is_family = False
-        for field_075 in self.marc.get_fields('075'):
-            for subfield_b in field_075.get_subfields('b'):
-                if subfield_b in ['b', 'f', 'p']:
-                    is_organisation_person = True
-                if subfield_b == 'piz':
-                    is_family = True
-        if is_organisation_person and not is_family:
+        if self.marc.get_fields('100') or \
+                self.marc.get_fields('110') or \
+                self.marc.get_fields('111'):
             for func in dir(self):
                 if func.startswith('trans'):
                     func = getattr(self, func)

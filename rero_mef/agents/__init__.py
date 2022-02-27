@@ -15,4 +15,16 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""DOJSON transformations."""
+"""Agents."""
+
+from .gnd.api import AgentGndIndexer, AgentGndRecord, AgentGndSearch
+from .idref.api import AgentIdrefIndexer, AgentIdrefRecord, AgentIdrefSearch
+from .mef.api import AgentMefIndexer, AgentMefRecord, AgentMefSearch
+from .rero.api import AgentReroIndexer, AgentReroRecord, AgentReroSearch
+from .viaf.api import AgentViafIndexer, AgentViafRecord, AgentViafSearch
+
+__all__ = (AgentGndIndexer, AgentGndRecord, AgentGndSearch,
+           AgentIdrefIndexer, AgentIdrefRecord, AgentIdrefSearch,
+           AgentMefIndexer, AgentMefRecord, AgentMefSearch,
+           AgentReroIndexer, AgentReroRecord, AgentReroSearch,
+           AgentViafIndexer, AgentViafRecord, AgentViafSearch)

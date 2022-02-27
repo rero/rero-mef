@@ -1187,3 +1187,64 @@ class JsonWriter(object):
     def close(self):
         """Close file."""
         self.__del__()
+
+
+def mef_get_all_missing_entity_pids(mef_class, entity, verbose=False):
+    """Get all missing agent pids.
+
+    :param mef_class: MEF class to use.
+    :param entity: entity name to get the missing pids.
+    :param verbose: Verbose.
+    :returns: Missing VIAF pids.
+    """
+    record_class = get_entity_class(entity)
+    missing_pids = {}
+    unexisting_pids = {}
+    no_pids = []
+    if verbose:
+        click.echo(f'Get pids from {entity} ...')
+    progress = progressbar(
+        items=record_class.get_all_pids(),
+        length=record_class.count(),
+        verbose=verbose
+    )
+    for pid in progress:
+        missing_pids[pid] = 1
+    name = record_class.name
+    if verbose:
+        click.echo(f'Get pids for {name} from MEF and calculate missing ...')
+    query = mef_class.search().filter('exists', field=name)
+    progress = progressbar(
+        items=query.source(['pid', name]).scan(),
+        length=query.count(),
+        verbose=True
+    )
+    for hit in progress:
+        data = hit.to_dict()
+        agent_pid = data.get(name, {}).get('pid')
+        if agent_pid:
+            res = missing_pids.pop(agent_pid, False)
+            if not res:
+                unexisting_pids[hit.pid] = agent_pid
+        else:
+            no_pids.append(hit.pid)
+    return [v for v in missing_pids], unexisting_pids, no_pids
+
+
+def get_mefs_endpoints():
+    """Get all enpoints for MEF's."""
+    from .agents.mef.api import AgentMefRecord
+    from .agents.utils import get_agents_endpoints
+    from .concepts.mef.api import ConceptMefRecord
+    from .concepts.utils import get_concepts_endpoints
+
+    mefs = []
+    mefs.append({
+        'mef_class': AgentMefRecord,
+        'endpoints': get_agents_endpoints()
+    })
+    mefs.append({
+        'mef_class': ConceptMefRecord,
+        'endpoints': get_concepts_endpoints()
+    })
+    return mefs
