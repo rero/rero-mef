@@ -56,14 +56,16 @@ def create_from_viaf(test_md5, enqueue, online, verbose, progress, wait,
         fg='green'
     )
     counts = {}
+    unexisting_pids = {}
     agent_classes = get_entity_classes(without_mef_viaf=False)
     for name, agent_class in agent_classes.items():
         counts[name] = {}
         counts[name]['old'] = agent_class.count()
     if missing:
-        missing_pids = AgentMefRecord.get_all_missing_viaf_pids(
-            verbose=progress or verbose
-        )
+        missing_pids, unexisting_pids = AgentMefRecord. \
+            get_all_missing_viaf_pids(
+                verbose=progress or verbose
+            )
         progress_bar = progressbar(
             items=missing_pids,
             length=len(missing_pids),
@@ -94,6 +96,14 @@ def create_from_viaf(test_md5, enqueue, online, verbose, progress, wait,
                 online=online,
                 verbose=verbose
             )
+
+    if unexisting_pids:
+        click.echo(
+            f'Clean VIAF pids from MEF records: {len(unexisting_pids)}')
+        for pid, viaf_pid in unexisting_pids.items():
+            # TODO: clean MEF records with unexisting VIAF pids:
+            pass
+
     if wait:
         from ..cli import wait_empty_tasks
         wait_empty_tasks(delay=3, verbose=True)

@@ -29,7 +29,7 @@ from .models import AgentMefMetadata
 from .providers import MefProvider
 from ...api import ReroIndexer
 from ...api_mef import EntityMefRecord
-from ...utils import progressbar
+from ...utils import mef_get_all_missing_entity_pids, progressbar
 
 
 class AgentMefSearch(RecordsSearch):
@@ -86,6 +86,7 @@ class AgentMefRecord(EntityMefRecord):
         """
         from ..viaf.api import AgentViafRecord
         missing_pids = {}
+        unexisting_pids = {}
         if verbose:
             click.echo('Get pids from VIAF ...')
         progress = progressbar(
@@ -97,29 +98,53 @@ class AgentMefRecord(EntityMefRecord):
             missing_pids[pid] = 1
         if verbose:
             click.echo('Get pids from MEF and calculate missing ...')
+        query = cls.search().filter('exists', field='viaf_pid')
         progress = progressbar(
-            items=cls.search().filter('match_all').source().scan(),
-            length=cls.search().filter('match_all').source().count(),
+            items=query.source(['pid', 'viaf_pid']).scan(),
+            length=query.count(),
             verbose=True
         )
         for hit in progress:
-            data = hit.to_dict()
-            viaf_pid = data.get('viaf_pid')
-            if viaf_pid:
-                missing_pids.pop(viaf_pid, None)
-        return missing_pids
+            if not missing_pids.pop(hit.viaf_pid, None):
+                unexisting_pids[hit.pid] = hit.viaf_pid
+        return [v for v in missing_pids], unexisting_pids
+
+    @classmethod
+    def get_all_missing_agents_pids(cls, agent, verbose=False):
+        """Get all missing agent pids.
+
+        :param agent: agent name to get the missing pids.
+        :param verbose: Verbose.
+        :returns: Missing VIAF pids.
+        """
+        return mef_get_all_missing_entity_pids(mef_class=cls, entity=agent,
+                                               verbose=verbose)
 
     def replace_refs(self):
         """Replace $ref with real data."""
         data = super().replace_refs()
         sources = []
         for agent in ['rero', 'gnd', 'idref']:
-            if agent in data and data[agent]:
-                sources.append(agent)
-                metadata = data[agent].get('metadata')
-                if metadata:
-                    data[agent] = metadata
-                    data['type'] = metadata['bf:Agent']
+            agent_data = data.get(agent)
+            if agent_data:
+                if agent_data.get('deleted'):
+                    data.pop(agent)
+                    current_app.logger.info(
+                        f'MEF replace refs {data.get("pid")} {agent} deleted')
+                elif agent_data.get('status'):
+                    data.pop(agent)
+                    current_app.logger.error(
+                        f'MEF replace refs {data.get("pid")} {agent}'
+                        f' status: {agent_data.get("status")}'
+                        f' {agent_data.get("message")}')
+                else:
+                    sources.append(agent)
+                    metadata = data[agent].get('metadata')
+                    if metadata:
+                        data[agent] = metadata
+                        data['type'] = metadata['bf:Agent']
+                    else:
+                        data['type'] = data[agent]['bf:Agent']
         data['sources'] = sources
         return data
 

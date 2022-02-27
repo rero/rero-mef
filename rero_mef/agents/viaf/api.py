@@ -309,9 +309,9 @@ class AgentViafRecord(ReroMefRecord):
         )
         for pid in progress:
             pids_db[pid] = 1
+        agent_pid_name = f'{record_class.name}_pid'
         if verbose:
-            click.echo(f'Get pids from VIAF with {agent} ...')
-        agent_pid_name = f'{agent}_pid'
+            click.echo(f'Get pids from VIAF with {agent_pid_name} ...')
         query = AgentViafSearch() \
             .filter('bool', should=[Q('exists', field=agent_pid_name)]) \
             .source(['pid', agent_pid_name])

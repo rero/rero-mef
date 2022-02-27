@@ -32,7 +32,7 @@ from invenio_search import RecordsSearch, current_search_client
 from redis import Redis
 
 from .permissions import monitoring_permission
-from .utils import get_entity_class, progressbar
+from .utils import get_entity_class, get_mefs_endpoints, progressbar
 
 api_blueprint = Blueprint(
     'api_monitoring',
@@ -145,6 +145,19 @@ def es_db_counts():
         with_deleted=with_deleted,
         difference_db_es=difference_db_es
     )})
+
+
+@api_blueprint.route('/mef_counts')
+def mef_counts():
+    """Display count for mef and documents.
+
+    Displays for all document types defind in config.py following informations:
+    - count of records in database
+    - count of records in MEF
+    - difference between the count in database and MEF
+    :return: jsonified count for MEF and documents
+    """
+    return jsonify({'data': Monitoring.check_mef()})
 
 
 @api_blueprint.route('/check_es_db_counts')
@@ -429,7 +442,7 @@ class Monitoring(object):
         Get count details for all records rest endpoints in JSON format.
 
         :param with_deleted: count also deleted items in database.
-        :return: dictionair with database, elasticsearch and databse minus
+        :return: dictionair with database, elasticsearch and database minus
         elasticsearch count informations.
         """
         info = {}
@@ -465,7 +478,7 @@ class Monitoring(object):
 
         :param with_deleted: count also deleted items in database.
         :return: dictionair with all document types with a difference in
-        databse and elasticsearch counts.
+        database and elasticsearch counts.
         """
         checks = {}
         for info, data in cls.info(
@@ -482,6 +495,28 @@ class Monitoring(object):
             if data.get('es-'):
                 checks.setdefault(info, {})
                 checks[info]['es-'] = len(data.get('es-'))
+        return checks
+
+    @classmethod
+    def check_mef(cls):
+        """Compaire MEF and entities counts.
+
+        returns: MEF, entities and MEF-entities counts.
+        """
+        checks = {}
+        for mef in get_mefs_endpoints():
+            mef_search = mef['mef_class'].search
+            for entity in mef['endpoints']:
+                entity_class = get_entity_class(entity)
+                mef_count = mef_search() \
+                    .filter('exists', field=entity_class.name) \
+                    .count()
+                db_count = entity_class.count()
+                checks[entity] = {
+                    'mef': mef_count,
+                    'db': db_count,
+                    'mef-db': mef_count - db_count
+                }
         return checks
 
     @classmethod
@@ -574,6 +609,32 @@ def es_db_counts_cli(missing):
             missing_doc_types.append(doc_type)
     for missing_doc_type in missing_doc_types:
         mon.print_missing(missing_doc_type)
+
+
+@monitoring.command('mef_counts')
+@with_appcontext
+def mef_counts_cli():
+    """Print MEF counts.
+
+    Prints a table representation of MEF counts.
+    Columes:
+    1. MEF count minus database count
+    2. document type
+    3. database count
+    5. MEF count
+    """
+    mon = Monitoring()
+    msg_head = f'MEF - DB  {"type":>6} {"DB":>10}  {"MEF":>10}'
+    click.echo(msg_head)
+    for entity, data in mon.check_mef().items():
+        mef_db = data.get('mef-db', '')
+        db = data.get('db', '')
+        mef = data.get('mef', '')
+        msg = f'{mef_db:>8}  {entity:>6} {db:>10}  {mef:>10}'
+        if mef_db not in [0, '']:
+            click.secho(msg, fg='red')
+        else:
+            click.echo(msg)
 
 
 @monitoring.command('es_db_missing')
