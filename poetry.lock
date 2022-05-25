@@ -1010,7 +1010,7 @@ elasticsearch6 = ["invenio-search[elasticsearch6] (>=1.4.1,<1.5.0)"]
 elasticsearch7 = ["invenio-search[elasticsearch7] (>=1.4.1,<1.5.0)"]
 files = ["invenio-files-rest (>=1.2.0,<1.3.0)", "invenio-iiif (>=1.1.0,<1.2.0)", "invenio-previewer (>=1.3.2,<1.4.0)", "invenio-records-files (>=1.2.1,<1.3.0)"]
 metadata = ["invenio-indexer (>=1.2.0,<1.3.0)", "invenio-jsonschemas (>=1.1.1,<1.2.0)", "invenio-oaiserver (>=1.2.0,<1.3.0)", "invenio-pidstore (>=1.2.1,<1.3.0)", "invenio-records-rest (>=1.8.0,<1.9.0)", "invenio-records-ui (>=1.2.0,<1.3.0)", "invenio-records (>=1.4.0,<1.6.0)", "invenio-search-ui (>=2.0.0,<2.1.0)"]
-mysql = ["invenio-db[mysql,versioning] (>=1.0.8,<1.1.0)"]
+mysql = ["invenio-db[versioning,mysql] (>=1.0.8,<1.1.0)"]
 postgresql = ["invenio-db[postgresql,versioning] (>=1.0.8,<1.1.0)"]
 sqlite = ["invenio-db[versioning] (>=1.0.8,<1.1.0)"]
 tests = ["pytest-invenio (>=1.4.0,<1.5.0)"]
@@ -1032,9 +1032,9 @@ invenio-i18n = ">=1.2.0"
 [package.extras]
 all = ["Sphinx (>=3)", "cachelib (>=0.1)", "pytest-invenio (>=1.4.1)", "redis (>=2.10.5)"]
 docs = ["Sphinx (>=3)"]
-mysql = ["invenio-db[mysql,versioning] (>=1.0.8)"]
+mysql = ["invenio-db[versioning,mysql] (>=1.0.8)"]
 postgresql = ["invenio-db[postgresql,versioning] (>=1.0.8)"]
-sqlite = ["invenio-db[versioning,sqlite] (>=1.0.8)"]
+sqlite = ["invenio-db[sqlite,versioning] (>=1.0.8)"]
 tests = ["cachelib (>=0.1)", "pytest-invenio (>=1.4.1)", "redis (>=2.10.5)"]
 
 [[package]]
@@ -1071,7 +1071,7 @@ ua-parser = ">=0.7.3"
 admin = ["invenio-admin (>=1.2.1)"]
 all = ["invenio-admin (>=1.2.1)", "Sphinx (==4.2.0)", "pytest-invenio (>=1.4.2)"]
 docs = ["Sphinx (==4.2.0)"]
-mysql = ["invenio-db[mysql,versioning] (>=1.0.9)"]
+mysql = ["invenio-db[versioning,mysql] (>=1.0.9)"]
 postgresql = ["invenio-db[postgresql,versioning] (>=1.0.9)"]
 sqlite = ["invenio-db[versioning] (>=1.0.9)"]
 tests = ["pytest-invenio (>=1.4.2)"]
@@ -1440,7 +1440,7 @@ WTForms-Alchemy = ">=0.15.0"
 admin = ["invenio-admin (>=1.2.1)"]
 all = ["invenio-admin (>=1.2.1)", "Sphinx (>=4.2.0)", "redis (>=2.10.5)", "pytest-invenio (>=1.4.0)"]
 docs = ["Sphinx (>=4.2.0)"]
-mysql = ["invenio-db[mysql,versioning] (>=1.0.9,<2.0.0)"]
+mysql = ["invenio-db[versioning,mysql] (>=1.0.9,<2.0.0)"]
 postgresql = ["invenio-db[postgresql,versioning] (>=1.0.9,<2.0.0)"]
 redis = ["redis (>=2.10.5)"]
 sqlite = ["invenio-db[versioning] (>=1.0.9,<2.0.0)"]
@@ -1524,7 +1524,7 @@ jsonschema = ">=3.0.0,<5.0.0"
 admin = ["invenio-admin (>=1.2.1)"]
 all = ["Sphinx (==4.2.0)", "invenio-admin (>=1.2.1)", "pytest-invenio (>=1.4.1)"]
 docs = ["Sphinx (==4.2.0)"]
-mysql = ["invenio-db[mysql,versioning] (>=1.0.9,<1.1.0)"]
+mysql = ["invenio-db[versioning,mysql] (>=1.0.9,<1.1.0)"]
 postgresql = ["invenio-db[postgresql,versioning] (>=1.0.9,<1.1.0)"]
 sqlite = ["invenio-db[versioning] (>=1.0.9,<1.1.0)"]
 tests = ["pytest-invenio (>=1.4.1)"]
@@ -2163,7 +2163,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "pyjwt"
-version = "2.3.0"
+version = "2.4.0"
 description = "JSON Web Token implementation in Python"
 category = "main"
 optional = false
@@ -2488,7 +2488,7 @@ urllib3 = "*"
 
 [[package]]
 name = "sentry-sdk"
-version = "1.5.10"
+version = "1.5.12"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
@@ -4038,8 +4038,8 @@ pygments = [
     {file = "Pygments-2.12.0.tar.gz", hash = "sha256:5eb116118f9612ff1ee89ac96437bb6b49e8f04d8a13b514ba26f620208e26eb"},
 ]
 pyjwt = [
-    {file = "PyJWT-2.3.0-py3-none-any.whl", hash = "sha256:e0c4bb8d9f0af0c7f5b1ec4c5036309617d03d56932877f2f7a0beeb5318322f"},
-    {file = "PyJWT-2.3.0.tar.gz", hash = "sha256:b888b4d56f06f6dcd777210c334e69c737be74755d3e5e9ee3fe67dc18a0ee41"},
+    {file = "PyJWT-2.4.0-py3-none-any.whl", hash = "sha256:72d1d253f32dbd4f5c88eaf1fdc62f3a19f676ccbadb9dbc5d07e951b2b26daf"},
+    {file = "PyJWT-2.4.0.tar.gz", hash = "sha256:d42908208c699b3b973cbeb01a969ba6a96c821eefb1c5bfe4c390c01d67abba"},
 ]
 pymarc = [
     {file = "pymarc-4.2.0.tar.gz", hash = "sha256:57f897bf56d0e075bb266adaefc143de57ded3a33ad4b47fbb246dc3743d7920"},
@@ -4178,8 +4178,8 @@ selenium = [
     {file = "selenium-3.141.0.tar.gz", hash = "sha256:deaf32b60ad91a4611b98d8002757f29e6f2c2d5fcaf202e1c9ad06d6772300d"},
 ]
 sentry-sdk = [
-    {file = "sentry-sdk-1.5.10.tar.gz", hash = "sha256:0a9eb20a84f4c17c08c57488d59fdad18669db71ebecb28fb0721423a33535f9"},
-    {file = "sentry_sdk-1.5.10-py2.py3-none-any.whl", hash = "sha256:972c8fe9318a415b5cf35f687f568321472ef94b36806407c370ce9c88a67f2e"},
+    {file = "sentry-sdk-1.5.12.tar.gz", hash = "sha256:259535ba66933eacf85ab46524188c84dcb4c39f40348455ce15e2c0aca68863"},
+    {file = "sentry_sdk-1.5.12-py2.py3-none-any.whl", hash = "sha256:778b53f0a6c83b1ee43d3b7886318ba86d975e686cb2c7906ccc35b334360be1"},
 ]
 sickle = [
     {file = "Sickle-0.7.0-py3-none-any.whl", hash = "sha256:6ace7b1d1fc76571fe0dbfefc2c49e5e6c026e2d0dcaae521f4da21e98d4bc85"},
