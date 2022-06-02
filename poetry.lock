@@ -1039,9 +1039,9 @@ invenio-i18n = ">=1.2.0"
 [package.extras]
 all = ["Sphinx (>=3)", "cachelib (>=0.1)", "pytest-invenio (>=1.4.1)", "redis (>=2.10.5)"]
 docs = ["Sphinx (>=3)"]
-mysql = ["invenio-db[mysql,versioning] (>=1.0.8)"]
-postgresql = ["invenio-db[postgresql,versioning] (>=1.0.8)"]
-sqlite = ["invenio-db[sqlite,versioning] (>=1.0.8)"]
+mysql = ["invenio-db[versioning,mysql] (>=1.0.8)"]
+postgresql = ["invenio-db[versioning,postgresql] (>=1.0.8)"]
+sqlite = ["invenio-db[versioning,sqlite] (>=1.0.8)"]
 tests = ["cachelib (>=0.1)", "pytest-invenio (>=1.4.1)", "redis (>=2.10.5)"]
 
 [[package]]
@@ -1385,35 +1385,35 @@ resolved_reference = "fe55e095a8e78b36cfad875f752f2facc2908bae"
 
 [[package]]
 name = "invenio-oaiserver"
-version = "1.2.1"
+version = "1.2.2"
 description = "Invenio module that implements OAI-PMH server."
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-arrow = ">=0.13.0"
+arrow = ">=0.17.0"
+click = ">=7.0,<8.0"
 dojson = ">=1.3.0"
-invenio-base = ">=1.2.2"
+Flask = ">=1.0.4,<2.0"
+invenio-base = ">=1.2.4"
 invenio-i18n = ">=1.2.0"
-invenio-pidstore = ">=1.2.0"
-invenio-records = ">=1.3.0"
+invenio-pidstore = ">=1.2.2"
+invenio-records = ">=1.4.0"
 invenio-rest = ">=1.2.1"
 lxml = ">=4.3.0"
 
 [package.extras]
 admin = ["invenio-admin (>=1.2.0)"]
-all = ["invenio-admin (>=1.2.0)", "invenio-celery (>=1.2.0)", "Sphinx (>=3)", "SQLAlchemy-Continuum (>=1.3.6)", "invenio-indexer (>=1.1.0)", "invenio-jsonschemas (>=1.1.0)", "invenio-marc21 (>=1.0.0a9)", "mock (>=1.3.0)", "pytest-invenio (>=1.4.0)"]
-celery = ["invenio-celery (>=1.2.0)"]
-docs = ["Sphinx (>=3)"]
-elasticsearch2 = ["invenio-search[elasticsearch2] (>=1.2.0)"]
-elasticsearch5 = ["invenio-search[elasticsearch5] (>=1.2.0)"]
-elasticsearch6 = ["invenio-search[elasticsearch6] (>=1.2.0)"]
-elasticsearch7 = ["invenio-search[elasticsearch7] (>=1.2.0)"]
-mysql = ["invenio-db[mysql] (>=1.0.0)"]
-postgresql = ["invenio-db[postgresql] (>=1.0.4)"]
-sqlite = ["invenio-db (>=1.0.0)"]
-tests = ["SQLAlchemy-Continuum (>=1.3.6)", "invenio-indexer (>=1.1.0)", "invenio-jsonschemas (>=1.1.0)", "invenio-marc21 (>=1.0.0a9)", "mock (>=1.3.0)", "pytest-invenio (>=1.4.0)"]
+all = ["invenio-admin (>=1.2.0)", "invenio-celery (>=1.2.2)", "Sphinx (>=3.1.0,<3.4.2)", "SQLAlchemy-Continuum (>=1.3.6)", "SQLAlchemy (>=1.2.18,<1.4.0)", "SQLAlchemy-Utils (>=0.33.1,<0.36)", "invenio-indexer (>=1.1.0)", "invenio-jsonschemas (>=1.1.0)", "invenio-marc21 (>=1.0.0a9)", "mock (>=1.3.0)", "pytest-invenio (>=1.4.1)"]
+celery = ["invenio-celery (>=1.2.2)"]
+docs = ["Sphinx (>=3.1.0,<3.4.2)"]
+elasticsearch6 = ["invenio-search[elasticsearch6] (>=1.4.2,<2.0.0)"]
+elasticsearch7 = ["invenio-search[elasticsearch7] (>=1.4.2,<2.0.0)"]
+mysql = ["invenio-db[mysql] (>=1.0.9)"]
+postgresql = ["invenio-db[postgresql] (>=1.0.9)"]
+sqlite = ["invenio-db (>=1.0.9)"]
+tests = ["SQLAlchemy-Continuum (>=1.3.6)", "SQLAlchemy (>=1.2.18,<1.4.0)", "SQLAlchemy-Utils (>=0.33.1,<0.36)", "invenio-indexer (>=1.1.0)", "invenio-jsonschemas (>=1.1.0)", "invenio-marc21 (>=1.0.0a9)", "mock (>=1.3.0)", "pytest-invenio (>=1.4.1)"]
 
 [[package]]
 name = "invenio-oauth2server"
@@ -1577,9 +1577,9 @@ invenio-pidstore = ">=1.2.0"
 invenio-records = ">=1.0.0"
 
 [package.extras]
-all = ["Sphinx (>=1.5.1)", "invenio-access (>=1.0.0)", "invenio-accounts (>=1.3.0)", "invenio-db[mysql,postgresql,versioning] (>=1.0.0)", "pytest-invenio (>=1.4.0)"]
+all = ["Sphinx (>=1.5.1)", "invenio-access (>=1.0.0)", "invenio-accounts (>=1.3.0)", "invenio-db[versioning,postgresql,mysql] (>=1.0.0)", "pytest-invenio (>=1.4.0)"]
 docs = ["Sphinx (>=1.5.1)"]
-tests = ["invenio-access (>=1.0.0)", "invenio-accounts (>=1.3.0)", "invenio-db[mysql,postgresql,versioning] (>=1.0.0)", "pytest-invenio (>=1.4.0)"]
+tests = ["invenio-access (>=1.0.0)", "invenio-accounts (>=1.3.0)", "invenio-db[versioning,postgresql,mysql] (>=1.0.0)", "pytest-invenio (>=1.4.0)"]
 
 [[package]]
 name = "invenio-rest"
@@ -3615,8 +3615,8 @@ invenio-mail = [
 ]
 invenio-oaiharvester = []
 invenio-oaiserver = [
-    {file = "invenio-oaiserver-1.2.1.tar.gz", hash = "sha256:b830344584e078c731da933f26da0e77b1409bb7827ab7030694dabe1d39aec3"},
-    {file = "invenio_oaiserver-1.2.1-py2.py3-none-any.whl", hash = "sha256:1337147b5b1819ad3e431be1f18bda1d0a598f85105e08b6db24900fa6563542"},
+    {file = "invenio-oaiserver-1.2.2.tar.gz", hash = "sha256:1d55b76ce2ae4a5928c95ff4ab61b6e2be40bd9ce37527406a2566167c431fbf"},
+    {file = "invenio_oaiserver-1.2.2-py2.py3-none-any.whl", hash = "sha256:e00eeb2895d9ba39bf2c23539847415c2fad298e3c2af165b406448b48cfa1d3"},
 ]
 invenio-oauth2server = [
     {file = "invenio-oauth2server-1.3.5.tar.gz", hash = "sha256:99c4af3bab3b30d855e1ec7b0a791aea5b6347d1c71afd0c8a80ae58d177ab9d"},

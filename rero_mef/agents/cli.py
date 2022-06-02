@@ -55,12 +55,11 @@ def create_from_viaf(test_md5, enqueue, online, verbose, progress, wait,
         'Create MEF and Agency from VIAF.',
         fg='green'
     )
-    counts = {}
     unexisting_pids = {}
     agent_classes = get_entity_classes(without_mef_viaf=False)
-    for name, agent_class in agent_classes.items():
-        counts[name] = {}
-        counts[name]['old'] = agent_class.count()
+    counts = {name: {'old': agent_class.count()}
+              for name, agent_class in agent_classes.items()}
+
     if missing:
         missing_pids, unexisting_pids = AgentMefRecord. \
             get_all_missing_viaf_pids(
@@ -111,13 +110,12 @@ def create_from_viaf(test_md5, enqueue, online, verbose, progress, wait,
             without_mef_viaf=False
         ).items():
             counts[name]['new'] = agent_class.count()
-        msgs = []
         counts.pop('viaf', None)
-        msgs.append(f'mef: {counts["mef"]["old"]}|{counts["mef"]["new"]}')
+        msgs = [f'mef: {counts["mef"]["old"]}|{counts["mef"]["new"]}']
         counts.pop('mef', None)
-        for agent in counts:
-            msgs.append(
-                f'{agent}: {counts[agent]["old"]}|{counts[agent]["new"]}')
+        msgs.extend(f"{agent}: {value['old']}|{counts[agent]['new']}"
+                    for agent, value in counts.items())
+
         click.secho(
             f'COUNTS: {", ".join(msgs)}',
             fg='blue'
@@ -153,8 +151,7 @@ def create_mef(pid_type, enqueue, online, verbose, progress, wait, missing):
                 fg='green'
             )
             agent_class = get_entity_class(agent)
-            counts = {}
-            counts[agent] = agent_class.count()
+            counts = {agent: agent_class.count()}
             counts['mef'] = AgentMefRecord.count()
             if missing:
                 progress_bar = progressbar(
@@ -211,7 +208,7 @@ def create_csv_viaf(viaf_file, output_directory, verbose):
     :param output_directory: Output directory.
     :param verbose: Verbose.
     """
-    click.secho(f'  Create VIAF CSV files.', err=True)
+    click.secho('  Create VIAF CSV files.', err=True)
     pidstore = os.path.join(output_directory, 'viaf_pidstore.csv')
     metadata = os.path.join(output_directory, 'viaf_metadata.csv')
     click.secho(
@@ -243,7 +240,7 @@ def create_csv_mef(viaf_metadata_file, output_directory, verbose):
     :param output_directory: Output directory.
     :param verbose: Verbose.
     """
-    click.secho(f'  Create MEF CSV files from VIAF metadata.', err=True)
+    click.secho('  Create MEF CSV files from VIAF metadata.', err=True)
     pidstore = os.path.join(output_directory, 'mef_pidstore.csv')
     metadata = os.path.join(output_directory, 'mef_metadata.csv')
     ids = os.path.join(output_directory, 'mef_id.csv')

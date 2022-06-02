@@ -33,9 +33,8 @@ def and_search_factory(self, search, query_parser=None):
     """
     def _default_parser(qstr=None):
         """Default parser that uses the Q() from elasticsearch_dsl."""
-        if qstr:
-            return Q('query_string', query=qstr, default_operator='AND')
-        return Q()
+        return Q('query_string', query=qstr, default_operator='AND') \
+            if qstr else Q()
 
     from invenio_records_rest.facets import default_facets_factory
     from invenio_records_rest.sorter import default_sorter_factory

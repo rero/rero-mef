@@ -172,12 +172,8 @@ def check_es_db_counts():
     result = {'data': {'status': 'green'}}
     difference_db_es = request.args.get('diff', False)
     with_deleted = request.args.get('deleted', False)
-    checks = Monitoring.check(
-        with_deleted=with_deleted,
-        difference_db_es=difference_db_es
-    )
-    if checks:
-        result = {'data': {'status': 'red'}}
+    if checks := Monitoring.check(with_deleted=with_deleted,
+                                  difference_db_es=difference_db_es):
         errors = []
         for doc_type, doc_type_data in checks.items():
             links = {'about': url_for(
@@ -225,7 +221,7 @@ def check_es_db_counts():
                         'details': f'There are {count} items from '
                                    f'{doc_type} missing in ES.'
                     })
-        result['errors'] = errors
+        result = {'data': {'status': 'red'}, 'errors': errors}
     return jsonify(result)
 
 
@@ -261,25 +257,24 @@ def missing_pids(doc_type):
                 'details': mon.get('ERROR')
             }
         }
-    else:
-        data = {'DB': [], 'ES': [], 'ES duplicate': []}
-        for pid in mon.get('DB'):
-            if api_url:
-                data['DB'].append(f'{api_url}?q=pid:{pid}')
-            else:
-                data['DB'].append(pid)
-        for pid in mon.get('ES'):
-            if api_url:
-                data['ES'].append(f'{api_url}{pid}')
-            else:
-                data['ES'].append(pid)
-        for pid in mon.get('ES duplicate'):
-            if api_url:
-                url = f'{api_url}?q=pid:{pid}'
-                data['ES duplicate'][url] = len(mon.get('ES duplicate'))
-            else:
-                data['ES duplicate'][pid] = len(mon.get('ES duplicate'))
-        return jsonify({'data': data})
+    data = {'DB': [], 'ES': [], 'ES duplicate': []}
+    for pid in mon.get('DB'):
+        if api_url:
+            data['DB'].append(f'{api_url}?q=pid:{pid}')
+        else:
+            data['DB'].append(pid)
+    for pid in mon.get('ES'):
+        if api_url:
+            data['ES'].append(f'{api_url}{pid}')
+        else:
+            data['ES'].append(pid)
+    for pid in mon.get('ES duplicate'):
+        if api_url:
+            url = f'{api_url}?q=pid:{pid}'
+            data['ES duplicate'][url] = len(mon.get('ES duplicate'))
+        else:
+            data['ES duplicate'][pid] = len(mon.get('ES duplicate'))
+    return jsonify({'data': data})
 
 
 @api_blueprint.route('/redis')
@@ -306,8 +301,7 @@ def timestamps():
     :return: jsonified timestamps.
     """
     data = {}
-    time_stamps = current_cache.get('timestamps')
-    if time_stamps:
+    if time_stamps := current_cache.get('timestamps'):
         for name, values in time_stamps.items():
             data[name] = {}
             for key, value in values.items():
@@ -360,8 +354,7 @@ class Monitoring(object):
         for doc_type, info in sorted(self.info().items()):
             msg = (f'{info.get("db-es", ""):>7}  {doc_type:>6} '
                    f'{info.get("db", ""):>10}')
-            index = info.get('index', '')
-            if index:
+            if index := info.get('index', ''):
                 msg += f'  {index:>25} {info.get("es", ""):>10}'
             result += msg + '\n'
         return msg_head + result
@@ -432,7 +425,7 @@ class Monitoring(object):
                     pids_es.pop(pid)
                 else:
                     pids_db.append(pid)
-            pids_es = [v for v in pids_es]
+            pids_es = list(pids_es)
         return pids_es, pids_db, pids_es_double, index
 
     @classmethod
@@ -452,8 +445,7 @@ class Monitoring(object):
             info[doc_type] = {}
             count_db = cls.get_db_count(doc_type, with_deleted=with_deleted)
             info[doc_type]['db'] = count_db
-            index = endpoint.get('search_index', '')
-            if index:
+            if index := endpoint.get('search_index', ''):
                 count_es = cls.get_es_count(index)
                 db_es = count_db - count_es
                 info[doc_type]['index'] = index
@@ -541,7 +533,7 @@ class Monitoring(object):
                 'ES duplicate': pids_es_double
             }
         else:
-            return {f'ERROR': 'Document type not found: {doc_type}'}
+            return {'ERROR': 'Document type not found: {doc_type}'}
 
     @classmethod
     def print_missing(cls, doc_type):
@@ -560,9 +552,8 @@ class Monitoring(object):
                     fg='red'
                 )
                 if info == 'ES duplicate':
-                    pid_counts = []
-                    for pid, count in data.items():
-                        pid_counts.append(f'{pid}: {count}')
+                    pid_counts = [f'{pid}: {count}' for pid, count
+                                  in data.items()]
                     click.echo(', '.join(pid_counts))
                 else:
                     click.echo(', '.join(data))

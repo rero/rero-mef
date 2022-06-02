@@ -403,8 +403,7 @@ def bulk_save(entities, output_directory, verbose):
             if verbose:
                 click.echo(f'  Save ID: {file_name}')
             bulk_save_ids(entity, file_name=file_name, verbose=False)
-        last_run = oai_get_last_run(entity)
-        if last_run:
+        if last_run := oai_get_last_run(entity):
             file_name = os.path.join(
                 output_directory,
                 f'{entity}_last_run.txt'
@@ -859,8 +858,8 @@ def run(delayed, concurrency, with_stats, version_type=None, queue=None,
             fg='green'
         )
         if queue is not None:
-            celery_kwargs.update({'queue': queue})
-        for c in range(0, concurrency):
+            celery_kwargs['queue'] = queue
+        for _ in range(concurrency):
             process_id = task_process_bulk_queue.delay(
                 version_type=version_type,
                 es_bulk_kwargs={'raise_on_error': raise_on_error},
@@ -937,12 +936,10 @@ def queue_count():
     """Count tasks in celery."""
     inspector = inspect()
     task_count = 0
-    reserved = inspector.reserved()
-    if reserved:
+    if reserved := inspector.reserved():
         for key, values in reserved.items():
             task_count += len(values)
-    active = inspector.active()
-    if active:
+    if active := inspector.active():
         task_count = sum(active.values())
     return task_count
 
@@ -1053,8 +1050,7 @@ def reindex_missing(entities, verbose):
                 verbose=verbose
             )
             for pid in progress_bar:
-                rec = entity.get_record_by_pid(pid)
-                if rec:
+                if rec := entity.get_record_by_pid(pid):
                     rec.reindex()
                 else:
                     click.secho(
