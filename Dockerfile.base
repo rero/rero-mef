@@ -14,20 +14,22 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-FROM python:3.9-slim
+FROM python:3.9-slim-buster
+
+# # uwsgi uwsgitop uwsgi-tools
 
 LABEL maintainer="software@rero.ch"
 LABEL description="MEF (Multilingual Entity File) server with records for persons, works, etc. for reuse in integrated library systems (ILS)."
 
 # require debian packages
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install --no-install-recommends -y git vim-tiny curl gcc gnupg libc6-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get install --no-install-recommends -y git vim-tiny curl gcc gnupg libc6-dev procps && rm -rf /var/lib/apt/lists/*
 RUN pip install --upgrade setuptools wheel pip poetry
 
 # # uwsgi uwsgitop uwsgi-tools
 
 # Install Node
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install --no-install-recommends -y nodejs && rm -rf /var/lib/apt/lists/*
 
 # RUN npm update
