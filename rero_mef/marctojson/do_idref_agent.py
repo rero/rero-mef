@@ -44,21 +44,15 @@ LANGUAGE_SCRIPT_CODES = {
 }
 
 
-def get_language_script(field):
-    """Get language script from $7 $8."""
+def get_script_code(field):
+    """Get script_code from $7."""
     languages = {}
-    if field['7'] or field['8']:
+    if field['7']:
         for language_script in LANGUAGE_SCRIPTS:
             language, script_code = language_script.split('-')
             codes = languages.setdefault(language, {})
             codes[script_code] = 1
             languages[language] = codes
-    try:
-        subfield_8 = field['8']
-        language = subfield_8[3:6]
-        _ = languages[language]
-    except Exception:
-        language = 'fre'
     try:
         subfield_7 = field['7']
         code = subfield_7[4:6]
@@ -66,7 +60,7 @@ def get_language_script(field):
         _ = languages[language][script_code]
     except Exception:
         script_code = 'latn'
-    return f'{language}-{script_code}'
+    return script_code
 
 
 def build_language_string_list_from_fields(
@@ -96,8 +90,7 @@ def build_language_string_list_from_fields(
                     punctuation=punctuation,
                     spaced_punctuation=spaced_punctuation
                 )
-                data = data.strip()
-                if data:
+                if data := data.strip():
                     for group in tag_grouping:
                         if code in group['subtags']:
                             code = group['subtags']
@@ -127,8 +120,8 @@ def build_language_string_list_from_fields(
                     subdelimiter.join(group[1]) + grouping_end
 
         if subfield_string:
-            language_script = get_language_script(field)
-            if language_script == 'fre-latn':
+            script_code = get_script_code(field)
+            if script_code == 'latn':
                 field_string_list.insert(0, subfield_string.strip())
             else:
                 field_string_list.append(subfield_string.strip())
@@ -204,12 +197,12 @@ class Transformation(object):
         """Transformation language 101 $a."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_language')
-        field_101 = self.marc['101']
         language_list = []
-        if field_101:
-            for language in field_101.get_subfields('a'):
-                if LANGUAGES.get(language):
-                    language_list.append(language)
+        if field_101 := self.marc['101']:
+            language_list.extend(language for language
+                                 in field_101.get_subfields('a')
+                                 if LANGUAGES.get(language))
+
         if language_list:
             self.json_dict['language'] = language_list
 
@@ -217,16 +210,14 @@ class Transformation(object):
         """Transformation pid from field 001."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_pid')
-        field_001 = self.marc['001']
-        if field_001:
+        if field_001 := self.marc['001']:
             self.json_dict['pid'] = field_001.data
 
     def trans_idref_identifier(self):
         """Transformation identifier from field 003."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_identifier')
-        field_003 = self.marc['003']
-        if field_003:
+        if field_003 := self.marc['003']:
             self.json_dict['identifier'] = field_003.data
 
     def trans_idref_birth_and_death_dates(self):
@@ -234,21 +225,20 @@ class Transformation(object):
         def format_103_date(date_str):
             """Format date from 103.."""
             date = ''
-            date_str = date_str.strip().replace(' ', '')
-            if date_str:
+            if date_str := date_str.strip().replace(' ', ''):
                 unknown = False
                 if date_str[-1] == '?':
                     unknown = True
                     date_str = date_str[:-1]
-                year = date_str[0:4]
+                year = date_str[:4]
                 month = date_str[4:6]
                 day = date_str[6:8]
                 if year:
                     date = year
                 if month:
-                    date += '-' + month
+                    date += f'-{month}'
                 if day:
-                    date += '-' + day
+                    date += f'-{day}'
                 if unknown:
                     date += '?'
             return date or None
@@ -428,13 +418,11 @@ class Transformation(object):
                 }
             ]
         variant_names = self.json_dict.get('variant_name', [])
-        variant_name = build_string_list_from_fields(
-            record=self.marc,
-            tag=tag,
-            subfields=subfields,
-            tag_grouping=tag_grouping
-        )
-        if variant_name:
+        if variant_name := build_string_list_from_fields(
+                record=self.marc,
+                tag=tag,
+                subfields=subfields,
+                tag_grouping=tag_grouping):
             variant_names += variant_name
         if variant_names:
             self.json_dict['variant_name'] = variant_names
@@ -469,13 +457,9 @@ class Transformation(object):
                 }
             ]
 
-        variant_access_point = build_string_list_from_fields(
-            record=self.marc,
-            tag=tag,
-            subfields=subfields,
-            tag_grouping=tag_grouping
-        )
-        if variant_access_point:
+        if variant_access_point := build_string_list_from_fields(
+                record=self.marc, tag=tag, subfields=subfields,
+                tag_grouping=tag_grouping):
             self.json_dict['variant_access_point'] = variant_access_point
 
     def trans_idref_parallel_access_point(self):
@@ -505,23 +489,17 @@ class Transformation(object):
                 }
             ]
 
-        parallel_access_point = build_string_list_from_fields(
-            record=self.marc,
-            tag=tag,
-            subfields=subfields,
-            tag_grouping=tag_grouping
-        )
-        if parallel_access_point:
+        if parallel_access_point := build_string_list_from_fields(
+                record=self.marc, tag=tag, subfields=subfields,
+                tag_grouping=tag_grouping):
             self.json_dict['parallel_access_point'] = parallel_access_point
 
     def trans_idref_country_associated(self):
         """Transformation country_associated 102 $a codes ISO 3166-1."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_country_associated')
-        field_102 = self.marc['102']
-        if field_102:
-            subfield_a = field_102['a']
-            if subfield_a:
+        if field_102 := self.marc['102']:
+            if subfield_a := field_102['a']:
                 country = COUNTRY_UNIMARC_MARC21.get(subfield_a)
                 if COUNTRIES.get(country):
                     self.json_dict['country_associated'] = country

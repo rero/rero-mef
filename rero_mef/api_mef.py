@@ -59,10 +59,7 @@ class EntityMefRecord(ReroMefRecord):
             )
         try:
             mef_pid = next(search.scan()).pid
-            if pid_only:
-                return mef_pid
-            else:
-                return cls.get_record_by_pid(mef_pid)
+            return mef_pid if pid_only else cls.get_record_by_pid(mef_pid)
         except StopIteration:
             return None
 
@@ -127,8 +124,7 @@ class EntityMefRecord(ReroMefRecord):
             multiple_pids[record_type] = {}
             missing_pids[record_type] = []
 
-            agent_class = get_entity_class(record_type)
-            if agent_class:
+            if agent_class := get_entity_class(record_type):
                 agent_name = agent_class.name
                 query = cls.search().filter('exists', field=agent_name)
                 progress = progressbar(
@@ -174,11 +170,11 @@ class EntityMefRecord(ReroMefRecord):
         """
         missing_pids = {}
         to_much_pids = {}
-        used_classes = {}
         entity_classes = get_entity_classes()
-        for entity_class in entity_classes:
-            if entity_class in record_types:
-                used_classes[entity_class] = entity_classes[entity_class]
+        used_classes = {entity_class: entity_classes[entity_class]
+                        for entity_class in entity_classes
+                        if entity_class in record_types}
+
         for entity, entity_class in used_classes.items():
             if verbose:
                 click.echo(f'Get pids from {entity} ...')
@@ -202,8 +198,7 @@ class EntityMefRecord(ReroMefRecord):
 
             data = hit.to_dict()
             for agent, agent_class in used_classes.items():
-                agent_data = data.get(agent_class.name)
-                if agent_data:
+                if agent_data := data.get(agent_class.name):
                     agent_pid = agent_data.get('pid')
                     if not missing_pids[agent].pop(agent_pid, None):
                         to_much_pids.setdefault(pid, {})
@@ -235,9 +230,8 @@ class EntityMefRecord(ReroMefRecord):
         :param reindex: Reindex record.
         :returns: Created record.
         """
-        data = {}
-        data[record.name] = {
-            '$ref': cls.build_ref_string(record.pid, record.name)}
+        data = {record.name: {
+            '$ref': cls.build_ref_string(record.pid, record.name)}}
         data['deleted'] = pytz.utc.localize(datetime.now()).isoformat()
         return cls.create(data=data, dbcommit=dbcommit, reindex=reindex)
 

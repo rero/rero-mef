@@ -510,6 +510,7 @@ def test_idref_variant_name_missing():
 def test_idref_authorized_access_point():
     """Test Authorized access point representing a person 200 $abcdf"""
     xml_part_to_add = """
+
         <datafield ind1=" " ind2=" " tag="200">
             <subfield code="a">Brontë</subfield>
             <subfield code="b">Charlotte</subfield>
@@ -553,6 +554,35 @@ def test_authorized_access_point_diff_order():
         'authorized_access_point': '1816-1855, Charlotte, Brontë, écrivain',
         'bf:Agent': 'bf:Person'
 
+    }
+
+
+def test_authorized_access_point_multiple():
+    """Test Authorized access with multiple 200"""
+    xml_part_to_add = """
+        <datafield tag="200" ind1=" " ind2="1">
+            <subfield code="6">a01</subfield>
+            <subfield code="7">ba0yfa1y</subfield>
+            <subfield code="8">freara</subfield>
+            <subfield code="9">0</subfield>
+            <subfield code="a">الأشماوي</subfield>
+            <subfield code="b">فوزية</subfield>
+        </datafield>
+        <datafield tag="200" ind1=" " ind2="1">
+            <subfield code="6">a01</subfield>
+            <subfield code="7">ba0yba0a</subfield>
+            <subfield code="8">freara</subfield>
+            <subfield code="9">0</subfield>
+            <subfield code="a">Ašmāwī</subfield>
+            <subfield code="b">Fawziyyaẗ al-</subfield>
+        </datafield>
+     """
+    trans = trans_prep('idref', xml_part_to_add)
+    trans.trans_idref_authorized_access_point()
+    assert trans.json == {
+        'authorized_access_point': 'Ašmāwī, Fawziyyaẗ al-',
+        'bf:Agent': 'bf:Person',
+        'variant_access_point': ['الأشماوي, فوزية']
     }
 
 

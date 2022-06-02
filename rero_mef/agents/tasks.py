@@ -38,9 +38,7 @@ def task_create_mef_from_viaf_agent(pid, dbcommit=True, reindex=True,
     :param verbose: verbose or not
     :returns: string with pid and actions
     """
-    viaf_record = AgentViafRecord.get_record_by_pid(pid)
-    action = 'NO VIAF'
-    if viaf_record:
+    if viaf_record := AgentViafRecord.get_record_by_pid(pid):
         actions = viaf_record.create_mef_and_agents(
             dbcommit=dbcommit,
             reindex=reindex,
@@ -49,7 +47,8 @@ def task_create_mef_from_viaf_agent(pid, dbcommit=True, reindex=True,
             verbose=verbose
         )
     else:
-        click.secho(f'{action}: {pid}', fg='red')
+        actions = 'NO VIAF'
+        click.secho(f'{actions}: {pid}', fg='red')
     return actions
 
 
@@ -66,23 +65,17 @@ def task_create_mef_for_agent(pid, agent, dbcommit=True, reindex=True,
     :returns: no return
     """
     agent_class = get_entity_class(agent)
-    agent_record = agent_class.get_record_by_pid(pid)
-    if agent_record:
+    if agent_record := agent_class.get_record_by_pid(pid):
         mef_record, mef_action, viaf_record, online = \
             agent_record.create_or_update_mef_viaf_record(
                 dbcommit=dbcommit,
                 reindex=reindex,
                 online=online
             )
-        mef_pid = 'Non'
-        if mef_record:
-            mef_pid = mef_record.pid
-        viaf_pid = 'Non'
-        if viaf_record:
-            viaf_pid = viaf_record.pid
-
+        mef_pid = mef_record.pid if mef_record else 'Non'
+        viaf_pid = viaf_record.pid if viaf_record else 'Non'
         actions = f'mef: {mef_pid} {mef_action.value} ' \
-            'viaf: {viaf_pid} {online}'
+            f'viaf: {viaf_pid} {online}'
         return f'Create MEF from {agent} pid: {pid} | {actions}'
     else:
         return f'Not found agent {agent}:{pid}'

@@ -68,10 +68,8 @@ def mef_viaf_record(pid, agent, dbcommit=False, reindex=False):
     :param dbcommit: commit changes to db
     :param reindex: reindex the records
     """
-    record_class = get_entity_class(agent)
-    if record_class:
-        record = record_class.get_record_by_pid(pid)
-        if record:
+    if record_class := get_entity_class(agent):
+        if record := record_class.get_record_by_pid(pid):
             return record.create_or_update_mef_viaf_record(
                 dbcommit=True,
                 reindex=True
@@ -96,27 +94,26 @@ def create_or_update(index, record, entity, dbcommit=True, reindex=True,
     returned_record, agent_action = entity_class.create_or_update(
         data=record, dbcommit=dbcommit, reindex=reindex, test_md5=test_md5
     )
-    if entity in ['aidref', 'aggnd', 'agrero']:
-        if agent_action.CREATE:
-            mef_record, mef_action, viaf_record, got_online = returned_record.\
-                create_or_update_mef_viaf_record(
-                    dbcommit=dbcommit,
-                    reindex=reindex,
-                    online=online
-                )
-    id = returned_record.get('pid')
+    if entity in ['aidref', 'aggnd', 'agrero'] and agent_action.CREATE:
+        mef_record, mef_action, viaf_record, got_online = returned_record.\
+            create_or_update_mef_viaf_record(
+                dbcommit=dbcommit,
+                reindex=reindex,
+                online=online
+            )
+    rec_id = returned_record.get('pid')
     id_type = 'pid :'
-    if not id:
+    if not rec_id:
         id_type = 'uuid:'
-        id = returned_record.id
+        rec_id = returned_record.id
     if verbose:
-        message = f'{index:<10} {entity} {id_type} {id} {agent_action.name}'
+        msg = f'{index:<10} {entity} {id_type} {rec_id} {agent_action.name}'
         if agent_action.CREATE and entity in ['aidref', 'aggnd', 'agrero']:
             if viaf_record:
                 v_pid = viaf_record['pid']
-            message += (f' mef: {mef_record.pid} {mef_action.name} |'
-                        f' viaf: {v_pid} {got_online}')
-        click.echo(message)
+            msg += (f' mef: {mef_record.pid} {mef_action.name} |'
+                    f' viaf: {v_pid} {got_online}')
+        click.echo(msg)
     return id_type, str(id), str(agent_action)
 
 

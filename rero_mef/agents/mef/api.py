@@ -85,8 +85,6 @@ class AgentMefRecord(EntityMefRecord):
         :returns: Missing VIAF pids.
         """
         from ..viaf.api import AgentViafRecord
-        missing_pids = {}
-        unexisting_pids = {}
         if verbose:
             click.echo('Get pids from VIAF ...')
         progress = progressbar(
@@ -94,8 +92,7 @@ class AgentMefRecord(EntityMefRecord):
             length=AgentViafRecord.count(),
             verbose=verbose
         )
-        for pid in progress:
-            missing_pids[pid] = 1
+        missing_pids = {pid: 1 for pid in progress}
         if verbose:
             click.echo('Get pids from MEF and calculate missing ...')
         query = cls.search().filter('exists', field='viaf_pid')
@@ -104,10 +101,10 @@ class AgentMefRecord(EntityMefRecord):
             length=query.count(),
             verbose=True
         )
-        for hit in progress:
-            if not missing_pids.pop(hit.viaf_pid, None):
-                unexisting_pids[hit.pid] = hit.viaf_pid
-        return [v for v in missing_pids], unexisting_pids
+        unexisting_pids = {hit.pid: hit.viaf_pid for hit in progress
+                           if not missing_pids.pop(hit.viaf_pid, None)}
+
+        return list(missing_pids), unexisting_pids
 
     @classmethod
     def get_all_missing_agents_pids(cls, agent, verbose=False):
@@ -125,8 +122,7 @@ class AgentMefRecord(EntityMefRecord):
         data = super().replace_refs()
         sources = []
         for agent in ['rero', 'gnd', 'idref']:
-            agent_data = data.get(agent)
-            if agent_data:
+            if agent_data := data.get(agent):
                 if agent_data.get('deleted'):
                     data.pop(agent)
                     current_app.logger.info(
@@ -139,8 +135,7 @@ class AgentMefRecord(EntityMefRecord):
                         f' {agent_data.get("message")}')
                 else:
                     sources.append(agent)
-                    metadata = data[agent].get('metadata')
-                    if metadata:
+                    if metadata := data[agent].get('metadata'):
                         data[agent] = metadata
                         data['type'] = metadata['bf:Agent']
                     else:
