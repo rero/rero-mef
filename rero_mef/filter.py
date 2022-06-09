@@ -29,3 +29,14 @@ def exists_filter(field):
     def inner(values):
         return Q('exists', field=field)
     return inner
+
+
+def not_exists_filter(field):
+    """Create a term filter.
+
+    :param field: Field name.
+    :returns: Function that returns the Terms query.
+    """
+    def inner(values):
+        return Q('bool', must_not=[Q('exists', field=field)])
+    return inner

@@ -101,7 +101,7 @@ def create_or_update(index, record, entity, dbcommit=True, reindex=True,
                 reindex=reindex,
                 online=online
             )
-    rec_id = returned_record.get('pid')
+    pid = returned_record.get('pid')
     id_type = 'pid :'
     if not rec_id:
         id_type = 'uuid:'
@@ -114,7 +114,7 @@ def create_or_update(index, record, entity, dbcommit=True, reindex=True,
             msg += (f' mef: {mef_record.pid} {mef_action.name} |'
                     f' viaf: {v_pid} {got_online}')
         click.echo(msg)
-    return id_type, str(id), str(agent_action)
+    return id_type, str(pid), str(agent_action)
 
 
 @shared_task
@@ -133,8 +133,7 @@ def delete(index, pid, entity, dbcommit=True, delindex=True, verbose=False):
     agent_record = agent_class.get_record_by_pid(pid)
     action = None
     if agent_record:
-        result, action = agent_record.delete(dbcommit=dbcommit,
-                                             delindex=delindex)
+        _, action = agent_record.delete(dbcommit=dbcommit, delindex=delindex)
         if verbose:
             click.echo(f'{index:<10} Deleted {entity} {pid:<38} {action}')
     else:

@@ -60,8 +60,11 @@ def and_search_factory(self, search, query_parser=None):
     urlkwargs.add('q', query_string)
 
     # include deleted
-    deleted = request.args.get('deleted')
-    if not deleted:
-        search = search.filter('bool', must_not=[Q('exists', field='deleted')])
+    with_deleted = request.args.get('with_deleted')
+    if not with_deleted:
+        search = search.filter('bool', must_not=[
+            Q('exists', field='deleted'),  # no deleted MEF's
+            Q('exists', field='*.deleted')  # no deleted entities
+        ])
 
     return search, urlkwargs

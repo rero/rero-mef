@@ -42,9 +42,7 @@ def test_reromefrecord_api(app, agent_idref_record):
     assert AgentIdrefRecord.get_metadata_identifier_names() == (
         'agent_idref_metadata', 'agent_idref_id')
 
-    count = 0
-    for _ in AgentIdrefRecord.get_all_records():
-        count += 1
+    count = sum(1 for _ in AgentIdrefRecord.get_all_records())
     assert count == 1
 
     _, agent_action = idref.update_test_md5(

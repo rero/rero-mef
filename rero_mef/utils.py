@@ -307,17 +307,15 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                                     f' | mef: {m_pid} {m_action}'
                                     f' | viaf: {v_pid} online: {v_online}'
                                 )
-                        else:
-                            if verbose:
-                                click.echo(
-                                    f'NO TRANSFORMATION: {name} {count} '
-                                    f'{records[0]}'
-                                )
+                        elif verbose:
+                            click.echo(
+                                f'NO TRANSFORMATION: {name} {count} '
+                                f'{records[0]}'
+                            )
                     except Exception as err:
                         msg = f'Creating {name} {count}: {err}'
                         if rec:
                             msg += f'\n{rec}'
-
                         current_app.logger.error(msg)
                         if debug:
                             traceback.print_exc()
@@ -329,7 +327,6 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                 if debug:
                     traceback.print_exc()
                 count = -1
-
             my_from_date = my_from_date + timedelta(days=days_spann + 1)
             if verbose:
                 from_date = my_from_date.strftime("%Y-%m-%d")
@@ -587,8 +584,7 @@ def resolve_record(path, object_class):
     :returns: record for pid or {}
     """
     try:
-        record = object_class.get_record_by_pid(path)
-        return record
+        return object_class.get_record_by_pid(path)
     except PIDDoesNotExistError:
         return {}
 
