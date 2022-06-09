@@ -72,8 +72,8 @@ def task_create_mef_for_agent(pid, agent, dbcommit=True, reindex=True,
                 reindex=reindex,
                 online=online
             )
-        mef_pid = mef_record.pid if mef_record else 'Non'
-        viaf_pid = viaf_record.pid if viaf_record else 'Non'
+        mef_pid = mef_record.pid if mef_record else 'None'
+        viaf_pid = viaf_record.pid if viaf_record else 'None'
         actions = f'mef: {mef_pid} {mef_action.value} ' \
             f'viaf: {viaf_pid} {online}'
         return f'Create MEF from {agent} pid: {pid} | {actions}'

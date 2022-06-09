@@ -440,11 +440,15 @@ RECORDS_REST_FACETS = dict(
             deleted=dict(
                 filter=dict(exists=dict(field="deleted"))
             ),
+            deleted_entities=dict(
+                filter=dict(exists=dict(field="*.deleted"))
+            ),
         ),
         filters={
             'agent_type': terms_filter('type'),
             'agent_sources': terms_filter('sources'),
             'deleted': exists_filter('deleted'),
+            'deleted_entities': exists_filter('*.deleted'),
             'rero_double': terms_filter('rero.pid')
         }
     ),
@@ -459,7 +463,6 @@ RECORDS_REST_FACETS = dict(
             rero=dict(
                 filter=dict(exists=dict(field="rero_pid"))
             ),
-
         ),
         filters={
             'gnd': exists_filter('gnd_pid'),
@@ -517,11 +520,15 @@ RECORDS_REST_FACETS = dict(
             deleted=dict(
                 filter=dict(exists=dict(field="deleted"))
             ),
+            deleted_entities=dict(
+                filter=dict(exists=dict(field="*.deleted"))
+            ),
         ),
         filters={
             'agent_type': terms_filter('type'),
             'agent_sources': terms_filter('sources'),
             'deleted': exists_filter('deleted'),
+            'deleted_entities': exists_filter('*.deleted'),
             'rero_double': terms_filter('rero.pid')
         }
     ),

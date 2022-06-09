@@ -99,8 +99,7 @@ class ReroMefRecord(Record):
         """Create a new agent record."""
         assert cls.minter
         if '$schema' not in data:
-            type = cls.provider.pid_type
-            data = add_schema(data, type)
+            data = add_schema(data, cls.provider.pid_type)
         if delete_pid:
             data.pop('pid', None)
         if not id_:
@@ -130,7 +129,6 @@ class ReroMefRecord(Record):
         if data.get('md5', 'data') == self.get('md5', 'agent'):
             # record has no changes
             return self, Action.UPTODATE
-        data = add_schema(data, self.name)
         return_record = self.replace(
             data=data, dbcommit=dbcommit, reindex=reindex)
         return return_record, Action.UPDATE
@@ -145,6 +143,7 @@ class ReroMefRecord(Record):
         pid = data.get('pid')
         if agent_record := cls.get_record_by_pid(pid):
             # record exist
+            data = add_schema(data, agent_record.provider.pid_type)
             if test_md5:
                 return_record, agent_action = agent_record.update_test_md5(
                     data=data,
@@ -185,9 +184,8 @@ class ReroMefRecord(Record):
                     pid
                 )
                 get_record_ok = True
-                return super().get_record(
-                    persistent_identifier.object_uuid,
-                    with_deleted=with_deleted)
+                return super().get_record(persistent_identifier.object_uuid,
+                                          with_deleted=with_deleted)
 
             except PIDDoesNotExistError:
                 return None
@@ -358,8 +356,9 @@ class ReroMefRecord(Record):
     def reindex(self, forceindex=False):
         """Reindex record."""
         indexer = self.get_indexer_class()
-        return indexer(version_type='external_gte').index(self) \
-            if forceindex else indexer().index(self)
+        if forceindex:
+            return indexer(version_type='external_gte').index(self)
+        return indexer().index(self)
 
     def delete_from_index(self):
         """Delete record from index."""
@@ -408,9 +407,9 @@ class ReroIndexer(RecordIndexer):
         """Get the record class from payload."""
         # take the first defined doc type for finding the class
         pid_type = payload.get('doc_type', 'rec')
-        return obj_or_import_string(current_app.config.get(
-            'RECORDS_REST_ENDPOINTS'
-        ).get(pid_type).get('indexer_class', RecordIndexer))
+        endpoints = current_app.config.get('RECORDS_REST_ENDPOINTS')
+        return obj_or_import_string(
+            endpoints.get(pid_type).get('indexer_class', RecordIndexer))
 
     def process_bulk_queue(self, es_bulk_kwargs=None, stats_only=True):
         """Process bulk indexing queue.
@@ -495,14 +494,12 @@ class ReroIndexer(RecordIndexer):
                        f'{get_record_error_count} {payload["id"]}')
                 current_app.logger.error(msg)
                 db.session.rollback()
-            except Exception as err:
-                raise Exception(err)
-
-        index, doc_type = self.record_to_index(record)
 
         arguments = {}
         body = self._prepare_record(record, index, doc_type, arguments)
-        return {
+        index, doc_type = self.record_to_index(record)
+
+        action = {
             '_op_type': 'index',
             '_index': index,
             '_type': doc_type,
@@ -510,4 +507,7 @@ class ReroIndexer(RecordIndexer):
             '_version': record.revision_id,
             '_version_type': self._version_type,
             '_source': body
-        } | arguments
+        }
+        action.update(arguments)
+
+        return action

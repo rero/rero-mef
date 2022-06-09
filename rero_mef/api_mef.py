@@ -161,13 +161,15 @@ class EntityMefRecord(ReroMefRecord):
         return pids, multiple_pids, missing_pids
 
     @classmethod
-    def get_all_missing_pids(cls, record_types=[], verbose=False):
+    def get_all_missing_pids(cls, record_types=None, verbose=False):
         """Get all missing agents.
 
         :params record_types: Record types (pid_type).
         :param verbose: Verbose.
         :returns: missing pids, to much pids.
         """
+        if record_types is None:
+            record_types = []
         missing_pids = {}
         to_much_pids = {}
         entity_classes = get_entity_classes()

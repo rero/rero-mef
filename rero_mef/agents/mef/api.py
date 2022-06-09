@@ -123,11 +123,7 @@ class AgentMefRecord(EntityMefRecord):
         sources = []
         for agent in ['rero', 'gnd', 'idref']:
             if agent_data := data.get(agent):
-                if agent_data.get('deleted'):
-                    data.pop(agent)
-                    current_app.logger.info(
-                        f'MEF replace refs {data.get("pid")} {agent} deleted')
-                elif agent_data.get('status'):
+                if agent_data.get('status'):
                     data.pop(agent)
                     current_app.logger.error(
                         f'MEF replace refs {data.get("pid")} {agent}'

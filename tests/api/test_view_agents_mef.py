@@ -47,7 +47,6 @@ def test_view_agents_mef(client, agent_mef_record):
             'doc_count_error_upper_bound': 0,
             'sum_other_doc_count': 0
         },
-        'deleted': {'doc_count': 0},
         'sources': {
             'buckets': [
                 {'doc_count': 1, 'key': 'gnd'},
@@ -56,7 +55,9 @@ def test_view_agents_mef(client, agent_mef_record):
             ],
             'doc_count_error_upper_bound': 0,
             'sum_other_doc_count': 0
-        }
+        },
+        'deleted': {'doc_count': 0},
+        'deleted_entities': {'doc_count': 0},
     }
     url = url_for('api_agents_mef.redirect_item', pid=pid)
     res = client.get(url)

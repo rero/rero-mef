@@ -16,6 +16,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 """API for manipulating records."""
 
+
+import contextlib
+
 import click
 from flask import current_app
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
@@ -161,7 +164,7 @@ class AgentRecord(ReroMefRecord):
         from rero_mef.agents.mef.api import AgentMefRecord
         from rero_mef.agents.viaf.api import AgentViafRecord
 
-        try:
+        with contextlib.suppress(Exception):
             persistent_id = PersistentIdentifier.query.filter_by(
                 pid_type=cls.provider.pid_type,
                 pid_value=data.get('pid')
@@ -169,9 +172,6 @@ class AgentRecord(ReroMefRecord):
             if persistent_id.status == PIDStatus.DELETED:
                 return None, Action.ALREADYDELETED, None, Action.DISCARD, \
                     None, False
-        except Exception:
-            pass
-
         record, action = cls.create_or_update(
             data=data,
             id_=id_,
@@ -182,36 +182,29 @@ class AgentRecord(ReroMefRecord):
         )
         if action == Action.ERROR:
             return None, action, None, Action.ERROR, None, False
+        if record.deleted:
+            mef_record, mef_action = record.delete_from_mef(
+                dbcommit=dbcommit,
+                reindex=reindex,
+                verbose=verbose
+            )
+            viaf_record = None
+            action = Action.DELETE
+            online = False
+        elif action == Action.UPTODATE:
+            mef_record = AgentMefRecord.get_mef_by_entity_pid(
+                record.pid, record.name)
+            mef_action = Action.UPTODATE
+            viaf_record, online = AgentViafRecord.get_viaf_by_agent(
+                record)
         else:
-            if record.deleted:
-                mef_record, mef_action = record.delete_from_mef(
+            mef_record, mef_action, viaf_record, online = \
+                record.create_or_update_mef_viaf_record(
                     dbcommit=dbcommit,
                     reindex=reindex,
-                    verbose=verbose
+                    online=online
                 )
-                # record.delete(
-                #     dbcommit=dbcommit,
-                #     delindex=True,
-                # )
-                # record = None
-                action = Action.DELETE
-                viaf_record = None
-                online = False
-            else:
-                if action == Action.UPTODATE:
-                    mef_record = AgentMefRecord.get_mef_by_entity_pid(
-                        record.pid, record.name)
-                    mef_action = Action.UPTODATE
-                    viaf_record, online = AgentViafRecord.get_viaf_by_agent(
-                        record)
-                else:
-                    mef_record, mef_action, viaf_record, online = \
-                        record.create_or_update_mef_viaf_record(
-                            dbcommit=dbcommit,
-                            reindex=reindex,
-                            online=online
-                        )
-            return record, action, mef_record, mef_action, viaf_record, online
+        return record, action, mef_record, mef_action, viaf_record, online
 
     @classmethod
     def get_online_record(cls, id, verbose=False):
