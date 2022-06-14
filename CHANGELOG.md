@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.9.0](https://github.com/rero/rero-mef/tree/v0.9.0) (2022-06-14)
+
+[Full Changelog](https://github.com/rero/rero-mef/compare/v0.8.0...v0.9.0)
+
+* Fix handling of agents that have been deleted from source [\#79](https://github.com/rero/rero-mef/pull/79) 
+and [\#84](https://github.com/rero/rero-mef/pull/84) (by @rerowep)
+* Fix authorized access points [\#83](https://github.com/rero/rero-mef/pull/83) (by @rerowep)
+* Update dependencies [\#82](https://github.com/rero/rero-mef/pull/82) (by @rerowep)
+* Upgrade Poetry to `>=1.1.0` [\#78](https://github.com/rero/rero-mef/pull/78) (by @rerowep)
+
 ## [v0.8.0](https://github.com/rero/rero-mef/tree/v0.8.0) (2022-02-08)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.7.0...v0.8.0)
