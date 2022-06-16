@@ -496,8 +496,9 @@ class ReroIndexer(RecordIndexer):
                 db.session.rollback()
 
         arguments = {}
-        body = self._prepare_record(record, index, doc_type, arguments)
         index, doc_type = self.record_to_index(record)
+
+        body = self._prepare_record(record, index, doc_type, arguments)
 
         action = {
             '_op_type': 'index',
