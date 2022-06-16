@@ -407,9 +407,15 @@ class ReroIndexer(RecordIndexer):
         """Get the record class from payload."""
         # take the first defined doc type for finding the class
         pid_type = payload.get('doc_type', 'rec')
-        endpoints = current_app.config.get('RECORDS_REST_ENDPOINTS')
-        return obj_or_import_string(
-            endpoints.get(pid_type).get('indexer_class', RecordIndexer))
+        try:
+            indexer = obj_or_import_string(
+                current_app.config[
+                    'RECORDS_REST_ENDPOINTS'][pid_type]['indexer_class']
+            )
+        except Exception:
+            # provide default indexer if no indexer is defined in config.
+            indexer = ReroIndexer
+        return indexer
 
     def process_bulk_queue(self, es_bulk_kwargs=None, stats_only=True):
         """Process bulk indexing queue.
