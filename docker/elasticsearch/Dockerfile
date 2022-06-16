@@ -1,2 +1,2 @@
-FROM docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+FROM docker.elastic.co/elasticsearch/elasticsearch:7.17.4
 RUN bin/elasticsearch-plugin install analysis-icu
