@@ -22,8 +22,7 @@ from datetime import datetime
 import pytz
 
 from rero_mef.marctojson.helper import COUNTRIES, COUNTRY_UNIMARC_MARC21, \
-    LANGUAGE_SCRIPTS, LANGUAGES, build_string_list_from_fields, \
-    remove_trailing_punctuation
+    LANGUAGES, build_string_list_from_fields, remove_trailing_punctuation
 
 LANGUAGE_SCRIPT_CODES = {
     'ba': 'latn',
@@ -46,18 +45,10 @@ LANGUAGE_SCRIPT_CODES = {
 
 def get_script_code(field):
     """Get script_code from $7."""
-    languages = {}
-    if field['7']:
-        for language_script in LANGUAGE_SCRIPTS:
-            language, script_code = language_script.split('-')
-            codes = languages.setdefault(language, {})
-            codes[script_code] = 1
-            languages[language] = codes
     try:
         subfield_7 = field['7']
         code = subfield_7[4:6]
         script_code = LANGUAGE_SCRIPT_CODES[code]
-        _ = languages[language][script_code]
     except Exception:
         script_code = 'latn'
     return script_code
