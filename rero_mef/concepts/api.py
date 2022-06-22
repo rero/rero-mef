@@ -20,6 +20,8 @@ import click
 from flask import current_app
 from invenio_search import current_search
 
+from rero_mef.concepts.mef.api import ConceptMefRecord, build_ref_string
+
 from ..api import Action, ReroIndexer, ReroMefRecord
 
 
@@ -35,7 +37,7 @@ class ConceptRecord(ReroMefRecord):
         self.concept = self.name
 
     @classmethod
-    def update_indexes(cls):
+    def flush_indexes(cls):
         """Update indexes."""
         try:
             index = f'concepts_{cls.concept}'
@@ -73,7 +75,7 @@ class ConceptRecord(ReroMefRecord):
                 record=self, dbcommit=dbcommit, reindex=reindex)
             mef_action = Action.CREATE
         if reindex:
-            ConceptMefRecord.update_indexes()
+            ConceptMefRecord.flush_indexes()
         if verbose:
             click.echo(
                 f'Delete {self.concept}: {self.pid} '
@@ -91,55 +93,43 @@ class ConceptRecord(ReroMefRecord):
         :param online: Try to get VIAF record online.
         :returns: MEF record, MEF action, VIAF record, VIAF
         """
-        viaf_record = None
-        got_online = False
-        # from .viaf.api import AgentViafRecord
-        # AgentViafRecord.update_indexes()
-        # viaf_record, got_online = AgentViafRecord.get_viaf_by_agent(
-        #     concept=self,
-        #     online=online
-        # )
         from .mef.api import ConceptMefRecord
-        ref_string = ConceptMefRecord.build_ref_string(
+        ref_string = build_ref_string(
             concept=self.concept,
             concept_pid=self.pid
         )
         mef_data = {self.concept: {'$ref': ref_string}}
         mef_record = ConceptMefRecord.get_mef_by_entity_pid(
             self.pid, self.name)
-        # if viaf_record:
-        #     mef_data['viaf_pid'] = viaf_record.pid
-        #     if not mef_record:
-        #         mef_record = ConceptMefRecord.get_mef_by_viaf_pid(
-        #             viaf_record.pid)
         if self.deleted:
             mef_record, mef_action = self.delete_from_mef(
                 dbcommit=dbcommit,
                 reindex=reindex
             )
+        elif mef_record:
+            mef_action = Action.UPDATE
+            mef_record = mef_record.update(
+                data=mef_data,
+                dbcommit=dbcommit,
+                reindex=reindex
+            )
         else:
-            if mef_record:
-                mef_action = Action.UPDATE
-                mef_record = mef_record.update(
-                    data=mef_data,
-                    dbcommit=dbcommit,
-                    reindex=reindex
-                )
-            else:
-                mef_action = Action.CREATE
-                mef_record = ConceptMefRecord.create(
-                    data=mef_data,
-                    dbcommit=dbcommit,
-                    reindex=reindex,
-                )
+            mef_action = Action.CREATE
+            mef_record = ConceptMefRecord.create(
+                data=mef_data,
+                dbcommit=dbcommit,
+                reindex=reindex,
+            )
         if reindex:
-            ConceptMefRecord.update_indexes()
-        return mef_record, mef_action, viaf_record, got_online
+            ConceptMefRecord.flush_indexes()
+        return mef_record, mef_action, None, False
 
-    @property
-    def deleted(self):
-        """Get record deleted value."""
-        return self.get('deleted')
+    def reindex(self, forceindex=False):
+        """Reindex record."""
+        result = super().reindex(forceindex=forceindex)
+        if mef := ConceptMefRecord.get_mef_by_entity_pid(self.pid, self.name):
+            mef.reindex(forceindex=forceindex)
+        return result
 
 
 class ConceptIndexer(ReroIndexer):

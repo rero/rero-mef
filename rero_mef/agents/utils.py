@@ -251,7 +251,7 @@ def create_viaf_files(
 def get_agents_endpoints():
     """Get all agents from config."""
     agents_endpoints = {}
-    agents = current_app.config.get('AGENTS', [])
+    agents = current_app.config.get('RERO_AGENTS', [])
     endpoints = current_app.config.get('RECORDS_REST_ENDPOINTS', {})
     for endpoint, data in endpoints.items():
         if endpoint in agents:

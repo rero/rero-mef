@@ -84,11 +84,9 @@ class EntityMefRecord(ReroMefRecord):
 
         :returns: Generator of MEF pids without agent links and without VIAF.
         """
-        query = cls.search() \
-            .filter('bool', must_not=[Q('exists', field="viaf_pid")])
-        for pid_type in current_app.config.get(cls.mef_type, []):
-            query = query \
-                .filter('bool', must_not=[Q('exists', field=pid_type)])
+        must_not = [Q('exists', field="viaf_pid")]
+        must_not.extend(Q('exists', field=entity) for entity in cls.entities)
+        query = cls.search().filter('bool', must_not=must_not)
         for hit in query.source('pid').scan():
             yield hit.pid
 
@@ -218,11 +216,6 @@ class EntityMefRecord(ReroMefRecord):
         self.update(data=self, dbcommit=dbcommit, reindex=reindex)
         return self
 
-    @property
-    def deleted(self):
-        """Get record deleted value."""
-        return self.get('deleted')
-
     @classmethod
     def create_deleted(cls, record, dbcommit=False, reindex=False):
         """Create a deleted record for an record.
@@ -233,12 +226,12 @@ class EntityMefRecord(ReroMefRecord):
         :returns: Created record.
         """
         data = {record.name: {
-            '$ref': cls.build_ref_string(record.pid, record.name)}}
+            '$ref': build_ref_string(record.pid, record.name)}}
         data['deleted'] = pytz.utc.localize(datetime.now()).isoformat()
         return cls.create(data=data, dbcommit=dbcommit, reindex=reindex)
 
     @classmethod
-    def update_indexes(cls):
+    def flush_indexes(cls):
         """Update indexes."""
         try:
             current_search.flush_and_refresh(index='mef')
@@ -258,5 +251,5 @@ class EntityMefRecord(ReroMefRecord):
             action = Action.UPDATE
             self.replace(data=self, dbcommit=dbcommit, reindex=reindex)
             if reindex:
-                self.update_indexes()
+                self.flush_indexes()
         return self, action

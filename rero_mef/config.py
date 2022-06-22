@@ -207,16 +207,6 @@ IDENTIFIERS = {
     'corero': ConceptReroIdentifier
 }
 
-AGENTS = [
-    'aggnd',
-    'aidref',
-    'agrero'
-]
-
-CONCEPTS = [
-    'corero'
-]
-
 RERO_MEF_APP_BASE_URL = 'https://mef.rero.ch'
 
 SEARCH_CLIENT_CONFIG = dict(

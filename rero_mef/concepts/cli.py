@@ -46,12 +46,12 @@ def concepts():
 @with_appcontext
 def create_mef(pid_type, enqueue, online, verbose, progress, wait, missing):
     """Create MEF from concepts."""
-    CONCEPTS = current_app.config.get('CONCEPTS', [])
+    concepts = current_app.config.get('RERE=_CONCEPTS', [])
     if missing:
         missing_pids, to_much_pids = \
             ConceptMefRecord.get_all_missing_pids(pid_type, verbose=progress)
     for concept in pid_type:
-        if concept not in CONCEPTS:
+        if concept not in concepts:
             click.secho(
                 f'Error create MEF from {concept}. Wrong concept!',
                 fg='red'

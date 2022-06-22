@@ -35,6 +35,7 @@ from .providers import ViafProvider
 from ..api import ReroIndexer, ReroMefRecord
 from ..mef.api import AgentMefRecord
 from ..utils import get_agents_endpoints
+from ...api import Action
 from ...utils import get_entity_class, progressbar
 
 
@@ -101,49 +102,6 @@ class AgentViafRecord(ReroMefRecord):
         # make sure we got a VIAF with the same pid for source
         if result.get(source_code.get(viaf_source_code)) == pid:
             return result
-
-    @classmethod
-    def get_viaf_by_agent(cls, agent, online=False):
-        """Get VIAF record by agent.
-
-        :param agent: Agency do get corresponding VIAF record.
-        :param online: Try to get VIAF record online if not exist.
-        """
-        if isinstance(agent, AgentMefRecord):
-            viaf_pid = agent.get('viaf_pid')
-            return cls.get_record_by_pid(viaf_pid), False
-        if isinstance(agent, AgentViafRecord):
-            viaf_pid = agent.get('pid')
-            return cls.get_record_by_pid(viaf_pid), False
-        pid = agent.get('pid')
-        viaf_pid_name = agent.viaf_pid_name
-        query = AgentViafSearch() \
-            .filter({'term': {viaf_pid_name: pid}})
-        try:
-            viaf_pid = next(query.source(['pid']).scan()).pid
-            return cls.get_record_by_pid(viaf_pid), False
-        except StopIteration:
-            if online:
-                viaf_source_code = agent.viaf_source_code
-                viaf_data = cls.get_online_viaf_record(
-                    viaf_source_code=viaf_source_code,
-                    pid=pid
-                )
-                if viaf_data:
-                    viaf_pid = viaf_data.get('pid')
-                    viaf_record = cls.get_record_by_pid(viaf_pid)
-                    if viaf_record:
-                        viaf_record.reindex()
-                        cls.update_indexes()
-                        return viaf_record, False
-                    viaf_record = cls.create(
-                        data=viaf_data,
-                        dbcommit=True,
-                        reindex=True
-                    )
-                    cls.update_indexes()
-                    return viaf_record, True
-        return None, False
 
     def create_mef_and_agents(self, dbcommit=False, reindex=False,
                               test_md5=False, online=False,
@@ -219,7 +177,7 @@ class AgentViafRecord(ReroMefRecord):
         return actions
 
     @classmethod
-    def update_indexes(cls):
+    def flush_indexes(cls):
         """Update indexes."""
         try:
             current_search.flush_and_refresh(index='viaf')
@@ -247,7 +205,7 @@ class AgentViafRecord(ReroMefRecord):
             self.dbcommit()
         if delindex:
             self.delete_from_index()
-            self.update_indexes()
+            self.flush_indexes()
         # realy delete persistent identifier
         db.session.delete(persistent_identifier)
         if dbcommit:
@@ -274,7 +232,7 @@ class AgentViafRecord(ReroMefRecord):
                     f'{pid_type}: {agent_record.pid} '
                     f'mef: {mef_record.pid} {mef_action.value} '
                     f'viaf: {viaf_pid}')
-                AgentMefRecord.update_indexes()
+                AgentMefRecord.flush_indexes()
         return result, '; '.join(mef_actions)
 
     def get_agents_records(self):
@@ -329,6 +287,17 @@ class AgentViafRecord(ReroMefRecord):
                 pids_viaf.append(viaf_pid)
         pids_db = [v for v in pids_db]
         return pids_db, pids_viaf
+
+    def create_or_update_mef_viaf_record(self, dbcommit=False, reindex=False,
+                                         online=False):
+        """Create or update MEF and VIAF record.
+
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex record.
+        :param online: Try to get VIAF record online.
+        :returns: MEF record, MEF action, VIAF record, VIAF
+        """
+        return None, Action.ERROR, self, False
 
 
 class AgentViafIndexer(ReroIndexer):

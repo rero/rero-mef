@@ -32,7 +32,7 @@ def test_view_agents_mef(client, agent_mef_record):
         dbcommit=True,
         reindex=True,
     )
-    AgentMefRecord.update_indexes()
+    AgentMefRecord.flush_indexes()
     pid = agent_mef_record.get('pid')
     url = url_for('api_agents_mef.redirect_list')
     res = client.get(url)

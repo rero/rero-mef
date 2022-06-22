@@ -27,9 +27,21 @@ from .fetchers import mef_id_fetcher
 from .minters import mef_id_minter
 from .models import AgentMefMetadata
 from .providers import MefProvider
-from ...api import ReroIndexer
+from ...api import Action, ReroIndexer
 from ...api_mef import EntityMefRecord
 from ...utils import mef_get_all_missing_entity_pids, progressbar
+
+
+def build_ref_string(agent_pid, agent):
+    """Build url for agent's api.
+
+    :param agent_pid: Agent pid.
+    :param agent: Agent type.
+    :returns: URL to agent
+    """
+    with current_app.app_context():
+        return (f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
+                f'/api/agents/{agent}/{agent_pid}')
 
 
 class AgentMefSearch(RecordsSearch):
@@ -55,22 +67,10 @@ class AgentMefRecord(EntityMefRecord):
     model_cls = AgentMefMetadata
     search = AgentMefSearch
     mef_type = 'AGENTS'
+    entities = ['idref', 'gnd', 'rero']
 
     @classmethod
-    def build_ref_string(cls, agent_pid, agent):
-        """Build url for agent's api.
-
-        :param agent_pid: Agent pid.
-        :param agent: Agent type.
-        :returns: URL to agent
-        """
-        with current_app.app_context():
-            ref_string = (f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
-                          f'/api/agents/{agent}/{agent_pid}')
-            return ref_string
-
-    @classmethod
-    def update_indexes(cls):
+    def flush_indexes(cls):
         """Update indexes."""
         try:
             current_search.flush_and_refresh(index='mef')
@@ -154,6 +154,17 @@ class AgentMefRecord(EntityMefRecord):
             .scan()
         for hit in query:
             yield hit.pid
+
+    def create_or_update_mef_viaf_record(self, dbcommit=False, reindex=False,
+                                         online=False):
+        """Create or update MEF and VIAF record.
+
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex record.
+        :param online: Try to get VIAF record online.
+        :returns: MEF record, MEF action, VIAF record, VIAF
+        """
+        return self, Action.ERROR, None, False
 
 
 class AgentMefIndexer(ReroIndexer):

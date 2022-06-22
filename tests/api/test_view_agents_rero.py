@@ -33,7 +33,7 @@ def test_view_agents_rero(client, agent_rero_record):
         dbcommit=True,
         reindex=True,
     )
-    AgentReroRecord.update_indexes()
+    AgentReroRecord.flush_indexes()
     pid = agent_rero_record.get('pid')
     url = url_for('api_agents_rero.redirect_list')
     res = client.get(url)

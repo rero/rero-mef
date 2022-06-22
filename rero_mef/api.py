@@ -390,6 +390,11 @@ class ReroMefRecord(Record):
         identifier = cls.provider.pid_identifier
         return metadata, identifier
 
+    @property
+    def deleted(self):
+        """Get record deleted value."""
+        return self.get('deleted')
+
 
 class ReroIndexer(RecordIndexer):
     """Indexing class for mef."""

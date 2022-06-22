@@ -33,7 +33,7 @@ def test_view_agents_idref(client, agent_idref_record):
         dbcommit=True,
         reindex=True,
     )
-    AgentIdrefRecord.update_indexes()
+    AgentIdrefRecord.flush_indexes()
     pid = agent_idref_record.get('pid')
     url = url_for('api_agents_idref.redirect_list')
     res = client.get(url)

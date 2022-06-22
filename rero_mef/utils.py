@@ -275,8 +275,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                             )
                         except Exception as err:
                             updated = '????'
-                        rec = transformation(records[0]).json
-                        if rec:
+                        if rec := transformation(records[0]).json:
                             pid = rec.get('pid')
                             res = record_cls.create_or_update_agent_mef_viaf(
                                     data=rec,
