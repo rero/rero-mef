@@ -25,9 +25,21 @@ from .fetchers import mef_id_fetcher
 from .minters import mef_id_minter
 from .models import ConceptMefMetadata
 from .providers import ConceptMefProvider
-from ...api import ReroIndexer
+from ...api import Action, ReroIndexer
 from ...api_mef import EntityMefRecord
 from ...utils import mef_get_all_missing_entity_pids
+
+
+def build_ref_string(concept_pid, concept):
+    """Build url for concept's api.
+
+    :param concept_pid: Pid of concept.
+    :param concept: Type of concept.
+    :returns: Reference string to record.
+    """
+    with current_app.app_context():
+        return (f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
+                f'/api/concepts/{concept}/{concept_pid}')
 
 
 class ConceptMefSearch(RecordsSearch):
@@ -53,22 +65,10 @@ class ConceptMefRecord(EntityMefRecord):
     model_cls = ConceptMefMetadata
     search = ConceptMefSearch
     mef_type = 'CONCEPTS'
+    entities = ['rero']
 
     @classmethod
-    def build_ref_string(cls, concept_pid, concept):
-        """Build url for concept's api.
-
-        :param concept_pid: Pid of concept.
-        :param concept: Type of concept.
-        :returns: Reference string to record.
-        """
-        with current_app.app_context():
-            ref_string = (f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
-                          f'/api/concepts/{concept}/{concept_pid}')
-            return ref_string
-
-    @classmethod
-    def update_indexes(cls):
+    def flush_indexes(cls):
         """Update indexes."""
         try:
             current_search.flush_and_refresh(index='concepts_mef')
@@ -100,6 +100,17 @@ class ConceptMefRecord(EntityMefRecord):
                     data[agent] = metadata
         data['sources'] = sources
         return data
+
+    def create_or_update_mef_viaf_record(self, dbcommit=False, reindex=False,
+                                         online=False):
+        """Create or update MEF and VIAF record.
+
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex record.
+        :param online: Try to get VIAF record online.
+        :returns: MEF record, MEF action, VIAF record, VIAF
+        """
+        return self, Action.Error, None, False
 
 
 class ConceptMefIndexer(ReroIndexer):

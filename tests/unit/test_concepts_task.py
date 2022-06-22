@@ -30,7 +30,7 @@ def test_task_create_mef_for_concept(app, concept_rero_record):
         dbcommit=True,
         reindex=True
     )
-    ConceptReroRecord.update_indexes()
+    ConceptReroRecord.flush_indexes()
     assert task_create_mef_for_concept('XXXX', 'corero') == \
         'Not found concept corero:XXXX'
     assert task_create_mef_for_concept(rero.pid, 'corero') == \

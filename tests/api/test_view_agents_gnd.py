@@ -33,7 +33,7 @@ def test_view_agents_gnd(client, agent_gnd_record):
         dbcommit=True,
         reindex=True,
     )
-    AgentGndRecord.update_indexes()
+    AgentGndRecord.flush_indexes()
     pid = agent_gnd_record.get('pid')
     url = url_for('api_agents_gnd.redirect_list')
     res = client.get(url)

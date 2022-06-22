@@ -31,7 +31,7 @@ def test_create_agent_record_with_viaf_links(
     viaf_record, action = AgentViafRecord.create_or_update(
         agent_viaf_record, dbcommit=True, reindex=True
     )
-    AgentViafRecord.update_indexes()
+    AgentViafRecord.flush_indexes()
     assert action.name == 'CREATE'
     assert viaf_record['pid'] == '66739143'
     assert viaf_record['gnd_pid'] == '12391664X'

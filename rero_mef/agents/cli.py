@@ -135,12 +135,12 @@ def create_from_viaf(test_md5, enqueue, online, verbose, progress, wait,
 @with_appcontext
 def create_mef(pid_type, enqueue, online, verbose, progress, wait, missing):
     """Create MEF from agents."""
-    AGENTS = current_app.config.get('AGENTS', [])
+    agents = current_app.config.get('RERO_AGENTS', [])
     if missing:
         missing_pids, to_much_pids = \
             AgentMefRecord.get_all_missing_pids(pid_type, verbose=progress)
     for agent in pid_type:
-        if agent not in AGENTS:
+        if agent not in agents:
             click.secho(
                 f'Error create MEF from {agent}. Wrong agent!',
                 fg='red'

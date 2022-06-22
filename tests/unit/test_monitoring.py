@@ -77,7 +77,7 @@ def test_monitoring(app, agent_idref_record, script_info):
     # of the CliRunner
     idref = AgentIdrefRecord.get_record_by_pid(idref_pid)
     idref.reindex()
-    AgentIdrefRecord.update_indexes()
+    AgentIdrefRecord.flush_indexes()
     assert mon.get_es_count('agents_idref') == 1
     assert mon.check() == {}
     assert mon.missing('aidref') == {'DB': [], 'ES': [], 'ES duplicate': []}

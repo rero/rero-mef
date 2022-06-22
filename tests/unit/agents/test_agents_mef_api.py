@@ -27,7 +27,7 @@ def test_get_all_pids_without_agents_and_viaf(app):
     }
     m_record = AgentMefRecord.create(
         data=record, dbcommit=True, reindex=True)
-    AgentMefRecord.update_indexes()
+    AgentMefRecord.flush_indexes()
     assert list(AgentMefRecord.get_all_pids_without_agents_and_viaf()) == \
         [m_record.pid]
 
@@ -38,7 +38,7 @@ def test_get_pids_with_multiple_mef(app, agent_mef_record):
         data=agent_mef_record, delete_pid=True, dbcommit=True, reindex=True)
     m_record_2 = AgentMefRecord.create(
         data=agent_mef_record, delete_pid=True, dbcommit=True, reindex=True)
-    AgentMefRecord.update_indexes()
+    AgentMefRecord.flush_indexes()
     pids, multiple_pids, missing_pids = AgentMefRecord \
         .get_pids_with_multiple_mef(record_types=['aidref', 'aggnd', 'agrero'])
     assert pids == {'aggnd': {}, 'agrero': {}, 'aidref': {}}
@@ -61,13 +61,13 @@ def test_get_pids_with_multiple_mef(app, agent_mef_record):
 #         mef_record.delete(dbcommit=True, delindex=True)
 #     AgentGndRecord.create(
 #         data=agent_gnd_record, dbcommit=True, reindex=True)
-#     AgentGndRecord.update_indexes()
+#     AgentGndRecord.flush_indexes()
 #     AgentIdrefRecord.create(
 #         data=agent_idref_record, dbcommit=True, reindex=True)
-#     AgentIdrefRecord.update_indexes()
+#     AgentIdrefRecord.flush_indexes()
 #     AgentReroRecord.create(
 #         data=agent_rero_record, dbcommit=True, reindex=True)
-#     AgentReroRecord.update_indexes()
+#     AgentReroRecord.flush_indexes()
 #     missing_pids, to_much_pids = AgentMefRecord.get_all_missing_pids(
 #         record_types=['aidref', 'aggnd', 'agrero'])
 #     assert missing_pids == {

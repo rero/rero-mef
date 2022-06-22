@@ -33,7 +33,7 @@ def test_view_agents_viaf(client, agent_viaf_record):
         dbcommit=True,
         reindex=True,
     )
-    AgentViafRecord.update_indexes()
+    AgentViafRecord.flush_indexes()
     pid = agent_viaf_record.get('pid')
     url = url_for('api_agents_viaf.redirect_list')
     res = client.get(url)
