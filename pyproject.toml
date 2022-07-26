@@ -68,6 +68,7 @@ Flask = "<2.0.0"
 MarkupSafe = "<2.1.0"
 python-dotenv = "^0.13.0"
 WTForms = "<3.0.0"
+Jinja2 = "<3.0.0"
 
 [tool.poetry.dev-dependencies]
 ## Python packages development dependencies (order matters)
