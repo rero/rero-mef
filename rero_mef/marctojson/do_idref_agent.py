@@ -315,8 +315,8 @@ class Transformation(object):
             tag_grouping = [
                 {
                     'subtags': 'c',
-                    'start': ' ( ',
-                    'end': ' )',
+                    'start': ' (',
+                    'end': ')',
                     'delimiter': '',
                     'subdelimiter': ', '
                 }
@@ -354,15 +354,15 @@ class Transformation(object):
             tag_grouping = [
                 {
                     'subtags': 'c',
-                    'start': ' ( ',
-                    'end': ' )',
+                    'start': ' (',
+                    'end': ')',
                     'delimiter': '',
                     'subdelimiter': ', '
                 },
                 {
                     'subtags': 'def',
-                    'start': ' ( ',
-                    'end': ' )',
+                    'start': ' (',
+                    'end': ')',
                     'delimiter': '',
                     'subdelimiter': ' ; '
                 }
@@ -402,8 +402,8 @@ class Transformation(object):
             tag_grouping = [
                 {
                     'subtags': 'c',
-                    'start': ' ( ',
-                    'end': ' )',
+                    'start': ' (',
+                    'end': ')',
                     'delimiter': '',
                     'subdelimiter': ', '
                 }
@@ -434,15 +434,15 @@ class Transformation(object):
             tag_grouping = [
                 {
                     'subtags': 'c',
-                    'start': ' ( ',
-                    'end': ' )',
+                    'start': ' (',
+                    'end': ')',
                     'delimiter': '',
                     'subdelimiter': ', '
                 },
                 {
                     'subtags': 'def',
-                    'start': ' ( ',
-                    'end': ' )',
+                    'start': ' (',
+                    'end': ')',
                     'delimiter': '',
                     'subdelimiter': ' ; '
                 }
@@ -466,15 +466,15 @@ class Transformation(object):
             tag_grouping = [
                 {
                     'subtags': 'c',
-                    'start': ' ( ',
-                    'end': ' )',
+                    'start': ' (',
+                    'end': ')',
                     'delimiter': '',
                     'subdelimiter': ', '
                 },
                 {
                     'subtags': 'def',
-                    'start': ' ( ',
-                    'end': ' )',
+                    'start': ' (',
+                    'end': ')',
                     'delimiter': '',
                     'subdelimiter': ' ; '
                 }

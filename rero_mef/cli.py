@@ -540,7 +540,7 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
                             f' new:\t{json.dumps(data, sort_keys=True)}')
                     if output:
                         file_diff.write(data)
-                del(compaire_data[pid])
+                del compaire_data[pid]
             else:
                 if verbose:
                     click.echo(f'NEW :\t{json.dumps(data, sort_keys=True)}')

@@ -633,7 +633,7 @@ def test_idref_parallel_access_point():
     trans = trans_prep('idref', xml_part_to_add)
     trans.trans_idref_parallel_access_point()
     assert trans.json == {
-        'parallel_access_point': ['Paul. VI ( pape ) ( 1897-1978 )']
+        'parallel_access_point': ['Paul. VI (pape) (1897-1978)']
     }
 
 
