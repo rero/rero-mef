@@ -63,15 +63,15 @@ def test_build_string_list_from_fields():
         tag_grouping=[
             {
                 'subtags': 'c',
-                'start': ' ( ',
-                'end': ' )',
+                'start': ' (',
+                'end': ')',
                 'delimiter': '',
                 'subdelimiter': ', '
             },
             {
                 'subtags': 'def',
-                'start': ' ( ',
-                'end': ' )',
+                'start': ' (',
+                'end': ')',
                 'delimiter': '',
                 'subdelimiter': '; '
             }
@@ -80,6 +80,6 @@ def test_build_string_list_from_fields():
     assert data == [
         'Place of public./distr.'
         '. Address/publisher/dist.'
-        ' ( Name of publisher/dist. )'
-        ' ( Date; Place; Address )'
+        ' (Name of publisher/dist.)'
+        ' (Date; Place; Address)'
     ]

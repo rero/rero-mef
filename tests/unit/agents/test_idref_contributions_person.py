@@ -505,8 +505,8 @@ def test_idref_authorized_access_point():
     trans = trans_prep('idref', xml_part_to_add)
     trans.trans_idref_authorized_access_point()
     assert trans.json == {
-        'authorized_access_point': 'Stift Alter Dom Sankt Pauli ( Münster in '
-                                   'Westfalen, Allemagne )',
+        'authorized_access_point': 'Stift Alter Dom Sankt Pauli (Münster in '
+                                   'Westfalen, Allemagne)',
         'bf:Agent': 'bf:Organisation',
         'conference': False,
     }
@@ -521,8 +521,8 @@ def test_idref_authorized_access_point():
     trans = trans_prep('idref', xml_part_to_add)
     trans.trans_idref_authorized_access_point()
     assert trans.json == {
-        'authorized_access_point': 'Stift Alter Dom Sankt Pauli ( Münster in '
-                                   'Westfalen, Allemagne )',
+        'authorized_access_point': 'Stift Alter Dom Sankt Pauli (Münster in '
+                                   'Westfalen, Allemagne)',
         'bf:Agent': 'bf:Organisation',
         'conference': True,
     }
