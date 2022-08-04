@@ -1019,7 +1019,7 @@ def write_link_json(
     agent_pid = viaf_pid
     add_schema(json_dump, 'viaf')
     json_dump['pid'] = agent_pid
-    del(json_dump['viaf_pid'])
+    del json_dump['viaf_pid']
     # only save VIAF data with used pids
     write_to_file = write_to_file_viaf if agent == 'viaf' else True
     if write_to_file:
