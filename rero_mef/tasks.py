@@ -101,7 +101,7 @@ def create_or_update(index, record, entity, dbcommit=True, reindex=True,
                 reindex=reindex,
                 online=online
             )
-    pid = returned_record.get('pid')
+    rec_id = returned_record.get('pid')
     id_type = 'pid :'
     if not rec_id:
         id_type = 'uuid:'
@@ -114,7 +114,7 @@ def create_or_update(index, record, entity, dbcommit=True, reindex=True,
             msg += (f' mef: {mef_record.pid} {mef_action.name} |'
                     f' viaf: {v_pid} {got_online}')
         click.echo(msg)
-    return id_type, str(pid), str(agent_action)
+    return id_type, str(rec_id), str(agent_action)
 
 
 @shared_task
