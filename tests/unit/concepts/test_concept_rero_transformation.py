@@ -19,6 +19,8 @@
 
 from concepts_helpers import trans_prep
 
+from rero_mef.marctojson.do_rero_concepts import Transformation
+
 
 def test_rero_identifier():
     """Test identifier for person 035 016 679"""
@@ -36,7 +38,7 @@ def test_rero_identifier():
         </datafield>
     """
 
-    trans = trans_prep('concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
     trans.trans_rero_identifier()
     assert trans.json == {
         'pid': 'A021029523',
@@ -67,7 +69,7 @@ def test_rero_bnf_type():
         </datafield>
     """
 
-    trans = trans_prep('concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
     trans.trans_rero_bnf_type()
     assert trans.json == {
         'bnf_type': 'Genre / Fiction'
@@ -83,7 +85,7 @@ def test_rero_authorized_access_point():
             </subfield>
         </datafield>
     """
-    trans = trans_prep('concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
     trans.trans_rero_authorized_access_point()
     assert trans.json == {
         'authorized_access_point':
@@ -97,7 +99,7 @@ def test_rero_authorized_access_point():
             </subfield>
         </datafield>
     """
-    trans = trans_prep('concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
     trans.trans_rero_authorized_access_point()
     assert trans.json == {
         'authorized_access_point': '[Bandes dessinées fantastiques]'
@@ -118,7 +120,7 @@ def test_rero_variant_access_point():
             </subfield>
         </datafield>
     """
-    trans = trans_prep('concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
     trans.trans_rero_variant_access_point()
     assert trans.json == {
         'variant_access_point': [
@@ -133,7 +135,7 @@ def test_rero_variant_access_point():
             <subfield code="x">Bandes dessinées</subfield>
         </datafield>
     """
-    trans = trans_prep('concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
     trans.trans_rero_variant_access_point()
     assert trans.json == {
         'variant_access_point': [
@@ -155,7 +157,7 @@ def test_rero_relation():
         </datafield>
 
     """
-    trans = trans_prep('concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
     trans.trans_rero_relation()
     assert trans.json == {
         'broader': [{
@@ -174,7 +176,7 @@ def test_rero_relation():
           <subfield code="a">Livres en plastique</subfield>
         </datafield>
     """
-    trans = trans_prep('concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
     trans.trans_rero_relation()
     assert trans.json == {
         'related': [
@@ -195,7 +197,7 @@ def test_rero_classification():
           <subfield code="a">020 - Sciences de l'information</subfield>
         </datafield>
     """
-    trans = trans_prep('concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
     trans.trans_rero_classification()
     assert trans.json == {
         'classification': [{
@@ -214,13 +216,13 @@ def test_rero_close_match():
           <subfield code="v">LCSH</subfield>
         </datafield>
     """
-    trans = trans_prep('concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
     trans.trans_rero_close_match()
     assert trans.json == {
-        'closeMatch': {
+        'closeMatch': [{
             'authorized_access_point': 'Public Libraries',
             'source': 'LCSH'
-        }
+        }]
     }
 
 
@@ -279,7 +281,7 @@ def test_rero_notes():
           <subfield code="9">VF3, NC3, NC30</subfield>
         </datafield>
     """
-    trans = trans_prep('concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
     trans.trans_rero_note()
     assert trans.json == {
         'note': [

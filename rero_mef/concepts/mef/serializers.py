@@ -40,14 +40,13 @@ def add_links(pid, record):
 
 
 # Nice to have direct working links in test server!
-def local_link(agent, name, record):
+def local_link(concept, name, record):
     """Change links to actual links."""
     if name in record:
-        ref = record[name].get('$ref')
-        if ref:
+        if ref := record[name].get('$ref'):
             my_pid = ref.split('/')[-1]
             url = url_for(
-                f'invenio_records_rest.{agent}_item',
+                f'invenio_records_rest.{concept}_item',
                 pid_value=my_pid,
                 _external=True
             )
@@ -71,11 +70,13 @@ class ReroMefSerializer(JSONSerializer):
             # TODO: add the list of sources into the current_app.config
             if 'rero' in record:
                 sources.append('rero')
+            if 'idref' in record:
+                sources.append('idref')
             record['sources'] = sources
 
         concept_classes = get_entity_classes()
         for concept, concept_classe in concept_classes.items():
-            if concept in ['corero']:
+            if concept in ['corero', 'cidref']:
                 local_link(concept, concept_classe.name, record)
 
         return super(ReroMefSerializer, self).serialize(

@@ -136,6 +136,11 @@ class Transformation(object):
                 if func.startswith('trans'):
                     func = getattr(self, func)
                     func()
+        else:
+            msg = 'No 200 or 210'
+            self.json_dict = {'NO TRANSFORMATION', msg}
+            self.logger.warning('NO TRANSFORMATION', msg)
+            self.trans_idref_pid()
 
     @property
     def json(self):

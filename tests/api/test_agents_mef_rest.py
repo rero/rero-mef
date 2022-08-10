@@ -22,7 +22,8 @@ import json
 from flask import url_for
 
 
-def test_view_agents_mef(client, agent_mef_record):
+def test_view_agents_mef(client, agent_mef_record, agent_gnd_record,
+                         agent_rero_record, agent_idref_record):
     """Test redirect MEF."""
     pid = agent_mef_record.get('pid')
     url = url_for('api_agents_mef.redirect_list')

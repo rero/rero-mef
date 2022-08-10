@@ -53,77 +53,106 @@
           "pid": {
             "type": "keyword"
           },
-          "bf:Agent": {
-            "type": "keyword"
-          },
           "md5": {
             "type": "keyword"
           },
-          "language": {
-            "type": "keyword"
-          },
-          "gender": {
+          "bnf_type": {
             "type": "keyword"
           },
           "identifier": {
             "type": "keyword"
           },
-          "date_of_birth": {
+          "authorized_access_point": {
+            "type": "text",
+            "copy_to": "autocomplete_name"
+          },
+          "variant_access_point": {
             "type": "text"
           },
-          "date_of_death": {
-            "type": "text"
+          "deleted": {
+            "type": "date"
           },
-          "biographical_information": {
-            "type": "text"
+          "related": {
+            "type": "object",
+            "properties": {
+              "authorized_access_point": {
+                "type": "text"
+              }
+            }
           },
-          "preferred_name": {
-            "type": "text"
+          "broader": {
+            "type": "object",
+            "properties": {
+              "authorized_access_point": {
+                "type": "text"
+              }
+            }
+          },
+          "narrower": {
+            "type": "object",
+            "properties": {
+              "authorized_access_point": {
+                "type": "text"
+              }
+            }
+          },
+          "_created": {
+            "type": "date"
+          },
+          "_updated": {
+            "type": "date"
+          }
+        }
+      },
+      "idref": {
+        "type": "object",
+        "properties": {
+          "$schema": {
+            "type": "keyword"
+          },
+          "pid": {
+            "type": "keyword"
+          },
+          "md5": {
+            "type": "keyword"
+          },
+          "bnf_type": {
+            "type": "keyword"
+          },
+          "identifier": {
+            "type": "keyword"
           },
           "authorized_access_point": {
             "type": "text",
             "copy_to": "autocomplete_name"
           },
-          "qualifier": {
-            "type": "keyword"
-          },
-          "numeration": {
-            "type": "keyword"
-          },
-          "variant_name": {
-            "type": "text"
-          },
-          "date_of_establishment": {
-            "type": "text"
-          },
-          "date_of_termination": {
-            "type": "text"
-          },
-          "conference": {
-            "type": "keyword"
-          },
           "variant_access_point": {
-            "type": "text",
-            "copy_to": "autocomplete_name"
-          },
-          "parallel_access_point": {
-            "type": "text",
-            "copy_to": "autocomplete_name"
-          },
-          "country_associated": {
-            "type": "keyword"
+            "type": "text"
           },
           "deleted": {
             "type": "date"
           },
-          "relation_pid": {
+          "related": {
             "type": "object",
             "properties": {
-              "value": {
-                "type": "keyword"
-              },
-              "type": {
-                "type": "keyword"
+              "authorized_access_point": {
+                "type": "text"
+              }
+            }
+          },
+          "broader": {
+            "type": "object",
+            "properties": {
+              "authorized_access_point": {
+                "type": "text"
+              }
+            }
+          },
+          "narrower": {
+            "type": "object",
+            "properties": {
+              "authorized_access_point": {
+                "type": "text"
               }
             }
           },

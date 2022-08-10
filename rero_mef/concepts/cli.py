@@ -35,7 +35,7 @@ def concepts():
 
 @concepts.command()
 @click.option('-t', '--pid_type', 'pid_type', multiple=True,
-              default=['corero'])
+              default=['corero', 'cidref'])
 @click.option('-k', '--enqueue', 'enqueue', is_flag=True, default=False,
               help="Enqueue record creation.")
 @click.option('-o', '--online', 'online', is_flag=True, default=False)

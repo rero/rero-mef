@@ -23,12 +23,10 @@ import os
 
 from pymarc import marcxml
 
-from rero_mef.marctojson.do_rero_concepts import \
-    Transformation as Transformation_rero_concepts
 from rero_mef.marctojson.logger import Logger
 
 
-def trans_prep(source, xml_part_to_add):
+def trans_prep(transformation, source, xml_part_to_add):
     """Prepare transformation."""
     build_xml_record_file(xml_part_to_add)
     current_dir = os.path.dirname(__file__)
@@ -38,7 +36,7 @@ def trans_prep(source, xml_part_to_add):
         file_name, strict=False, normalize_form=None)
     logger = Logger()
     trans = {
-        'concepts': Transformation_rero_concepts(
+        'concepts': transformation(
             marc=records[0], logger=logger, verbose=True, transform=False)
     }
     return trans.get(source)

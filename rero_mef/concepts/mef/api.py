@@ -16,7 +16,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """API for manipulating MEF records."""
-
 from datetime import datetime, timezone
 
 from flask import current_app
@@ -67,7 +66,7 @@ class ConceptMefRecord(EntityMefRecord):
     model_cls = ConceptMefMetadata
     search = ConceptMefSearch
     mef_type = 'CONCEPTS'
-    entities = ['rero']
+    entities = ['idref', 'rero']
 
     @classmethod
     def flush_indexes(cls):
@@ -94,11 +93,11 @@ class ConceptMefRecord(EntityMefRecord):
         """Replace $ref with real data."""
         data = super().replace_refs()
         sources = []
-        for agent in ['rero']:
-            if agent in data and data[agent]:
-                sources.append(agent)
-                if metadata := data[agent].get('metadata'):
-                    data[agent] = metadata
+        for concept in self.entities:
+            if data.get(concept):
+                sources.append(concept)
+                if metadata := data[concept].get('metadata'):
+                    data[concept] = metadata
         data['sources'] = sources
         return data
 

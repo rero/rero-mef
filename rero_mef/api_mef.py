@@ -104,7 +104,7 @@ class EntityMefRecord(ReroMefRecord):
             yield hit.pid
 
     @classmethod
-    def get_pids_with_multiple_mef(cls, record_types=[], verbose=False):
+    def get_pids_with_multiple_mef(cls, record_types=None, verbose=False):
         """Get agent pids with multiple MEF records.
 
         :params record_types: Record types (pid_types).
@@ -114,47 +114,47 @@ class EntityMefRecord(ReroMefRecord):
         pids = {}
         multiple_pids = {}
         missing_pids = {}
-        for record_type in record_types:
-            if verbose:
-                click.echo(f'Calculating {record_type}:')
-            pids[record_type] = {}
-            multiple_pids[record_type] = {}
-            missing_pids[record_type] = []
-
-            if agent_class := get_entity_class(record_type):
-                agent_name = agent_class.name
-                query = cls.search().filter('exists', field=agent_name)
-                progress = progressbar(
-                    items=query
-                    .params(preserve_order=True)
-                    .sort({'pid': {'order': 'asc'}})
-                    .scan(),
-                    length=query.count(),
-                    verbose=verbose
-                )
-                for hit in progress:
-                    data = hit.to_dict()
-                    mef_pid = data['pid']
-                    agent_pid = data[agent_name]['pid']
-                    pids[record_type].setdefault(agent_pid, [])
-                    pids[record_type][agent_pid].append(mef_pid)
-                    if len(pids[record_type][agent_pid]) > 1:
-                        multiple_pids[record_type][agent_pid] = \
-                            pids[record_type][agent_pid]
-                if len(pids[record_type]) < agent_class.count():
+        if record_types:
+            for record_type in record_types:
+                if verbose:
+                    click.echo(f'Calculating {record_type}:')
+                pids[record_type] = {}
+                multiple_pids[record_type] = {}
+                missing_pids[record_type] = []
+                if agent_class := get_entity_class(record_type):
+                    agent_name = agent_class.name
+                    query = cls.search().filter('exists', field=agent_name)
                     progress = progressbar(
-                        items=agent_class.get_all_pids(),
-                        length=agent_class.count(),
+                        items=query
+                        .params(preserve_order=True)
+                        .sort({'pid': {'order': 'asc'}})
+                        .scan(),
+                        length=query.count(),
                         verbose=verbose
                     )
-                    for pid in progress:
-                        if not pids[record_type].pop(pid, None):
-                            missing_pids[record_type].append(pid)
+                    for hit in progress:
+                        data = hit.to_dict()
+                        mef_pid = data['pid']
+                        agent_pid = data[agent_name]['pid']
+                        pids[record_type].setdefault(agent_pid, [])
+                        pids[record_type][agent_pid].append(mef_pid)
+                        if len(pids[record_type][agent_pid]) > 1:
+                            multiple_pids[record_type][agent_pid] = \
+                                pids[record_type][agent_pid]
+                    if len(pids[record_type]) < agent_class.count():
+                        progress = progressbar(
+                            items=agent_class.get_all_pids(),
+                            length=agent_class.count(),
+                            verbose=verbose
+                        )
+                        for pid in progress:
+                            if not pids[record_type].pop(pid, None):
+                                missing_pids[record_type].append(pid)
+                    else:
+                        pids[record_type] = {}
                 else:
-                    pids[record_type] = {}
-            else:
-                current_app.logger.error(
-                    f'Record type not found: {record_type}')
+                    current_app.logger.error(
+                        f'Record type not found: {record_type}')
         return pids, multiple_pids, missing_pids
 
     @classmethod

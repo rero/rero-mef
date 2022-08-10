@@ -82,7 +82,6 @@ class AgentRecord(ReroMefRecord):
     def __init__(self, *args, **kwargs):
         """Init class."""
         super().__init__(*args, **kwargs)
-        self.agent = self.name
 
     @classmethod
     def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
@@ -115,16 +114,13 @@ class AgentRecord(ReroMefRecord):
             agent=self,
             online=online
         )
-
+        from .mef.api import AgentMefRecord
         ref_string = build_ref_string(
-            agent=self.agent,
-            agent_pid=self.pid)
-
-        mef_data = {self.agent: {'$ref': ref_string}}
-        mef_record = AgentMefRecord.get_mef_by_entity_pid(
-            entity_pid=self.pid,
-            entity_name=self.name
+            agent=self.name,
+            agent_pid=self.pid
         )
+        mef_data = {self.name: {'$ref': ref_string}}
+        mef_record = AgentMefRecord.get_mef_by_entity_pid(self.pid, self.name)
         if viaf_record:
             mef_data['viaf_pid'] = viaf_record.pid
             if not mef_record:
@@ -172,7 +168,7 @@ class AgentRecord(ReroMefRecord):
         if mef_record:
             old_mef_pid = mef_record.pid
             if not mef_record.deleted:
-                mef_record.pop(self.agent, None)
+                mef_record.pop(self.name, None)
                 mef_action = Action.DELETEAGENT
                 mef_record = mef_record.replace(
                     data=mef_record,
@@ -198,7 +194,7 @@ class AgentRecord(ReroMefRecord):
             AgentMefRecord.flush_indexes()
         if verbose:
             click.echo(
-                f'Delete {self.agent}: {self.pid} '
+                f'Delete {self.name}: {self.pid} '
                 f'from mef: {old_mef_pid} {mef_action.value} '
                 f'new mef: {mef_record.pid}'
             )

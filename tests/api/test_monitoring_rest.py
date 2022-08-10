@@ -36,6 +36,8 @@ def test_monitoring_es_db_counts(client):
             'aggnd': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'agents_gnd'},
             'agrero': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'agents_rero'},
             'aidref': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'agents_idref'},
+            'cidref': {
+                'db': 0, 'db-es': 0, 'es': 0, 'index': 'concepts_idref'},
             'comef': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'concepts_mef'},
             'corero': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'concepts_rero'},
             'mef': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'mef'},

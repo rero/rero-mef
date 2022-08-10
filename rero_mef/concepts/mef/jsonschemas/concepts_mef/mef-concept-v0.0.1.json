@@ -23,6 +23,10 @@
       "title": "RERO concept ID",
       "type": "object"
     },
+    "idref": {
+      "title": "IdRef concept ID",
+      "type": "object"
+    },
     "deleted": {
       "title": "Deletion date",
       "type": "string"

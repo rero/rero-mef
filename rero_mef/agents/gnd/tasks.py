@@ -40,7 +40,7 @@ def process_records_from_dates(from_date=None, until_date=None,
     :param until_date: The upper bound date for the harvesting (optional).
     """
     return oai_process_records_from_dates(
-        name='gnd',
+        name='agents.gnd',
         sickle=Sickle,
         max_retries=current_app.config.get('RERO_OAI_RETRIES', 0),
         oai_item_iterator=MyOAIItemIterator,
@@ -73,7 +73,7 @@ def save_records_from_dates(file_name, from_date=None, until_date=None,
     """
     # data on IDREF Servers starts on 2000-10-01
     return oai_save_records_from_dates(
-        name='gnd',
+        name='agents.gnd',
         file_name=file_name,
         sickle=Sickle,
         max_retries=current_app.config.get('RERO_OAI_RETRIES', 0),
@@ -90,9 +90,8 @@ def gnd_get_record(id, verbose=False, debug=False):
     """Get a record from GND OAI repo."""
     return oai_get_record(
         id=id,
-        name='gnd',
+        name='agents.gnd',
         transformation=Transformation,
-        record_cls=AgentGndRecord,
         access_token=current_app.config.get('RERO_OAI_GND_TOKEN'),
         identifier='oai:dnb.de/authorities/',
         verbose=verbose,

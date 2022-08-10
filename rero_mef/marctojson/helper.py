@@ -1347,61 +1347,79 @@ def remove_trailing_punctuation(data, punctuation=',',
     ).rstrip()
 
 
+def build_string_from_field(field, subfields, punctuation=',',
+                            spaced_punctuation=':;/-', tag_grouping=None):
+    """Build a string (one per field).
+
+    from the given field tag and given subfields.
+    the given separator is used as subfields delimiter.
+    """
+    if not tag_grouping:
+        tag_grouping = []
+    grouping_data = []
+    grouping_code = []
+    for code, data in field:
+        if code in subfields:
+            if isinstance(data, (list, set)):
+                data = subfields[code].join(data)
+            data = data.replace('\x98', '')
+            data = data.replace('\x9C', '')
+            data = data.replace(',,', ',')
+            data = remove_trailing_punctuation(
+                data=data,
+                punctuation=punctuation,
+                spaced_punctuation=spaced_punctuation
+            )
+            if data := data.strip():
+                for group in tag_grouping:
+                    if code in group['subtags']:
+                        code = group['subtags']
+                if grouping_code and code == grouping_code[-1]:
+                    grouping_data[-1].append(data)
+                else:
+                    grouping_code.append(code)
+                    grouping_data.append([data])
+    subfield_string = ''
+    for group in zip(grouping_code, grouping_data):
+        grouping_start = ''
+        grouping_end = ''
+        delimiter = subfields.get(group[0])
+        subdelimiter = subfields.get(group[0])
+        for grouping in tag_grouping:
+            if group[0] == grouping['subtags']:
+                grouping_start = grouping.get('start', '')
+                grouping_end = grouping.get('end', '')
+                delimiter = grouping.get('delimiter', '')
+                subdelimiter = grouping.get('subdelimiter', '')
+
+        if subfield_string:
+            subfield_string += delimiter + grouping_start + \
+                subdelimiter.join(group[1]) + grouping_end
+        else:
+            subfield_string = grouping_start + \
+                subdelimiter.join(group[1]) + grouping_end
+    return subfield_string.strip()
+
+
 def build_string_list_from_fields(record, tag, subfields, punctuation=',',
-                                  spaced_punctuation=':;/-', tag_grouping=[]):
+                                  spaced_punctuation=':;/-',
+                                  tag_grouping=None):
     """Build a list of strings (one per field).
 
     from the given field tag and given subfields.
     the given separator is used as subfields delimiter.
     """
-    fields = record.get_fields(tag)
+    if not tag_grouping:
+        tag_grouping = []
     field_string_list = []
-    for field in fields:
-        grouping_data = []
-        grouping_code = []
-        for code, data in field:
-            if code in subfields:
-                if isinstance(data, (list, set)):
-                    data = subfields[code].join(data)
-                data = data.replace('\x98', '')
-                data = data.replace('\x9C', '')
-                data = data.replace(',,', ',')
-                data = remove_trailing_punctuation(
-                    data=data,
-                    punctuation=punctuation,
-                    spaced_punctuation=spaced_punctuation
-                )
-                data = data.strip()
-                if data:
-                    for group in tag_grouping:
-                        if code in group['subtags']:
-                            code = group['subtags']
-                    if grouping_code and code == grouping_code[-1]:
-                        grouping_data[-1].append(data)
-                    else:
-                        grouping_code.append(code)
-                        grouping_data.append([data])
-        subfield_string = ''
-        for group in zip(grouping_code, grouping_data):
-            grouping_start = ''
-            grouping_end = ''
-            delimiter = subfields.get(group[0])
-            subdelimiter = subfields.get(group[0])
-            for grouping in tag_grouping:
-                if group[0] == grouping['subtags']:
-                    grouping_start = grouping.get('start', '')
-                    grouping_end = grouping.get('end', '')
-                    delimiter = grouping.get('delimiter', '')
-                    subdelimiter = grouping.get('subdelimiter', '')
-
-            if subfield_string:
-                subfield_string += delimiter + grouping_start + \
-                    subdelimiter.join(group[1]) + grouping_end
-            else:
-                subfield_string = grouping_start + \
-                    subdelimiter.join(group[1]) + grouping_end
-
-        if subfield_string:
+    for field in record.get_fields(tag):
+        if subfield_string := build_string_from_field(
+            field=field,
+            subfields=subfields,
+            punctuation=punctuation,
+            spaced_punctuation=spaced_punctuation,
+            tag_grouping=tag_grouping
+        ):
             field_string_list.append(subfield_string.strip())
     return field_string_list
 

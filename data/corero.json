@@ -94,10 +94,10 @@
         "name": "Médecine"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Abdomen",
       "source": "MeSH"
-    },
+    }],
     "pid": "A021001001",
     "identifiedBy": [
       {
@@ -190,10 +190,10 @@
         "name": "Technique"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Storage batteries",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001003",
     "identifiedBy": [
       {
@@ -272,10 +272,10 @@
         "name": "Linguistique générale"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Speech acts (Linguistics)",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001004",
     "identifiedBy": [
       {
@@ -345,10 +345,10 @@
         "name": "Audiovisuel"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Motion picture actors and actresses",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001005",
     "identifiedBy": [
       {
@@ -457,10 +457,10 @@
         "name": "Arts du spectacle"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Actresses",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001007",
     "identifiedBy": [
       {
@@ -533,10 +533,10 @@
         "name": "Technique"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Adhesives",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001008",
     "identifiedBy": [
       {
@@ -618,10 +618,10 @@
         "name": "Administration publique"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Administration publique",
       "source": "RVMLaval"
-    },
+    }],
     "pid": "A021001009",
     "identifiedBy": [
       {
@@ -699,10 +699,10 @@
         "name": "Technique"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Aerodynamics",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001012",
     "identifiedBy": [
       {
@@ -821,10 +821,10 @@
         "name": "Physique"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Aerodynamics, Supersonic",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001013",
     "identifiedBy": [
       {
@@ -891,10 +891,10 @@
         "name": "Physique"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Aerodynamics, Transonic",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001014",
     "identifiedBy": [
       {
@@ -947,10 +947,10 @@
         "name": "Technique"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Ground-effect machines",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001016",
     "identifiedBy": [
       {
@@ -1015,10 +1015,10 @@
         "name": "Économie domestique"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Lamb (Meat)",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001017",
     "identifiedBy": [
       {
@@ -1073,10 +1073,10 @@
         "name": "Psychologie"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Aggressiveness",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001018",
     "identifiedBy": [
       {
@@ -1153,10 +1153,10 @@
         "name": "Agriculture"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Organic farming",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001021",
     "identifiedBy": [
       {
@@ -1240,10 +1240,10 @@
         "name": "Technique"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Airbus aircraft",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001023",
     "identifiedBy": [
       {
@@ -1311,10 +1311,10 @@
         "name": "Parapsychologie, occultisme et ésotérisme"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Alchemy",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001024",
     "identifiedBy": [
       {
@@ -1382,10 +1382,10 @@
         "name": "Langues"
       }
     ],
-    "closeMatch": {
+    "closeMatch": [{
       "authorized_access_point": "Alemannic dialects",
       "source": "LCSH"
-    },
+    }],
     "pid": "A021001025",
     "identifiedBy": [
       {

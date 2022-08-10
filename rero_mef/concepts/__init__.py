@@ -18,9 +18,12 @@
 """Concepts."""
 
 from .api import Action
+from .idref.api import ConceptIdrefIndexer, ConceptIdrefRecord, \
+    ConceptIdrefSearch
 from .mef.api import ConceptMefIndexer, ConceptMefRecord, ConceptMefSearch
 from .rero.api import ConceptReroIndexer, ConceptReroRecord, ConceptReroSearch
 
 __all__ = ('ConceptMefIndexer', 'ConceptMefRecord', 'ConceptMefSearch',
            'ConceptReroIndexer', 'ConceptReroRecord', 'ConceptReroSearch',
+           'ConceptIdrefIndexer', 'ConceptIdrefRecord', 'ConceptIdrefSearch',
            'Action')
