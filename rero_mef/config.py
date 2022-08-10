@@ -34,12 +34,15 @@ from .agents.idref.models import AgentIdrefIdentifier
 from .agents.mef.models import AgentMefIdentifier
 from .agents.rero.models import AgentReroIdentifier
 from .agents.viaf.models import ViafIdentifier
+from .concepts.idref.models import ConceptIdrefIdentifier
 from .concepts.mef.models import ConceptMefIdentifier
 from .concepts.rero.models import ConceptReroIdentifier
 from .filter import exists_filter
 from .marctojson.do_gnd_agent import Transformation as AgentGndTransformation
 from .marctojson.do_idref_agent import \
     Transformation as AgentIdrefTransformation
+from .marctojson.do_idref_concepts import \
+    Transformation as ConceptIdrefTransformation
 from .marctojson.do_rero_agent import Transformation as AgentReroTransformation
 from .marctojson.do_rero_concepts import \
     Transformation as ConceptReroTransformation
@@ -194,7 +197,8 @@ TRANSFORMATION = {
     'aggnd': AgentGndTransformation,
     'aidref': AgentIdrefTransformation,
     'agrero': AgentReroTransformation,
-    'corero': ConceptReroTransformation
+    'corero': ConceptReroTransformation,
+    'cidref': ConceptIdrefTransformation
 }
 
 IDENTIFIERS = {
@@ -204,7 +208,8 @@ IDENTIFIERS = {
     'aidref': AgentIdrefIdentifier,
     'agrero': AgentReroIdentifier,
     'comef': ConceptMefIdentifier,
-    'corero': ConceptReroIdentifier
+    'corero': ConceptReroIdentifier,
+    'coidref': ConceptIdrefIdentifier
 }
 
 RERO_MEF_APP_BASE_URL = 'https://mef.rero.ch'
@@ -395,6 +400,32 @@ RECORDS_REST_ENDPOINTS = dict(
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict(),
+    ),
+    cidref=dict(
+        pid_type='cidref',
+        pid_minter='concept_idref_id',
+        pid_fetcher='concept_idref_id',
+        search_class="rero_mef.concepts.idref.api:ConceptIdrefSearch",
+        indexer_class="rero_mef.concepts.idref.api:ConceptIdrefIndexer",
+        record_class="rero_mef.concepts.idref.api:ConceptIdrefRecord",
+        search_index='concepts_idref',
+        search_type=None,
+        record_serializers={
+            'application/json': ('rero_mef.concepts.serializers'
+                                 ':json_v1_concept_response'),
+        },
+        search_serializers={
+            'application/json': ('invenio_records_rest.serializers'
+                                 ':json_v1_search'),
+        },
+        search_factory_imp='rero_mef.query:and_search_factory',
+        list_route='/concepts/idref/',
+        item_route=(
+            '/concepts/idref/<pid(cidref, record_class='
+            '"rero_mef.concepts.idref.api:ConceptIdrefRecord"):pid_value>'),
+        default_media_type='application/json',
+        max_result_window=MAX_RESULT_WINDOW,
+        error_handlers=dict(),
     )
 )
 
@@ -405,11 +436,13 @@ RERO_AGENTS = [
 ]
 
 RERO_CONCEPTS = [
-    'corero'
+    'corero',
+    'cidref'
 ]
 
 RECORDS_JSON_SCHEMA = {
     'corero': '/concepts_rero/rero-concept-v0.0.1.json',
+    'cidref': '/concepts_idref/idref-concept-v0.0.1.json',
     'comef': '/concepts_mef/mef-concept-v0.0.1.json',
     'aggnd': '/agents_gnd/gnd-agent-v0.0.1.json',
     'agrero': '/agents_rero/rero-agent-v0.0.1.json',
@@ -532,6 +565,30 @@ RECORDS_REST_FACETS = dict(
                     field='classification.classificationPortion', size=30
                 )
             ),
+            deleted=dict(
+                filter=dict(exists=dict(field="deleted"))
+            )
+        ),
+        filters={
+            'classification': terms_filter('classification.name'),
+            'classificationPortion': terms_filter(
+                'classification.classificationPortion'
+            )
+        }
+    ),
+    concepts_idref=dict(
+        aggs=dict(
+            classification=dict(
+                terms=dict(field='classification.name', size=30)
+            ),
+            classificationPortion=dict(
+                terms=dict(
+                    field='classification.classificationPortion', size=30
+                )
+            ),
+            deleted=dict(
+                filter=dict(exists=dict(field="deleted"))
+            )
         ),
         filters={
             'classification': terms_filter('classification.name'),

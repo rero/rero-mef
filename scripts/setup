@@ -100,10 +100,11 @@ function oai_init () {
     invenio oaiharvester initconfig ./data/oaisources.yml
     # we got the last GND files on 10 2020 from here:
     # https://data.dnb.de/GND/
-    invenio oaiharvester set-last-run -n gnd -d 2020-06-21
+    invenio oaiharvester set-last-run -n agents.gnd -d 2020-06-21
     # we got the last idref files on 10 2020 with:
     # invenio oaiharvester save idref.mrc -n idref -f 1990-01-01
-    invenio oaiharvester set-last-run -n idref -d 2020-10-01
+    invenio oaiharvester set-last-run -n agents.idref -d 2020-10-01
+    invenio oaiharvester set-last-run -n concepts.idref -d 2020-10-01
 }
 
 function sample_load () {
@@ -119,7 +120,7 @@ function sample_load () {
     info_msg "Creating MEF records:"
     invenio agents create-mef
 
-    for ENTITY in corero
+    for ENTITY in corero cidref
     do
       info_msg "Importing ${ENTITY} concept records:"
       dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY}

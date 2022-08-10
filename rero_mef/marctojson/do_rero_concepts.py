@@ -16,12 +16,13 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 """Marctojsons transformer for RERO records."""
 
+import contextlib
 
 from rero_mef.marctojson.helper import build_string_list_from_fields
 
 
 class Transformation(object):
-    """Transformation MARC21 to JSON for RERO autority person."""
+    """Transformation MARC21 to JSON for RERO concept."""
 
     def __init__(self, marc, logger=None, verbose=False, transform=True):
         """Constructor."""
@@ -39,6 +40,11 @@ class Transformation(object):
                 if func.startswith('trans'):
                     func = getattr(self, func)
                     func()
+        else:
+            msg = 'No 150 or 155'
+            self.logger.warning('NO TRANSFORMATION', msg)
+            self.json_dict = {'NO TRANSFORMATION': msg}
+            self.trans_rero_identifier()
 
     @property
     def json(self):
@@ -80,12 +86,9 @@ class Transformation(object):
         """Transformation bnf type from field 035."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_rero_bnf_type')
-        try:
-            data_075_a = self.marc['075']['a'].strip()
-            if data_075_a:
+        with contextlib.suppress(Exception):
+            if data_075_a := self.marc['075']['a'].strip():
                 self.json_dict['bnf_type'] = data_075_a
-        except Exception as err:
-            pass
 
     def trans_rero_authorized_access_point(self):
         """Transformation authorized_access_point from field 150 155."""
@@ -115,31 +118,23 @@ class Transformation(object):
         """Transformation broader related narrower 550 555."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_rero_relation')
-        tag = '550'
-        if self.marc['555']:
-            tag = '555'
+        tag = '555' if self.marc['555'] else '550'
         relations = {}
         for field in self.marc.get_fields(tag):
             relation_type = 'related'
-            subfield_w = field['w']
-            if subfield_w:
+            if subfield_w := field['w']:
                 if subfield_w == 'g':
                     relation_type = 'broader'
                 elif subfield_w == 'h':
                     relation_type = 'narrower'
-            subfield_0 = field['0']
             relations.setdefault(relation_type, [])
-            if subfield_0:
+            if subfield_0 := field['0']:
+                relations[relation_type].append({'$ref': subfield_0})
+            elif subfield_a := field['a']:
                 relations[relation_type].append({
-                    # TODO correct http
-                    '$ref': subfield_0
+                    'authorized_access_point': subfield_a.strip()
                 })
-            else:
-                subfield_a = field['a']
-                if subfield_a:
-                    relations[relation_type].append({
-                        'authorized_access_point': subfield_a.strip()
-                    })
+
         for relation, value in relations.items():
             if value:
                 self.json_dict[relation] = value
@@ -150,8 +145,7 @@ class Transformation(object):
             self.logger.info('Call Function', 'trans_rero_classification')
         classifications = []
         for field_072 in self.marc.get_fields('072'):
-            subfield_a = field_072['a']
-            if subfield_a:
+            if subfield_a := field_072['a']:
                 classification = subfield_a.split('-')
                 if len(classification) == 2:
                     classifications.append({
@@ -159,6 +153,7 @@ class Transformation(object):
                         'classificationPortion': classification[0].strip(),
                         'name': classification[1].strip()
                     })
+
         if classifications:
             self.json_dict['classification'] = classifications
 
@@ -166,16 +161,18 @@ class Transformation(object):
         """Transformation closeMatch from field 682."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_rero_close_match')
-        try:
-            subfield_a = self.marc['682']['a']
-            subfield_v = self.marc['682']['v']
-            if subfield_a and subfield_v:
-                self.json_dict['closeMatch'] = {
-                    'authorized_access_point': subfield_a,
-                    'source': subfield_v
-                }
-        except Exception as err:
-            pass
+        close_matchs = []
+        for field_682 in self.marc.get_fields('682'):
+            with contextlib.suppress(Exception):
+                subfield_a = field_682['a']
+                subfield_v = field_682['v']
+                if subfield_a and subfield_v:
+                    close_matchs.append({
+                        'authorized_access_point': subfield_a.strip(),
+                        'source': subfield_v.strip()
+                    })
+        if close_matchs:
+            self.json_dict['closeMatch'] = close_matchs
 
     def trans_rero_note(self):
         """Transformation notes from field.

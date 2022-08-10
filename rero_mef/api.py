@@ -178,6 +178,10 @@ class ReroMefRecord(Record):
                 )
                 agent_action = Action.CREATE
             except Exception as err:
+                current_app.logger.error(
+                    f'ERROR create_or_update {cls.name} '
+                    f'{data.get("pid")} {err}'
+                )
                 agent_action = Action.ERROR
         return return_record, agent_action
 

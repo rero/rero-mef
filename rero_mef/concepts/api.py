@@ -15,9 +15,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 """API for manipulating records."""
+import contextlib
 
 import click
 from flask import current_app
+from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 from invenio_search import current_search
 
 from rero_mef.concepts.mef.api import ConceptMefRecord, build_ref_string
@@ -34,13 +36,12 @@ class ConceptRecord(ReroMefRecord):
     def __init__(self, *args, **kwargs):
         """Init class."""
         super().__init__(*args, **kwargs)
-        self.concept = self.name
 
     @classmethod
     def flush_indexes(cls):
         """Update indexes."""
         try:
-            index = f'concepts_{cls.concept}'
+            index = f'concepts_{cls.name}'
             current_search.flush_and_refresh(index=index)
         except Exception as err:
             current_app.logger.error(f'ERROR flush and refresh: {err}')
@@ -95,10 +96,10 @@ class ConceptRecord(ReroMefRecord):
         """
         from .mef.api import ConceptMefRecord
         ref_string = build_ref_string(
-            concept=self.concept,
+            concept=self.name,
             concept_pid=self.pid
         )
-        mef_data = {self.concept: {'$ref': ref_string}}
+        mef_data = {self.name: {'$ref': ref_string}}
         mef_record = ConceptMefRecord.get_mef_by_entity_pid(
             self.pid, self.name)
         if self.deleted:
@@ -123,6 +124,53 @@ class ConceptRecord(ReroMefRecord):
         if reindex:
             ConceptMefRecord.flush_indexes()
         return mef_record, mef_action, None, False
+
+    @classmethod
+    def create_or_update_agent_mef_viaf(cls, data, id_=None, delete_pid=True,
+                                        dbcommit=False, reindex=False,
+                                        test_md5=False, online=False,
+                                        verbose=False):
+        """Create or update agent, MEF and VIAF record."""
+        from rero_mef.concepts.mef.api import ConceptMefRecord
+
+        with contextlib.suppress(Exception):
+            persistent_id = PersistentIdentifier.query.filter_by(
+                pid_type=cls.provider.pid_type,
+                pid_value=data.get('pid')
+            ).one()
+            if persistent_id.status == PIDStatus.DELETED:
+                return None, Action.ALREADYDELETED, None, Action.DISCARD, \
+                    None, False
+        record, action = cls.create_or_update(
+            data=data,
+            id_=id_,
+            delete_pid=delete_pid,
+            dbcommit=dbcommit,
+            reindex=reindex,
+            test_md5=test_md5
+        )
+        if action == Action.ERROR:
+            return None, action, None, Action.ERROR, None, False
+        if record.deleted:
+            mef_record, mef_action = record.delete_from_mef(
+                dbcommit=dbcommit,
+                reindex=reindex,
+                verbose=verbose
+            )
+            action = Action.DELETE
+            online = False
+        elif action == Action.UPTODATE:
+            mef_record = ConceptMefRecord.get_mef_by_entity_pid(
+                record.pid, record.name)
+            mef_action = Action.UPTODATE
+        else:
+            mef_record, mef_action, _, _ = \
+                record.create_or_update_mef_viaf_record(
+                    dbcommit=dbcommit,
+                    reindex=reindex,
+                    online=False
+                )
+        return record, action, mef_record, mef_action, None, False
 
     def reindex(self, forceindex=False):
         """Reindex record."""

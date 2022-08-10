@@ -1,0 +1,261 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Schema for IdRef concept",
+  "type": "object",
+  "required": [
+    "$schema",
+    "pid",
+    "identifiedBy",
+    "authorized_access_point"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "title": "Schema",
+      "type": "string",
+      "minLength": 7
+    },
+    "pid": {
+      "title": "Concept record ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "md5": {
+      "title": "MD5",
+      "type": "string",
+      "minLength": 1
+    },
+    "identifiedBy": {
+      "title": "Identifier",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "value"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "bf:Local",
+              "uri"
+            ]
+          },
+          "source": {
+            "enum": [
+              "BNF",
+              "RERO",
+              "IdRef"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "bnf_type": {
+      "title": "Genre or Form",
+      "type": "string",
+      "minLength": 1
+    },
+    "authorized_access_point": {
+      "title": "Authorized access point",
+      "type": "string",
+      "minLength": 1
+    },
+    "variant_access_point": {
+      "title": "Variant access point",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "broader": {
+      "title": "Generic term",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "oneOf": [
+          {
+            "$ref": {
+              "type": "string",
+              "pattern": "^https://mef.rero.ch/api/.*/.*?$"
+            }
+          },
+          {
+            "authorized_access_point": {
+              "title": "Authorized access point",
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ]
+      }
+      }
+    },
+    "related": {
+      "title": "Associated term",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+         "oneOf": [
+          {
+            "$ref": {
+              "type": "string",
+              "pattern": "^https://mef.rero.ch/api/.*/.*?$"
+            }
+          },
+          {
+            "authorized_access_point": {
+              "title": "Authorized access point",
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ]
+      }
+      }
+    },
+    "narrower": {
+      "title": "Specific term",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "oneOf": [
+          {
+            "$ref": {
+              "type": "string",
+              "pattern": "^https://mef.rero.ch/api/.*/.*?$"
+            }
+          },
+          {
+            "authorized_access_point": {
+              "title": "Authorized access point",
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ]
+        }
+      }
+    },
+    "classification": {
+      "title": "Dewey class",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": [
+              "bf:ClassificationDdc"
+            ]
+          },
+          "classificationPortion": {
+              "type": "string",
+              "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+
+    },
+    "note": {
+      "title": "Note",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "nodeType": {
+            "enum": [
+              "dataSource",
+              "dataNotFound",
+              "general",
+              "nonPublic",
+              "seeReference",
+              "seeAlsoReference",
+              "REROtreatment"
+            ]
+          },
+          "label": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "closeMatch": {
+      "title": "Equivalent term other thesaurus",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "authorized_access_point": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1
+          },
+          "identifiedBy": {
+            "title": "Identifier",
+            "properties": {
+              "type": {
+                "enum": [
+                  "bf:Local",
+                  "uri"
+                ]
+              },
+              "source": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "deleted": {
+      "title": "Deletion date",
+      "type": "string"
+    },
+    "relation_pid": {
+      "title": "Relation pid",
+      "type": "object",
+      "properties": {
+        "value": {
+          "title": "Relation pid value",
+          "type": "string"
+        },
+        "type": {
+          "title": "Relation pid type",
+          "type": "string",
+          "enum": [
+            "redirect_to",
+            "redirect_from"
+          ]
+        }
+      }
+    }
+  }
+}

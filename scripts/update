@@ -67,5 +67,11 @@ fi
 script_path=$(dirname "$0")
 ./"$script_path"/bootstrap
 
+poetry run invenio  index create --verbose concepts_idref-idref-concept-v0.0.1 -b rero_mef/concepts/idref/mappings/v7/concepts_idref/idref-concept-v0.0.1.json
+invenio utils update_mapping
 invenio alembic upgrade
-invenio index init --force
+
+invenio oaiharvester initconfig ./data/oaisources.yml
+invenio oaiharvester set-last-run -n agents.gnd -d 2022-08-01
+invenio oaiharvester set-last-run -n agents.idref -d 2022-08-01
+invenio oaiharvester set-last-run -n concepts.idref -d 1990-01-01

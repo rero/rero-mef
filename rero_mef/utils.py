@@ -281,41 +281,51 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                         except Exception as err:
                             updated = '????'
                         if rec := transformation(records[0]).json:
-                            pid = rec.get('pid')
-                            res = record_cls.create_or_update_agent_mef_viaf(
-                                    data=rec,
-                                    dbcommit=True,
-                                    reindex=True,
-                                    test_md5=test_md5,
-                                    online=viaf_online,
-                                    verbose=verbose
-                                )
-                            rec, action, m_record, m_action, v_record, \
-                                v_online = res
-                            action_count.setdefault(action.name, 0)
-                            action_count[action.name] += 1
-                            mef_action_count.setdefault(m_action.name, 0)
-                            mef_action_count[m_action.name] += 1
-                            if v_online:
-                                viaf_online_count += 1
+                            if msg := rec.get('NO TRANSFORMATION'):
+                                if verbose:
+                                    pid = rec.get('pid', '???')
+                                    click.secho(
+                                        f'NO TRANSFORMATION '
+                                        f'{name} {count} {pid}: {msg}',
+                                        fg='yellow'
+                                    )
+                            else:
+                                pid = rec.get('pid')
+                                res = record_cls. \
+                                    create_or_update_agent_mef_viaf(
+                                        data=rec,
+                                        dbcommit=True,
+                                        reindex=True,
+                                        test_md5=test_md5,
+                                        online=viaf_online,
+                                        verbose=verbose
+                                    )
+                                rec, action, m_record, m_action, v_record, \
+                                    v_online = res
+                                action_count.setdefault(action.name, 0)
+                                action_count[action.name] += 1
+                                mef_action_count.setdefault(m_action.name, 0)
+                                mef_action_count[m_action.name] += 1
+                                if v_online:
+                                    viaf_online_count += 1
 
-                            if verbose:
-                                m_pid = 'Non'
-                                if m_record:
-                                    m_pid = m_record.pid
-                                v_pid = 'Non'
-                                if v_record:
-                                    v_pid = v_record.pid
-                                click.echo(
-                                    f'OAI {name} spec({spec}): {pid}'
-                                    f' updated: {updated} {action}'
-                                    f' | mef: {m_pid} {m_action}'
-                                    f' | viaf: {v_pid} online: {v_online}'
-                                )
+                                if verbose:
+                                    m_pid = 'Non'
+                                    if m_record:
+                                        m_pid = m_record.pid
+                                    v_pid = 'Non'
+                                    if v_record:
+                                        v_pid = v_record.pid
+                                    click.echo(
+                                        f'OAI {name} spec({spec}): {pid}'
+                                        f' updated: {updated} {action}'
+                                        f' | mef: {m_pid} {m_action}'
+                                        f' | viaf: {v_pid} online: {v_online}'
+                                    )
                         elif verbose:
                             click.echo(
-                                f'NO TRANSFORMATION: {name} {count} '
-                                f'{records[0]}'
+                                f'NO TRANSFORMATION: {name} {count}'
+                                f'\n{records[0]}'
                             )
                     except Exception as err:
                         msg = f'Creating {name} {count}: {err}'
@@ -415,13 +425,13 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
                     for record in request.ListRecords(**params):
                         count += 1
                         records = parse_xml_to_array(StringIO(record.raw))
+                        rec = records[0]
                         if verbose:
                             from_date = my_from_date.strftime(TIME_FORMAT)
                             click.echo(
                                 f'OAI {name} spec({spec}): {from_date} '
-                                f'count:{count:>10} = {id}'
+                                f'count:{count:>10} = {rec["001"].data}'
                             )
-                        rec = records[0]
                         rec.leader = f'{rec.leader[:9]}a{rec.leader[10:]}'
                         output_file.write(rec.as_marc())
                 except NoRecordsMatch:
@@ -443,9 +453,8 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
     return count
 
 
-def oai_get_record(id, name, transformation, record_cls, access_token=None,
-                   identifier=None, dbcommit=False, reindex=False,
-                   test_md5=False, verbose=False, debug=False, **kwargs):
+def oai_get_record(id, name, transformation, access_token=None,
+                   identifier=None, verbose=False, debug=False, **kwargs):
     """Get record from an OAI repo.
 
     :param identifier: identifier of record.
@@ -467,6 +476,8 @@ def oai_get_record(id, name, transformation, record_cls, access_token=None,
             raise Exception(err)
         return None
     records = parse_xml_to_array(StringIO(record.raw))
+    from rero_mef.marctojson.helper import display_record
+    display_record(records[0])
     trans_record = transformation(records[0]).json
     if verbose:
         click.echo(f'OAI-{name} get: {id}')

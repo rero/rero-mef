@@ -230,22 +230,30 @@ def marc_to_json(entity, marc_file, json_file, error_file, verbose):
             logger=current_app.logger,
             verbose=True
         )
-        if data.json:
-            pid = data.json.get('pid')
-            if pids.get(pid):
-                click.secho(
-                    f'  {count:8} Error duplicate pid in {entity}: {pid}',
-                    fg='red'
-                )
+        if json_data := data.json:
+            if msg := json_data.get('NO TRANSFORMATION'):
+                if verbose:
+                    pid = json_data.get('pid', '???')
+                    click.secho(
+                        f'  {pid} NO TRANSFORMATION: {msg}',
+                        fg='yellow'
+                    )
             else:
-                pids[pid] = 1
-                add_md5(data.json)
-                if data.json.get('deleted'):
-                    count_deleted += 1
-                    json_deleted_file.write(data.json)
+                pid = json_data.get('pid')
+                if pids.get(pid):
+                    click.secho(
+                        f'  {count:8} Error duplicate pid in {entity}: {pid}',
+                        fg='red'
+                    )
                 else:
-                    count_created += 1
-                    json_file.write(data.json)
+                    pids[pid] = 1
+                    add_md5(json_data)
+                    if json_data.get('deleted'):
+                        count_deleted += 1
+                        json_deleted_file.write(json_data)
+                    else:
+                        count_created += 1
+                        json_file.write(json_data)
         else:
             count_errors += 1
             if error_file:
@@ -374,7 +382,8 @@ def load_csv(entity, pidstore_file, metadata_file, ids_file, bulk_count,
 @fixtures.command()
 @click.argument('output_directory')
 @click.option('-e', '--entity', 'entities', multiple=True,
-              default=['aggnd', 'aidref', 'agrero', 'corero', 'mef', 'viaf'])
+              default=['aggnd', 'aidref', 'agrero', 'mef', 'viaf',
+                       'cidref', 'corero', 'comef'])
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @with_appcontext
 def bulk_save(entities, output_directory, verbose):
@@ -382,7 +391,8 @@ def bulk_save(entities, output_directory, verbose):
 
     :param output_directory: Output directory.
     :param entities: entity to export.
-        default=['aggnd', 'aidref', 'agrero', 'corero', 'mef', 'viaf'])
+        default=['aggnd', 'aidref', 'agrero', 'mef', 'viaf',
+                 'cidref', 'corero', 'comef'])
     :param verbose: Verbose.
     """
     for entity in entities:
@@ -701,10 +711,14 @@ def harvestname(name, from_date, until_date, arguments, quiet, enqueue,
     """
     click.secho(f'Harvest {name} ...', fg='green')
     arguments = dict(x.split('=', 1) for x in arguments)
-    # TODO: addapt to other entity types
-    harvest_task = obj_or_import_string(
-        f'rero_mef.agents.{name}.tasks:process_records_from_dates'
-    )
+    try:
+        harvest_task = obj_or_import_string(
+            f'rero_mef.{name}.tasks:process_records_from_dates'
+        )
+    except Exception:
+        oai_names = [oai.name for oai in OAIHarvestConfig.query.all()]
+        click.secho(f'Config "{name}" not found in {oai_names}', fg='red')
+        sys.exit(1)
     count = 0
     action_count = {}
     mef_action_count = {}
@@ -785,7 +799,8 @@ def save(output_file_name, name, from_date, until_date, quiet, enqueue):
 @utils.command()
 @click.argument('output_path')
 @click.option('-t', '--pid-type', 'pid_type', multiple=True,
-              default=['viaf', 'mef', 'aggnd', 'aidref', 'agrero', 'corero'])
+              default=['aggnd', 'aidref', 'agrero', 'mef', 'viaf',
+                       'cidref', 'corero', 'comef'])
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @click.option('-I', '--indent', 'indent', type=click.INT, default=2)
 @click.option('-s', '--schema', 'schema', is_flag=True, default=False)
@@ -1019,7 +1034,8 @@ def manual_confirm_user(user):
 
 @utils.command()
 @click.option('-e', '--entity', 'entities', multiple=True,
-              default=['aggnd', 'aidref', 'agrero', 'mef', 'viaf', 'corero'])
+              default=['aggnd', 'aidref', 'agrero', 'mef', 'viaf',
+                       'cidref', 'corero', 'comef'])
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @with_appcontext
 def reindex_missing(entities, verbose):

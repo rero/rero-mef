@@ -16,7 +16,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """API for manipulating MEF records."""
-
 from datetime import datetime, timezone
 
 import click
@@ -123,7 +122,7 @@ class AgentMefRecord(EntityMefRecord):
         """Replace $ref with real data."""
         data = super().replace_refs()
         sources = []
-        for agent in ['rero', 'gnd', 'idref']:
+        for agent in self.entities:
             if agent_data := data.get(agent):
                 if agent_data.get('status'):
                     data.pop(agent)

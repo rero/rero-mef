@@ -20,10 +20,16 @@
 import pytest
 from utils import create_record
 
-from rero_mef.concepts import ConceptReroRecord
+from rero_mef.concepts import ConceptIdrefRecord, ConceptReroRecord
 
 
 @pytest.fixture(scope='module')
 def concept_rero_record(app, concept_rero_data):
     """Create a IdRef record."""
     return create_record(ConceptReroRecord, concept_rero_data)
+
+
+@pytest.fixture(scope='module')
+def concept_idref_record(app, concept_rero_data):
+    """Create a IdRef record."""
+    return create_record(ConceptIdrefRecord, concept_rero_data)
