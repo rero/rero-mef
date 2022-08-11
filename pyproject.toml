@@ -106,6 +106,9 @@ rero_mef = "rero_mef.theme.views:blueprint"
 [tool.poetry.plugins."invenio_config.module"]
 rero_mef = "rero_mef.config"
 
+[tool.poetry.plugins."invenio_db.alembic"]
+rero_ils = "rero_mef:alembic"
+
 [tool.poetry.plugins."invenio_db.models"]
 mef = "rero_mef.agents.mef.models"
 viaf = "rero_mef.agents.viaf.models"
