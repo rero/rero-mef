@@ -130,7 +130,7 @@ setup(
         ],
         'invenio_base.api_blueprints': [
             'api_rero_mef = rero_mef.theme.views:api_blueprint',
-            'api_monitoring = rero_mef.monitoring:api_blueprint',
+            'api_monitoring = rero_mef.monitoring.views:api_blueprint',
             'api_agents_mef = rero_mef.agents.mef.views:api_blueprint',
             'api_agents_viaf = rero_mef.agents.viaf.views:api_blueprint',
             'api_agents_gnd = rero_mef.agents.gnd.views:api_blueprint',
@@ -143,7 +143,7 @@ setup(
             'celery = rero_mef.cli:celery',
             'agents = rero_mef.agents.cli:agents',
             'concepts = rero_mef.concepts.cli:concepts',
-            'monitoring = rero_mef.monitoring:monitoring',
+            'monitoring = rero_mef.monitoring:monitoring.cli',
         ],
         'dojson.cli.rule': [
             'tomarc = dojson.contrib.to_marc21:to_marc21',

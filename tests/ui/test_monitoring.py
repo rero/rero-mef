@@ -20,7 +20,8 @@
 from click.testing import CliRunner
 
 from rero_mef.agents.idref.api import AgentIdrefRecord
-from rero_mef.monitoring import Monitoring, es_db_counts_cli, es_db_missing_cli
+from rero_mef.monitoring.api import Monitoring
+from rero_mef.monitoring.cli import es_db_counts_cli, es_db_missing_cli
 
 
 def test_monitoring(app, agent_idref_data, script_info):
