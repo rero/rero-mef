@@ -45,7 +45,7 @@ from werkzeug.local import LocalProxy
 from werkzeug.security import gen_salt
 
 from .marctojson.records import RecordsCount
-from .monitoring import Monitoring
+from .monitoring.api import Monitoring
 from .tasks import create_or_update as task_create_or_update
 from .tasks import delete as task_delete
 from .tasks import process_bulk_queue as task_process_bulk_queue
