@@ -46,7 +46,7 @@ def concepts():
 @with_appcontext
 def create_mef(pid_type, enqueue, online, verbose, progress, wait, missing):
     """Create MEF from concepts."""
-    concepts = current_app.config.get('RERE=_CONCEPTS', [])
+    concepts = current_app.config.get('RERO_CONCEPTS', [])
     if missing:
         missing_pids, to_much_pids = \
             ConceptMefRecord.get_all_missing_pids(pid_type, verbose=progress)
@@ -62,9 +62,10 @@ def create_mef(pid_type, enqueue, online, verbose, progress, wait, missing):
                 fg='green'
             )
             concept_class = get_entity_class(concept)
-            counts = {}
-            counts[concept] = concept_class.count()
-            counts['mef'] = ConceptMefRecord.count()
+            counts = {
+                concept: concept_class.count(),
+                'mef': ConceptMefRecord.count()
+            }
             if missing:
                 progress_bar = progressbar(
                     items=missing_pids[concept],
