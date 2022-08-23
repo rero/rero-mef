@@ -27,15 +27,7 @@ from rero_mef.tasks import process_bulk_queue
 
 def test_reromefrecord_api(app, agent_idref_record):
     """Test ReroMefRecord api."""
-
-    idref = AgentIdrefRecord.create(
-        data=agent_idref_record,
-        delete_pid=False,
-        dbcommit=True,
-        reindex=True,
-    )
-    AgentIdrefRecord.flush_indexes()
-
+    idref = agent_idref_record
     assert AgentIdrefRecord.count() == 1
     assert AgentIdrefRecord.index_all() == 1
 

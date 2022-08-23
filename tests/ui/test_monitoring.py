@@ -23,7 +23,7 @@ from rero_mef.agents.idref.api import AgentIdrefRecord
 from rero_mef.monitoring import Monitoring, es_db_counts_cli, es_db_missing_cli
 
 
-def test_monitoring(app, agent_idref_record, script_info):
+def test_monitoring(app, agent_idref_data, script_info):
     """Test monitoring."""
 
     cli_output = [
@@ -40,8 +40,9 @@ def test_monitoring(app, agent_idref_record, script_info):
     mon = Monitoring()
     assert mon.get_es_count('xxx') == 'No >>xxx<< in ES'
     assert mon.get_db_count('xxx') == 'No >>xxx<< in DB'
+
     idref = AgentIdrefRecord.create(
-        data=agent_idref_record,
+        data=agent_idref_data,
         delete_pid=False,
         dbcommit=True,
         reindex=False

@@ -17,6 +17,8 @@
 
 """Test agents MEF api."""
 
+from utils import create_record
+
 from rero_mef.agents.mef.api import AgentMefRecord
 
 
@@ -25,20 +27,15 @@ def test_get_all_pids_without_agents_and_viaf(app):
     record = {
         "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json"
     }
-    m_record = AgentMefRecord.create(
-        data=record, dbcommit=True, reindex=True)
-    AgentMefRecord.flush_indexes()
+    m_record = create_record(AgentMefRecord, record)
     assert list(AgentMefRecord.get_all_pids_without_agents_and_viaf()) == \
         [m_record.pid]
 
 
-def test_get_pids_with_multiple_mef(app, agent_mef_record):
+def test_get_pids_with_multiple_mef(app, agent_mef_data):
     """Test get pids with multiple MEF."""
-    m_record_1 = AgentMefRecord.create(
-        data=agent_mef_record, delete_pid=True, dbcommit=True, reindex=True)
-    m_record_2 = AgentMefRecord.create(
-        data=agent_mef_record, delete_pid=True, dbcommit=True, reindex=True)
-    AgentMefRecord.flush_indexes()
+    m_record_1 = create_record(AgentMefRecord, agent_mef_data, delete_pid=True)
+    m_record_2 = create_record(AgentMefRecord, agent_mef_data, delete_pid=True)
     pids, multiple_pids, missing_pids = AgentMefRecord \
         .get_pids_with_multiple_mef(record_types=['aidref', 'aggnd', 'agrero'])
     assert pids == {'aggnd': {}, 'agrero': {}, 'aidref': {}}

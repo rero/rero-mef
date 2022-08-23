@@ -44,15 +44,15 @@ def test_monitoring_es_db_counts(client):
     }
 
 
-def test_monitoring_check_es_db_counts(app, client, agent_idref_record):
+def test_monitoring_check_es_db_counts(app, client, agent_idref_data):
     """Test monitoring check_es_db_counts."""
     res = client.get(url_for('api_monitoring.check_es_db_counts'))
     assert res.status_code == 200
     assert json.loads(res.get_data(as_text=True)) == {
         'data': {'status': 'green'}}
 
-    pers = AgentIdrefRecord.create(
-        data=agent_idref_record,
+    AgentIdrefRecord.create(
+        data=agent_idref_data,
         delete_pid=False,
         dbcommit=True,
         reindex=False)

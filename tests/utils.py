@@ -20,6 +20,18 @@
 from invenio_accounts.testutils import login_user_via_session
 
 
+def create_record(cls, data, delete_pid=False):
+    """Create a record in DB and index it."""
+    record = cls.create(
+        data=data,
+        delete_pid=delete_pid,
+        dbcommit=True,
+        reindex=True
+    )
+    cls.flush_indexes()
+    return record
+
+
 def create_and_login_monitoring_user(app, client):
     """Creates and logins a monitoring user."""
     datastore = app.extensions['invenio-accounts'].datastore

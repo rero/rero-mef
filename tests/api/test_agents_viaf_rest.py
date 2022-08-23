@@ -21,19 +21,10 @@ import json
 
 from flask import url_for
 
-from rero_mef.agents.viaf.api import AgentViafRecord
-
 
 def test_view_agents_viaf(client, agent_viaf_record):
     """Test redirect VIAF."""
 
-    AgentViafRecord.create(
-        data=agent_viaf_record,
-        delete_pid=False,
-        dbcommit=True,
-        reindex=True,
-    )
-    AgentViafRecord.flush_indexes()
     pid = agent_viaf_record.get('pid')
     url = url_for('api_agents_viaf.redirect_list')
     res = client.get(url)

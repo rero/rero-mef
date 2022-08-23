@@ -21,18 +21,9 @@ import json
 
 from flask import url_for
 
-from rero_mef.agents.mef.api import AgentMefRecord
-
 
 def test_view_agents_mef(client, agent_mef_record):
     """Test redirect MEF."""
-    AgentMefRecord.create(
-        data=agent_mef_record,
-        delete_pid=False,
-        dbcommit=True,
-        reindex=True,
-    )
-    AgentMefRecord.flush_indexes()
     pid = agent_mef_record.get('pid')
     url = url_for('api_agents_mef.redirect_list')
     res = client.get(url)

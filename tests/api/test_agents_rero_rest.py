@@ -15,27 +15,18 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Test REST API IDREF."""
+"""Test REST API RERO."""
 
 import json
 
 from flask import url_for
 
-from rero_mef.agents.idref.api import AgentIdrefRecord
 
+def test_view_agents_rero(client, agent_rero_record):
+    """Test redirect RERO."""
 
-def test_view_agents_idref(client, agent_idref_record):
-    """Test redirect IDREF."""
-
-    AgentIdrefRecord.create(
-        data=agent_idref_record,
-        delete_pid=False,
-        dbcommit=True,
-        reindex=True,
-    )
-    AgentIdrefRecord.flush_indexes()
-    pid = agent_idref_record.get('pid')
-    url = url_for('api_agents_idref.redirect_list')
+    pid = agent_rero_record.get('pid')
+    url = url_for('api_agents_rero.redirect_list')
     res = client.get(url)
     assert res.status_code == 308
     res = client.get(url, follow_redirects=True)
@@ -49,7 +40,7 @@ def test_view_agents_idref(client, agent_idref_record):
         'deleted': {'doc_count': 0}
     }
 
-    url = url_for('api_agents_idref.redirect_item', pid=pid)
+    url = url_for('api_agents_rero.redirect_item', pid=pid)
     res = client.get(url)
     assert res.status_code == 308
     res = client.get(url, follow_redirects=True)
@@ -58,7 +49,7 @@ def test_view_agents_idref(client, agent_idref_record):
     assert data.get('id') == pid
     assert data.get('metadata', {}).get('pid') == pid
 
-    url = url_for('api_agents_idref.redirect_item', pid='WRONG')
+    url = url_for('api_agents_rero.redirect_item', pid='WRONG')
     res = client.get(url, follow_redirects=True)
     assert res.status_code == 404
     assert json.loads(res.get_data(as_text=True)) == {
