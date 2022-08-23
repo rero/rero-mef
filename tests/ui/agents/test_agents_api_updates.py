@@ -28,8 +28,9 @@ from rero_mef.agents.viaf.api import AgentViafRecord
 
 @mock.patch(
     'rero_mef.agents.viaf.api.AgentViafRecord.get_online_viaf_record')
-def test_create_agent_updates(mock_get, app, agent_gnd_record,
-                              agent_rero_record, agent_idref_record):
+def test_create_agent_updates(
+        mock_get, app, agent_idref_data, agent_gnd_data,
+        agent_rero_data):
     """Test create agent record with VIAF links."""
     # we have to mock the access to viaf
     mock_get.return_value = {
@@ -42,7 +43,7 @@ def test_create_agent_updates(mock_get, app, agent_gnd_record,
     assert AgentViafRecord.count() == 0
     record, action, m_record, m_action, v_record, online = \
         AgentIdrefRecord.create_or_update_agent_mef_viaf(
-            data=agent_idref_record,
+            data=agent_idref_data,
             dbcommit=True,
             reindex=True,
             online=True
@@ -74,7 +75,7 @@ def test_create_agent_updates(mock_get, app, agent_gnd_record,
     # create second record
     record, action, m_record, m_action, v_record, online = \
         AgentGndRecord.create_or_update_agent_mef_viaf(
-            data=agent_gnd_record,
+            data=agent_gnd_data,
             dbcommit=True,
             reindex=True,
             online=True
@@ -91,7 +92,7 @@ def test_create_agent_updates(mock_get, app, agent_gnd_record,
 
     record, action, m_record, m_action, v_record, online = \
         AgentReroRecord.create_or_update_agent_mef_viaf(
-            data=agent_rero_record,
+            data=agent_rero_data,
             dbcommit=True,
             reindex=True,
             online=True

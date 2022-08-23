@@ -29,7 +29,7 @@ from rero_mef.agents.cli import create_csv_mef, create_csv_viaf
 def test_create_csv_viaf_mef(script_info):
     """Test create CSV VIAF."""
     runner = CliRunner()
-    viaf_text_file = join(dirname(__file__), '../data/viaf.txt')
+    viaf_text_file = join(dirname(__file__), '../../data/viaf.txt')
     output_directory = tempfile.mkdtemp()
     res = runner.invoke(
         create_csv_viaf,
@@ -66,15 +66,15 @@ def test_create_csv_viaf_mef(script_info):
         assert pidstore_count == metadata_count
 
     copy2(
-        join(dirname(__file__), '../data/aggnd_pidstore.csv'),
+        join(dirname(__file__), '../../data/aggnd_pidstore.csv'),
         output_directory
     )
     copy2(
-        join(dirname(__file__), '../data/aidref_pidstore.csv'),
+        join(dirname(__file__), '../../data/aidref_pidstore.csv'),
         output_directory
     )
     copy2(
-        join(dirname(__file__), '../data/agrero_pidstore.csv'),
+        join(dirname(__file__), '../../data/agrero_pidstore.csv'),
         output_directory
     )
     res = runner.invoke(

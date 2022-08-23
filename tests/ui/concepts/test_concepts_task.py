@@ -17,23 +17,19 @@
 
 """Test api."""
 
+from utils import create_record
+
 from rero_mef.concepts.mef.api import ConceptMefRecord
 from rero_mef.concepts.rero.api import ConceptReroRecord
 from rero_mef.concepts.tasks import task_create_mef_for_concept
 
 
-def test_task_create_mef_for_concept(app, concept_rero_record):
+def test_task_create_mef_for_concept(app, concept_rero_data):
     """Test ReroMefRecord api."""
-    rero = ConceptReroRecord.create(
-        data=concept_rero_record,
-        delete_pid=False,
-        dbcommit=True,
-        reindex=True
-    )
-    ConceptReroRecord.flush_indexes()
+    record = create_record(ConceptReroRecord, concept_rero_data)
     assert task_create_mef_for_concept('XXXX', 'corero') == \
         'Not found concept corero:XXXX'
-    assert task_create_mef_for_concept(rero.pid, 'corero') == \
+    assert task_create_mef_for_concept(record.pid, 'corero') == \
         'Create MEF from corero pid: A021001006 | mef: 1 create'
     mef = ConceptMefRecord.get_record_by_pid('1')
     assert mef == {
@@ -41,5 +37,5 @@ def test_task_create_mef_for_concept(app, concept_rero_record):
             'https://mef.rero.ch/schemas/concepts_mef/mef-concept-v0.0.1.json',
             'pid': '1',
             'rero': {
-                '$ref': f'https://mef.rero.ch/api/concepts/rero/{rero.pid}'}
+                '$ref': f'https://mef.rero.ch/api/concepts/rero/{record.pid}'}
     }

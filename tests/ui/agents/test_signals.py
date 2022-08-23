@@ -22,10 +22,10 @@ from rero_mef.agents.mef.api import AgentMefSearch
 from rero_mef.agents.viaf.api import AgentViafRecord
 
 
-def test_create_mef_with_viaf_links(app, agent_viaf_record, agent_gnd_record):
+def test_create_mef_with_viaf_links(app, agent_viaf_data, agent_gnd_data):
     """Test create MEF record from agent with VIAF links."""
     v_record, action = AgentViafRecord.create_or_update(
-        agent_viaf_record, dbcommit=True, reindex=True
+        agent_viaf_data, dbcommit=True, reindex=True
     )
     assert action.name == 'CREATE'
     assert v_record['pid'] == '66739143'
@@ -35,7 +35,7 @@ def test_create_mef_with_viaf_links(app, agent_viaf_record, agent_gnd_record):
 
     record, action, m_record, m_action, v_record, online = \
         AgentGndRecord.create_or_update_agent_mef_viaf(
-            data=agent_gnd_record,
+            data=agent_gnd_data,
             dbcommit=True,
             reindex=True,
             online=False

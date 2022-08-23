@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2022 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -15,15 +15,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Pytest fixtures and plugins for the UI application."""
-
-from __future__ import absolute_import, print_function
+"""Concepts records."""
 
 import pytest
+from utils import create_record
+
+from rero_mef.concepts import ConceptReroRecord
 
 
 @pytest.fixture(scope='module')
-def create_app(instance_path):
-    """Create test app."""
-    from invenio_app.factory import create_ui
-    yield create_ui
+def concept_rero_record(app, concept_rero_data):
+    """Create a IdRef record."""
+    return create_record(ConceptReroRecord, concept_rero_data)

@@ -23,11 +23,11 @@ from rero_mef.agents.rero.api import AgentReroRecord
 
 
 def test_create_agent_record_no_viaf_links(
-        app, agent_gnd_record, agent_rero_record, agent_idref_record):
+        app, agent_gnd_data, agent_rero_data, agent_idref_data):
     """Test create agent record without VIAF links."""
     record, action, m_record, m_action, v_record, online = \
         AgentGndRecord.create_or_update_agent_mef_viaf(
-            data=agent_gnd_record,
+            data=agent_gnd_data,
             dbcommit=True,
             reindex=True,
             online=False
@@ -44,7 +44,7 @@ def test_create_agent_record_no_viaf_links(
 
     record, action, m_record, m_action, v_record, online = \
         AgentReroRecord.create_or_update_agent_mef_viaf(
-            data=agent_rero_record,
+            data=agent_rero_data,
             dbcommit=True,
             reindex=True,
             online=False
@@ -61,7 +61,7 @@ def test_create_agent_record_no_viaf_links(
 
     record, action, m_record, m_action, v_record, online = \
         AgentIdrefRecord.create_or_update_agent_mef_viaf(
-            data=agent_idref_record,
+            data=agent_idref_data,
             dbcommit=True,
             reindex=True,
             online=False

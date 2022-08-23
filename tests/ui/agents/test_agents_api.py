@@ -25,11 +25,11 @@ from rero_mef.agents.viaf.api import AgentViafRecord
 
 
 def test_create_agent_record_with_viaf_links(
-        app, agent_viaf_record, agent_gnd_record, agent_rero_record,
-        agent_idref_record):
+        app, agent_viaf_data, agent_gnd_data, agent_rero_data,
+        agent_idref_data):
     """Test create agent record with VIAF links."""
     viaf_record, action = AgentViafRecord.create_or_update(
-        agent_viaf_record, dbcommit=True, reindex=True
+        agent_viaf_data, dbcommit=True, reindex=True
     )
     AgentViafRecord.flush_indexes()
     assert action.name == 'CREATE'
@@ -40,7 +40,7 @@ def test_create_agent_record_with_viaf_links(
 
     record, action, m_record, m_action, v_record, online = \
         AgentGndRecord.create_or_update_agent_mef_viaf(
-            data=agent_gnd_record,
+            data=agent_gnd_data,
             dbcommit=True,
             reindex=True,
             online=False
@@ -59,7 +59,7 @@ def test_create_agent_record_with_viaf_links(
 
     record, action, m_record, m_action, v_record, online = \
         AgentReroRecord.create_or_update_agent_mef_viaf(
-            data=agent_rero_record,
+            data=agent_rero_data,
             dbcommit=True,
             reindex=True,
             online=False
@@ -78,7 +78,7 @@ def test_create_agent_record_with_viaf_links(
 
     record, action, m_record, m_action, v_record, online = \
         AgentIdrefRecord.create_or_update_agent_mef_viaf(
-            data=agent_idref_record,
+            data=agent_idref_data,
             dbcommit=True,
             reindex=True,
             online=False
@@ -104,46 +104,46 @@ def test_create_agent_record_with_viaf_links(
 
 
 def test_update_agent_record_with_viaf_links(
-        app, agent_viaf_record, agent_gnd_record, agent_rero_record,
-        agent_idref_record):
+        app, agent_gnd_data, agent_rero_data,
+        agent_idref_data):
     """Test create agent record with VIAF links."""
     returned_record, action = AgentGndRecord.create_or_update(
-        agent_gnd_record, dbcommit=True, reindex=True
+        agent_gnd_data, dbcommit=True, reindex=True
     )
     assert action.name == 'UPDATE'
     assert returned_record['pid'] == '12391664X'
 
     returned_record, action = AgentReroRecord.create_or_update(
-        agent_rero_record, dbcommit=True, reindex=True
+        agent_rero_data, dbcommit=True, reindex=True
     )
     assert action.name == 'UPDATE'
     assert returned_record['pid'] == 'A023655346'
 
     returned_record, action = AgentIdrefRecord.create_or_update(
-        agent_idref_record, dbcommit=True, reindex=True
+        agent_idref_data, dbcommit=True, reindex=True
     )
     assert action.name == 'UPDATE'
     assert returned_record['pid'] == '069774331'
 
 
 def test_uptodate_agent_record_with_viaf_links_md5(
-        app, agent_viaf_record, agent_gnd_record, agent_rero_record,
-        agent_idref_record):
+        app, agent_gnd_data, agent_rero_data,
+        agent_idref_data):
     """Test create agent record with VIAF links."""
     returned_record, action = AgentGndRecord.create_or_update(
-        agent_gnd_record, dbcommit=True, reindex=True, test_md5=True
+        agent_gnd_data, dbcommit=True, reindex=True, test_md5=True
     )
     assert action.name == 'UPTODATE'
     assert returned_record['pid'] == '12391664X'
 
     returned_record, action = AgentReroRecord.create_or_update(
-        agent_rero_record, dbcommit=True, reindex=True, test_md5=True
+        agent_rero_data, dbcommit=True, reindex=True, test_md5=True
     )
     assert action.name == 'UPTODATE'
     assert returned_record['pid'] == 'A023655346'
 
     returned_record, action = AgentIdrefRecord.create_or_update(
-        agent_idref_record, dbcommit=True, reindex=True,
+        agent_idref_data, dbcommit=True, reindex=True,
         test_md5=True
     )
     assert action.name == 'UPTODATE'
