@@ -23,14 +23,13 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Utilities."""
-import datetime
 import gc
 import hashlib
 import json
 import os
 import traceback
 from copy import deepcopy
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from functools import wraps
 from io import StringIO
 from json import JSONDecodeError, JSONDecoder, dumps
@@ -60,6 +59,10 @@ from pymarc.marcxml import parse_xml_to_array
 from sickle import Sickle, oaiexceptions
 from sickle.iterator import OAIItemIterator
 from sickle.oaiexceptions import NoRecordsMatch
+
+# Hours can not be retrieved by get_info_by_oai_name
+# TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+TIME_FORMAT = '%Y-%m-%d'
 
 
 def add_oai_source(name, baseurl, metadataprefix='marc21',
@@ -120,7 +123,7 @@ def oai_set_last_run(name, date, verbose=False):
         oai_source = get_oaiharvest_object(name)
         lastrun_date = date
         if isinstance(date, str):
-            lastrun_date = parser.parse(date)
+            lastrun_date = parser.isoparse(date).astimezone(timezone.utc)
         oai_source.update_lastrun(lastrun_date)
         oai_source.save()
         db.session.commit()
@@ -227,7 +230,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
             and dates_inital['from'] > dates_inital['until']:
         raise WrongDateCombination("'Until' date larger than 'from' date.")
 
-    last_run_date = datetime.now()
+    last_run_date = datetime.now(timezone.utc)
 
     # If we don't have specifications for set searches the setspecs will be
     # set to e list with None to go into the retrieval loop without
@@ -245,23 +248,25 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
         }
         if access_token:
             params['accessToken'] = access_token
-        params.update(dates)
+        params |= dates
         if spec:
             params['set'] = spec
 
-        my_from_date = parser.parse(dates['from'])
+        my_from_date = parser.isoparse(
+            dates['from']).astimezone(timezone.utc)
         my_until_date = last_run_date
         if dates['until']:
-            my_until_date = parser.parse(dates['until'])
+            my_until_date = parser.isoparse(
+                dates['until']).astimezone(timezone.utc)
         while my_from_date <= my_until_date:
             until_date = my_from_date + timedelta(days=days_span)
             if until_date > my_until_date:
                 until_date = my_until_date
             dates = {
-                'from': my_from_date.strftime("%Y-%m-%d"),
-                'until': until_date.strftime("%Y-%m-%d")
+                'from': my_from_date.strftime(TIME_FORMAT),
+                'until': until_date.strftime(TIME_FORMAT)
             }
-            params.update(dates)
+            params |= dates
 
             try:
                 for record in request.ListRecords(**params):
@@ -327,12 +332,12 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                 if debug:
                     traceback.print_exc()
                 count = -1
-            my_from_date = my_from_date + timedelta(days=days_span + 1)
             if verbose:
-                from_date = my_from_date.strftime("%Y-%m-%d")
+                from_date = my_from_date.strftime(TIME_FORMAT)
                 click.echo(
                     f'OAI {name} {spec}: {from_date} .. +{days_span}'
                 )
+            my_from_date = my_from_date + timedelta(days=days_span + 1)
 
     if update_last_run:
         if verbose:
@@ -371,7 +376,7 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
             and dates_inital['from'] > dates_inital['until']:
         raise WrongDateCombination("'Until' date larger than 'from' date.")
 
-    last_run_date = datetime.now()
+    last_run_date = datetime.now(timezone.utc)
 
     # If we don't have specifications for set searches the setspecs will be
     # set to e list with None to go into the retrieval loop without
@@ -387,30 +392,31 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
             }
             if access_token:
                 params['accessToken'] = access_token
-            params.update(dates)
+            params |= dates
             if spec:
                 params['set'] = spec
 
-            my_from_date = parser.parse(dates['from'])
+            my_from_date = parser.parse(dates['from'], tzinfos=timezone.utc)
             my_until_date = last_run_date
             if dates['until']:
-                my_until_date = parser.parse(dates['until'])
+                my_until_date = parser.isoparse(
+                    dates['until']).astimezone(timezone.utc)
             while my_from_date <= my_until_date:
                 until_date = my_from_date + timedelta(days=days_span)
                 if until_date > my_until_date:
                     until_date = my_until_date
                 dates = {
-                    'from': my_from_date.strftime("%Y-%m-%d"),
-                    'until': until_date.strftime("%Y-%m-%d")
+                    'from': my_from_date.strftime(TIME_FORMAT),
+                    'until': until_date.strftime(TIME_FORMAT)
                 }
-                params.update(dates)
+                params |= dates
 
                 try:
                     for record in request.ListRecords(**params):
                         count += 1
                         records = parse_xml_to_array(StringIO(record.raw))
                         if verbose:
-                            from_date = my_from_date.strftime("%Y-%m-%d")
+                            from_date = my_from_date.strftime(TIME_FORMAT)
                             click.echo(
                                 f'OAI {name} spec({spec}): {from_date} '
                                 f'count:{count:>10} = {id}'
@@ -427,7 +433,7 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
 
                 my_from_date = my_from_date + timedelta(days=days_span + 1)
                 if verbose:
-                    from_date = my_from_date.strftime("%Y-%m-%d")
+                    from_date = my_from_date.strftime(TIME_FORMAT)
                     click.echo(
                         f'OAI {name} spec({spec}): '
                         f'{from_date} .. +{days_span}'
@@ -695,7 +701,7 @@ def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
     buffer = StringIO()
     buffer_uuid = []
     index = columns.index('id') if 'id' in columns else -1
-    start_time = datetime.now()
+    start_time = datetime.now(timezone.utc)
     with open(data, 'r', encoding='utf-8', buffering=1) as input_file:
         for line in input_file:
             count += 1
@@ -706,7 +712,7 @@ def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
                 buffer.flush()
                 buffer.seek(0)
                 if verbose:
-                    end_time = datetime.now()
+                    end_time = datetime.now(timezone.utc)
                     diff_time = end_time - start_time
                     start_time = end_time
                     click.echo(
@@ -730,7 +736,7 @@ def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
                 buffer = StringIO()
 
         if verbose:
-            end_time = datetime.now()
+            end_time = datetime.now(timezone.utc)
             diff_time = end_time - start_time
             click.echo(
                 f'{agent} copy from file: {count} {diff_time.seconds}s',
@@ -1113,9 +1119,7 @@ def get_timestamp(name):
     :returns: time of time stamp
     """
     time_stamps = current_cache.get('timestamps')
-    if not time_stamps:
-        return None
-    return time_stamps.get(name)
+    return time_stamps.get(name) if time_stamps else None
 
 
 def settimestamp(func):

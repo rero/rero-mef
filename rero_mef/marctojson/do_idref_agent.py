@@ -17,9 +17,7 @@
 
 """Marctojsons transformer for IDREF records."""
 
-from datetime import datetime
-
-import pytz
+from datetime import datetime, timezone
 
 from rero_mef.marctojson.helper import COUNTRIES, COUNTRY_UNIMARC_MARC21, \
     LANGUAGES, build_string_list_from_fields, remove_trailing_punctuation
@@ -149,9 +147,7 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_deleted')
         if self.marc.leader[5] == 'd':
-            self.json_dict['deleted'] = pytz.utc.localize(
-                datetime.now()
-            ).isoformat()
+            self.json_dict['deleted'] = datetime.now(timezone.utc).isoformat()
 
     def trans_idref_relation_pid(self):
         """Transformation old pids 035 $a $9 = sudoc."""

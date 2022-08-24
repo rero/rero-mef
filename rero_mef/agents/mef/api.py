@@ -17,6 +17,8 @@
 
 """API for manipulating MEF records."""
 
+from datetime import datetime, timezone
+
 import click
 from elasticsearch_dsl import Q
 from flask import current_app
@@ -165,6 +167,21 @@ class AgentMefRecord(EntityMefRecord):
         :returns: MEF record, MEF action, VIAF record, VIAF
         """
         return self, Action.ERROR, None, False
+
+    @classmethod
+    def create_deleted(cls, record, dbcommit=False, reindex=False):
+        """Create a deleted record for an record.
+
+        :param record: Record to create.
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex record.
+        :returns: Created record.
+        """
+        data = {
+            record.name: {'$ref': build_ref_string(record.pid, record.name)},
+            'deleted': datetime.now(timezone.utc).isoformat()
+        }
+        return cls.create(data=data, dbcommit=dbcommit, reindex=reindex)
 
 
 class AgentMefIndexer(ReroIndexer):
