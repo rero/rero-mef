@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2022 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,7 @@
 
 """Agents."""
 
+from .api import Action
 from .gnd.api import AgentGndIndexer, AgentGndRecord, AgentGndSearch
 from .idref.api import AgentIdrefIndexer, AgentIdrefRecord, AgentIdrefSearch
 from .mef.api import AgentMefIndexer, AgentMefRecord, AgentMefSearch
@@ -27,4 +28,5 @@ __all__ = ('AgentGndIndexer', 'AgentGndRecord', 'AgentGndSearch',
            'AgentIdrefIndexer', 'AgentIdrefRecord', 'AgentIdrefSearch',
            'AgentMefIndexer', 'AgentMefRecord', 'AgentMefSearch',
            'AgentReroIndexer', 'AgentReroRecord', 'AgentReroSearch',
-           'AgentViafIndexer', 'AgentViafRecord', 'AgentViafSearch')
+           'AgentViafIndexer', 'AgentViafRecord', 'AgentViafSearch',
+           'Action')

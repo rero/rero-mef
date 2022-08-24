@@ -144,6 +144,16 @@ class ReroMefRecord(Record):
         if agent_record := cls.get_record_by_pid(pid):
             # record exist
             data = add_schema(data, agent_record.provider.pid_type)
+            # save the records old data if the new one is empty
+            copy_fields = ['pid', '$schema', 'identifier', 'identifiedBy',
+                           'authorized_access_point', 'bf:Agent',
+                           'relation_pid', 'deleted']
+            original_data = {
+                k: v for k, v in agent_record.items() if k in copy_fields}
+            # dict merging, `original_data` values
+            # will be override by `data` values
+            data = {**original_data, **data}
+
             if test_md5:
                 return_record, agent_action = agent_record.update_test_md5(
                     data=data,
