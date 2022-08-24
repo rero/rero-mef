@@ -19,9 +19,7 @@
 # https://www.dnb.de/EN/Professionell/Metadatendienste/Datenbezug/GND_Aenderungsdienst/gndAenderungsdienst_node.html
 
 import re
-from datetime import datetime
-
-import pytz
+from datetime import datetime, timezone
 
 from rero_mef.marctojson.helper import COUNTRIES, COUNTRY_UNIMARC_MARC21, \
     LANGUAGES, build_string_list_from_fields
@@ -76,9 +74,7 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_gnd_deleted')
         if self.marc.leader[5] in ['c', 'd', 'x']:
-            self.json_dict['deleted'] = pytz.utc.localize(
-                datetime.now()
-            ).isoformat()
+            self.json_dict['deleted'] = datetime.now(timezone.utc).isoformat()
 
     def trans_gnd_relation_pid(self):
         """Transformation relation pids 682 $0.
