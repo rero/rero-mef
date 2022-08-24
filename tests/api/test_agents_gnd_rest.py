@@ -18,8 +18,11 @@
 """Test REST API GND."""
 
 import json
+from copy import deepcopy
 
 from flask import url_for
+
+from rero_mef.agents import Action, AgentGndRecord
 
 
 def test_view_agents_gnd(client, agent_gnd_record):
@@ -55,3 +58,28 @@ def test_view_agents_gnd(client, agent_gnd_record):
         "status": 404,
         "message": "PID does not exist."
     }
+
+
+def test_save_deleted_data(client, agent_gnd_record, agent_gnd_data):
+    """Test save deleted data GND."""
+    pid = agent_gnd_record.get('pid')
+    assert agent_gnd_record['identifier'] == 'http://d-nb.info/gnd/12391664X'
+    data = deepcopy(agent_gnd_data)
+    data = {
+        'deleted': '2022-01-31T10:44:22.552001+00:00',
+        'pid': agent_gnd_record.pid,
+        'relation_pid': {
+            'type': 'redirect_to',
+            'value': '1134995709'
+        }
+    }
+    record, action = AgentGndRecord.create_or_update(
+        data=data,
+        delete_pid=False,
+        dbcommit=True,
+        reindex=True,
+        test_md5=False
+    )
+    assert action == Action.UPDATE
+    assert record['deleted'] == data['deleted']
+    assert record['relation_pid'] == data['relation_pid']
