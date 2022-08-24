@@ -5,7 +5,8 @@
   "required": [
     "$schema",
     "pid",
-    "identifiedBy"
+    "identifiedBy",
+    "authorized_access_point"
   ],
   "additionalProperties": false,
   "properties": {
@@ -79,21 +80,21 @@
         "type": "object",
         "properties": {
           "oneOf": [
-          {
-            "$ref": {
-              "type": "string",
-              "pattern": "^https://mef.rero.ch/api/.*/.*?$"
+            {
+              "$ref": {
+               "type": "string",
+                "pattern": "^https://mef.rero.ch/api/.*/.*?$"
+              }
+            },
+            {
+              "authorized_access_point": {
+                "title": "Authorized access point",
+                "type": "string",
+                "minLength": 1
+              }
             }
-          },
-          {
-            "authorized_access_point": {
-              "title": "Authorized access point",
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        ]
-      }
+          ]
+        }
       }
     },
     "related": {
