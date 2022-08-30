@@ -26,7 +26,7 @@ def test_view_agents_rero(client, agent_rero_record):
     """Test redirect RERO."""
 
     pid = agent_rero_record.get('pid')
-    url = url_for('api_agents_rero.redirect_list')
+    url = url_for('api_blueprint.redirect_list_rero')
     res = client.get(url)
     assert res.status_code == 308
     res = client.get(url, follow_redirects=True)
@@ -40,7 +40,7 @@ def test_view_agents_rero(client, agent_rero_record):
         'deleted': {'doc_count': 0}
     }
 
-    url = url_for('api_agents_rero.redirect_item', pid=pid)
+    url = url_for('api_blueprint.redirect_item_rero', pid=pid)
     res = client.get(url)
     assert res.status_code == 308
     res = client.get(url, follow_redirects=True)
@@ -49,7 +49,7 @@ def test_view_agents_rero(client, agent_rero_record):
     assert data.get('id') == pid
     assert data.get('metadata', {}).get('pid') == pid
 
-    url = url_for('api_agents_rero.redirect_item', pid='WRONG')
+    url = url_for('api_blueprint.redirect_item_rero', pid='WRONG')
     res = client.get(url, follow_redirects=True)
     assert res.status_code == 404
     assert json.loads(res.get_data(as_text=True)) == {

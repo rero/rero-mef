@@ -167,11 +167,7 @@ concepts_rero = "rero_mef.concepts.rero.jsonresolvers.rero_resolver"
 [tool.poetry.plugins."invenio_base.api_blueprints"]
 api_rero_mef = "rero_mef.theme.views:api_blueprint"
 api_monitoring = "rero_mef.monitoring.views:api_blueprint"
-api_agents_mef = "rero_mef.agents.mef.views:api_blueprint"
-api_agents_viaf = "rero_mef.agents.viaf.views:api_blueprint"
-api_agents_gnd = "rero_mef.agents.gnd.views:api_blueprint"
-api_agents_idref = "rero_mef.agents.idref.views:api_blueprint"
-api_agents_rero = "rero_mef.agents.rero.views:api_blueprint"
+api_blueprint = "rero_mef.views:api_blueprint"
 
 [tool.poetry.plugins."flask.commands"]
 fixtures = "rero_mef.cli:fixtures"

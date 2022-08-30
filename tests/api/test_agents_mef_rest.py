@@ -25,7 +25,7 @@ from flask import url_for
 def test_view_agents_mef(client, agent_mef_record):
     """Test redirect MEF."""
     pid = agent_mef_record.get('pid')
-    url = url_for('api_agents_mef.redirect_list')
+    url = url_for('api_blueprint.redirect_list_mef')
     res = client.get(url)
     assert res.status_code == 308
     res = client.get(url, follow_redirects=True)
@@ -50,7 +50,7 @@ def test_view_agents_mef(client, agent_mef_record):
         'deleted': {'doc_count': 0},
         'deleted_entities': {'doc_count': 0},
     }
-    url = url_for('api_agents_mef.redirect_item', pid=pid)
+    url = url_for('api_blueprint.redirect_item_mef', pid=pid)
     res = client.get(url)
     assert res.status_code == 308
     res = client.get(url, follow_redirects=True)
@@ -59,7 +59,7 @@ def test_view_agents_mef(client, agent_mef_record):
     assert data.get('id') == pid
     assert data.get('metadata', {}).get('pid') == pid
 
-    url = url_for('api_agents_mef.redirect_item', pid='WRONG')
+    url = url_for('api_blueprint.redirect_item_mef', pid='WRONG')
     res = client.get(url, follow_redirects=True)
     assert res.status_code == 404
     assert json.loads(res.get_data(as_text=True)) == {
