@@ -51,7 +51,8 @@ class Transformation(object):
                     self.logger.info('Exclude FMeSH', self.marc['001'])
         else:
             msg = 'No 008'
-            self.logger.warning('NO TRANSFORMATION', msg)
+            if self.logger and self.verbose:
+                self.logger.warning('NO TRANSFORMATION', msg)
             self.json_dict = {'NO TRANSFORMATION': msg}
             self.trans_idref_pid()
 
@@ -127,8 +128,8 @@ class Transformation(object):
                 'Call Function', 'trans_idref_authorized_access_point')
         tag = '280' if self.marc['280'] else '250'
         subfields = {'a': ', ', 'x': ' - ', 'y': ' - ', 'z': ' - '}
-        authorized_ap = build_string_from_field(self.marc[tag], subfields)
-        self.json_dict['authorized_access_point'] = authorized_ap
+        if authorized_ap := build_string_from_field(self.marc[tag], subfields):
+            self.json_dict['authorized_access_point'] = authorized_ap
 
     def trans_idref_variant_access_point(self):
         """Transformation variant_access_point from field 450 480."""

@@ -56,7 +56,8 @@ class Transformation(object):
                     func()
         else:
             msg = 'No 100 or 110 or 111'
-            self.logger.warning('NO TRANSFORMATION', msg)
+            if self.logger and self.verbose:
+                self.logger.warning('NO TRANSFORMATION', msg)
             self.json_dict = {'NO TRANSFORMATION': msg}
             self.trans_gnd_pid()
 

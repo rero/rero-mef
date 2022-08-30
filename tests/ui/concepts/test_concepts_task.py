@@ -43,6 +43,7 @@ def test_task_create_mef_for_concept(
     assert task_create_mef_for_concept(cidref.pid, 'cidref') == \
         f'Create MEF from cidref pid: {cidref.pid} | mef: 2 create'
     mef = ConceptMefRecord.get_record_by_pid('2')
+    mef.pop('deleted')
     assert mef == {
         '$schema':
             'https://mef.rero.ch/schemas/concepts_mef/mef-concept-v0.0.1.json',

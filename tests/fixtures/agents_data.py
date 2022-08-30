@@ -70,6 +70,30 @@ def agent_gnd_data():
 
 
 @pytest.fixture(scope='module')
+def agent_gnd_redirect_data():
+    """Agent GND record."""
+    return {
+        "$schema":
+        "https://mef.rero.ch/schemas/agents_gnd/gnd-agent-v0.0.1.json",
+        "identifier": "https://d-nb.info/gnd/GND_REDIRECT",
+        "pid": "GND_REDIRECT",
+        "bf:Agent": "bf:Person",
+        "authorized_access_point": "Cavalieri, Giovanni Battista, 1525-1601",
+        "biographical_information": [
+            "LoC-NA",
+            "LCAuth"
+        ],
+        "preferred_name": "Cavalieri, Giovanni Battista",
+        "date_of_birth": "ca. 1525",
+        "date_of_death": "1601",
+        "relation_pid": {
+            "type": "redirect_to",
+            "value": "12391664X"
+        }
+    }
+
+
+@pytest.fixture(scope='module')
 def agent_rero_data():
     """Agent RERO record."""
     return {
@@ -88,7 +112,7 @@ def agent_rero_data():
             "Cavalleriis, Giovanni Battista de,",
             "Cavalieri, Gianbattista,"
         ],
-        "identifier": "http://data.rero.ch/02-A023655346",
+        "identifier": "https://data.rero.ch/02-A023655346",
         "pid": "A023655346",
         "preferred_name": "Cavalieri, Giovanni Battista,"
     }
@@ -103,7 +127,7 @@ def agent_idref_data():
         "date_of_birth": "....",
         "date_of_death": "1540",
         "language": ["fre"],
-        "identifier": "http://www.idref.fr/069774331",
+        "identifier": "https://www.idref.fr/069774331",
         "biographical_information": [
             "Grammairien"
         ],
@@ -117,13 +141,59 @@ def agent_idref_data():
 
 
 @pytest.fixture(scope='module')
+def agent_idref_redirect_data():
+    """Agent IDREF record."""
+    return {
+        "pid": "IDREF_REDIRECT",
+        "bf:Agent": "bf:Person",
+        "date_of_birth": "....",
+        "date_of_death": "1540",
+        "language": ["fre"],
+        "identifier": "https://www.idref.fr/IDREF_REDIRECT",
+        "preferred_name": "Briss\u00e9, Nicolas, grammairien",
+        "authorized_access_point":
+            "Briss\u00e9, Nicolas, ....-1540, grammairien",
+        "gender": "male",
+        "$schema":
+            "https://mef.rero.ch/schemas/agents_idref/idref-agent-v0.0.1.json",
+        "relation_pid": {
+            "type": "redirect_from",
+            "value": "069774331"
+        }
+    }
+
+
+@pytest.fixture(scope='module')
 def agent_mef_data():
     """Agent MEF record."""
     return {
         "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
-        "gnd": {"$ref": "https://mef.rero.ch/api/gnd/12391664X"},
-        "rero": {"$ref": "https://mef.rero.ch/api/rero/A023655346"},
-        "idref": {"$ref": "https://mef.rero.ch/api/idref/069774331"},
+        "gnd": {"$ref": "https://mef.rero.ch/api/agents/gnd/12391664X"},
+        "rero": {"$ref": "https://mef.rero.ch/api/agents/rero/A023655346"},
+        "idref": {"$ref": "https://mef.rero.ch/api/agents/idref/069774331"},
+        "viaf_pid": "66739143"
+    }
+
+
+@pytest.fixture(scope='module')
+def agent_mef_gnd_redirect_data():
+    """Agent MEF record."""
+    return {
+        "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
+        "gnd": {"$ref": "https://mef.rero.ch/api/agents/gnd/GND_REDIRECT"},
+        "viaf_pid": "VIAF_REDIRECT"
+    }
+
+
+@pytest.fixture(scope='module')
+def agent_mef_idref_redirect_data():
+    """Agent MEF record."""
+    return {
+        "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
+        "gnd": {"$ref": "https://mef.rero.ch/api/agents/gnd/12391664X"},
+        "rero": {"$ref": "https://mef.rero.ch/api/agents/rero/A023655346"},
+        "idref":
+            {"$ref": "https://mef.rero.ch/api/agents/idref/IDREF_REDIRECT"},
         "viaf_pid": "66739143"
     }
 
@@ -136,5 +206,27 @@ def agent_viaf_data():
         "pid": "66739143",
         "gnd_pid": "12391664X",
         "rero_pid": "A023655346",
+        "idref_pid": "069774331"
+    }
+
+
+@pytest.fixture(scope='module')
+def agent_viaf_gnd_redirect_data():
+    """Agent VIAF record."""
+    return {
+        "$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json",
+        "pid": "VIAF_GND_REDIRECT",
+        "gnd_pid": "GND_REDIRECT",
+    }
+
+
+@pytest.fixture(scope='module')
+def agent_viaf_idref_redirect_data():
+    """Agent VIAF record."""
+    return {
+        "$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json",
+        "pid": "VIAF_IDREF_REDIRECT",
+        "gnd_pid": "12391664X",
+        "rero_pid": "IDREF_REDIRECT",
         "idref_pid": "069774331"
     }

@@ -42,7 +42,8 @@ class Transformation(object):
                     func()
         else:
             msg = 'No 150 or 155'
-            self.logger.warning('NO TRANSFORMATION', msg)
+            if self.logger and self.verbose:
+                self.logger.warning('NO TRANSFORMATION', msg)
             self.json_dict = {'NO TRANSFORMATION': msg}
             self.trans_rero_identifier()
 

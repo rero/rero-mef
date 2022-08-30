@@ -280,7 +280,8 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                             )
                         except Exception as err:
                             updated = '????'
-                        if rec := transformation(records[0]).json:
+                        if rec := transformation(
+                                records[0], logger=current_app.logger).json:
                             if msg := rec.get('NO TRANSFORMATION'):
                                 if verbose:
                                     pid = rec.get('pid', '???')
@@ -478,7 +479,7 @@ def oai_get_record(id, name, transformation, access_token=None,
     records = parse_xml_to_array(StringIO(record.raw))
     from rero_mef.marctojson.helper import display_record
     display_record(records[0])
-    trans_record = transformation(records[0]).json
+    trans_record = transformation(records[0], logger=current_app.logger).json
     if verbose:
         click.echo(f'OAI-{name} get: {id}')
     return trans_record
@@ -1240,3 +1241,14 @@ def get_mefs_endpoints():
         'endpoints': get_concepts_endpoints()
     })
     return mefs
+
+
+def generate(search):
+    """Lagging genarator."""
+    records = search.__iter__()
+    yield '['
+    for idx, record in enumerate(records):
+        if idx != 0:
+            yield ', '
+        yield json.dumps(record.to_dict())
+    yield ']'

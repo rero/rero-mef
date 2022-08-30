@@ -17,6 +17,9 @@
 
 """Test utils."""
 
+import json
+
+from flask import url_for
 from invenio_accounts.testutils import login_user_via_session
 
 
@@ -49,3 +52,36 @@ def create_and_login_monitoring_user(app, client):
         datastore.commit()
     login_user_via_session(client, user)
     return email
+
+
+def get_json(response):
+    """Get JSON from response."""
+    return json.loads(response.get_data(as_text=True))
+
+
+def postdata(
+        client, endpoint, data=None, headers=None, url_data=None,
+        force_data_as_json=True):
+    """Build URL from given endpoint and send given data to it.
+
+    :param force_data_as_json: the data sent forced json.
+    :return: returns result and JSON from result.
+    """
+    if data is None:
+        data = {}
+    if headers is None:
+        headers = [
+            ('Accept', 'application/json'),
+            ('Content-Type', 'application/json')
+        ]
+    if url_data is None:
+        url_data = {}
+    if force_data_as_json:
+        data = json.dumps(data)
+    res = client.post(
+        url_for(endpoint, **url_data),
+        data=data,
+        headers=headers
+    )
+    output = get_json(res)
+    return res, output
