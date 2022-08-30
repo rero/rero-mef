@@ -39,8 +39,7 @@ def rero_get_record(id, verbose=False, debug=False):
     response = requests.get(url)
     if response.status_code == requests.codes.ok:
         try:
-            records = parse_xml_to_array(BytesIO(response.content))
-            if records:
+            if records := parse_xml_to_array(BytesIO(response.content)):
                 trans_record = Transformation(records[0]).json
                 if verbose:
                     click.echo(f'API-rero get: {id}')

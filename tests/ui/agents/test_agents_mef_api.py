@@ -32,7 +32,7 @@ def test_get_all_pids_without_agents_and_viaf(app):
         [m_record.pid]
 
 
-def test_get_pids_with_multiple_mef(app, agent_mef_data):
+def test_get_pids_with_multiple_mef(app, agent_mef_data, agent_viaf_record):
     """Test get pids with multiple MEF."""
     m_record_1 = create_record(AgentMefRecord, agent_mef_data, delete_pid=True)
     m_record_2 = create_record(AgentMefRecord, agent_mef_data, delete_pid=True)

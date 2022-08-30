@@ -80,8 +80,8 @@ pydocstyle rero_mef tests docs
 info_msg "Test isort:"
 isort --check-only --diff "${SCRIPT_PATH}"
 info_msg "Test useless imports:"
-autoflake -c -r --remove-all-unused-imports --ignore-init-module-imports . &> /dev/null || {
-  autoflake --remove-all-unused-imports -r --ignore-init-module-imports .
+autoflake --quiet --check --recursive --remove-all-unused-imports --ignore-init-module-imports . &> /dev/null || {
+  autoflake --recursive --remove-all-unused-imports --ignore-init-module-imports .
   exit 1
 }
 # info_msg "Check-manifest:"
