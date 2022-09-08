@@ -222,9 +222,6 @@ class AgentMefRecord(EntityMefRecord):
             search = search.filter('range', _updated={'gte': from_date})
         if pids := data.get('pids'):
             search = search.filter('terms', pid=pids)
-
-        search = search \
-            .sort({'pid': {'order': 'asc'}})
         return generate(search)
 
 
