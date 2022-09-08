@@ -153,7 +153,7 @@ def test_agents_mef_get_updated(client, agent_mef_record, agent_idref_record,
         {}
     )
     assert res.status_code == 200
-    pids = [rec.get('pid') for rec in data]
+    pids = sorted([rec.get('pid') for rec in data])
     assert pids == ['1', '2', '3']
 
     res, data = postdata(
@@ -162,7 +162,7 @@ def test_agents_mef_get_updated(client, agent_mef_record, agent_idref_record,
         {"pids": ['2']}
     )
     assert res.status_code == 200
-    pids = [rec.get('pid') for rec in data]
+    pids = sorted([rec.get('pid') for rec in data])
     assert pids == ['2']
 
     res, data = postdata(
@@ -171,7 +171,7 @@ def test_agents_mef_get_updated(client, agent_mef_record, agent_idref_record,
         {"from_date": "2022-02-02"}
     )
     assert res.status_code == 200
-    pids = [rec.get('pid') for rec in data]
+    pids = sorted([rec.get('pid') for rec in data])
     assert pids == ['1', '2', '3']
 
     date = datetime.now(timezone.utc) + timedelta(days=1)
@@ -181,5 +181,5 @@ def test_agents_mef_get_updated(client, agent_mef_record, agent_idref_record,
         {"from_date": date.isoformat()}
     )
     assert res.status_code == 200
-    pids = [rec.get('pid') for rec in data]
+    pids = sorted([rec.get('pid') for rec in data])
     assert pids == []

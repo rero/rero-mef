@@ -88,7 +88,7 @@ def test_concepts_mef_get_updated(client,
         {}
     )
     assert res.status_code == 200
-    pids = [rec.get('pid') for rec in data]
+    pids = sorted([rec.get('pid') for rec in data])
     assert pids == ['1', '2', '3']
 
     res, data = postdata(
@@ -97,7 +97,7 @@ def test_concepts_mef_get_updated(client,
         {"pids": ['2']}
     )
     assert res.status_code == 200
-    pids = [rec.get('pid') for rec in data]
+    pids = sorted([rec.get('pid') for rec in data])
     assert pids == ['2']
 
     res, data = postdata(
@@ -106,7 +106,7 @@ def test_concepts_mef_get_updated(client,
         {"from_date": "2022-02-02"}
     )
     assert res.status_code == 200
-    pids = [rec.get('pid') for rec in data]
+    pids = sorted([rec.get('pid') for rec in data])
     assert pids == ['1', '2', '3']
 
     date = datetime.now(timezone.utc) + timedelta(days=1)
@@ -116,5 +116,5 @@ def test_concepts_mef_get_updated(client,
         {"from_date": date.isoformat()}
     )
     assert res.status_code == 200
-    pids = [rec.get('pid') for rec in data]
+    pids = sorted([rec.get('pid') for rec in data])
     assert pids == []
