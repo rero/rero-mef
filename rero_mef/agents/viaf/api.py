@@ -135,7 +135,7 @@ class AgentViafRecord(ReroMefRecord):
                             id=pid_value,
                             verbose=verbose
                         )
-                        if data:
+                        if data and not data.get('NO TRANSFORMATION'):
                             results = \
                                 agent_class.create_or_update_agent_mef_viaf(
                                     data=data,
