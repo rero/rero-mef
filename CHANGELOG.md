@@ -1,5 +1,29 @@
 # Changelog
 
+## [v0.10.0](https://github.com/rero/rero-mef/tree/v0.10.0) (2022-09-19)
+
+[Full Changelog](https://github.com/rero/rero-mef/compare/v0.9.0...v0.10.0)
+
+**Merged pull requests:**
+* agents: better create_mef_and_agents [\#107](https://github.com/rero/rero-mef/pull/107) (by @rerowep)
+* api: fix updated [\#106](https://github.com/rero/rero-mef/pull/106) (by @rerowep)
+* MEF: REST API latest and updated [\#105](https://github.com/rero/rero-mef/pull/105) (by @rerowep)
+* concepts: add idref [\#96](https://github.com/rero/rero-mef/pull/96) (by @rerowep)
+* dependencies: update the dependencies lock file [\#104](https://github.com/rero/rero-mef/pull/104) (by @rerowep)
+* indexer: better code [\#87](https://github.com/rero/rero-mef/pull/87) (by @rerowep)
+* dependencies: update the dependencies lock file [\#95](https://github.com/rero/rero-mef/pull/95) (by @rerowep)
+* entities: save old date if deleted [\#101](https://github.com/rero/rero-mef/pull/101) (by @rerowep)
+* various: better UTC times [\#102](https://github.com/rero/rero-mef/pull/102) (by @rerowep)
+* monitoring: varius changes [\#99](https://github.com/rero/rero-mef/pull/99) (by @rerowep)
+* concepts: fix create_mef [\#98](https://github.com/rero/rero-mef/pull/98) (by @rerowep)
+* tests: add record fixtures [\#100](https://github.com/rero/rero-mef/pull/100) (by @jma)
+* alembic: inital branch [\#97](https://github.com/rero/rero-mef/pull/97) (by @rerowep)
+* mef: reindex during entities reindexing [\#90](https://github.com/rero/rero-mef/pull/90) (by @rerowep)
+* dojson: fix parentheses with spaces [\#93](https://github.com/rero/rero-mef/pull/93) (by @rerowep)
+* tests: fix pytest-invenio>1.4.11 [\#94](https://github.com/rero/rero-mef/pull/94) (by @rerowep)
+* templates: update footer and front page links [\#92](https://github.com/rero/rero-mef/pull/92) (by @PascalRepond)
+* dojson: fix script code [\#89](https://github.com/rero/rero-mef/pull/89) (by @rerowep)
+
 ## [v0.9.0](https://github.com/rero/rero-mef/tree/v0.9.0) (2022-06-14)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.8.0...v0.9.0)
