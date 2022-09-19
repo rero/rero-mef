@@ -103,6 +103,8 @@ if ! $deploy ; then
     fi
 fi
 
+poetry --version
+
 # create virtualenv and upgrade pip
 info_msg "Upgrade pip"
 poetry run pip install --upgrade pip

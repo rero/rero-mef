@@ -9,7 +9,7 @@ jobs:
         dependencies: ['development', 'deploy']
     steps:
     - name: Cancel Previous Runs
-      uses: styfle/cancel-workflow-action@0.9.1
+      uses: styfle/cancel-workflow-action@0.10.0
       with:
         access_token: ${{ github.token }}
 
@@ -24,7 +24,7 @@ jobs:
       run: docker-compose up -d
 
     - name: Set up Python 3.9
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: 3.9
 
@@ -38,7 +38,7 @@ jobs:
       uses: snok/install-poetry@v1
 
     - name: Use Cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           ~/.cache/pip
