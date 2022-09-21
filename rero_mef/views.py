@@ -98,7 +98,7 @@ def agent_idref_redirect_list():
     )
 
 
-@api_blueprint.route('/idref(<pid>')
+@api_blueprint.route('/idref/<pid>')
 def agent_idref_redirect_item(pid):
     """Redirect item to new address."""
     return redirect(
