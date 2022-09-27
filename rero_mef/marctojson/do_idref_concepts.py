@@ -52,7 +52,7 @@ class Transformation(object):
         else:
             msg = 'No 008'
             if self.logger and self.verbose:
-                self.logger.warning('NO TRANSFORMATION', msg)
+                self.logger.warning(f'NO TRANSFORMATION: {msg}')
             self.json_dict = {'NO TRANSFORMATION': msg}
             self.trans_idref_pid()
 
