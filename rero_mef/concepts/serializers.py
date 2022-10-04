@@ -29,9 +29,8 @@ from .mef.api import ConceptMefRecord
 def add_links(pid, record):
     """Add MEF link to agents."""
     links = {}
-    mef_pid = ConceptMefRecord.get_mef_by_entity_pid(
-        record.pid, record.name, pid_only=True)
-    if mef_pid:
+    if mef_pid := ConceptMefRecord.get_mef_by_entity_pid(
+            record.pid, record.name, pid_only=True):
         links['mef'] = '{scheme}://{host}/api/concepts/mef/' + str(mef_pid)
 
     link_factory = default_links_factory_with_additional(links)

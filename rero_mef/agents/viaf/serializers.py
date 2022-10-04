@@ -17,6 +17,7 @@
 
 """Record serialization."""
 
+
 from flask import request, url_for
 from invenio_records_rest.links import default_links_factory_with_additional
 from invenio_records_rest.schemas import RecordSchemaJSONV1
@@ -33,17 +34,14 @@ def add_links(pid, record):
     mef_pid_search = AgentMefSearch() \
         .filter('term', viaf_pid=viaf_pid) \
         .source(['pid']).scan()
-    try:
-        for idx, search in enumerate(mef_pid_search):
-            url = '{scheme}://{host}/api/agents/mef/' + str(search.pid)
-            if idx:
-                links[f'mef {idx}'] = url
-            else:
-                links['mef'] = url
-    except Exception:
-        pass
-    links['viaf.org'] = 'http://www.viaf.org/viaf/' + str(viaf_pid)
-
+    for idx, search in enumerate(mef_pid_search):
+        # scheme and host will be replaced automatically in links
+        url = '{scheme}://{host}/api/agents/mef/' + str(search.pid)
+        if idx:
+            links[f'mef {idx}'] = url
+        else:
+            links['mef'] = url
+    links['viaf.org'] = f'http://www.viaf.org/viaf/{viaf_pid}'
     link_factory = default_links_factory_with_additional(links)
     return link_factory(pid)
 
@@ -52,8 +50,7 @@ def add_links(pid, record):
 def local_link(agent, name, record):
     """Change links to actual links."""
     if name in record:
-        ref = record[name].get('$ref')
-        if ref:
+        if ref := record[name].get('$ref'):
             my_pid = ref.split('/')[-1]
             url = url_for(
                 f'invenio_records_rest.{agent}_item',

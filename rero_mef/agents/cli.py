@@ -44,12 +44,14 @@ def agents():
               help="Enqueue record creation.")
 @click.option('-o', '--online', 'online', is_flag=True, default=False)
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@click.option('-V', '--online_verbose', 'online_verbose', is_flag=True,
+              default=False)
 @click.option('-p', '--progress', 'progress', is_flag=True, default=False)
 @click.option('-w', '--wait', 'wait', is_flag=True, default=False)
 @click.option('-m', '--missing', 'missing', is_flag=True, default=False)
 @with_appcontext
-def create_from_viaf(test_md5, enqueue, online, verbose, progress, wait,
-                     missing):
+def create_from_viaf(test_md5, enqueue, online, verbose, online_verbose,
+                     progress, wait, missing,):
     """Create MEF and agents from viaf."""
     click.secho(
         'Create MEF and Agency from VIAF.',
@@ -93,7 +95,8 @@ def create_from_viaf(test_md5, enqueue, online, verbose, progress, wait,
                 reindex=True,
                 test_md5=test_md5,
                 online=online,
-                verbose=verbose
+                verbose=verbose,
+                online_verbose=online_verbose
             )
 
     if unexisting_pids:
@@ -264,3 +267,46 @@ def create_csv_mef(viaf_metadata_file, output_directory, verbose):
         f'  Number of MEF records created: {count}.',
         fg='green',
         err=True)
+
+
+@agents.command()
+@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@click.option('-c', '--commit', 'commit', is_flag=True, default=False)
+@click.option('-t', '--pid_type', 'pid_type', multiple=True,
+              default=['aidref', 'aggnd', 'agrero'])
+@with_appcontext
+def clean_multiple_viaf(verbose, commit, pid_type):
+    """Clean multiple VIAF records.
+
+    :param verbose: Verbose.
+    :param commit: Commit changes.
+    """
+    click.secho('Clean multiple VIAF.')
+    viaf_types_def = {
+        'aidref': 'idref_pid',
+        'aggnd': 'gnd_pid',
+        'agrero': 'rero_pid'
+    }
+    viaf_types = []
+    for p_type in pid_type:
+        if v_type := viaf_types_def.get(p_type):
+            viaf_types.append(v_type)
+        else:
+            click.secho(f'Unknown agent type: {p_type}.', fg='red')
+    multiple_pids = AgentViafRecord.get_pids_with_multiple_viaf(
+        record_types=viaf_types, verbose=verbose)
+    for p_type in pid_type:
+        if v_type := viaf_types_def.get(p_type):
+            if verbose:
+                click.echo(f'Cleaning {p_type}: {len(multiple_pids[v_type])}')
+            agent_cls = get_entity_class(p_type)
+            for pid, viaf_pids in multiple_pids[v_type].items():
+                if rec := agent_cls.get_record_by_pid(pid):
+                    if verbose:
+                        click.echo(f'\t{rec.pid}')
+                    for viaf_pid in viaf_pids:
+                        if viaf := AgentViafRecord.get_record_by_pid(viaf_pid):
+                            click.echo(f'\t\tDELETE VIAF: {viaf_pid}')
+                            viaf.delete(dbcommit=commit, delindex=commit)
+                    rec.create_or_update_mef_viaf_record(
+                        dbcommit=commit, reindex=commit, online=commit)

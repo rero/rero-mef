@@ -26,6 +26,7 @@ from invenio_search import current_search
 
 from .mef.api import AgentMefRecord, build_ref_string
 from ..api import Action, ReroIndexer, ReroMefRecord
+from ..utils import add_md5, add_schema
 
 
 def get_viaf_by_agent(agent, online=False):
@@ -45,30 +46,37 @@ def get_viaf_by_agent(agent, online=False):
     viaf_pid_name = agent.viaf_pid_name
     query = AgentViafSearch() \
         .filter({'term': {viaf_pid_name: pid}})
-    try:
+    if query.count() > 0:
+        if query.count() > 1:
+            current_app.logger.error(
+                f'MULTIPLE VIAF FOUND FOR: {agent.name} {agent.pid}'
+            )
         viaf_pid = next(query.source(['pid']).scan()).pid
         return AgentViafRecord.get_record_by_pid(viaf_pid), False
-    except StopIteration:
-        if online:
-            viaf_source_code = agent.viaf_source_code
-            viaf_data = AgentViafRecord.get_online_viaf_record(
-                viaf_source_code=viaf_source_code,
-                pid=pid
-            )
-            if viaf_data:
-                viaf_pid = viaf_data.get('pid')
-                viaf_record = AgentViafRecord.get_record_by_pid(viaf_pid)
-                if viaf_record:
-                    viaf_record.reindex()
+    elif online:
+        viaf_data = AgentViafRecord.get_online_viaf_record(
+            viaf_source_code=agent.viaf_source_code,
+            pid=pid
+        )
+        if viaf_data:
+            viaf_data = add_md5(viaf_data)
+            viaf_data = add_schema(
+                viaf_data, AgentViafRecord.provider.pid_type)
+            viaf_pid = viaf_data.get('pid')
+            viaf_record = AgentViafRecord.get_record_by_pid(viaf_pid)
+            if viaf_record:
+                if viaf_record != viaf_data:
+                    viaf_record.replace(data=viaf_data, dbcommit=True,
+                                        reindex=True)
                     AgentViafRecord.flush_indexes()
-                    return viaf_record, False
-                viaf_record = AgentViafRecord.create(
-                    data=viaf_data,
-                    dbcommit=True,
-                    reindex=True
-                )
-                AgentViafRecord.flush_indexes()
-                return viaf_record, True
+                return viaf_record, False
+            viaf_record = AgentViafRecord.create(
+                data=viaf_data,
+                dbcommit=True,
+                reindex=True
+            )
+            AgentViafRecord.flush_indexes()
+            return viaf_record, True
     return None, False
 
 
@@ -87,7 +95,7 @@ class AgentRecord(ReroMefRecord):
     def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
                reindex=False, md5=True, **kwargs):
         """Create a new agent record."""
-        record = super().create(
+        return super().create(
             data=data,
             id_=id_,
             delete_pid=delete_pid,
@@ -96,7 +104,6 @@ class AgentRecord(ReroMefRecord):
             md5=md5,
             **kwargs
         )
-        return record
 
     def create_or_update_mef_viaf_record(self, dbcommit=False, reindex=False,
                                          online=False):
@@ -114,7 +121,6 @@ class AgentRecord(ReroMefRecord):
             agent=self,
             online=online
         )
-        from .mef.api import AgentMefRecord
         ref_string = build_ref_string(
             agent=self.name,
             agent_pid=self.pid
@@ -206,7 +212,7 @@ class AgentRecord(ReroMefRecord):
                                         test_md5=False, online=False,
                                         verbose=False):
         """Create or update agent, MEF and VIAF record."""
-        from rero_mef.agents.mef.api import AgentMefRecord
+        # from rero_mef.agents.mef.api import AgentMefRecord
 
         with contextlib.suppress(Exception):
             persistent_id = PersistentIdentifier.query.filter_by(
@@ -235,20 +241,20 @@ class AgentRecord(ReroMefRecord):
             viaf_record = None
             action = Action.DELETE
             online = False
-        elif action == Action.UPTODATE:
-            mef_record = AgentMefRecord.get_mef_by_entity_pid(
-                record.pid, record.name)
-            mef_action = Action.UPTODATE
-            viaf_record, online = get_viaf_by_agent(
-                record)
-        else:
-            mef_record, mef_action, viaf_record, online = \
-                record.create_or_update_mef_viaf_record(
-                    dbcommit=dbcommit,
-                    reindex=reindex,
-                    online=online
-                )
-        return record, action, mef_record, mef_action, viaf_record, online
+        # elif action == Action.UPTODATE:
+        #     mef_record = AgentMefRecord.get_mef_by_entity_pid(
+        #         record.pid, record.name)
+        #     mef_action = Action.UPTODATE
+        #     viaf_record, online = get_viaf_by_agent(
+        #         record)
+        # else:
+        mef_record, mef_action, viaf_record, online_res = \
+            record.create_or_update_mef_viaf_record(
+                dbcommit=dbcommit,
+                reindex=reindex,
+                online=online
+            )
+        return record, action, mef_record, mef_action, viaf_record, online_res
 
     @classmethod
     def get_online_record(cls, id, verbose=False):

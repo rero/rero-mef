@@ -96,9 +96,10 @@ class Transformation(object):
             if subfield_i == 'Umlenkung':
                 subfields_0 = field_035.get_subfields('0')
                 for subfield_0 in subfields_0:
-                    if subfield_0.startswith('https://d-nb.info/gnd'):
+                    if subfield_0.startswith('(DE-101)'):
+                        pid = subfield_0.replace('(DE-101)', '')
                         self.json_dict['relation_pid'] = {
-                            'value': subfield_0.split('/')[-1],
+                            'value': pid,
                             'type': 'redirect_to'
                         }
 

@@ -17,6 +17,7 @@
 """API for manipulating records."""
 
 from copy import deepcopy
+from datetime import datetime, timezone
 from enum import Enum
 from uuid import uuid4
 
@@ -95,7 +96,7 @@ class ReroMefRecord(Record):
 
     @classmethod
     def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
-               reindex=False, md5=False, **kwargs):
+               reindex=False, md5=True, **kwargs):
         """Create a new agent record."""
         assert cls.minter
         if '$schema' not in data:
@@ -331,6 +332,7 @@ class ReroMefRecord(Record):
 
     def update(self, data, dbcommit=False, reindex=False):
         """Update data for record."""
+        data = add_md5(data)
         super().update(data)
         super().commit()
         if dbcommit:
@@ -340,6 +342,7 @@ class ReroMefRecord(Record):
     def replace(self, data, dbcommit=False, reindex=False):
         """Replace data in record."""
         new_data = deepcopy(data)
+        new_data = add_md5(new_data)
         pid = new_data.get('pid')
         if not pid:
             raise ReroMefRecordError.PidMissing(f'missing pid={self.pid}')
@@ -408,6 +411,18 @@ class ReroMefRecord(Record):
     def deleted(self):
         """Get record deleted value."""
         return self.get('deleted')
+
+    def mark_as_deleted(self, dbcommit=False, reindex=False):
+        """Mark record as deleted.
+
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex record.
+        :returns: Modified record.
+        """
+        if not self.get('deleted'):
+            self['deleted'] = datetime.now(timezone.utc).isoformat()
+            self.update(data=self, dbcommit=dbcommit, reindex=reindex)
+        return self
 
 
 class ReroIndexer(RecordIndexer):

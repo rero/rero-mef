@@ -139,3 +139,36 @@ def delete(index, pid, entity, dbcommit=True, delindex=True, verbose=False):
     else:
         current_app.logger.warning(f'{index:<10} Not found {entity} {pid:<38}')
     return action
+
+
+@shared_task
+def mark_as_deleted(index, pid, entity, dbcommit=True, reindex=True,
+                    verbose=False):
+    """Delete record task.
+
+    :param index: index of record
+    :param pid: pid to delete
+    :param agent: agent to use
+    :param dbcommit: db commit or not
+    :param reindex: reindex or not
+    :param verbose: verbose or not
+    :returns: action
+    """
+    agent_class = get_entity_class(entity)
+    if agent_record := agent_class.get_record_by_pid(pid):
+        if not agent_record.get('deleted'):
+            agent_record.mark_as_deleted(dbcommit=dbcommit, reindex=reindex)
+            if verbose:
+                click.echo(f'{index:<10} Mark as deleted {entity} {pid:<38}')
+        elif verbose:
+            click.secho(
+                f'{index:<10} Already deleted {entity} {pid:<38}',
+                fg='yellow'
+            )
+    else:
+        current_app.logger.warning(f'{index:<10} Not found {entity} {pid:<38}')
+        if verbose:
+            click.secho(
+                f'{index:<10} Not found {entity} {pid:<38}',
+                fg='yellow'
+            )

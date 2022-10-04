@@ -17,7 +17,8 @@
 
 """Agents."""
 
-from .api import Action
+from rero_mef.api import Action
+
 from .gnd.api import AgentGndIndexer, AgentGndRecord, AgentGndSearch
 from .idref.api import AgentIdrefIndexer, AgentIdrefRecord, AgentIdrefSearch
 from .mef.api import AgentMefIndexer, AgentMefRecord, AgentMefSearch

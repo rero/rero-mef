@@ -48,6 +48,7 @@ from .marctojson.records import RecordsCount
 from .monitoring.api import Monitoring
 from .tasks import create_or_update as task_create_or_update
 from .tasks import delete as task_delete
+from .tasks import mark_as_deleted as task_mark_as_deleted
 from .tasks import process_bulk_queue as task_process_bulk_queue
 from .utils import JsonWriter, add_md5, add_oai_source, bulk_load_ids, \
     bulk_load_metadata, bulk_load_pids, bulk_save_ids, bulk_save_metadata, \
@@ -160,7 +161,7 @@ def delete(entity, source, lazy, enqueue, verbose):
         if isinstance(data, dict):
             data = [data]
 
-    for count, record in enumerate(data):
+    for count, record in enumerate(data, 1):
         if enqueue:
             task_delete.delay(
                 index=count,
@@ -178,6 +179,53 @@ def delete(entity, source, lazy, enqueue, verbose):
                 entity=entity,
                 dbcommit=True,
                 delindex=True,
+                verbose=verbose
+            )
+
+
+@utils.command()
+@click.argument('entity')
+@click.argument('source', type=click.File('r'), default=sys.stdin)
+@click.option('-l', '--lazy', 'lazy', is_flag=True, default=False)
+@click.option('-k', '--enqueue', 'enqueue', is_flag=True, default=False,
+              help="Enqueue record deletion.")
+@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@with_appcontext
+def mark_as_deleted(entity, source, lazy, enqueue, verbose):
+    """Mark entity as deleted.
+
+    :param entity: Entity to create or update.
+    :param source: File with entity data in JSON format.
+    :param lazy: lazy reads file
+    :param verbose: Verbose.
+    """
+    click.secho(f'Mark as deleted entity records: {entity}', fg='red')
+    if lazy:
+        # try to lazy read JSON file (slower, better memory management)
+        data = read_json_record(source)
+    else:
+        data = json.load(source)
+        if isinstance(data, dict):
+            data = [data]
+
+    for count, record in enumerate(data, 1):
+        if enqueue:
+            task_mark_as_deleted.delay(
+                index=count,
+                pid=record.get('pid'),
+                entity=entity,
+                dbcommit=True,
+                reindex=True,
+                verbose=verbose
+            )
+        else:
+            pid = record.get('pid')
+            task_mark_as_deleted(
+                index=count,
+                pid=pid,
+                entity=entity,
+                dbcommit=True,
+                reindex=True,
                 verbose=verbose
             )
 

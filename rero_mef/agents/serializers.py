@@ -17,6 +17,9 @@
 
 """Record serialization."""
 
+
+import contextlib
+
 from flask import request
 from invenio_records_rest.links import default_links_factory_with_additional
 from invenio_records_rest.schemas import RecordSchemaJSONV1
@@ -30,11 +33,10 @@ from .viaf.api import AgentViafSearch
 def add_links(pid, record):
     """Add MEF link to agents."""
     links = {}
-    mef_pid = AgentMefRecord.get_mef_by_entity_pid(
-        record.pid, record.name, pid_only=True)
-    if mef_pid:
+    if mef_pid := AgentMefRecord.get_mef_by_entity_pid(
+            record.pid, record.name, pid_only=True):
         links['mef'] = '{scheme}://{host}/api/agents/mef/' + str(mef_pid)
-    try:
+    with contextlib.suppress(Exception):
         viaf_pid_name = record.viaf_pid_name
         query = AgentViafSearch(). \
             filter({'term': {viaf_pid_name: pid.pid_value}}). \
@@ -42,10 +44,7 @@ def add_links(pid, record):
         viaf_pid = next(query.scan()).pid
         links['viaf'] = '{scheme}://{host}/api/agents/viaf/' \
             + str(viaf_pid)
-        links['viaf.org'] = 'http://www.viaf.org/viaf/' + str(viaf_pid)
-    except Exception:
-        pass
-
+        links['viaf.org'] = f'http://www.viaf.org/viaf/{str(viaf_pid)}'
     link_factory = default_links_factory_with_additional(links)
     return link_factory(pid)
 

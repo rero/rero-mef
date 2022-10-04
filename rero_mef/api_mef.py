@@ -17,8 +17,6 @@
 
 """API for manipulating MEF records."""
 
-from datetime import datetime, timezone
-
 import click
 from elasticsearch_dsl import Q
 from flask import current_app
@@ -203,17 +201,6 @@ class EntityMefRecord(ReroMefRecord):
                         to_much_pids.setdefault(pid, {})
                         to_much_pids[pid][agent] = agent_pid
         return missing_pids, to_much_pids
-
-    def mark_as_deleted(self, dbcommit=False, reindex=False):
-        """Mark record as deleted.
-
-        :param dbcommit: Commit changes to DB.
-        :param reindex: Reindex record.
-        :returns: Modified record.
-        """
-        self['deleted'] = datetime.now(timezone.utc).isoformat()
-        self.update(data=self, dbcommit=dbcommit, reindex=reindex)
-        return self
 
     @classmethod
     def get_updated(cls, data):

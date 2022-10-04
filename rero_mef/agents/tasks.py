@@ -27,7 +27,7 @@ from ..utils import get_entity_class
 @shared_task
 def task_create_mef_from_viaf_agent(pid, dbcommit=True, reindex=True,
                                     test_md5=False, online=False,
-                                    verbose=False):
+                                    verbose=False, online_verbose=False):
     """Create MEF and agents from VIAF task.
 
     :param pid: pid for VIAF to use
@@ -36,6 +36,7 @@ def task_create_mef_from_viaf_agent(pid, dbcommit=True, reindex=True,
     :param test_md5: test md5 or not
     :param online: get missing records from internet
     :param verbose: verbose or not
+    :param online_verbose: online verbose or not
     :returns: string with pid and actions
     """
     if viaf_record := AgentViafRecord.get_record_by_pid(pid):
@@ -44,7 +45,8 @@ def task_create_mef_from_viaf_agent(pid, dbcommit=True, reindex=True,
             reindex=reindex,
             test_md5=test_md5,
             online=online,
-            verbose=verbose
+            verbose=verbose,
+            online_verbose=online_verbose
         )
     else:
         actions = 'NO VIAF'

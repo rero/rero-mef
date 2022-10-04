@@ -39,6 +39,7 @@ from uuid import uuid4
 import click
 import ijson
 import psycopg2
+import requests
 import sqlalchemy
 from dateutil import parser
 from flask import current_app
@@ -460,6 +461,8 @@ def oai_get_record(id, name, transformation, access_token=None,
 
     :param identifier: identifier of record.
     """
+    from rero_mef.marctojson.helper import display_record
+
     url, metadata_prefix, lastrun, setspecs = get_info_by_oai_name(name)
 
     request = Sickle(url)
@@ -477,12 +480,10 @@ def oai_get_record(id, name, transformation, access_token=None,
             raise Exception(err)
         return None
     records = parse_xml_to_array(StringIO(record.raw))
-    from rero_mef.marctojson.helper import display_record
-    display_record(records[0])
-    trans_record = transformation(records[0], logger=current_app.logger).json
     if verbose:
         click.echo(f'OAI-{name} get: {id}')
-    return trans_record
+        display_record(records[0])
+    return transformation(records[0], logger=current_app.logger).json
 
 
 def read_json_record(json_file, buf_size=1024, decoder=JSONDecoder()):
@@ -1257,3 +1258,15 @@ def generate(search, deleted):
             yield ', '
         yield json.dumps(record)
     yield ']'
+
+
+def get_gnd_pid_from_nid(nid, verbose=False):
+    """Get pid from nid."""
+    url = f'http://d-nb.info/gnd/{nid}/about/marcxml'
+    request = requests.get(url)
+    if verbose:
+        click.echo(f'Get: {url} {request.ok}')
+    if request.status_code == requests.codes.ok:
+        records = parse_xml_to_array(StringIO(request.text))
+        for record in records:
+            return record['001'].data
