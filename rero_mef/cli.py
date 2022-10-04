@@ -27,7 +27,7 @@ from time import sleep
 import click
 import redis
 import yaml
-from celery.bin.control import inspect
+from celery import current_app as current_celery
 from flask import current_app
 from flask.cli import with_appcontext
 from flask_security.confirmable import confirm_user
@@ -949,13 +949,16 @@ def update_mapping(aliases):
 
 def queue_count():
     """Count tasks in celery."""
-    inspector = inspect()
+    inspector = current_celery.control.inspect()
     task_count = 0
-    if reserved := inspector.reserved():
-        for key, values in reserved.items():
+    reserved = inspector.reserved()
+    if reserved:
+        for _, values in reserved.items():
             task_count += len(values)
-    if active := inspector.active():
-        task_count = sum(active.values())
+    active = inspector.active()
+    if active:
+        for _, values in active.items():
+            task_count += len(values)
     return task_count
 
 
