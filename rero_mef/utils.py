@@ -1243,11 +1243,17 @@ def get_mefs_endpoints():
     return mefs
 
 
-def generate(search):
+def generate(search, deleted):
     """Lagging genarator."""
     yield '['
-    for idx, record in enumerate(search.scan()):
+    idx = 0
+    for hit in search.scan():
         if idx != 0:
             yield ', '
-        yield json.dumps(record.to_dict())
+        yield json.dumps(hit.to_dict())
+        idx += 1
+    for idx_deleted, record in enumerate(deleted):
+        if idx + idx_deleted != 0:
+            yield ', '
+        yield json.dumps(record)
     yield ']'

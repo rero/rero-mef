@@ -145,6 +145,13 @@ def test_agents_mef_get_updated(client, agent_mef_record, agent_idref_record,
                                 agent_mef_idref_redirect_record,
                                 agent_mef_gnd_redirect_record):
     """Test agents MEF get latest."""
+
+    def utf_isoformat(date):
+        """Changed datetime to UTC isoformat."""
+        # we have to add +00:00 to the datetime isoformat to get
+        # the same time string used in ES
+        return f'{date.isoformat()}+00:00'
+
     mef_data = agent_mef_idref_redirect_record.replace_refs()
     # New IdRef record is one redirect IdRef record
     res, data = postdata(
@@ -153,8 +160,35 @@ def test_agents_mef_get_updated(client, agent_mef_record, agent_idref_record,
         {}
     )
     assert res.status_code == 200
+    assert data == [{
+        'pid': agent_mef_record.pid,
+        '_created': utf_isoformat(agent_mef_record.created),
+        '_updated': utf_isoformat(agent_mef_record.updated)
+    }, {
+        'pid': agent_mef_gnd_redirect_record.pid,
+        '_created': utf_isoformat(agent_mef_gnd_redirect_record.created),
+        '_updated': utf_isoformat(agent_mef_gnd_redirect_record.updated)
+    }, {
+        'pid': agent_mef_idref_redirect_record.pid,
+        '_created': utf_isoformat(agent_mef_idref_redirect_record.created),
+        '_updated': utf_isoformat(agent_mef_idref_redirect_record.updated)
+    }]
+
+    res, data = postdata(
+        client,
+        'api_blueprint.agent_mef_get_updated',
+        {'resolve': 1}
+    )
+    assert res.status_code == 200
     pids = sorted([rec.get('pid') for rec in data])
     assert pids == ['1', '2', '3']
+    assert data[0]['pid'] == agent_mef_record.pid
+    assert data[0]['gnd']['authorized_access_point'] == \
+        'Cavalieri, Giovanni Battista, 1525-1601'
+    assert data[0]['idref']['authorized_access_point'] == \
+        'Brissé, Nicolas, ....-1540, grammairien'
+    assert data[0]['rero']['authorized_access_point'] == \
+        'Cavalieri, Giovanni Battista,, ca.1525-1601'
 
     res, data = postdata(
         client,
@@ -162,8 +196,11 @@ def test_agents_mef_get_updated(client, agent_mef_record, agent_idref_record,
         {"pids": ['2']}
     )
     assert res.status_code == 200
-    pids = sorted([rec.get('pid') for rec in data])
-    assert pids == ['2']
+    assert data == [{
+        'pid': agent_mef_gnd_redirect_record.pid,
+        '_created': utf_isoformat(agent_mef_gnd_redirect_record.created),
+        '_updated': utf_isoformat(agent_mef_gnd_redirect_record.updated)
+    }]
 
     res, data = postdata(
         client,
@@ -171,8 +208,19 @@ def test_agents_mef_get_updated(client, agent_mef_record, agent_idref_record,
         {"from_date": "2022-02-02"}
     )
     assert res.status_code == 200
-    pids = sorted([rec.get('pid') for rec in data])
-    assert pids == ['1', '2', '3']
+    assert data == [{
+        'pid': agent_mef_record.pid,
+        '_created': utf_isoformat(agent_mef_record.created),
+        '_updated': utf_isoformat(agent_mef_record.updated)
+    }, {
+        'pid': agent_mef_gnd_redirect_record.pid,
+        '_created': utf_isoformat(agent_mef_gnd_redirect_record.created),
+        '_updated': utf_isoformat(agent_mef_gnd_redirect_record.updated)
+    }, {
+        'pid': agent_mef_idref_redirect_record.pid,
+        '_created': utf_isoformat(agent_mef_idref_redirect_record.created),
+        '_updated': utf_isoformat(agent_mef_idref_redirect_record.updated)
+    }]
 
     date = datetime.now(timezone.utc) + timedelta(days=1)
     res, data = postdata(
@@ -181,5 +229,58 @@ def test_agents_mef_get_updated(client, agent_mef_record, agent_idref_record,
         {"from_date": date.isoformat()}
     )
     assert res.status_code == 200
-    pids = sorted([rec.get('pid') for rec in data])
-    assert pids == []
+    assert data == []
+
+    date = datetime.now(timezone.utc) + timedelta(days=1)
+    res, data = postdata(
+        client,
+        'api_blueprint.agent_mef_get_updated',
+        {"from_date": date.isoformat(), "pids": ['2', '4']}
+    )
+    assert res.status_code == 200
+    assert data == [{
+        'pid': '4'
+    }]
+
+    res, data = postdata(
+        client,
+        'api_blueprint.agent_mef_get_updated',
+        {"pids": ['2', '4']}
+    )
+    assert res.status_code == 200
+    assert data == [{
+        'pid': agent_mef_gnd_redirect_record.pid,
+        '_created': utf_isoformat(agent_mef_gnd_redirect_record.created),
+        '_updated': utf_isoformat(agent_mef_gnd_redirect_record.updated)
+    }, {
+        'pid': '4'
+    }]
+
+    mef_pid2 = agent_mef_idref_redirect_record.mark_as_deleted(
+        dbcommit=True,
+        reindex=True
+    )
+    agent_mef_gnd_redirect_record.delete(dbcommit=True, delindex=True)
+    AgentMefRecord.flush_indexes()
+    res, data = postdata(
+        client,
+        'api_blueprint.agent_mef_get_updated',
+        {"pids": ['1', '2', '3', '4']}
+    )
+    assert res.status_code == 200
+    assert data == [{
+        'pid': agent_mef_record.pid,
+        '_created': utf_isoformat(agent_mef_record.created),
+        '_updated': utf_isoformat(agent_mef_record.updated)
+    }, {
+        'pid': agent_mef_idref_redirect_record.pid,
+        '_created': utf_isoformat(agent_mef_idref_redirect_record.created),
+        '_updated': utf_isoformat(agent_mef_idref_redirect_record.updated),
+        'deleted': agent_mef_idref_redirect_record.get('deleted')
+    }, {
+        'pid': '2',
+        '_created': agent_mef_gnd_redirect_record.created.isoformat(),
+        '_updated': agent_mef_gnd_redirect_record.updated.isoformat()
+    }, {
+        'pid': '4'
+    }]

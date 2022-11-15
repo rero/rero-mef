@@ -28,7 +28,7 @@ from .models import ConceptMefMetadata
 from .providers import ConceptMefProvider
 from ...api import Action, ReroIndexer
 from ...api_mef import EntityMefRecord
-from ...utils import generate, mef_get_all_missing_entity_pids
+from ...utils import mef_get_all_missing_entity_pids
 
 
 def build_ref_string(concept_pid, concept):
@@ -153,24 +153,6 @@ class ConceptMefRecord(EntityMefRecord):
                 return cls.get_latest(pid_type=pid_type, pid=new_pid)
             return data
         return {}
-
-    @classmethod
-    def get_updated(cls, data):
-        """Get latest Mef record for pid_type and pid.
-
-        :param pid_type: pid type to use.
-        :param pid: pid to use..
-        :returns: latest record.
-        """
-        search = ConceptMefSearch()
-        if from_date := data.get('from_date'):
-            search = search.filter('range', _updated={'gte': from_date})
-        if pids := data.get('pids'):
-            search = search.filter('terms', pid=pids)
-
-        search = search \
-            .sort({'pid': {'order': 'asc'}})
-        return generate(search)
 
 
 class ConceptMefIndexer(ReroIndexer):

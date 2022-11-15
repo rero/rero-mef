@@ -18,7 +18,7 @@ jobs:
     - name: Setup node
       uses: actions/setup-node@v3
       with:
-        node-version: '12'
+        node-version: '14'
 
     - name: Docker compose up
       run: docker-compose up -d
@@ -28,23 +28,8 @@ jobs:
       with:
         python-version: 3.9
 
-    # - name: Allow unsecure commands
-    #   # needed by dschep/install-poetry-action@v1.3
-    #   run: |
-    #     echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
-    #     echo "VIRTUAL_ENV=~/.cache/pypoetry/virtualenvs" >> $GITHUB_ENV
-
     - name: Install Poetry
       uses: snok/install-poetry@v1
-
-    - name: Use Cache
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cache/pip
-          ~/.cache/pypoetry/virtualenvs
-          ~/.npm
-        key: ${{ runner.os }}-pip-venv-${{ hashFiles('**/poetry.lock') }}
 
     - name: Bootstrap
       if: ${{ matrix.dependencies == 'development' }}
