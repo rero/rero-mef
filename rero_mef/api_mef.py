@@ -25,7 +25,7 @@ from flask import current_app
 from invenio_search import current_search
 
 from .api import Action, ReroMefRecord
-from .utils import get_entity_class, get_entity_classes, progressbar
+from .utils import generate, get_entity_class, get_entity_classes, progressbar
 
 
 class EntityMefRecord(ReroMefRecord):
@@ -214,6 +214,41 @@ class EntityMefRecord(ReroMefRecord):
         self['deleted'] = datetime.now(timezone.utc).isoformat()
         self.update(data=self, dbcommit=dbcommit, reindex=reindex)
         return self
+
+    @classmethod
+    def get_updated(cls, data):
+        """Get latest Mef record for pid_type and pid.
+
+        :param pid_type: pid type to use.
+        :param pid: pid to use..
+        :returns: latest record.
+        """
+        search = cls.search()\
+            .params(preserve_order=True) \
+            .sort({'pid': {'order': 'asc'}})
+        deleted = []
+        if from_date := data.get('from_date'):
+            search = search.filter('range', _updated={'gte': from_date})
+        if pids := data.get('pids'):
+            # find deleted pids
+            missing_pids = []
+            for pid in pids:
+                if cls.search().filter('term', pid=pid).count() == 0:
+                    missing_pids.append(pid)
+            for missing_pid in missing_pids:
+                data = {'pid': missing_pid}
+                mef = cls.get_record_by_pid(
+                    missing_pid,
+                    with_deleted=True
+                )
+                if mef == {}:
+                    data['_created'] = mef.created.isoformat()
+                    data['_updated'] = mef.updated.isoformat()
+                deleted.append(data)
+            search = search.filter('terms', pid=pids)
+        if not data.get('resolve'):
+            search = search.source(['pid', 'deleted', '_created', '_updated'])
+        return generate(search, deleted)
 
     @classmethod
     def flush_indexes(cls):

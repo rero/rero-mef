@@ -72,10 +72,12 @@ set -e
 # | flask-security             | 3.0.0     | <3.1.0                   | 45183    |
 # | flask-security             | 3.0.0     | >0                       | 44501    |
 # | wtforms                    | 2.3.3     | <3.0.0a1                 | 42852    |
-# | pydantic                   | 1.9.2     | <1.10.2                  | 50916    |
+# | py                         | 1.11.0    | <=1.11.0                 | 51457    |
+# | safety                     | 1.10.3    | <2.2.0                   | 51358    |
 # | sqlalchemy-utils           | 0.35.0    | >=0.27.0                 | 42194    |
+# | wheel                      | 0.37.1    | <0.38.0                  | 51499    |
 # +==============================================================================+
-safety check -i 47833 -i 42498 -i 43738 -i 45183 -i 44501 -i 42852 -i 50916 -i 42194
+safety check -i 47833 -i 42498 -i 43738 -i 45183 -i 44501 -i 42852 -i 51457 -i 51358 -i 42194 -i 51499
 info_msg "Test pydocstyle:"
 pydocstyle rero_mef tests docs
 info_msg "Test isort:"

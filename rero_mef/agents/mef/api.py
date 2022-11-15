@@ -30,7 +30,7 @@ from .models import AgentMefMetadata
 from .providers import MefProvider
 from ...api import Action, ReroIndexer
 from ...api_mef import EntityMefRecord
-from ...utils import generate, mef_get_all_missing_entity_pids, progressbar
+from ...utils import mef_get_all_missing_entity_pids, progressbar
 
 
 def build_ref_string(agent_pid, agent):
@@ -208,21 +208,6 @@ class AgentMefRecord(EntityMefRecord):
                 return cls.get_latest(pid_type=pid_type, pid=new_pid)
             return data
         return {}
-
-    @classmethod
-    def get_updated(cls, data):
-        """Get latest Mef record for pid_type and pid.
-
-        :param pid_type: pid type to use.
-        :param pid: pid to use..
-        :returns: latest record.
-        """
-        search = AgentMefSearch()
-        if from_date := data.get('from_date'):
-            search = search.filter('range', _updated={'gte': from_date})
-        if pids := data.get('pids'):
-            search = search.filter('terms', pid=pids)
-        return generate(search)
 
 
 class AgentMefIndexer(ReroIndexer):
