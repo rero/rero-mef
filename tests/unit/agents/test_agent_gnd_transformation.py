@@ -52,12 +52,15 @@ def test_gnd_deleted():
 
 
 def test_gnd_relation_pid():
-    """Test new pid 682 $0 $i == 'Umlenkung'."""
+    """Test new pid 682 $0 $i == 'Umlenkung'.
+
+    nid = 132911-X -> pid = 100937187
+    """
     xml_part_to_add = """
         <datafield tag="682" ind1=" " ind2=" ">
             <subfield code="i">Umlenkung</subfield>
             <subfield code="0">(DE-101)100937187</subfield>
-            <subfield code="0">(DE-588)100937187</subfield>
+            <subfield code="0">(DE-588)132911-X</subfield>
             <subfield code="0">https://d-nb.info/gnd/100937187</subfield>
             <subfield code="a">Albericus, Londoniensis</subfield>
         </datafield>
