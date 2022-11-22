@@ -46,16 +46,17 @@ class ConceptIdrefRecord(ConceptRecord):
     minter = idref_id_minter
     fetcher = idref_id_fetcher
     provider = ConceptIdrefProvider
+    name = 'idref'
     viaf_source_code = 'RAMEAU'
     pid_type = 'concept_idref_pid'
     model_cls = ConceptIdrefMetadata
-    name = 'idref'
+    search = ConceptIdrefSearch
 
 
 class ConceptIdrefIndexer(ConceptIndexer):
     """ConceptsIndexer."""
 
-    record_cls = ConceptIdrefRecord
+    record_class = ConceptIdrefRecord
 
     def bulk_index(self, record_id_iterator):
         """Bulk index records.

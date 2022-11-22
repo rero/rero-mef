@@ -183,6 +183,7 @@ def test_agents_mef_get_updated(client, agent_mef_record, agent_idref_record,
     pids = sorted([rec.get('pid') for rec in data])
     assert pids == ['1', '2', '3']
     assert data[0]['pid'] == agent_mef_record.pid
+    assert data[0]['_created'] == utf_isoformat(agent_mef_record.created)
     assert data[0]['gnd']['authorized_access_point'] == \
         'Cavalieri, Giovanni Battista, 1525-1601'
     assert data[0]['idref']['authorized_access_point'] == \
@@ -193,7 +194,7 @@ def test_agents_mef_get_updated(client, agent_mef_record, agent_idref_record,
     res, data = postdata(
         client,
         'api_blueprint.agent_mef_get_updated',
-        {"pids": ['2']}
+        {'pids': ['2']}
     )
     assert res.status_code == 200
     assert data == [{
@@ -278,9 +279,7 @@ def test_agents_mef_get_updated(client, agent_mef_record, agent_idref_record,
         '_updated': utf_isoformat(agent_mef_idref_redirect_record.updated),
         'deleted': agent_mef_idref_redirect_record.get('deleted')
     }, {
-        'pid': '2',
-        '_created': agent_mef_gnd_redirect_record.created.isoformat(),
-        '_updated': agent_mef_gnd_redirect_record.updated.isoformat()
+        'pid': agent_mef_gnd_redirect_record.pid
     }, {
         'pid': '4'
     }]

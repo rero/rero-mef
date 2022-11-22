@@ -21,6 +21,7 @@ import json
 
 from flask import url_for
 from invenio_accounts.testutils import login_user_via_session
+from mock import Mock
 
 
 def create_record(cls, data, delete_pid=False):
@@ -85,3 +86,22 @@ def postdata(
     )
     output = get_json(res)
     return res, output
+
+
+def mock_response(status=200, content="CONTENT", json_data=None,
+                  raise_for_status=None):
+    """Mock a request response."""
+    mock_resp = Mock()
+    # mock raise_for_status call w/optional error
+    mock_resp.raise_for_status = Mock()
+    if raise_for_status:
+        mock_resp.raise_for_status.side_effect = raise_for_status
+    # set status code and content
+    mock_resp.status_code = status
+    mock_resp.content = content
+    mock_resp.text = content
+    # add json data if provided
+    if json_data:
+        mock_resp.json = Mock(return_value=json_data)
+        mock_resp.text = json.dumps(json_data)
+    return mock_resp

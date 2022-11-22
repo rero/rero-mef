@@ -17,7 +17,6 @@
 
 """Tasks used by  RERO-MEF."""
 
-import click
 import requests
 from celery import shared_task
 from pymarc.marcxml import parse_xml_to_array
@@ -27,7 +26,7 @@ from ...marctojson.do_rero_agent import Transformation
 
 
 @shared_task
-def rero_get_record(id, verbose=False, debug=False):
+def rero_get_record(id, debug=False):
     """Get a record from RERO data repo.
 
     RERO documentation:
@@ -36,16 +35,14 @@ def rero_get_record(id, verbose=False, debug=False):
     """
     url = f'http://data.rero.ch/02-{id}/marcxml'
     trans_record = None
-    response = requests.get(url)
-    if response.status_code == requests.codes.ok:
-        try:
+    try:
+        response = requests.get(url)
+        if response.status_code == requests.codes.ok:
             if records := parse_xml_to_array(BytesIO(response.content)):
                 trans_record = Transformation(records[0]).json
-                if verbose:
-                    click.echo(f'API-rero get: {id}')
-        except Exception as err:
-            if verbose:
-                click.echo(f'ERROR get RERO record: {err}')
-            if debug:
-                raise Exception(err)
-    return trans_record
+                msg = f'API-agents.rero  get: {id:<15} {url} | OK'
+    except Exception as err:
+        msg = f'API-agents.rero  get: {id:<15} {url} | {err}'
+        if debug:
+            raise Exception(msg)
+    return trans_record, msg

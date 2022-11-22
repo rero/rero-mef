@@ -17,6 +17,8 @@
 
 """Monitoring utilities."""
 
+from datetime import datetime, timedelta
+
 import click
 from elasticsearch.exceptions import NotFoundError
 from flask import current_app
@@ -33,6 +35,13 @@ class Monitoring(object):
     the search index. We need to check that all documents presents in the
     database are also present in the search index and vice versa.
     """
+
+    def __init__(self, time_delta=0):
+        """Constructor.
+
+        :param time_delta: Minutes tu substract from DB EScreation time.
+        """
+        self.time_delta = int(time_delta)
 
     def __str__(self):
         """Table representation of database and elasticsearch differences.
@@ -90,8 +99,7 @@ class Monitoring(object):
             result = f'No >>{index}<< in ES'
         return result
 
-    @classmethod
-    def get_es_db_missing_pids(cls, doc_type, with_deleted=False,
+    def get_es_db_missing_pids(self, doc_type, with_deleted=False,
                                verbose=False):
         """Get ES and DB counts."""
         endpoint = current_app.config.get(
@@ -102,10 +110,13 @@ class Monitoring(object):
         pids_es = []
         pids_db = []
         if index:
+            date = datetime.utcnow()
             pids_es = {}
+            query = RecordsSearch(index=index) \
+                .filter('range', _created={'lte': date})
             progress = progressbar(
-                items=RecordsSearch(index=index).source('pid').scan(),
-                length=RecordsSearch(index=index).source('pid').count(),
+                items=query.source('pid').scan(),
+                length=query.count(),
                 verbose=verbose
             )
             for hit in progress:
@@ -115,7 +126,11 @@ class Monitoring(object):
             agent_class = get_entity_class(doc_type)
             pids_db = []
             progress = progressbar(
-                items=agent_class.get_all_pids(with_deleted=with_deleted),
+                items=agent_class.get_all_pids(
+                    with_deleted=with_deleted,
+                    date=date - timedelta(minutes=self.time_delta)
+
+                ),
                 length=agent_class.count(with_deleted=with_deleted),
                 verbose=verbose
             )
@@ -127,8 +142,7 @@ class Monitoring(object):
             pids_es = list(pids_es)
         return pids_es, pids_db, pids_es_double, index
 
-    @classmethod
-    def info(cls, with_deleted=False, difference_db_es=False):
+    def info(self, with_deleted=False, difference_db_es=False):
         """Info.
 
         Get count details for all records rest endpoints in JSON format.
@@ -142,17 +156,17 @@ class Monitoring(object):
             'RECORDS_REST_ENDPOINTS'
         ).items():
             info[doc_type] = {}
-            count_db = cls.get_db_count(doc_type, with_deleted=with_deleted)
+            count_db = self.get_db_count(doc_type, with_deleted=with_deleted)
             info[doc_type]['db'] = count_db
             if index := endpoint.get('search_index', ''):
-                count_es = cls.get_es_count(index)
+                count_es = self.get_es_count(index)
                 db_es = count_db - count_es
                 info[doc_type]['index'] = index
                 info[doc_type]['es'] = count_es
                 info[doc_type]['db-es'] = db_es
                 if db_es == 0 and difference_db_es:
                     missing_in_db, missing_in_es, pids_es_double, index = \
-                        cls.get_es_db_missing_pids(
+                        self.get_es_db_missing_pids(
                             doc_type=doc_type,
                             with_deleted=with_deleted
                         )
@@ -163,8 +177,7 @@ class Monitoring(object):
                             info[doc_type]['es-'] = list(missing_in_es)
         return info
 
-    @classmethod
-    def check(cls, with_deleted=False, difference_db_es=False):
+    def check(self, with_deleted=False, difference_db_es=False):
         """Compaire elasticsearch with database counts.
 
         :param with_deleted: count also deleted items in database.
@@ -172,7 +185,7 @@ class Monitoring(object):
         database and elasticsearch counts.
         """
         checks = {}
-        for info, data in cls.info(
+        for info, data in self.info(
             with_deleted=with_deleted,
             difference_db_es=difference_db_es
         ).items():
@@ -188,8 +201,7 @@ class Monitoring(object):
                 checks[info]['es-'] = len(data.get('es-'))
         return checks
 
-    @classmethod
-    def check_mef(cls):
+    def check_mef(self):
         """Compaire MEF and entities counts.
 
         returns: MEF, entities and MEF-entities counts.
@@ -206,12 +218,12 @@ class Monitoring(object):
                 checks[entity] = {
                     'mef': mef_count,
                     'db': db_count,
-                    'mef-db': mef_count - db_count
+                    'mef-db': mef_count - db_count,
+                    'index': entity
                 }
         return checks
 
-    @classmethod
-    def missing(cls, doc_type, with_deleted=False):
+    def missing(self, doc_type, with_deleted=False):
         """Get missing pids.
 
         Get missing pids in database and elasticsearch and find duplicate
@@ -221,7 +233,7 @@ class Monitoring(object):
         :return: dictionair with all missing pids.
         """
         missing_in_db, missing_in_es, pids_es_double, index =\
-            cls.get_es_db_missing_pids(
+            self.get_es_db_missing_pids(
                 doc_type=doc_type,
                 with_deleted=with_deleted
             )
@@ -232,16 +244,17 @@ class Monitoring(object):
                 'ES duplicate': pids_es_double
             }
         else:
-            return {'ERROR': 'Document type not found: {doc_type}'}
+            return {'ERROR': f'Document type not found: {doc_type}'}
 
-    @classmethod
-    def print_missing(cls, doc_type):
+    def print_missing(self, doc_type):
         """Print missing pids for the given document type.
 
         :param doc_type: doc type to print.
         """
-        for info, data in cls.missing(doc_type=doc_type).items():
-            if data:
+        for info, data in self.missing(doc_type=doc_type).items():
+            if info == 'ERROR':
+                click.secho(data, fg='red')
+            elif data:
                 if info == 'ES duplicate':
                     click.secho(
                         f'{doc_type}: duplicate in ES:',

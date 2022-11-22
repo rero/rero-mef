@@ -50,18 +50,19 @@ class AgentIdrefRecord(AgentRecord):
     viaf_source_code = 'SUDOC'
     viaf_pid_name = 'idref_pid'
     model_cls = AgentIdrefMetadata
+    search = AgentIdrefSearch
 
     @classmethod
-    def get_online_record(cls, id, verbose=False):
+    def get_online_record(cls, id, debug=False):
         """Get online record."""
         from .tasks import idref_get_record
-        return idref_get_record(id=id, verbose=verbose)
+        return idref_get_record(id=id, debug=debug)
 
 
 class AgentIdrefIndexer(AgentIndexer):
     """IdrefIndexer."""
 
-    record_cls = AgentIdrefRecord
+    record_class = AgentIdrefRecord
 
     def bulk_index(self, record_id_iterator):
         """Bulk index records.

@@ -30,7 +30,6 @@ import os
 import traceback
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
-from functools import wraps
 from io import StringIO
 from json import JSONDecodeError, JSONDecoder, dumps
 from time import sleep
@@ -51,9 +50,7 @@ from invenio_oaiharvester.models import OAIHarvestConfig
 from invenio_oaiharvester.utils import get_oaiharvest_object
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PersistentIdentifier
-from invenio_records.api import Record
 from invenio_records_rest.utils import obj_or_import_string
-from invenio_search import RecordsSearch
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from pymarc.marcxml import parse_xml_to_array
 from sickle import Sickle, oaiexceptions
@@ -123,7 +120,7 @@ def oai_set_last_run(name, date, verbose=False):
         oai_source = get_oaiharvest_object(name)
         lastrun_date = date
         if isinstance(date, str):
-            lastrun_date = parser.isoparse(date).astimezone(timezone.utc)
+            lastrun_date = parser.isoparse(date)
         oai_source.update_lastrun(lastrun_date)
         oai_source.save()
         db.session.commit()
@@ -133,7 +130,7 @@ def oai_set_last_run(name, date, verbose=False):
     except InvenioOAIHarvesterConfigNotFound:
         if verbose:
             click.echo(f'ERROR OAI config not found: {name}')
-    except parser.ParserError as err:
+    except ValueError as err:
         if verbose:
             click.echo(f'OAI set lastrun {name}: {err}')
     return None
@@ -200,13 +197,12 @@ class MyOAIItemIterator(OAIItemIterator):
 
 
 def oai_process_records_from_dates(name, sickle, oai_item_iterator,
-                                   transformation, record_cls, max_retries=0,
+                                   transformation, record_class, max_retries=0,
                                    access_token=None, days_span=30,
                                    from_date=None, until_date=None,
                                    ignore_deleted=False, dbcommit=True,
                                    reindex=True, test_md5=True,
-                                   verbose=False, debug=False,
-                                   viaf_online=False, **kwargs):
+                                   verbose=False, debug=False, **kwargs):
     """Harvest multiple records from an OAI repo.
 
     :param name: The name of the OAIHarvestConfig to use instead of passing
@@ -214,23 +210,22 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
     :param from_date: The lower bound date for the harvesting (optional).
     :param until_date: The upper bound date for the harvesting (optional).
     """
+    from rero_mef.api import Action
+
     # data on IDREF Servers starts on 2000-10-01
-    last_run = None
     url, metadata_prefix, last_run, setspecs = get_info_by_oai_name(name)
 
     request = sickle(url, iterator=oai_item_iterator, max_retries=max_retries)
 
     dates_inital = {
         'from': from_date or last_run,
-        'until': until_date
+        'until': until_date or datetime.now().isoformat()
     }
     update_last_run = from_date is None and until_date is None
     # Sanity check
     if dates_inital['until'] is not None \
             and dates_inital['from'] > dates_inital['until']:
         raise WrongDateCombination("'Until' date larger than 'from' date.")
-
-    last_run_date = datetime.now(timezone.utc)
 
     # If we don't have specifications for set searches the setspecs will be
     # set to e list with None to go into the retrieval loop without
@@ -239,7 +234,6 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
     count = 0
     action_count = {}
     mef_action_count = {}
-    viaf_online_count = 0
     for spec in setspecs:
         dates = dates_inital
         params = {
@@ -248,29 +242,22 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
         }
         if access_token:
             params['accessToken'] = access_token
-        params |= dates
         if spec:
             params['set'] = spec
 
-        my_from_date = parser.isoparse(
-            dates['from']).astimezone(timezone.utc)
-        my_until_date = last_run_date
-        if dates['until']:
-            my_until_date = parser.isoparse(
-                dates['until']).astimezone(timezone.utc)
-        while my_from_date <= my_until_date:
-            until_date = my_from_date + timedelta(days=days_span)
-            if until_date > my_until_date:
-                until_date = my_until_date
+        from_date = parser.isoparse(dates_inital['from'])
+        real_until_date = parser.isoparse(dates_inital['until'])
+        while from_date <= real_until_date:
+            until_date = from_date + timedelta(days=days_span)
+            until_date = min(until_date, real_until_date)
             dates = {
-                'from': my_from_date.strftime(TIME_FORMAT),
+                'from': from_date.strftime(TIME_FORMAT),
                 'until': until_date.strftime(TIME_FORMAT)
             }
             params |= dates
 
             try:
-                for record in request.ListRecords(**params):
-                    count += 1
+                for idx, record in enumerate(request.ListRecords(**params), 1):
                     records = parse_xml_to_array(StringIO(record.raw))
                     try:
                         try:
@@ -287,74 +274,82 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                                     pid = rec.get('pid', '???')
                                     click.secho(
                                         f'NO TRANSFORMATION '
-                                        f'{name} {count} {pid}: {msg}',
+                                        f'{name} {idx} {pid}: {msg}',
                                         fg='yellow'
                                     )
                             else:
                                 pid = rec.get('pid')
-                                res = record_cls. \
-                                    create_or_update_agent_mef_viaf(
-                                        data=rec,
-                                        dbcommit=True,
-                                        reindex=True,
-                                        test_md5=test_md5,
-                                        online=viaf_online,
-                                        verbose=verbose
-                                    )
-                                rec, action, m_record, m_action, v_record, \
-                                    v_online = res
+                                record, action = record_class.create_or_update(
+                                    data=rec,
+                                    dbcommit=True,
+                                    reindex=True,
+                                    test_md5=test_md5
+                                )
+                                count += 1
                                 action_count.setdefault(action.name, 0)
                                 action_count[action.name] += 1
+                                if action in [
+                                    Action.CREATE,
+                                    Action.UPDATE,
+                                    Action.REPLACE
+                                ]:
+                                    m_record, m_action = \
+                                        record.create_or_update_mef(
+                                            dbcommit=True, reindex=True)
+                                else:
+                                    m_action = Action.UPTODATE
+                                    m_record = None
                                 mef_action_count.setdefault(m_action.name, 0)
                                 mef_action_count[m_action.name] += 1
-                                if v_online:
-                                    viaf_online_count += 1
 
                                 if verbose:
-                                    m_pid = 'Non'
-                                    if m_record:
-                                        m_pid = m_record.pid
-                                    v_pid = 'Non'
-                                    if v_record:
-                                        v_pid = v_record.pid
-                                    click.echo(
+                                    msg = (
                                         f'OAI {name} spec({spec}): {pid}'
-                                        f' updated: {updated} {action}'
-                                        f' | mef: {m_pid} {m_action}'
-                                        f' | viaf: {v_pid} online: {v_online}'
+                                        f' updated: {updated} {action.name}'
                                     )
+                                    if m_record:
+                                        msg = (
+                                            f'{msg} | mef: {m_record.pid} '
+                                            f'{m_action.name}'
+                                        )
+                                        if viaf_pid := m_record.get(
+                                                'viaf_pid'):
+                                            msg = f'{msg} | viaf: {viaf_pid}'
+                                    click.echo(msg)
                         elif verbose:
                             click.echo(
-                                f'NO TRANSFORMATION: {name} {count}'
+                                f'NO TRANSFORMATION: {name} {idx}'
                                 f'\n{records[0]}'
                             )
                     except Exception as err:
-                        msg = f'Creating {name} {count}: {err}'
+                        msg = f'Creating {name} {idx}: {err}'
                         if rec:
                             msg += f'\n{rec}'
                         current_app.logger.error(msg)
                         if debug:
                             traceback.print_exc()
             except NoRecordsMatch:
-                my_from_date = my_from_date + timedelta(days=days_span + 1)
+                from_date = from_date + timedelta(days=days_span + 1)
                 continue
             except Exception as err:
                 current_app.logger.error(err)
                 if debug:
                     traceback.print_exc()
                 count = -1
-            if verbose:
-                from_date = my_from_date.strftime(TIME_FORMAT)
-                click.echo(
-                    f'OAI {name} {spec}: {from_date} .. +{days_span}'
-                )
-            my_from_date = my_from_date + timedelta(days=days_span + 1)
+                if verbose:
+                    click.echo(
+                        f'OAI {name} {spec}: '
+                        f'{from_date.strftime(TIME_FORMAT)} .. '
+                        f'{until_date.strftime(TIME_FORMAT)}'
+                    )
+            from_date = from_date + timedelta(days=days_span + 1)
 
     if update_last_run:
+        last_run = dates_inital['until']
         if verbose:
             click.echo(f'OAI {name}: update last run: {last_run}')
         oai_source = get_oaiharvest_object(name)
-        oai_source.update_lastrun(last_run_date)
+        oai_source.update_lastrun(parser.isoparse(last_run))
         oai_source.save()
         db.session.commit()
     return count, action_count, mef_action_count
@@ -372,22 +367,17 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
     :param from_date: The lower bound date for the harvesting (optional).
     :param until_date: The upper bound date for the harvesting (optional).
     """
-    # data on IDREF Servers starts on 2000-10-01
-    last_run = None
     url, metadata_prefix, last_run, setspecs = get_info_by_oai_name(name)
 
     request = sickle(url, iterator=oai_item_iterator, max_retries=max_retries)
 
     dates_inital = {
         'from': from_date or last_run,
-        'until': until_date
+        'until': until_date or datetime.now().isoformat()
     }
     # Sanity check
-    if dates_inital['until'] is not None \
-            and dates_inital['from'] > dates_inital['until']:
+    if dates_inital['from'] > dates_inital['until']:
         raise WrongDateCombination("'Until' date larger than 'from' date.")
-
-    last_run_date = datetime.now(timezone.utc)
 
     # If we don't have specifications for set searches the setspecs will be
     # set to e list with None to go into the retrieval loop without
@@ -396,93 +386,96 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
     count = 0
     with open(file_name, 'bw') as output_file:
         for spec in setspecs:
-            dates = dates_inital
             params = {
                 'metadataPrefix': metadata_prefix,
                 'ignore_deleted': False
             }
             if access_token:
                 params['accessToken'] = access_token
-            params |= dates
             if spec:
                 params['set'] = spec
 
-            my_from_date = parser.parse(dates['from'], tzinfos=timezone.utc)
-            my_until_date = last_run_date
-            if dates['until']:
-                my_until_date = parser.isoparse(
-                    dates['until']).astimezone(timezone.utc)
-            while my_from_date <= my_until_date:
-                until_date = my_from_date + timedelta(days=days_span)
-                if until_date > my_until_date:
-                    until_date = my_until_date
+            from_date = parser.isoparse(dates_inital['from'])
+            real_until_date = parser.isoparse(dates_inital['until'])
+            while from_date <= real_until_date:
+                until_date = from_date + timedelta(days=days_span)
+                if until_date > real_until_date:
+                    until_date = real_until_date
                 dates = {
-                    'from': my_from_date.strftime(TIME_FORMAT),
+                    'from': from_date.strftime(TIME_FORMAT),
                     'until': until_date.strftime(TIME_FORMAT)
                 }
                 params |= dates
-
                 try:
                     for record in request.ListRecords(**params):
                         count += 1
                         records = parse_xml_to_array(StringIO(record.raw))
                         rec = records[0]
                         if verbose:
-                            from_date = my_from_date.strftime(TIME_FORMAT)
                             click.echo(
-                                f'OAI {name} spec({spec}): {from_date} '
+                                f'OAI {name} spec({spec}): '
+                                f'{from_date.strftime(TIME_FORMAT)} '
                                 f'count:{count:>10} = {rec["001"].data}'
                             )
                         rec.leader = f'{rec.leader[:9]}a{rec.leader[10:]}'
                         output_file.write(rec.as_marc())
                 except NoRecordsMatch:
-                    my_from_date = my_from_date + timedelta(
-                        days=days_span + 1)
+                    from_date = from_date + timedelta(days=days_span + 1)
                     continue
                 except Exception as err:
                     current_app.logger.error(err)
-
-                my_from_date = my_from_date + timedelta(days=days_span + 1)
                 if verbose:
-                    from_date = my_from_date.strftime(TIME_FORMAT)
                     click.echo(
-                        f'OAI {name} spec({spec}): '
-                        f'{from_date} .. +{days_span}'
+                        f'OAI {name} {spec}: '
+                        f'{from_date.strftime(TIME_FORMAT)} .. '
+                        f'{until_date.strftime(TIME_FORMAT)}'
                     )
+                from_date = from_date + timedelta(days=days_span + 1)
     if verbose:
         click.echo(f'OAI {name}: {count}')
     return count
 
 
 def oai_get_record(id, name, transformation, access_token=None,
-                   identifier=None, verbose=False, debug=False, **kwargs):
+                   identifier=None, debug=False, **kwargs):
     """Get record from an OAI repo.
 
     :param identifier: identifier of record.
     """
     url, metadata_prefix, lastrun, setspecs = get_info_by_oai_name(name)
 
-    request = Sickle(url)
+    request = Sickle(
+        endpoint=url,
+        max_retries=5,
+        default_retry_after=10,
+        retry_status_codes=[423, 503]
+    )
 
-    params = {}
+    params = {
+        'metadataPrefix': metadata_prefix,
+        'identifier': f'{identifier}{id}'
+    }
+    full_url = f'{url}?verb=GetRecord&metadataPrefix={metadata_prefix}'
+    full_url = f'{full_url}&identifier={identifier}{id}'
+
     if access_token:
         params['accessToken'] = access_token
+        full_url = f'{full_url}&accessToken={access_token}'
 
-    params['metadataPrefix'] = metadata_prefix
-    params['identifier'] = f'{identifier}{id}'
     try:
         record = request.GetRecord(**params)
+        msg = f'OAI-{name:<12} get: {id:<15} {full_url} | OK'
     except Exception as err:
+        msg = f'OAI-{name:<12} get: {id:<15} {full_url} | NO RECORD'
         if debug:
-            raise Exception(err)
-        return None
+            raise Exception(msg)
+        return None, msg
     records = parse_xml_to_array(StringIO(record.raw))
-    from rero_mef.marctojson.helper import display_record
-    display_record(records[0])
+    if debug:
+        from rero_mef.marctojson.helper import display_record
+        display_record(records[0])
     trans_record = transformation(records[0], logger=current_app.logger).json
-    if verbose:
-        click.echo(f'OAI-{name} get: {id}')
-    return trans_record
+    return trans_record, msg
 
 
 def read_json_record(json_file, buf_size=1024, decoder=JSONDecoder()):
@@ -533,11 +526,7 @@ def export_json_records(pids, pid_type, output_file_name, indent=2,
     :param verbose: verbose print
     :returns: count of records written
     """
-    record_class = obj_or_import_string(
-        current_app.config
-        .get('RECORDS_REST_ENDPOINTS')
-        .get(pid_type).get('record_class')
-    )
+    record_class = get_entity_class(pid_type)
     count = 0
     outfile = JsonWriter(output_file_name, indent=indent)
     for pid in pids:
@@ -550,10 +539,9 @@ def export_json_records(pids, pid_type, output_file_name, indent=2,
                 )
             if not schema:
                 rec.pop('$schema', None)
-                persons_sources = current_app.config.get(
-                    'RERO_ILS_PERSONS_SOURCES', [])
-                for persons_source in persons_sources:
-                    rec[persons_source].pop('$schema', None)
+                for source in ('idref', 'gnd', 'rero'):
+                    if source in rec:
+                        rec[source].pop('$schema', None)
             outfile.write(rec)
         except Exception as err:
             click.echo(err)
@@ -953,7 +941,7 @@ def create_csv_file(input_file, agent, pidstore, metadata):
             add_schema(ordered_record, agent)
 
             record_uuid = str(uuid4())
-            date = str(datetime.utcnow())
+            date = str(datetime.now(timezone.utc))
 
             agent_metadata_file.write(
                 metadata_csv_line(ordered_record, record_uuid, date)
@@ -973,6 +961,7 @@ def get_entity_classes(without_mef_viaf=True):
     if without_mef_viaf:
         endpoints.pop('mef', None)
         endpoints.pop('viaf', None)
+        endpoints.pop('comef', None)
     for agent in endpoints:
         if record_class := obj_or_import_string(
                 endpoints[agent].get('record_class')):
@@ -991,22 +980,18 @@ def get_entity_class(entity):
     """Get entity record class from config."""
     if entity := get_endpoint_class(entity=entity, class_name='record_class'):
         return entity
-    return Record
 
 
 def get_entity_search_class(entity):
     """Get entity search class from config."""
     if search := get_endpoint_class(entity=entity, class_name='search_class'):
         return search
-    return RecordsSearch
 
 
 def get_entity_indexer_class(entity):
     """Get entity indexer class from config."""
-    from .api import ReroIndexer
     if search := get_endpoint_class(entity=entity, class_name='indexer_class'):
         return search
-    return ReroIndexer
 
 
 def write_link_json(
@@ -1041,7 +1026,7 @@ def write_link_json(
     write_to_file = write_to_file_viaf if agent == 'viaf' else True
     if write_to_file:
         record_uuid = str(uuid4())
-        date = str(datetime.utcnow())
+        date = str(datetime.now(timezone.utc))
         pidstore_file.write(
             pidstore_csv_line(agent, agent_pid, record_uuid, date)
         )
@@ -1064,45 +1049,6 @@ def append_fixtures_new_identifiers(identifier, pids, pid_type):
         identifier._set_sequence(max_pid)
 
 
-def get_diff_db_es_pids(agent, verbose=False):
-    """Get differences between DB and ES pids."""
-    pids_es = {}
-    pids_es_double = []
-    record_class = get_entity_class(agent)
-    count = record_class.count()
-    if verbose:
-        click.echo(f'Get pids from DB: {count}')
-    progress = progressbar(
-        items=record_class.get_all_pids(),
-        length=count,
-        verbose=verbose
-    )
-    pids_db = {pid: 1 for pid in progress}
-    search_class = get_entity_search_class(agent)
-    count = search_class().source('pid').count()
-    if verbose:
-        click.echo(f'Get pids from ES: {count}')
-    progress = progressbar(
-        items=search_class().source('pid').scan(),
-        length=count,
-        verbose=verbose
-    )
-    for hit in progress:
-        pid = hit.pid
-        if pids_es.get(pid):
-            pids_es_double.append(pid)
-        if pids_db.get(pid):
-            pids_db.pop(pid)
-        else:
-            pids_es[pid] = 1
-    pids_db = list(pids_db)
-    pids_es = list(pids_es)
-    if verbose:
-        click.echo(f'Counts  DB: {len(pids_db)} ES: {len(pids_es)} '
-                   f'ES+: {len(pids_es_double)}')
-    return pids_db, pids_es, pids_es_double
-
-
 def set_timestamp(name, **kwargs):
     """Set timestamp in current cache.
 
@@ -1115,7 +1061,7 @@ def set_timestamp(name, **kwargs):
     time_stamps = current_cache.get('timestamps')
     if not time_stamps:
         time_stamps = {}
-    utc_now = datetime.utcnow()
+    utc_now = datetime.now(timezone.utc)
     time_stamps[name] = {}
     time_stamps[name]['time'] = utc_now
     for key, value in kwargs.items():
@@ -1132,16 +1078,6 @@ def get_timestamp(name):
     """
     time_stamps = current_cache.get('timestamps')
     return time_stamps.get(name) if time_stamps else None
-
-
-def settimestamp(func):
-    """Set timestamp function wrapper."""
-    @wraps(func)
-    def wrapped(*args, **kwargs):
-        result = func(*args, **kwargs)
-        set_timestamp(func.__name__, result=result)
-        return result
-    return wrapped
 
 
 class JsonWriter(object):
@@ -1165,6 +1101,22 @@ class JsonWriter(object):
             self.file_handle.write('\n]')
             self.file_handle.close()
             self.file_handle = None
+
+    def __enter__(self):
+        """Context manager enter."""
+        return self
+
+    def __exit__(self, exception_type, exception_value, exception_traceback):
+        """Context manager exit.
+
+        :params exception_type: indicates class of exception.
+        :params exception_value: indicates type of exception.
+            like divide_by_zero error, floating_point_error,
+            which are types of arithmetic exception.
+        :params exception_traceback: traceback is a report which has all
+            of the information needed to solve the exception.
+        """
+        self.__del__()
 
     def write(self, data):
         """Write data to file.
@@ -1195,7 +1147,7 @@ def mef_get_all_missing_entity_pids(mef_class, entity, verbose=False):
     :returns: Missing VIAF pids.
     """
     record_class = get_entity_class(entity)
-    unexisting_pids = {}
+    non_existing_pids = {}
     no_pids = []
     if verbose:
         click.echo(f'Get pids from {entity} ...')
@@ -1219,26 +1171,26 @@ def mef_get_all_missing_entity_pids(mef_class, entity, verbose=False):
         if agent_pid := data.get(name, {}).get('pid'):
             res = missing_pids.pop(agent_pid, False)
             if not res:
-                unexisting_pids[hit.pid] = agent_pid
+                non_existing_pids[hit.pid] = agent_pid
         else:
             no_pids.append(hit.pid)
-    return list(missing_pids), unexisting_pids, no_pids
+    return list(missing_pids), non_existing_pids, no_pids
 
 
 def get_mefs_endpoints():
     """Get all enpoints for MEF's."""
-    from .agents.mef.api import AgentMefRecord
-    from .agents.utils import get_agents_endpoints
-    from .concepts.mef.api import ConceptMefRecord
-    from .concepts.utils import get_concepts_endpoints
+    from .agents import AgentMefRecord
+    from .agents.utils import get_agent_endpoints
+    from .concepts import ConceptMefRecord
+    from .concepts.utils import get_concept_endpoints
 
     mefs = [{
         'mef_class': AgentMefRecord,
-        'endpoints': get_agents_endpoints()
+        'endpoints': get_agent_endpoints()
     }]
     mefs.append({
         'mef_class': ConceptMefRecord,
-        'endpoints': get_concepts_endpoints()
+        'endpoints': get_concept_endpoints()
     })
     return mefs
 

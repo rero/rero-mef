@@ -2,8 +2,9 @@
 relative_files = True
 omit =
     rero_mef/cli.py
-    rero_mef/agents/cli.py
-    rero_mef/concepts/cli.py
+    rero_mef/filter.py
+    rero_mef/alembic/*
+    rero_mef/jsonschemas/*
     rero_mef/marctojson/logger.py
     rero_mef/marctojson/helper.py
     rero_mef/marctojson/records.py

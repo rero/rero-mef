@@ -50,18 +50,19 @@ class AgentReroRecord(AgentRecord):
     viaf_source_code = 'RERO'
     viaf_pid_name = 'rero_pid'
     model_cls = AgentReroMetadata
+    search = AgentReroSearch
 
     @classmethod
-    def get_online_record(cls, id, verbose=False):
+    def get_online_record(cls, id, debug=False):
         """Get online record."""
         from .tasks import rero_get_record
-        return rero_get_record(id=id, verbose=verbose)
+        return rero_get_record(id=id, debug=debug)
 
 
 class AgentReroIndexer(AgentIndexer):
     """ReroIndexer."""
 
-    record_cls = AgentReroRecord
+    record_class = AgentReroRecord
 
     def bulk_index(self, record_id_iterator):
         """Bulk index records.

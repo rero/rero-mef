@@ -46,16 +46,17 @@ class ConceptReroRecord(ConceptRecord):
     minter = rero_id_minter
     fetcher = rero_id_fetcher
     provider = ConceptReroProvider
+    name = 'rero'
     viaf_source_code = 'RAMEAU'
     pid_type = 'concept_rero_pid'
     model_cls = ConceptReroMetadata
-    name = 'rero'
+    search = ConceptReroSearch
 
 
 class ConceptReroIndexer(ConceptIndexer):
     """ConceptsIndexer."""
 
-    record_cls = ConceptReroRecord
+    record_class = ConceptReroRecord
 
     def bulk_index(self, record_id_iterator):
         """Bulk index records.

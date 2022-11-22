@@ -36,8 +36,10 @@ def monitoring():
 @monitoring.command('es_db_counts')
 @click.option('-m', '--missing', 'missing', is_flag=True, default=False,
               help='display missing pids')
+@click.option('-d', '--delay', 'delay', default=1,
+              help='Get ES and DB counts from delay miniutes in the past.')
 @with_appcontext
-def es_db_counts_cli(missing):
+def es_db_counts_cli(missing, delay):
     """Print ES and DB counts.
 
     Prints a table representation of database and elasticsearch counts.
@@ -49,7 +51,7 @@ def es_db_counts_cli(missing):
     5. elasticsearch count
     """
     missing_doc_types = []
-    mon = Monitoring()
+    mon = Monitoring(time_delta=delay)
     msg_head = f'DB - ES  {"type":>6} {"count":>10}'
     msg_head += f'  {"index":>25} {"count_es":>10}\n'
     msg_head += f'{"":-^64s}'
@@ -73,7 +75,9 @@ def es_db_counts_cli(missing):
 
 @monitoring.command('mef_counts')
 @with_appcontext
-def mef_counts_cli():
+@click.option('-d', '--delay', 'delay', default=1,
+              help='Get ES and DB counts from delay miniutes in the past.')
+def mef_counts_cli(delay):
     """Print MEF counts.
 
     Prints a table representation of MEF counts.
@@ -83,7 +87,7 @@ def mef_counts_cli():
     3. database count
     5. MEF count
     """
-    mon = Monitoring()
+    mon = Monitoring(time_delta=delay)
     msg_head = f'MEF - DB  {"type":>6} {"DB":>10}  {"MEF":>10}'
     click.echo(msg_head)
     for entity, data in mon.check_mef().items():
@@ -99,10 +103,12 @@ def mef_counts_cli():
 
 @monitoring.command('es_db_missing')
 @click.argument('doc_type')
+@click.option('-d', '--delay', 'delay', default=1,
+              help='Get ES and DB counts from delay miniutes in the past.')
 @with_appcontext
-def es_db_missing_cli(doc_type):
+def es_db_missing_cli(doc_type, delay):
     """Print missing pids informations."""
-    Monitoring().print_missing(doc_type)
+    Monitoring(time_delta=delay).print_missing(doc_type)
 
 
 @monitoring.command()
@@ -122,6 +128,13 @@ def redis():
     redis = Redis.from_url(url)
     for key, value in redis.info().items():
         click.echo(f'{key:<33}: {value}')
+
+
+@monitoring.command('es_indices')
+@with_appcontext
+def es_indices():
+    """Displays Elasticsearch indices info."""
+    click.echo(current_search_client.cat.indices(s='index'))
 
 
 @monitoring.command('db_connection_counts')

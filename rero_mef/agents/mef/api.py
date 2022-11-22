@@ -16,21 +16,20 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """API for manipulating MEF records."""
-from datetime import datetime, timezone
+
+from copy import deepcopy
 
 import click
-from elasticsearch_dsl import Q
 from flask import current_app
-from invenio_search import current_search
 from invenio_search.api import RecordsSearch
 
 from .fetchers import mef_id_fetcher
 from .minters import mef_id_minter
 from .models import AgentMefMetadata
 from .providers import MefProvider
-from ...api import Action, ReroIndexer
+from ...api import ReroIndexer
 from ...api_mef import EntityMefRecord
-from ...utils import mef_get_all_missing_entity_pids, progressbar
+from ...utils import progressbar
 
 
 def build_ref_string(agent_pid, agent):
@@ -65,18 +64,11 @@ class AgentMefRecord(EntityMefRecord):
     minter = mef_id_minter
     fetcher = mef_id_fetcher
     provider = MefProvider
+    name = 'mef'
     model_cls = AgentMefMetadata
     search = AgentMefSearch
     mef_type = 'AGENTS'
     entities = ['idref', 'gnd', 'rero']
-
-    @classmethod
-    def flush_indexes(cls):
-        """Update indexes."""
-        try:
-            current_search.flush_and_refresh(index='mef')
-        except Exception as err:
-            current_app.logger.error(f'ERROR flush and refresh: {err}')
 
     @classmethod
     def get_all_missing_viaf_pids(cls, verbose=False):
@@ -102,28 +94,19 @@ class AgentMefRecord(EntityMefRecord):
             length=query.count(),
             verbose=True
         )
-        unexisting_pids = {hit.pid: hit.viaf_pid for hit in progress
-                           if not missing_pids.pop(hit.viaf_pid, None)}
+        non_existing_pids = {hit.pid: hit.viaf_pid for hit in progress
+                             if not missing_pids.pop(hit.viaf_pid, None)}
 
-        return list(missing_pids), unexisting_pids
-
-    @classmethod
-    def get_all_missing_agents_pids(cls, agent, verbose=False):
-        """Get all missing agent pids.
-
-        :param agent: agent name to get the missing pids.
-        :param verbose: Verbose.
-        :returns: Missing VIAF pids.
-        """
-        return mef_get_all_missing_entity_pids(mef_class=cls, entity=agent,
-                                               verbose=verbose)
+        return list(missing_pids), non_existing_pids
 
     def replace_refs(self):
         """Replace $ref with real data."""
+        data = deepcopy(self)
         data = super().replace_refs()
         sources = []
         for agent in self.entities:
             if agent_data := data.get(agent):
+                # we got a error status in data
                 if agent_data.get('status'):
                     data.pop(agent)
                     current_app.logger.error(
@@ -139,48 +122,6 @@ class AgentMefRecord(EntityMefRecord):
                         data['type'] = data[agent]['bf:Agent']
         data['sources'] = sources
         return data
-
-    @classmethod
-    def get_all_pids_without_agents_viaf(cls):
-        """Get all pids for records without agents and VIAF pids.
-
-        :returns: Generator of MEF pids without agent links and without VIAF.
-        """
-        query = AgentMefSearch()\
-            .filter('bool', must_not=[Q('exists', field="viaf_pid")]) \
-            .filter('bool', must_not=[Q('exists', field="gnd")]) \
-            .filter('bool', must_not=[Q('exists', field="idref")]) \
-            .filter('bool', must_not=[Q('exists', field="rero")]) \
-            .source('pid')\
-            .scan()
-        for hit in query:
-            yield hit.pid
-
-    def create_or_update_mef_viaf_record(self, dbcommit=False, reindex=False,
-                                         online=False):
-        """Create or update MEF and VIAF record.
-
-        :param dbcommit: Commit changes to DB.
-        :param reindex: Reindex record.
-        :param online: Try to get VIAF record online.
-        :returns: MEF record, MEF action, VIAF record, VIAF
-        """
-        return self, Action.ERROR, None, False
-
-    @classmethod
-    def create_deleted(cls, record, dbcommit=False, reindex=False):
-        """Create a deleted record for an record.
-
-        :param record: Record to create.
-        :param dbcommit: Commit changes to DB.
-        :param reindex: Reindex record.
-        :returns: Created record.
-        """
-        data = {
-            record.name: {'$ref': build_ref_string(record.pid, record.name)},
-            'deleted': datetime.now(timezone.utc).isoformat()
-        }
-        return cls.create(data=data, dbcommit=dbcommit, reindex=reindex)
 
     @classmethod
     def get_latest(cls, pid_type, pid):
@@ -200,20 +141,19 @@ class AgentMefRecord(EntityMefRecord):
             elif pid_type == 'idref':
                 # Find new pid from redirect_pid redirect_from
                 search = AgentMefSearch() \
-                    .filter('term', idref__relation_pid__value=pid)
+                        .filter('term', idref__relation_pid__value=pid)
                 if search.count() > 0:
                     new_data = next(search.scan()).to_dict()
                     new_pid = new_data.get('idref', {}).get('pid')
-            if new_pid:
-                return cls.get_latest(pid_type=pid_type, pid=new_pid)
-            return data
+            return cls.get_latest(pid_type=pid_type, pid=new_pid) \
+                if new_pid else data
         return {}
 
 
 class AgentMefIndexer(ReroIndexer):
     """AgentMefIndexer."""
 
-    record_cls = AgentMefRecord
+    record_class = AgentMefRecord
 
     def bulk_index(self, record_id_iterator):
         """Bulk index records.

@@ -19,7 +19,7 @@
 
 from utils import create_record
 
-from rero_mef.agents.mef.api import AgentMefRecord
+from rero_mef.agents import AgentMefRecord
 
 
 def test_get_all_pids_without_agents_and_viaf(app):
@@ -32,44 +32,21 @@ def test_get_all_pids_without_agents_and_viaf(app):
         [m_record.pid]
 
 
-def test_get_pids_with_multiple_mef(app, agent_mef_data, agent_viaf_record):
+def test_get_multiple_missing_pids(app, agent_mef_data, agent_viaf_record):
     """Test get pids with multiple MEF."""
     m_record_1 = create_record(AgentMefRecord, agent_mef_data, delete_pid=True)
     m_record_2 = create_record(AgentMefRecord, agent_mef_data, delete_pid=True)
-    pids, multiple_pids, missing_pids = AgentMefRecord \
-        .get_pids_with_multiple_mef(record_types=['aidref', 'aggnd', 'agrero'])
+    pids, multiple_pids, missing_pids, none_pids = AgentMefRecord \
+        .get_multiple_missing_pids(
+            record_types=['aidref', 'aggnd', 'agrero'])
     assert pids == {'aggnd': {}, 'agrero': {}, 'aidref': {}}
     assert multiple_pids == {
-        'aggnd': {'12391664X': [m_record_1.pid, m_record_2.pid]},
-        'agrero': {'A023655346': [m_record_1.pid, m_record_2.pid]},
-        'aidref': {'069774331': [m_record_1.pid, m_record_2.pid]}
+        'aggnd': {'12391664X': [m_record_2.pid, m_record_1.pid]},
+        'agrero': {'A023655346': [m_record_2.pid, m_record_1.pid]},
+        'aidref': {'069774331': [m_record_2.pid, m_record_1.pid]}
     }
     assert missing_pids == {'aggnd': [], 'agrero': [], 'aidref': []}
+    assert none_pids == {'aggnd': [], 'agrero': [], 'aidref': []}
 
     m_record_2.mark_as_deleted(dbcommit=True, reindex=True)
     assert m_record_2.deleted is not None
-
-
-# TODO: Find out why this test is not working in github.
-# def test_get_all_missing_pids(app, agent_gnd_record, agent_rero_record,
-#                               agent_idref_record):
-#     """Test get all missing pids."""
-#     for mef_record in AgentMefRecord.get_all_records():
-#         mef_record.delete(dbcommit=True, delindex=True)
-#     AgentGndRecord.create(
-#         data=agent_gnd_record, dbcommit=True, reindex=True)
-#     AgentGndRecord.flush_indexes()
-#     AgentIdrefRecord.create(
-#         data=agent_idref_record, dbcommit=True, reindex=True)
-#     AgentIdrefRecord.flush_indexes()
-#     AgentReroRecord.create(
-#         data=agent_rero_record, dbcommit=True, reindex=True)
-#     AgentReroRecord.flush_indexes()
-#     missing_pids, to_much_pids = AgentMefRecord.get_all_missing_pids(
-#         record_types=['aidref', 'aggnd', 'agrero'])
-#     assert missing_pids == {
-#         'aggnd': {'12391664X': 1},
-#         'agrero': {'A023655346': 1},
-#         'aidref': {'069774331': 1}
-#     }
-#     assert to_much_pids == {}

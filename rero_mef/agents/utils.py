@@ -19,13 +19,13 @@
 
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import uuid4
 
 import click
 from flask import current_app
 
-from ..utils import get_entity_classes, metadata_csv_line, \
+from ..utils import get_entity_class, metadata_csv_line, \
     number_records_in_file, pidstore_csv_line, progressbar, write_link_json
 
 
@@ -40,7 +40,7 @@ def write_mef_files(pid, data, pidstore, metadata, ids):
     :returns: Next pid.
     """
     mef_uuid = str(uuid4())
-    date = str(datetime.utcnow())
+    date = str(datetime.now(timezone.utc))
     pidstore.write(
         pidstore_csv_line('mef', str(pid), mef_uuid, date))
     metadata.write(metadata_csv_line(data, mef_uuid, date))
@@ -58,26 +58,30 @@ def init_agent_pids(input_directory, verbose):
     """
     pids = {}
     viaf_agent_pid_names = {}
-    agent_classes = get_entity_classes()
-    for agent, agent_classe in agent_classes.items():
+    agents = current_app.config.get('RERO_AGENTS', [])
+    for agent in agents:
+        agent_classe = get_entity_class(agent)
         name = agent_classe.name
-        viaf_pid_name = agent_classe.viaf_pid_name
-        if viaf_pid_name:
-            viaf_agent_pid_names[viaf_pid_name] = name
-            file_name = os.path.join(input_directory, f'{agent}_pidstore.csv')
-            if os.path.exists(file_name):
-                if verbose:
-                    click.echo(f'  Read pids from: {file_name}')
-                length = number_records_in_file(file_name, 'csv')
-                pids[name] = {}
-                progress = progressbar(
-                    items=open(file_name, 'r'),
-                    length=length,
-                    verbose=verbose
-                )
-                for line in progress:
-                    pid = line.split('\t')[3]
-                    pids[name][pid] = 1
+        try:
+            if viaf_pid_name := agent_classe.viaf_pid_name:
+                viaf_agent_pid_names[viaf_pid_name] = name
+                file_name = os.path.join(
+                    input_directory, f'{agent}_pidstore.csv')
+                if os.path.exists(file_name):
+                    if verbose:
+                        click.echo(f'  Read pids from: {file_name}')
+                    length = number_records_in_file(file_name, 'csv')
+                    pids[name] = {}
+                    progress = progressbar(
+                        items=open(file_name, 'r'),
+                        length=length,
+                        verbose=verbose
+                    )
+                    for line in progress:
+                        pid = line.split('\t')[3]
+                        pids[name][pid] = 1
+        except Exception as err:
+            click.secho(err, fg='red')
     return pids, viaf_agent_pid_names
 
 
@@ -105,9 +109,9 @@ def create_mef_files(
 
     mef_pid = 1
     corresponding_data = {}
-    with open(mef_pidstore_file_name, 'w', encoding='utf-8') as pidstore, \
-            open(mef_metadata_file_name, 'w', encoding='utf-8') as metadata, \
-            open(mef_ids_file_name, 'w', encoding='utf-8') as ids:
+    with (open(mef_pidstore_file_name, 'w', encoding='utf-8') as pidstore,
+            open(mef_metadata_file_name, 'w', encoding='utf-8') as metadata,
+            open(mef_ids_file_name, 'w', encoding='utf-8') as ids):
         schemas = current_app.config.get('RECORDS_JSON_SCHEMA')
         base_url = current_app.config.get('RERO_MEF_APP_BASE_URL')
         schema = (f'{base_url}'
@@ -148,7 +152,7 @@ def create_mef_files(
                 )
 
         # Create MEF without VIAF
-        length = sum([len(p) for p in pids.values()])
+        length = sum(len(p) for p in pids.values())
         if verbose:
             click.echo(f'  Create MEF without VIAF pid: {length}')
         progress = progressbar(items=pids, length=length, verbose=verbose)
@@ -174,7 +178,7 @@ def create_mef_files(
 
 
 def create_viaf_files(
-    viaf_input_file,
+    viaf_input_file_name,
     viaf_pidstore_file_name,
     viaf_metadata_file_name,
     verbose=False
@@ -193,46 +197,29 @@ def create_viaf_files(
     agent_pid = 0
     corresponding_data = {}
     count = 0
-    with open(
-        viaf_pidstore_file_name, 'w', encoding='utf-8'
-    ) as viaf_pidstore:
-        with open(
-            viaf_metadata_file_name, 'w', encoding='utf-8'
-        ) as viaf_metadata:
-            with open(
-                str(viaf_input_file), 'r', encoding='utf-8'
-            ) as viaf_in_file:
-                # get first viaf_pid
-                row = viaf_in_file.readline()
-                fields = row.rstrip().split('\t')
-                assert len(fields) == 2
-                previous_viaf_pid = fields[0].split('/')[-1]
-                viaf_in_file.seek(0)
-                for row in viaf_in_file:
-                    fields = row.rstrip().split('\t')
-                    assert len(fields) == 2
-                    viaf_pid = fields[0].split('/')[-1]
-                    if viaf_pid != previous_viaf_pid:
-                        agent_pid += 1
-                        written = write_link_json(
-                            agent='viaf',
-                            pidstore_file=viaf_pidstore,
-                            metadata_file=viaf_metadata,
-                            viaf_pid=previous_viaf_pid,
-                            corresponding_data=corresponding_data,
-                            agent_pid=str(agent_pid),
-                            verbose=verbose
-                        )
-                        if written:
-                            count += 1
-                        corresponding_data = {}
-                        previous_viaf_pid = viaf_pid
-                    corresponding = fields[1].split('|')
-                    if len(corresponding) == 2:
-                        corresponding_data[corresponding[0]] = corresponding[1]
-                # save the last record
+    with (
+            open(
+                viaf_pidstore_file_name, 'w', encoding='utf-8'
+            ) as viaf_pidstore,
+            open(
+                viaf_metadata_file_name, 'w', encoding='utf-8'
+                ) as viaf_metadata,
+            open(
+                viaf_input_file_name, 'r', encoding='utf-8'
+            ) as viaf_in_file):
+        # get first viaf_pid
+        row = viaf_in_file.readline()
+        fields = row.rstrip().split('\t')
+        assert len(fields) == 2
+        previous_viaf_pid = fields[0].split('/')[-1]
+        viaf_in_file.seek(0)
+        for row in viaf_in_file:
+            fields = row.rstrip().split('\t')
+            assert len(fields) == 2
+            viaf_pid = fields[0].split('/')[-1]
+            if viaf_pid != previous_viaf_pid:
                 agent_pid += 1
-                written = write_link_json(
+                if write_link_json(
                     agent='viaf',
                     pidstore_file=viaf_pidstore,
                     metadata_file=viaf_metadata,
@@ -240,20 +227,43 @@ def create_viaf_files(
                     corresponding_data=corresponding_data,
                     agent_pid=str(agent_pid),
                     verbose=verbose
-                )
-                if written:
+                ):
                     count += 1
+                corresponding_data = {}
+                previous_viaf_pid = viaf_pid
+            corresponding = fields[1].split('|')
+            if len(corresponding) == 2:
+                corresponding_data[corresponding[0]] = corresponding[1]
+        # save the last record
+        agent_pid += 1
+        if write_link_json(
+            agent='viaf',
+            pidstore_file=viaf_pidstore,
+            metadata_file=viaf_metadata,
+            viaf_pid=previous_viaf_pid,
+            corresponding_data=corresponding_data,
+            agent_pid=str(agent_pid),
+            verbose=verbose
+        ):
+            count += 1
     if verbose:
         click.echo(f'  VIAF records created: {count}')
     return count
 
 
-def get_agents_endpoints():
+def get_agent_endpoints():
     """Get all agents from config."""
-    agents_endpoints = {}
     agents = current_app.config.get('RERO_AGENTS', [])
     endpoints = current_app.config.get('RECORDS_REST_ENDPOINTS', {})
-    for endpoint, data in endpoints.items():
-        if endpoint in agents:
-            agents_endpoints[endpoint] = data
-    return agents_endpoints
+    return {
+        endpoint: data for endpoint, data in endpoints.items()
+        if endpoint in agents
+    }
+
+
+def get_agent_classes():
+    """Get all agents classes."""
+    endpoints = get_agent_endpoints()
+    return [
+        get_entity_class(endpoint) for endpoint, _ in endpoints.items()
+    ]

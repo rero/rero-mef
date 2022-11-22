@@ -26,7 +26,7 @@ from click.testing import CliRunner
 from rero_mef.agents.cli import create_csv_mef, create_csv_viaf
 
 
-def test_create_csv_viaf_mef(script_info):
+def test_create_csv_viaf_mef(script_info, tmpdir):
     """Test create CSV VIAF."""
     runner = CliRunner()
     viaf_text_file = join(dirname(__file__), '../../data/viaf.txt')
@@ -38,7 +38,7 @@ def test_create_csv_viaf_mef(script_info):
     )
     assert res.output.strip().split('\n') == [
         'Create VIAF CSV files.',
-        f'  VIAF input file: {viaf_text_file} ',
+        f'  VIAF input file: {viaf_text_file}',
         '  Number of VIAF records created: 859.'
     ]
     viaf_metadata = join(output_directory, 'viaf_metadata.csv')
@@ -60,9 +60,7 @@ def test_create_csv_viaf_mef(script_info):
             '1'
         ]
     with open(viaf_pidstore) as in_file:
-        pidstore_count = 0
-        for line in in_file:
-            pidstore_count += 1
+        pidstore_count = sum(1 for _ in in_file)
         assert pidstore_count == metadata_count
 
     copy2(
@@ -84,8 +82,8 @@ def test_create_csv_viaf_mef(script_info):
     )
     assert res.output.strip().split('\n') == [
         'Create MEF CSV files from VIAF metadata.',
-        f'  VIAF input file: {viaf_metadata} ',
-        '  Number of MEF records created: 749.'
+        f'  VIAF input file: {viaf_metadata}',
+        '  Number of MEF records created: 132.'
     ]
     mef_metadata = join(output_directory, 'mef_metadata.csv')
     mef_pidstore = join(output_directory, 'mef_pidstore.csv')

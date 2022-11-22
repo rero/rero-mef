@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <responseDate>2023-01-10T15:49:42Z</responseDate>
+  <request metadataPrefix="MARC21-xml" set="authorities:person" verb="ListRecords" from="2023-01-09">https://services.dnb.de/oai/repository</request>
+  <ListRecords xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">
+    <record>
+      <header>
+        <identifier>oai:dnb.de/authorities/139205527</identifier>
+        <datestamp>2019-07-03T13:50:04Z</datestamp>
+        <setSpec>authorities</setSpec>
+      </header>
+      <metadata>
+        <record type="Authority" xmlns="http://www.loc.gov/MARC21/slim">
+          <leader>00000nz  a2200000nc 4500</leader>
+          <controlfield tag="001">139205527</controlfield>
+          <controlfield tag="003">DE-101</controlfield>
+          <controlfield tag="005">20190703155004.0</controlfield>
+          <controlfield tag="008">090914n||aznnnaabn           | aaa    |c</controlfield>
+          <datafield tag="024" ind1="7" ind2=" ">
+            <subfield code="a">139205527</subfield>
+            <subfield code="0">http://d-nb.info/gnd/139205527</subfield>
+            <subfield code="2">gnd</subfield>
+          </datafield>
+          <datafield tag="035" ind1=" " ind2=" ">
+            <subfield code="a">(DE-101)139205527</subfield>
+          </datafield>
+          <datafield tag="035" ind1=" " ind2=" ">
+            <subfield code="a">(DE-588)139205527</subfield>
+          </datafield>
+          <datafield tag="035" ind1=" " ind2=" ">
+            <subfield code="z">(DE-588a)139205527</subfield>
+            <subfield code="9">v:zg</subfield>
+          </datafield>
+          <datafield tag="040" ind1=" " ind2=" ">
+            <subfield code="a">DE-Kn3</subfield>
+            <subfield code="c">DE-Kn3</subfield>
+            <subfield code="9">r:DE-605</subfield>
+            <subfield code="b">ger</subfield>
+            <subfield code="d">1885</subfield>
+            <subfield code="e">rda</subfield>
+          </datafield>
+          <datafield tag="042" ind1=" " ind2=" ">
+            <subfield code="a">gnd1</subfield>
+          </datafield>
+          <datafield tag="043" ind1=" " ind2=" ">
+            <subfield code="c">XA-IT</subfield>
+            <subfield code="c">XA-FR</subfield>
+          </datafield>
+          <datafield tag="075" ind1=" " ind2=" ">
+            <subfield code="b">p</subfield>
+            <subfield code="2">gndgen</subfield>
+          </datafield>
+          <datafield tag="075" ind1=" " ind2=" ">
+            <subfield code="b">piz</subfield>
+            <subfield code="2">gndspec</subfield>
+          </datafield>
+          <datafield tag="079" ind1=" " ind2=" ">
+            <subfield code="a">g</subfield>
+            <subfield code="q">f</subfield>
+            <subfield code="u">v</subfield>
+          </datafield>
+          <datafield tag="100" ind1="1" ind2=" ">
+            <subfield code="a">Parisi, Chiara</subfield>
+          </datafield>
+          <datafield tag="375" ind1=" " ind2=" ">
+            <subfield code="a">2</subfield>
+            <subfield code="2">iso5218</subfield>
+          </datafield>
+          <datafield tag="510" ind1="2" ind2=" ">
+            <subfield code="0">(DE-101)960236007</subfield>
+            <subfield code="0">(DE-588)10011363-1</subfield>
+            <subfield code="0">https://d-nb.info/gnd/10011363-1</subfield>
+            <subfield code="a">Centre d'art contemporain de Vassivière</subfield>
+            <subfield code="4">affi</subfield>
+            <subfield code="4">https://d-nb.info/standards/elementset/gnd#affiliation</subfield>
+            <subfield code="w">r</subfield>
+            <subfield code="i">Affiliation</subfield>
+            <subfield code="e">Affiliation</subfield>
+            <subfield code="9">v:Direktorin</subfield>
+            <subfield code="9">Z:2004-2011</subfield>
+          </datafield>
+          <datafield tag="550" ind1=" " ind2=" ">
+            <subfield code="0">(DE-101)042262895</subfield>
+            <subfield code="0">(DE-588)4226289-6</subfield>
+            <subfield code="0">https://d-nb.info/gnd/4226289-6</subfield>
+            <subfield code="a">Kunsthistorikerin</subfield>
+            <subfield code="4">berc</subfield>
+            <subfield code="4">https://d-nb.info/standards/elementset/gnd#professionOrOccupation</subfield>
+            <subfield code="w">r</subfield>
+            <subfield code="i">Charakteristischer Beruf</subfield>
+          </datafield>
+          <datafield tag="550" ind1=" " ind2=" ">
+            <subfield code="0">(DE-101)962883026</subfield>
+            <subfield code="0">(DE-588)4656207-2</subfield>
+            <subfield code="0">https://d-nb.info/gnd/4656207-2</subfield>
+            <subfield code="a">Kunstkritikerin</subfield>
+            <subfield code="4">beru</subfield>
+            <subfield code="4">https://d-nb.info/standards/elementset/gnd#professionOrOccupation</subfield>
+            <subfield code="w">r</subfield>
+            <subfield code="i">Beruf</subfield>
+          </datafield>
+          <datafield tag="550" ind1=" " ind2=" ">
+            <subfield code="0">(DE-101)987707876</subfield>
+            <subfield code="0">(DE-588)7602103-8</subfield>
+            <subfield code="0">https://d-nb.info/gnd/7602103-8</subfield>
+            <subfield code="a">Kuratorin</subfield>
+            <subfield code="g">Museumskunde</subfield>
+            <subfield code="4">beru</subfield>
+            <subfield code="4">https://d-nb.info/standards/elementset/gnd#professionOrOccupation</subfield>
+            <subfield code="w">r</subfield>
+            <subfield code="i">Beruf</subfield>
+          </datafield>
+          <datafield tag="551" ind1=" " ind2=" ">
+            <subfield code="0">(DE-101)040504719</subfield>
+            <subfield code="0">(DE-588)4050471-2</subfield>
+            <subfield code="0">https://d-nb.info/gnd/4050471-2</subfield>
+            <subfield code="a">Rom</subfield>
+            <subfield code="4">ortg</subfield>
+            <subfield code="4">https://d-nb.info/standards/elementset/gnd#placeOfBirth</subfield>
+            <subfield code="w">r</subfield>
+            <subfield code="i">Geburtsort</subfield>
+          </datafield>
+          <datafield tag="670" ind1=" " ind2=" ">
+            <subfield code="a">LCAuth</subfield>
+          </datafield>
+          <datafield tag="913" ind1=" " ind2=" ">
+            <subfield code="S">pnd</subfield>
+            <subfield code="i">a</subfield>
+            <subfield code="a">Parisi, Chiara</subfield>
+            <subfield code="0">(DE-588a)139205527</subfield>
+          </datafield>
+        </record>
+      </metadata>
+    </record>
+    <resumptionToken cursor="1" completeListSize="1"></resumptionToken>
+  </ListRecords>
+</OAI-PMH>

@@ -111,7 +111,7 @@ def es_db_counts():
     """
     difference_db_es = request.args.get('diff', False)
     with_deleted = request.args.get('deleted', False)
-    return jsonify({'data': Monitoring.info(
+    return jsonify({'data': Monitoring().info(
         with_deleted=with_deleted,
         difference_db_es=difference_db_es
     )})
@@ -127,7 +127,7 @@ def mef_counts():
     - difference between the count in database and MEF
     :return: jsonified count for MEF and documents
     """
-    return jsonify({'data': Monitoring.check_mef()})
+    return jsonify({'data': Monitoring().check_mef()})
 
 
 @api_blueprint.route('/check_es_db_counts')
@@ -142,8 +142,8 @@ def check_es_db_counts():
     result = {'data': {'status': 'green'}}
     difference_db_es = request.args.get('diff', False)
     with_deleted = request.args.get('deleted', False)
-    if checks := Monitoring.check(with_deleted=with_deleted,
-                                  difference_db_es=difference_db_es):
+    if checks := Monitoring().check(with_deleted=with_deleted,
+                                    difference_db_es=difference_db_es):
         errors = []
         for doc_type, doc_type_data in checks.items():
             links = {'about': url_for(
@@ -217,7 +217,8 @@ def missing_pids(doc_type):
         )
     except Exception:
         api_url = None
-    mon = Monitoring.missing(doc_type)
+    delay = request.args.get('delay', 1)
+    mon = Monitoring(time_delta=delay).missing(doc_type)
     if mon.get('ERROR'):
         return {
             'error': {
@@ -258,6 +259,19 @@ def redis():
                                  'redis://localhost:6379')
     redis = Redis.from_url(url)
     info = redis.info()
+    return jsonify({'data': info})
+
+
+@api_blueprint.route('/es_indices')
+@check_authentication
+def elastic_search_indices():
+    """Displays Elasticsearch indices info.
+
+    :return: jsonified Elasticsearch indices info.
+    """
+    info = current_search_client.cat.indices(
+        bytes='b', format='json', s='index')
+    info = {data['index']: data for data in info}
     return jsonify({'data': info})
 
 
