@@ -17,17 +17,16 @@
 
 """API for manipulating MEF records."""
 
-
-from datetime import datetime, timezone
+from datetime import datetime
 
 import click
 from dateutil import parser
 from elasticsearch_dsl import Q
 from flask import current_app
-from invenio_search import current_search
 
 from .api import Action, ReroMefRecord
-from .utils import generate, get_entity_class, get_entity_classes, progressbar
+from .utils import generate, get_entity_class, get_entity_search_class, \
+    progressbar
 
 
 class EntityMefRecord(ReroMefRecord):
@@ -42,7 +41,7 @@ class EntityMefRecord(ReroMefRecord):
     mef_type = ''
 
     @classmethod
-    def get_mef_by_entity_pid(cls, entity_pid, entity_name, pid_only=False):
+    def get_mef(cls, entity_pid, entity_name, pid_only=False):
         """Get MEF record by entity pid value.
 
         :param entity_pid: Entety pid.
@@ -51,33 +50,22 @@ class EntityMefRecord(ReroMefRecord):
         :returns: pid or record
         """
         key = f'{entity_name}.pid'
-        search = cls.search() \
+        if entity_name == 'viaf':
+            key = 'viaf_pid'
+        query = cls.search() \
             .filter('term', **{key: entity_pid}) \
-            .source(['pid'])
-        if search.count() > 1:
+            .params(preserve_order=True) \
+            .sort({'_updated': {'order': 'desc'}})
+        if pid_only:
+            mef_records = [hit.pid for hit in (query.source(['pid']).scan())]
+        else:
+            mef_records = [
+                cls.get_record(hit.meta.id) for hit in query.scan()]
+        if len(mef_records) > 1:
             current_app.logger.error(
                 f'MULTIPLE MEF FOUND FOR: {entity_name} {entity_pid}'
             )
-        try:
-            mef_pid = next(search.scan()).pid
-            return mef_pid if pid_only else cls.get_record_by_pid(mef_pid)
-        except StopIteration:
-            return None
-
-    @classmethod
-    def get_mef_by_viaf_pid(cls, viaf_pid):
-        """Get MEF record by agent pid value.
-
-        :param viaf_pid: VIAF pid.
-        :returns: Associated MEF record.
-        """
-        query = cls.search() \
-            .filter('term', viaf_pid=viaf_pid)
-        try:
-            mef_pid = next(query.source(['pid']).scan()).pid
-            return cls.get_record_by_pid(mef_pid)
-        except StopIteration:
-            return None
+        return mef_records
 
     @classmethod
     def get_all_pids_without_agents_and_viaf(cls):
@@ -106,116 +94,82 @@ class EntityMefRecord(ReroMefRecord):
             yield hit.pid
 
     @classmethod
-    def get_pids_with_multiple_mef(cls, record_types=None, verbose=False):
+    def get_multiple_missing_pids(cls, record_types=None, verbose=False):
         """Get agent pids with multiple MEF records.
 
         :params record_types: Record types (pid_types).
         :param verbose: Verbose.
+        :param before: Get multiple MEF before x minutes (default 1 minute).
         :returns: pids, multiple pids, missing pids.
         """
         pids = {}
         multiple_pids = {}
         missing_pids = {}
-        if record_types:
-            for record_type in record_types:
-                if verbose:
-                    click.echo(f'Calculating {record_type}:')
+        none_pids = {}
+        agents = {}
+        sources = ['pid']
+        for record_type in record_types or []:
+            try:
+                agent_class = get_entity_class(record_type)
+                agents[record_type] = {
+                    'name': agent_class.name,
+                    'search': get_entity_search_class(record_type)(),
+                }
                 pids[record_type] = {}
                 multiple_pids[record_type] = {}
                 missing_pids[record_type] = []
-                if agent_class := get_entity_class(record_type):
-                    agent_name = agent_class.name
-                    query = cls.search().filter('exists', field=agent_name)
-                    progress = progressbar(
-                        items=query
-                        .params(preserve_order=True)
-                        .sort({'pid': {'order': 'asc'}})
-                        .scan(),
-                        length=query.count(),
-                        verbose=verbose
-                    )
-                    for hit in progress:
-                        data = hit.to_dict()
-                        mef_pid = data['pid']
-                        agent_pid = data[agent_name]['pid']
-                        pids[record_type].setdefault(agent_pid, [])
-                        pids[record_type][agent_pid].append(mef_pid)
-                        if len(pids[record_type][agent_pid]) > 1:
-                            multiple_pids[record_type][agent_pid] = \
-                                pids[record_type][agent_pid]
-                    if len(pids[record_type]) < agent_class.count():
-                        progress = progressbar(
-                            items=agent_class.get_all_pids(),
-                            length=agent_class.count(),
-                            verbose=verbose
-                        )
-                        for pid in progress:
-                            if not pids[record_type].pop(pid, None):
-                                missing_pids[record_type].append(pid)
-                    else:
-                        pids[record_type] = {}
-                else:
-                    current_app.logger.error(
-                        f'Record type not found: {record_type}')
-        return pids, multiple_pids, missing_pids
+                none_pids[record_type] = []
+                sources.append(f'{agent_class.name}.pid')
+            except Exception:
+                current_app.logger.error(
+                    f'Record type not found: {record_type}')
 
-    @classmethod
-    def get_all_missing_pids(cls, record_types=None, verbose=False):
-        """Get all missing agents.
-
-        :params record_types: Record types (pid_type).
-        :param verbose: Verbose.
-        :returns: missing pids, to much pids.
-        """
-        if record_types is None:
-            record_types = []
-        missing_pids = {}
-        to_much_pids = {}
-        entity_classes = get_entity_classes()
-        used_classes = {entity_class: entity_classes[entity_class]
-                        for entity_class in entity_classes
-                        if entity_class in record_types}
-
-        for entity, entity_class in used_classes.items():
-            if verbose:
-                click.echo(f'Get pids from {entity} ...')
-            missing_pids[entity] = {}
-            progress = progressbar(
-                items=entity_class.get_all_pids(),
-                length=entity_class.count(),
-                verbose=verbose
-            )
-            for pid in progress:
-                missing_pids[entity][pid] = 1
-        if verbose:
-            click.echo('Get pids from MEF and calculate missing ...')
+        # Get all pids from MEF
+        date = datetime.utcnow()
+        click.echo('Get mef')
         progress = progressbar(
-            items=cls.search().filter('match_all').scan(),
-            length=cls.search().filter('match_all').count(),
+            items=cls.search()
+            .params(preserve_order=True)
+            .sort({'_updated': {'order': 'desc'}})
+            .source(sources)
+            .scan(),
+            length=cls.search().count(),
             verbose=verbose
         )
         for hit in progress:
-            pid = hit.pid
-
             data = hit.to_dict()
-            for agent, agent_class in used_classes.items():
-                if agent_data := data.get(agent_class.name):
-                    agent_pid = agent_data.get('pid')
-                    if not missing_pids[agent].pop(agent_pid, None):
-                        to_much_pids.setdefault(pid, {})
-                        to_much_pids[pid][agent] = agent_pid
-        return missing_pids, to_much_pids
-
-    def mark_as_deleted(self, dbcommit=False, reindex=False):
-        """Mark record as deleted.
-
-        :param dbcommit: Commit changes to DB.
-        :param reindex: Reindex record.
-        :returns: Modified record.
-        """
-        self['deleted'] = datetime.now(timezone.utc).isoformat()
-        self.update(data=self, dbcommit=dbcommit, reindex=reindex)
-        return self
+            mef_pid = data['pid']
+            for record_type, info in agents.items():
+                if agent_data := data.get(info['name']):
+                    if agent_pid := agent_data.get('pid'):
+                        pids[record_type].setdefault(
+                            agent_pid, []).append(mef_pid)
+                        if len(pids[record_type][agent_pid]) > 1:
+                            multiple_pids[record_type][agent_pid] = pids[
+                                record_type][agent_pid]
+                    else:
+                        none_pids[record_type].append(mef_pid)
+        # Get all agents pids and compare with MEF pids
+        for record_type, info in agents.items():
+            click.echo(
+                f'Get {info["name"]} 'f'MEF: {len(pids[record_type])}')
+            progress = progressbar(
+                items=info['search']
+                .params(preserve_order=True)
+                .sort({'pid': {'order': 'asc'}})
+                .filter('range', _created={'lte': date})
+                .source('pid')
+                .scan(),
+                length=info['search']
+                .filter('range', _created={'lte': date})
+                .count(),
+                verbose=verbose
+            )
+            for hit in progress:
+                pid = hit.pid
+                if not pids[record_type].pop(pid, None):
+                    missing_pids[record_type].append(pid)
+        return pids, multiple_pids, missing_pids, none_pids
 
     @classmethod
     def get_deleted(cls, missing_pids, from_date):
@@ -275,14 +229,6 @@ class EntityMefRecord(ReroMefRecord):
         deleted = cls.get_deleted(missing_pids, from_date)
         return generate(search, deleted)
 
-    @classmethod
-    def flush_indexes(cls):
-        """Update indexes."""
-        try:
-            current_search.flush_and_refresh(index='mef')
-        except Exception as err:
-            current_app.logger.error(f'ERROR flush and refresh: {err}')
-
     def delete_ref(self, record, dbcommit=False, reindex=False):
         """Delete $ref from record.
 
@@ -298,3 +244,27 @@ class EntityMefRecord(ReroMefRecord):
             if reindex:
                 self.flush_indexes()
         return self, action
+
+    def get_entities_pids(self):
+        """Get entities pids."""
+        entities = []
+        entity_types = current_app.config.get(f'RERO_{self.mef_type}')
+        for entity_type in entity_types:
+            record_class = get_entity_class(entity_type)
+            name = record_class.name
+            if name in self:
+                entities.append({
+                    'record_class': record_class,
+                    # Get pid from $ref URL
+                    'pid': self.get(name).get('$ref').split('/')[-1]
+                })
+        return entities
+
+    def get_entities_records(self):
+        """Get entities records."""
+        entity_records = []
+        for entity in self.get_entities_pids():
+            record_class = entity['record_class']
+            if entity_record := record_class.get_record_by_pid(entity['pid']):
+                entity_records.append(entity_record)
+        return entity_records

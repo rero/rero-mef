@@ -50,18 +50,24 @@ class AgentGndRecord(AgentRecord):
     viaf_pid_name = 'gnd_pid'
     viaf_source_code = 'DNB'
     model_cls = AgentGndMetadata
+    search = AgentGndSearch
 
     @classmethod
-    def get_online_record(cls, id, verbose=False):
-        """Get online record."""
+    def get_online_record(cls, id, debug=False):
+        """Get online record.
+
+        :param id: Id of online record.
+        :param verbose: Verbosity.
+        :returns: record or None
+        """
         from .tasks import gnd_get_record
-        return gnd_get_record(id=id, verbose=verbose)
+        return gnd_get_record(id=id, debug=debug)
 
 
 class AgentGndIndexer(AgentIndexer):
     """GndIndexer."""
 
-    record_cls = AgentGndRecord
+    record_class = AgentGndRecord
 
     def bulk_index(self, record_id_iterator):
         """Bulk index records.

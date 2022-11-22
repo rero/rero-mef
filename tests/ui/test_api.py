@@ -17,10 +17,8 @@
 
 """Test api."""
 
-from invenio_search import current_search_client
-
-from rero_mef.agents.idref.api import AgentIdrefIndexer, AgentIdrefRecord
-from rero_mef.agents.mef.api import AgentMefSearch
+from rero_mef.agents import AgentIdrefIndexer, AgentIdrefRecord, \
+    AgentMefRecord, AgentMefSearch
 from rero_mef.api import Action
 from rero_mef.tasks import process_bulk_queue
 
@@ -40,18 +38,17 @@ def test_reromefrecord_api(app, agent_idref_record):
     count = sum(1 for _ in AgentIdrefRecord.get_all_records())
     assert count == 1
 
-    _, agent_action = idref.update_test_md5(
+    _, agent_action = idref.update_md5_changed(
         data=idref, dbcommit=True, reindex=True)
     assert agent_action == Action.UPTODATE
 
-    mef_record, _, _, _ = idref.create_or_update_mef_viaf_record(
-        dbcommit=True, reindex=True)
+    mef_record, _ = idref.create_or_update_mef(dbcommit=True, reindex=True)
 
     idref['gender'] = 'female'
-    _, agent_action = idref.update_test_md5(
+    _, agent_action = idref.update_md5_changed(
         data=idref, dbcommit=True, reindex=True)
     assert agent_action == Action.UPDATE
-    current_search_client.indices.refresh()
+    AgentMefRecord.flush_indexes()
     mef_es = next(
         AgentMefSearch().filter('term', pid=mef_record.pid).scan()
     ).to_dict()

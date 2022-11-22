@@ -17,33 +17,35 @@
 
 """Test signals."""
 
-from rero_mef.agents.gnd.api import AgentGndRecord
-from rero_mef.agents.mef.api import AgentMefSearch
-from rero_mef.agents.viaf.api import AgentViafRecord
+from rero_mef.agents import AgentGndRecord, AgentMefSearch, AgentViafRecord
 
 
 def test_create_mef_with_viaf_links(app, agent_viaf_data, agent_gnd_data):
     """Test create MEF record from agent with VIAF links."""
     v_record, action = AgentViafRecord.create_or_update(
-        agent_viaf_data, dbcommit=True, reindex=True
-    )
+        data=agent_viaf_data, dbcommit=True, reindex=True)
     assert action.name == 'CREATE'
     assert v_record['pid'] == '66739143'
     assert v_record['gnd_pid'] == '12391664X'
     assert v_record['rero_pid'] == 'A023655346'
     assert v_record['idref_pid'] == '069774331'
 
-    record, action, m_record, m_action, v_record, online = \
-        AgentGndRecord.create_or_update_agent_mef_viaf(
-            data=agent_gnd_data,
-            dbcommit=True,
-            reindex=True,
-            online=False
-        )
+    record, action = AgentGndRecord.create_or_update(
+        data=agent_gnd_data, dbcommit=True, reindex=True)
     assert action.name == 'CREATE'
     assert record['pid'] == '12391664X'
 
-    query = AgentMefSearch(). \
-        filter('term', gnd__pid='12391664X'). \
-        source('sources').scan()
-    assert next(query).sources == ['gnd']
+    m_record, m_action = record.create_or_update_mef(
+        dbcommit=True, reindex=True)
+    assert m_action.name == 'CREATE'
+    assert '$ref' in m_record['gnd']
+
+    query = AgentMefSearch() \
+        .filter('term', gnd__pid='12391664X') \
+        .scan()
+    result = next(query)
+    assert result.sources == ['gnd']
+    from pprint import pprint
+    pprint(result.to_dict())
+    assert result.gnd.pid == v_record['gnd_pid']
+    assert result.viaf_pid == v_record.pid

@@ -66,19 +66,20 @@ set -e
 # +============================+===========+==========================+==========+
 # | package                    | installed | affected                 | ID       |
 # +============================+===========+==========================+==========+
-# | click                      | 7.1.2     | <8.0.0                   | 47833    |
-# | celery                     | 5.1.2     | <5.2.0                   | 42498    |
-# | celery                     | 5.1.2     | <5.2.2                   | 43738    |
 # | flask-security             | 3.0.0     | <3.1.0                   | 45183    |
 # | flask-security             | 3.0.0     | >0                       | 44501    |
-# | wtforms                    | 2.3.3     | <3.0.0a1                 | 42852    |
-# | py                         | 1.11.0    | <=1.11.0                 | 51457    |
-# | safety                     | 1.10.3    | <2.2.0                   | 51358    |
 # | sqlalchemy                 | 1.4.44    | <2.0.0b1                 | 51668    |
 # | sqlalchemy-utils           | 0.35.0    | >=0.27.0                 | 42194    |
-# | wheel                      | 0.37.1    | <0.38.0                  | 51499    |
+# | wtforms                    | 2.3.3     | <3.0.0a1                 | 42852    |
+# | werkzeug                   | 1.0.1     | <2.2.3                   | 53325    |
+# | werkzeug                   | 1.0.1     | <2.2.3                   | 53326    |
+# | celery                     | 5.1.2     | <5.2.0                   | 42498    |
+# | celery                     | 5.1.2     | <5.2.2                   | 43738    |
+# | click                      | 7.1.2     | <8.0.0                   | 47833    |
+# | py                         | 1.11.0    | <=1.11.0                 | 51457    |
+# | safety                     | 1.10.3    | <2.2.0                   | 51358    |
 # +==============================================================================+
-safety check -i 47833 -i 42498 -i 43738 -i 45183 -i 44501 -i 42852 -i 51457 -i 51358 -i 51668 -i 42194 -i 51499
+safety check -i 45183 -i 44501 -i 51668 -i 42194 -i 42852 -i 53325 -i 53326 -i 42498 -i 43738 -i 47833 -i 51457 -i 51358
 info_msg "Test pydocstyle:"
 pydocstyle rero_mef tests docs
 info_msg "Test isort:"
@@ -94,7 +95,7 @@ autoflake --quiet --check --recursive --remove-all-unused-imports --ignore-init-
 info_msg "Sphinx-build:"
 sphinx-build -qnNW docs docs/_build/html
 info_msg "Tests:"
-poetry run pytest
+pytest
 
 success_msg "Perfect ${PROGRAM}! See you soon…"
 exit 0

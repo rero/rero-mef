@@ -87,11 +87,9 @@ def celery():
               help='Compaire md5 to find out if we have to update')
 @click.option('-k', '--enqueue', 'enqueue', is_flag=True, default=False,
               help="Enqueue record creation.")
-@click.option('-o', '--online', 'online', is_flag=True, default=False)
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @with_appcontext
-def create_or_update(entity, source, lazy, test_md5, enqueue, online,
-                     verbose):
+def create_or_update(entity, source, lazy, test_md5, enqueue, verbose):
     """Create or update entity records.
 
     :param entity: entity to create or update.
@@ -110,27 +108,25 @@ def create_or_update(entity, source, lazy, test_md5, enqueue, online,
         if isinstance(data, dict):
             data = [data]
 
-    for count, record in enumerate(data):
+    for idx, record in enumerate(data, 1):
         if enqueue:
             task_create_or_update.delay(
-                index=count,
+                idx=idx,
                 record=record,
                 entity=entity,
                 dbcommit=True,
                 reindex=True,
                 test_md5=test_md5,
-                online=online,
                 verbose=verbose
             )
         else:
             task_create_or_update(
-                index=count,
+                idx=idx,
                 record=record,
                 entity=entity,
                 dbcommit=True,
                 reindex=True,
                 test_md5=test_md5,
-                online=online,
                 verbose=verbose
             )
 
@@ -146,12 +142,12 @@ def create_or_update(entity, source, lazy, test_md5, enqueue, online,
 def delete(entity, source, lazy, enqueue, verbose):
     """Delete entity records.
 
-    :param entity: Entity to create or update.
+    :param entity: Entity to delete.
     :param source: File with entity data in JSON format.
     :param lazy: lazy reads file
     :param verbose: Verbose.
     """
-    click.secho(f'Delete entity records: {entity}', fg='red')
+    click.secho(f'Delete records: {entity}', fg='red')
     if lazy:
         # try to lazy read JSON file (slower, better memory management)
         data = read_json_record(source)
@@ -160,10 +156,10 @@ def delete(entity, source, lazy, enqueue, verbose):
         if isinstance(data, dict):
             data = [data]
 
-    for count, record in enumerate(data):
+    for idx, record in enumerate(data, 1):
         if enqueue:
             task_delete.delay(
-                index=count,
+                idx=idx,
                 pid=record.get('pid'),
                 entity=entity,
                 dbcommit=True,
@@ -173,7 +169,7 @@ def delete(entity, source, lazy, enqueue, verbose):
         else:
             pid = record.get('pid')
             task_delete(
-                index=count,
+                idx=idx,
                 pid=pid,
                 entity=entity,
                 dbcommit=True,
@@ -386,7 +382,7 @@ def load_csv(entity, pidstore_file, metadata_file, ids_file, bulk_count,
                        'cidref', 'corero', 'comef'])
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @with_appcontext
-def bulk_save(entities, output_directory, verbose):
+def save_csv(entities, output_directory, verbose):
     """Entity record dump.
 
     :param output_directory: Output directory.
@@ -439,16 +435,19 @@ def csv_to_json(csv_metadata_file, json_output_file, indent, verbose):
     :param verbose: Verbose.
     """
     click.secho(
-        f'CSV to JSON transform: {csv_metadata_file} -> {csv_metadata_file}',
+        f'CSV to JSON transform: {csv_metadata_file} -> {json_output_file}',
         fg='green'
     )
     with open(csv_metadata_file) as metadata_file:
         output_file = JsonWriter(json_output_file, indent=indent)
-        for count, metadata_line in enumerate(metadata_file, 1):
-            data = json.loads(metadata_line.split('\t')[3])
-            if verbose:
-                click.echo(f'{count:<10}: {data["pid"]}\t{data}')
-            output_file.write(data)
+        length = number_records_in_file(csv_metadata_file, 'csv')
+        with click.progressbar(metadata_file, length=length,
+                               label=f'Transform: {length}') as metadata:
+            for count, metadata_line in enumerate(metadata, 1):
+                data = json.loads(metadata_line.split('\t')[3])
+                if verbose:
+                    click.echo(f'{count:<10}: {data["pid"]}\t{data}')
+                output_file.write(data)
 
 
 @fixtures.command()
@@ -457,12 +456,11 @@ def csv_to_json(csv_metadata_file, json_output_file, indent, verbose):
               default=None)
 @click.option('-e', '--entity', 'entity', default=None)
 @click.option('-o', '--output', 'output', is_flag=True, default=False)
-@click.option('-I', '--indent', 'indent', type=click.INT, default=2)
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @click.option('-s', '--sqlite_dict', 'sqlite_dict', default='sqlite_dict.db')
 @with_appcontext
 def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
-             indent, verbose, sqlite_dict):
+             verbose, sqlite_dict):
     """Entities record diff.
 
     :param csv_metadata_file: CSV metadata file to compair.
@@ -478,16 +476,7 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
         :returns: data as json
         """
         data = json.loads(line.split('\t')[3].replace('\\\\', '\\'))
-        pid = data.get('pid')
-        return pid, data
-
-    def ordert_data(data):
-        """Order data pid, .
-
-        :param line: line of CSV text.
-        :returns: data as json
-        """
-        data = json.loads(data.split('\t')[3])
+        data.pop('md5', None)
         pid = data.get('pid')
         return pid, data
 
@@ -496,7 +485,7 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
     elif entity:
         compair = entity
     else:
-        click.secho('One of -a or -d parameter mandatory', fg='red')
+        click.secho('One of -c or -e parameter mandatory', fg='red', err=True)
         sys.exit(1)
     click.secho(
         f'CSV diff: {compair} <-> {csv_metadata_file}',
@@ -514,50 +503,79 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
         click.echo(f'Changed file: {file_name_diff}')
         click.echo(f'Deleted file: {file_name_delete}')
 
-    compaire_data = SqliteDict(sqlite_dict, autocommit=True)
-    if csv_metadata_file_compair and not entity:
+    counts = {
+        'new': 0,
+        'changed': 0,
+        'unchanged': 0,
+        'deleted': 0,
+        'compair': 0,
+        'compair_to': 0
+    }
+    compair_data = {}
+    if sqlite_dict:
+        compair_data = SqliteDict(sqlite_dict, autocommit=True)
+    compair_data.clear()
+    if csv_metadata_file_compair:
         length = number_records_in_file(csv_metadata_file_compair, 'csv')
+        counts['compair'] = length
         with open(csv_metadata_file_compair, 'r', buffering=1) as meta_file:
             label = f'Loading: {compair}'
             with click.progressbar(meta_file, length=length,
                                    label=label) as metadata:
                 for metadata_line in metadata:
                     pid, data = get_pid_data(metadata_line)
-                    compaire_data[pid] = data
+                    compair_data[pid] = data
     elif entity:
         entity_class = get_entity_class(entity)
         length = entity_class.count()
-        ids = entity_class.get_all_ids()
-        with click.progressbar(ids, length=length) as record_ids:
+        counts['compair'] = length
+        label = f'Loading: {compair}'
+        with click.progressbar(entity_class.get_all_ids(), length=length,
+                               label=label) as record_ids:
             for id in record_ids:
-                record = entity_class.get_record_by_id(id)
-                pid = record.pid
-                compaire_data[pid] = record
+                record = entity_class.get_record(id)
+                record.pop('md5', None)
+                compair_data[record.pid] = record
 
     db.session.close()
     with open(csv_metadata_file, 'r', buffering=1) as metadata_file:
-        for metadata_line in metadata_file:
-            pid, data = get_pid_data(metadata_line)
-            if pid in compaire_data:
-                if compaire_data[pid] != data:
+        length = number_records_in_file(csv_metadata_file, 'csv')
+        counts['compair_to'] = length
+        label = f'Reading: {csv_metadata_file}'
+        with click.progressbar(metadata_file, length=length,
+                               label=label) as lines:
+            for metadata_line in lines:
+                pid, data = get_pid_data(metadata_line)
+                if existing_data := compair_data.pop(pid, None):
+                    if existing_data != data:
+                        counts['changed'] += 1
+                        if verbose:
+                            click.echo('DIFF: ')
+                            click.echo(
+                                ' old:\t'
+                                f'{json.dumps(existing_data, sort_keys=True)}'
+                            )
+                            click.echo(
+                                f' new:\t{json.dumps(data, sort_keys=True)}')
+                        if output:
+                            file_diff.write(data)
+                    else:
+                        counts['unchanged'] += 1
+                        if verbose:
+                            click.echo('UNCHANGED: ')
+                            click.echo(
+                                f'{json.dumps(existing_data, sort_keys=True)}'
+                            )
+                else:
+                    counts['new'] += 1
                     if verbose:
-                        click.echo('DIFF: ')
                         click.echo(
-                            ' old:\t'
-                            f'{json.dumps(compaire_data[pid], sort_keys=True)}'
-                        )
-                        click.echo(
-                            f' new:\t{json.dumps(data, sort_keys=True)}')
+                            f'NEW :\t{json.dumps(data, sort_keys=True)}')
                     if output:
-                        file_diff.write(data)
-                del compaire_data[pid]
-            else:
-                if verbose:
-                    click.echo(f'NEW :\t{json.dumps(data, sort_keys=True)}')
-                if output:
-                    file_new.write(data)
+                        file_new.write(data)
 
-    for pid, data in compaire_data.items():
+    for pid, data in compair_data.items():
+        counts['deleted'] += 1
         if verbose:
             click.echo(f'DEL :\t{json.dumps(data, sort_keys=True)}')
         if output:
@@ -565,7 +583,14 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
     file_new.close()
     file_diff.close()
     file_delete.close()
-    sys.exit(0)
+    click.echo(
+        f'Compair: {counts["compair"]} | '
+        f'Compair to: {counts["compair_to"]} || '
+        f'Changed: {counts["changed"]} | '
+        f'New: {counts["new"]} | '
+        f'Deleted: {counts["deleted"]} | '
+        f'Unchanged: {counts["unchanged"]} '
+    )
 
 
 @oaiharvester.command('addsource')
@@ -717,7 +742,8 @@ def harvestname(name, from_date, until_date, arguments, quiet, enqueue,
         )
     except Exception:
         oai_names = [oai.name for oai in OAIHarvestConfig.query.all()]
-        click.secho(f'Config "{name}" not found in {oai_names}', fg='red')
+        click.secho(
+            f'Config "{name}" not found in {oai_names}', fg='red', err=True)
         sys.exit(1)
     count = 0
     action_count = {}
@@ -771,10 +797,10 @@ def save(output_file_name, name, from_date, until_date, quiet, enqueue):
     :param quiet: Supress output.
     :param enqueue: Enqueue harvesting and return immediately.
     """
-    click.secho(f'Harvest {name} ...', fg='green')
+    click.secho(f'Harvest: {name} {output_file_name} ...', fg='green')
     # TODO: addapt to other entity types
     save_task = obj_or_import_string(
-        f'rero_mef.agents.{name}.tasks:save_records_from_dates'
+        f'rero_mef.{name}.tasks:save_records_from_dates'
     )
     count = 0
     if save_task:
@@ -1054,7 +1080,7 @@ def reindex_missing(entities, verbose):
         )
         entity_class = get_entity_class(entity)
         pids_es, pids_db, pids_es_double, index = \
-            Monitoring.get_es_db_missing_pids(
+            Monitoring().get_es_db_missing_pids(
                 doc_type=entity,
                 verbose=verbose
             )

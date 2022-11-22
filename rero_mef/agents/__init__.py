@@ -17,12 +17,12 @@
 
 """Agents."""
 
-from .api import Action
 from .gnd.api import AgentGndIndexer, AgentGndRecord, AgentGndSearch
 from .idref.api import AgentIdrefIndexer, AgentIdrefRecord, AgentIdrefSearch
 from .mef.api import AgentMefIndexer, AgentMefRecord, AgentMefSearch
 from .rero.api import AgentReroIndexer, AgentReroRecord, AgentReroSearch
 from .viaf.api import AgentViafIndexer, AgentViafRecord, AgentViafSearch
+from ..api import Action
 
 __all__ = ('AgentGndIndexer', 'AgentGndRecord', 'AgentGndSearch',
            'AgentIdrefIndexer', 'AgentIdrefRecord', 'AgentIdrefSearch',

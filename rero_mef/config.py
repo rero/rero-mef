@@ -213,6 +213,7 @@ IDENTIFIERS = {
 }
 
 RERO_MEF_APP_BASE_URL = 'https://mef.rero.ch'
+RERO_MEF_VIAF_BASE_URL = 'http://www.viaf.org'
 
 SEARCH_CLIENT_CONFIG = dict(
     timeout=30,
@@ -430,15 +431,17 @@ RECORDS_REST_ENDPOINTS = dict(
 )
 
 RERO_AGENTS = [
-    'aggnd',
     'aidref',
+    'aggnd',
     'agrero'
 ]
 
 RERO_CONCEPTS = [
-    'corero',
-    'cidref'
+    'cidref',
+    'corero'
 ]
+
+RERO_ENTITIES = RERO_AGENTS + RERO_CONCEPTS
 
 RECORDS_JSON_SCHEMA = {
     'corero': '/concepts_rero/rero-concept-v0.0.1.json',

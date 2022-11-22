@@ -20,12 +20,11 @@
 from flask import current_app
 
 
-def get_concepts_endpoints():
+def get_concept_endpoints():
     """Get all contributions from config."""
-    concepts_endpoints = {}
     concepts = current_app.config.get('RERO_CONCEPTS', [])
     endpoints = current_app.config.get('RECORDS_REST_ENDPOINTS', {})
-    for endpoint, data in endpoints.items():
-        if endpoint in concepts:
-            concepts_endpoints[endpoint] = data
-    return concepts_endpoints
+    return {
+        endpoint: data for endpoint, data in endpoints.items()
+        if endpoint in concepts
+    }

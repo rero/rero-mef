@@ -117,16 +117,12 @@ function sample_load () {
       info_msg "Importing ${ENTITY} agent records:"
       dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY}
     done
-    info_msg "Creating MEF records:"
-    invenio agents create-mef
 
     for ENTITY in corero cidref
     do
       info_msg "Importing ${ENTITY} concept records:"
       dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY}
     done
-    info_msg "Creating MEF records:"
-    invenio concepts create-mef
 
     oai_init
 }
@@ -199,10 +195,10 @@ function viaf_init () {
     db_init
     oai_init
     ENTITY=viaf
-    invenio fixtures bulk-load ${ENTITY} ${INPUT_DIR} ${INPUT_DIR} --load_records --csv_pidstore_file ${ENTITY}_pidstore.csv --csv_metadata_file ${ENTITY}_metadata.csv --verbose --reindex
+    invenio fixtures load-csv viaf ${INPUT_DIR}/viaf_pidstore.csv ${INPUT_DIR}/viaf_metadata.csv --verbose --reindex
     invenio utils runindex --raise-on-error --concurrency 8 --delayed
     invenio utils runindex --raise-on-error
-    invenio utils create-from-viaf --online --progress
+    invenio agents create-from-viaf --online aggnd --online aidref --online agrero --progress
 }
 
 function usage () {

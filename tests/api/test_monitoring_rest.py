@@ -82,7 +82,7 @@ def test_monitoring_check_es_db_counts(app, client, agent_idref_data):
     create_and_login_monitoring_user(app, client)
 
     res = client.get(url_for(
-        'api_monitoring.missing_pids', doc_type='aidref'))
+        'api_monitoring.missing_pids', doc_type='aidref', delay=0))
     assert res.status_code == 200
 
     assert json.loads(res.get_data(as_text=True)) == {

@@ -25,15 +25,13 @@ from rero_mef.agents.rero.api import AgentReroRecord
 def test_create_agent_record_no_viaf_links(
         app, agent_gnd_data, agent_rero_data, agent_idref_data):
     """Test create agent record without VIAF links."""
-    record, action, m_record, m_action, v_record, online = \
-        AgentGndRecord.create_or_update_agent_mef_viaf(
-            data=agent_gnd_data,
-            dbcommit=True,
-            reindex=True,
-            online=False
-        )
+    gnd_record, action = AgentGndRecord.create_or_update(
+            data=agent_gnd_data, dbcommit=True, reindex=True)
     assert action.name == 'CREATE'
-    assert record['pid'] == '12391664X'
+    assert gnd_record['pid'] == '12391664X'
+
+    m_record, m_action = gnd_record.create_or_update_mef(
+        dbcommit=True, reindex=True)
     assert m_action.name == 'CREATE'
     assert m_record == {
         '$schema':
@@ -42,15 +40,13 @@ def test_create_agent_record_no_viaf_links(
         'pid': '1',
     }
 
-    record, action, m_record, m_action, v_record, online = \
-        AgentReroRecord.create_or_update_agent_mef_viaf(
-            data=agent_rero_data,
-            dbcommit=True,
-            reindex=True,
-            online=False
-        )
+    rero_record, action = AgentReroRecord.create_or_update(
+        data=agent_rero_data, dbcommit=True, reindex=True)
     assert action.name == 'CREATE'
-    assert record['pid'] == 'A023655346'
+    assert rero_record['pid'] == 'A023655346'
+
+    m_record, m_action = rero_record.create_or_update_mef(
+        dbcommit=True, reindex=True)
     assert m_action.name == 'CREATE'
     assert m_record == {
         '$schema':
@@ -59,15 +55,13 @@ def test_create_agent_record_no_viaf_links(
         'rero': {'$ref': 'https://mef.rero.ch/api/agents/rero/A023655346'},
     }
 
-    record, action, m_record, m_action, v_record, online = \
-        AgentIdrefRecord.create_or_update_agent_mef_viaf(
-            data=agent_idref_data,
-            dbcommit=True,
-            reindex=True,
-            online=False
-        )
+    idref_record, action = AgentIdrefRecord.create_or_update(
+        data=agent_idref_data, dbcommit=True, reindex=True)
     assert action.name == 'CREATE'
-    assert record['pid'] == '069774331'
+    assert idref_record['pid'] == '069774331'
+
+    m_record, m_action = idref_record.create_or_update_mef(
+        dbcommit=True, reindex=True)
     assert m_action.name == 'CREATE'
     assert m_record == {
         '$schema':

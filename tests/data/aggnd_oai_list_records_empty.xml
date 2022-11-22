@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <responseDate>2023-01-10T15:49:42Z</responseDate>
+  <request metadataPrefix="MARC21-xml" set="authorities:person" verb="ListRecords" from="2023-01-09">https://services.dnb.de/oai/repository</request>
+  <ListRecords xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">
+    <resumptionToken cursor="0" completeListSize="0"></resumptionToken>
+  </ListRecords>
+</OAI-PMH>

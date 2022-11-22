@@ -21,7 +21,7 @@ import click
 from celery import shared_task
 from flask import current_app
 
-from .api import ReroIndexer
+from .api import Action, ReroIndexer
 from .utils import get_entity_class
 
 
@@ -42,43 +42,9 @@ def process_bulk_queue(version_type=None, es_bulk_kwargs=None,
         es_bulk_kwargs=es_bulk_kwargs, stats_only=stats_only)
 
 
-@shared_task(ignore_result=True)
-def index_record(record_uuid):
-    """Index a single record.
-
-    :param record_uuid: The record UUID.
-    """
-    return ReroIndexer().index_by_id(record_uuid)
-
-
-@shared_task(ignore_result=True)
-def delete_record(record_uuid):
-    """Delete a single record.
-
-    :param record_uuid: The record UUID.
-    """
-    return ReroIndexer().delete_by_id(record_uuid)
-
-
-@shared_task(ignore_result=True)
-def mef_viaf_record(pid, agent, dbcommit=False, reindex=False):
-    """Create or update MEF and VIAF record.
-
-    :param record: the record for which a MEF and VIAF record is to be created
-    :param dbcommit: commit changes to db
-    :param reindex: reindex the records
-    """
-    if record_class := get_entity_class(agent):
-        if record := record_class.get_record_by_pid(pid):
-            return record.create_or_update_mef_viaf_record(
-                dbcommit=True,
-                reindex=True
-            )
-
-
 @shared_task
-def create_or_update(index, record, entity, dbcommit=True, reindex=True,
-                     online=False, test_md5=False, verbose=False):
+def create_or_update(idx, record, entity, dbcommit=True, reindex=True,
+                     test_md5=False, verbose=False):
     """Create or update record task.
 
     :param index: index of record
@@ -91,34 +57,32 @@ def create_or_update(index, record, entity, dbcommit=True, reindex=True,
     :returns: id type, pid or id, agent action, MEF action
     """
     entity_class = get_entity_class(entity)
-    returned_record, agent_action = entity_class.create_or_update(
-        data=record, dbcommit=dbcommit, reindex=reindex, test_md5=test_md5
-    )
-    if entity in ['aidref', 'aggnd', 'agrero'] and agent_action.CREATE:
-        mef_record, mef_action, viaf_record, got_online = returned_record.\
-            create_or_update_mef_viaf_record(
-                dbcommit=dbcommit,
-                reindex=reindex,
-                online=online
-            )
-    rec_id = returned_record.get('pid')
-    id_type = 'pid :'
+    record, agent_action = entity_class.create_or_update(
+        data=record, dbcommit=dbcommit, reindex=reindex, test_md5=test_md5)
+    entities = current_app.config.get('RERO_ENTITIES', [])
+    mef_record = None
+    if entity in entities and \
+            agent_action in (Action.CREATE, Action.UPDATE, Action.REPLACE):
+        mef_record, mef_action = record.create_or_update_mef(
+            dbcommit=dbcommit, reindex=reindex)
+    rec_id = record.get('pid')
+    id_type = 'pid:'
     if not rec_id:
         id_type = 'uuid:'
-        rec_id = returned_record.id
+        rec_id = record.id
     if verbose:
-        msg = f'{index:<10} {entity} {id_type} {rec_id} {agent_action.name}'
-        if agent_action.CREATE and entity in ['aidref', 'aggnd', 'agrero']:
-            if viaf_record:
-                v_pid = viaf_record['pid']
-            msg += (f' mef: {mef_record.pid} {mef_action.name} |'
-                    f' viaf: {v_pid} {got_online}')
+        msg = (
+            f'{idx:<10} {entity:<6} {id_type:<5} {rec_id:<25} '
+            f'{agent_action.name}'
+        )
+        if mef_record:
+            msg = f'{msg} | mef: {mef_record.pid} {mef_action.name}'
         click.echo(msg)
     return id_type, str(rec_id), str(agent_action)
 
 
 @shared_task
-def delete(index, pid, entity, dbcommit=True, delindex=True, verbose=False):
+def delete(idx, pid, entity, dbcommit=True, delindex=True, verbose=False):
     """Delete record task.
 
     :param index: index of record
@@ -129,13 +93,15 @@ def delete(index, pid, entity, dbcommit=True, delindex=True, verbose=False):
     :param verbose: verbose or not
     :returns: action
     """
-    agent_class = get_entity_class(entity)
-    agent_record = agent_class.get_record_by_pid(pid)
-    action = None
-    if agent_record:
-        _, action = agent_record.delete(dbcommit=dbcommit, delindex=delindex)
+    entity_class = get_entity_class(entity)
+    if entity_record := entity_class.get_record_by_pid(pid):
+        entity_record.delete(dbcommit=dbcommit, delindex=delindex)
         if verbose:
-            click.echo(f'{index:<10} Deleted {entity} {pid:<38} {action}')
-    else:
-        current_app.logger.warning(f'{index:<10} Not found {entity} {pid:<38}')
-    return action
+            msg = f'{idx:<10} {entity:<6} pid: {pid:<25} DELETED'
+            click.echo(msg)
+        return 'DELETED: {entity} {pid}'
+    msg = f'{idx:<10} {entity:<6} pid: {pid:<25} NOT FOUND'
+    if verbose:
+        click.secho(msg, fg='yellow')
+    current_app.logger.warning(msg)
+    return f'DELETE NOT FOUND: {entity} {pid}'

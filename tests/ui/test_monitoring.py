@@ -39,7 +39,7 @@ def test_monitoring(app, agent_idref_data, script_info):
         '      0     mef          0                        mef          0',
         '      0    viaf          0                       viaf          0'
     ]
-    mon = Monitoring()
+    mon = Monitoring(time_delta=0)
     assert mon.get_es_count('xxx') == 'No >>xxx<< in ES'
     assert mon.get_db_count('xxx') == 'No >>xxx<< in DB'
 
@@ -69,11 +69,12 @@ def test_monitoring(app, agent_idref_data, script_info):
     assert mon.__str__().split('\n') == cli_output + ['']
 
     runner = CliRunner()
-    res = runner.invoke(es_db_missing_cli, ['aidref'], obj=script_info)
+    res = runner.invoke(
+        es_db_missing_cli, ['aidref', '-d', 0], obj=script_info)
     assert res.output == 'aidref: pids missing in ES:\n069774331\n'
 
     runner = CliRunner()
-    res = runner.invoke(es_db_counts_cli, ['-m'], obj=script_info)
+    res = runner.invoke(es_db_counts_cli, ['-m', '-d', 0], obj=script_info)
     assert res.output.split('\n') == cli_output + [
         'aidref: pids missing in ES:', '069774331', '']
 
@@ -85,7 +86,7 @@ def test_monitoring(app, agent_idref_data, script_info):
     assert mon.get_es_count('agents_idref') == 1
     assert mon.check() == {}
     assert mon.missing('aidref') == {'DB': [], 'ES': [], 'ES duplicate': []}
-    idref.delete(dbcommit=True)
+    idref.delete(force=True, dbcommit=True)
     assert mon.get_db_count('aidref') == 0
     assert mon.get_es_count('agents_idref') == 1
     assert mon.check() == {'aidref': {'db_es': -1}}

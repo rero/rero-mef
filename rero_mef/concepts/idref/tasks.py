@@ -75,7 +75,7 @@ def process_records_from_dates(from_date=None, until_date=None,
         max_retries=current_app.config.get('RERO_OAI_RETRIES', 0),
         oai_item_iterator=MyOAIItemIterator,
         transformation=Transformation,
-        record_cls=ConceptIdrefRecord,
+        record_class=ConceptIdrefRecord,
         days_spann=30,
         from_date=from_date,
         until_date=until_date,
@@ -115,13 +115,12 @@ def save_records_from_dates(file_name, from_date=None, until_date=None,
 
 
 @shared_task
-def idref_get_record(id, verbose=False, debug=False):
+def idref_get_record(id, debug=False):
     """Get a record from GND OAI repo."""
     return oai_get_record(
         id=id,
         name='concepts.idref',
         transformation=Transformation,
         identifier='oai:IdRefOAIServer.fr:',
-        verbose=verbose,
         debug=debug
     )

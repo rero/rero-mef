@@ -75,7 +75,7 @@ def process_records_from_dates(from_date=None, until_date=None,
         max_retries=current_app.config.get('RERO_OAI_RETRIES', 0),
         oai_item_iterator=MyOAIItemIterator,
         transformation=Transformation,
-        record_cls=AgentIdrefRecord,
+        record_class=AgentIdrefRecord,
         days_spann=30,
         from_date=from_date,
         until_date=until_date,
@@ -122,6 +122,5 @@ def idref_get_record(id, verbose=False, debug=False):
         name='agents.idref',
         transformation=Transformation,
         identifier='oai:IdRefOAIServer.fr:',
-        verbose=verbose,
         debug=debug
     )

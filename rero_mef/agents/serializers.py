@@ -17,7 +17,10 @@
 
 """Record serialization."""
 
-from flask import request
+
+import contextlib
+
+from flask import current_app, request
 from invenio_records_rest.links import default_links_factory_with_additional
 from invenio_records_rest.schemas import RecordSchemaJSONV1
 from invenio_records_rest.serializers.json import JSONSerializer
@@ -30,11 +33,13 @@ from .viaf.api import AgentViafSearch
 def add_links(pid, record):
     """Add MEF link to agents."""
     links = {}
-    mef_pid = AgentMefRecord.get_mef_by_entity_pid(
-        record.pid, record.name, pid_only=True)
-    if mef_pid:
-        links['mef'] = '{scheme}://{host}/api/agents/mef/' + str(mef_pid)
-    try:
+    for idx, mef_pid in enumerate(AgentMefRecord.get_mef(
+            record.pid, record.name, pid_only=True)):
+        number = f'-{idx}' if idx else ''
+        links[f'mef{number}'] = '{scheme}://{host}/api/agents/mef/' \
+            + str(mef_pid)
+
+    with contextlib.suppress(Exception):
         viaf_pid_name = record.viaf_pid_name
         query = AgentViafSearch(). \
             filter({'term': {viaf_pid_name: pid.pid_value}}). \
@@ -42,10 +47,8 @@ def add_links(pid, record):
         viaf_pid = next(query.scan()).pid
         links['viaf'] = '{scheme}://{host}/api/agents/viaf/' \
             + str(viaf_pid)
-        links['viaf.org'] = 'http://www.viaf.org/viaf/' + str(viaf_pid)
-    except Exception:
-        pass
-
+        viaf_url = current_app.config.get('RERO_MEF_VIAF_BASE_URL')
+        links['viaf.org'] = f'{viaf_url}/viaf/{str(viaf_pid)}'
     link_factory = default_links_factory_with_additional(links)
     return link_factory(pid)
 
@@ -60,12 +63,15 @@ class ReroMefSerializer(JSONSerializer):
         :param record: Record instance.
         :param links_factory: Factory function for record links.
         """
+        rec = record
         if request and request.args.get('resolve'):
-            record = record.replace_refs()
+            rec = record.replace_refs()
+            # because the replace_refs loose the record original model. We need
+            # to reset it to have correct 'created'/'updated' output data
+            rec.model = record.model
 
         return super(ReroMefSerializer, self).serialize(
-            pid, record, links_factory=add_links, **kwargs
-        )
+            pid=pid, record=rec, links_factory=add_links, **kwargs)
 
 
 json_v1 = ReroMefSerializer(RecordSchemaJSONV1)

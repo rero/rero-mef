@@ -29,10 +29,11 @@ from .mef.api import ConceptMefRecord
 def add_links(pid, record):
     """Add MEF link to agents."""
     links = {}
-    mef_pid = ConceptMefRecord.get_mef_by_entity_pid(
-        record.pid, record.name, pid_only=True)
-    if mef_pid:
-        links['mef'] = '{scheme}://{host}/api/concepts/mef/' + str(mef_pid)
+    for idx, mef_pid in enumerate(ConceptMefRecord.get_mef(
+            record.pid, record.name, pid_only=True)):
+        number = f'-{idx}' if idx else ''
+        links[f'mef{number}'] = '{scheme}://{host}/api/agents/mef/' \
+            + str(mef_pid)
 
     link_factory = default_links_factory_with_additional(links)
     return link_factory(pid)
@@ -48,12 +49,15 @@ class ReroMefSerializer(JSONSerializer):
         :param record: Record instance.
         :param links_factory: Factory function for record links.
         """
+        rec = record
         if request and request.args.get('resolve'):
-            record = record.replace_refs()
+            rec = record.replace_refs()
+            # because the replace_refs loose the record original model. We need
+            # to reset it to have correct 'created'/'updated' output data
+            rec.model = record.model
 
         return super(ReroMefSerializer, self).serialize(
-            pid, record, links_factory=add_links, **kwargs
-        )
+            pid=pid, record=rec, links_factory=add_links, **kwargs)
 
 
 json_v1 = ReroMefSerializer(RecordSchemaJSONV1)
