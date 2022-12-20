@@ -17,9 +17,11 @@
 
 """API for manipulating MEF records."""
 
+
 from datetime import datetime, timezone
 
 import click
+from dateutil import parser
 from elasticsearch_dsl import Q
 from flask import current_app
 from invenio_search import current_search
@@ -216,6 +218,28 @@ class EntityMefRecord(ReroMefRecord):
         return self
 
     @classmethod
+    def get_deleted(cls, missing_pids, from_date):
+        """Get deleted records."""
+        # find deleted pids.
+        for missing_pid in missing_pids:
+            missing = {'pid': missing_pid}
+            mef = cls.get_record_by_pid(
+                missing_pid,
+                with_deleted=True
+            )
+            if mef is None:
+                yield missing
+            elif mef == {}:
+                # MEF was deleted!
+                missing['_created'] = mef.created.isoformat()
+                missing['_updated'] = mef.updated.isoformat()
+                if from_date:
+                    if mef.updated >= parser.isoparse(from_date):
+                        yield missing
+                else:
+                    yield missing
+
+    @classmethod
     def get_updated(cls, data):
         """Get latest Mef record for pid_type and pid.
 
@@ -224,30 +248,31 @@ class EntityMefRecord(ReroMefRecord):
         :returns: latest record.
         """
         search = cls.search()\
-            .params(preserve_order=True) \
-            .sort({'pid': {'order': 'asc'}})
+                    .params(preserve_order=True) \
+                    .sort({'pid': {'order': 'asc'}})
         deleted = []
-        if from_date := data.get('from_date'):
+        from_date = data.get('from_date')
+        if from_date:
             search = search.filter('range', _updated={'gte': from_date})
+        missing_pids = []
         if pids := data.get('pids'):
-            # find deleted pids
-            missing_pids = []
-            for pid in pids:
-                if cls.search().filter('term', pid=pid).count() == 0:
-                    missing_pids.append(pid)
-            for missing_pid in missing_pids:
-                data = {'pid': missing_pid}
-                mef = cls.get_record_by_pid(
-                    missing_pid,
-                    with_deleted=True
-                )
-                if mef == {}:
-                    data['_created'] = mef.created.isoformat()
-                    data['_updated'] = mef.updated.isoformat()
-                deleted.append(data)
             search = search.filter('terms', pid=pids)
+            missing_pids.extend(
+                pid
+                for pid in pids
+                if cls.search().filter('term', pid=pid).count() == 0
+            )
+        else:
+            # Get all deleted pids.
+            try:
+                missing_pids = cls.get_all_deleted_pids(
+                    from_date=data.get('from_date'))
+            except Exception as err:
+                raise Exception(err)
+
         if not data.get('resolve'):
             search = search.source(['pid', 'deleted', '_created', '_updated'])
+        deleted = cls.get_deleted(missing_pids, from_date)
         return generate(search, deleted)
 
     @classmethod
