@@ -34,7 +34,7 @@ from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 from invenio_records.api import Record
 from invenio_records_rest.utils import obj_or_import_string
 from kombu.compat import Consumer
-from sqlalchemy import text
+from sqlalchemy import func, text
 from sqlalchemy.exc import OperationalError, StatementError
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -238,9 +238,9 @@ class ReroMefRecord(Record):
     @classmethod
     def _get_all(cls, with_deleted=False):
         """Get all persistent identifier records."""
-        query = PersistentIdentifier.query.filter_by(
-            pid_type=cls.provider.pid_type
-        )
+        query = PersistentIdentifier \
+            .query \
+            .filter_by(pid_type=cls.provider.pid_type)
         if not with_deleted:
             query = query.filter_by(status=PIDStatus.REGISTERED)
         return query
@@ -254,6 +254,30 @@ class ReroMefRecord(Record):
             query = query.order_by(text('pid_value')).limit(limit)
             offset = 0
             count = cls.count(with_deleted=with_deleted)
+            while offset < count:
+                for identifier in query.offset(offset):
+                    yield identifier.pid_value
+                offset += limit
+        else:
+            # faster, more memory
+            for identifier in query:
+                yield identifier.pid_value
+
+    @classmethod
+    def get_all_deleted_pids(cls, limit=100000, from_date=None):
+        """Get all records pids. Return a generator iterator."""
+        query = PersistentIdentifier \
+            .query \
+            .filter_by(pid_type=cls.provider.pid_type) \
+            .filter_by(status=PIDStatus.DELETED)
+        if from_date:
+            query = query \
+                .filter(func.DATE(PersistentIdentifier.updated) >= from_date)
+        if limit:
+            # slower, less memory
+            count = query.count()
+            query = query.order_by(text('pid_value')).limit(limit)
+            offset = 0
             while offset < count:
                 for identifier in query.offset(offset):
                     yield identifier.pid_value
