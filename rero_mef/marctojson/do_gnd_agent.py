@@ -31,6 +31,15 @@ PUNCTUATION_POLICY = {
     'u': 'Unknown'
 }
 
+RECORD_TYPES = {
+    'p': 'bf:Person',
+    'b': 'bf:Organisation',
+    'f': 'bf:Organisation',
+    'g': 'bf:Place',
+    's': 'bf:Concept',
+    'u': 'bf:Title'
+}
+
 
 class Transformation(object):
     """Transformation MARC21 to JSON for GND autority person."""
@@ -45,17 +54,39 @@ class Transformation(object):
         if transform:
             self._transform()
 
+    def get_type(self):
+        """Get type of record.
+
+        Entitäten der GND (Satztypen) 075 $b TYPE $2 gndgen
+        - b Körperschaft
+        - f Konferenz
+        - g Geografikum
+        - n Person (nicht individualisiert)
+        - p Person (individualisiert)
+        - s Sachbegriff
+        - u Werk
+        """
+        for field_075 in self.marc.get_fields('075') or []:
+            if field_075['2'] == 'gndgen':
+                return RECORD_TYPES.get(field_075['b'])
+
     def _transform(self):
         """Call the transformation functions."""
-        if self.marc.get_fields('100') or \
-                self.marc.get_fields('110') or \
-                self.marc.get_fields('111'):
-            for func in dir(self):
-                if func.startswith('trans'):
-                    func = getattr(self, func)
-                    func()
+        record_type = self.get_type()
+        if record_type in ['bf:Person', 'bf:Organisation']:
+            if self.marc.get_fields('100', '110', '111'):
+                for func in dir(self):
+                    if func.startswith('trans'):
+                        func = getattr(self, func)
+                        func()
+            else:
+                msg = 'No 100 or 110 or 111'
+                if self.logger and self.verbose:
+                    self.logger.warning(f'NO TRANSFORMATION: {msg}')
+                self.json_dict = {'NO TRANSFORMATION': msg}
+                self.trans_gnd_pid()
         else:
-            msg = 'No 100 or 110 or 111'
+            msg = f'Not a person or organisation: {record_type}'
             if self.logger and self.verbose:
                 self.logger.warning(f'NO TRANSFORMATION: {msg}')
             self.json_dict = {'NO TRANSFORMATION': msg}
@@ -126,9 +157,11 @@ class Transformation(object):
         field_377 = self.marc['377']
         language_list = []
         if field_377 and field_377['a']:
-            for language in field_377.get_subfields('a'):
-                if LANGUAGES.get(language):
-                    language_list.append(language)
+            language_list.extend(
+                language
+                for language in field_377.get_subfields('a')
+                if LANGUAGES.get(language)
+            )
         if language_list:
             self.json_dict['language'] = language_list
 
@@ -136,8 +169,7 @@ class Transformation(object):
         """Transformation pid from field 001."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_gnd_pid')
-        field_001 = self.marc['001']
-        if field_001:
+        if field_001 := self.marc['001']:
             self.json_dict['pid'] = field_001.data
 
     def trans_gnd_identifier(self):
@@ -158,16 +190,16 @@ class Transformation(object):
             date_formated = date_str
             if len(date_str) == 8:
                 date_formated = \
-                    f'{date_str[0:4]}-{date_str[4:6]}-{date_str[6:8]}'
+                    f'{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}'
             elif len(date_str) == 4:
-                date_formated = date_str[0:4]
+                date_formated = date_str[:4]
             return date_formated
 
         def format_548_date(date_str):
             """Format date from field 548."""
             date_formated = date_str
             if len(date_str) == 4:
-                date_formated = date_str[0:4]
+                date_formated = date_str[:4]
             return date_formated
 
         def get_date(dates_per_tag, selector):
@@ -270,8 +302,7 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_gnd_conference')
         if self.marc.get_fields('110') or self.marc.get_fields('111'):
-            field_075 = self.marc['075']
-            if field_075:
+            if field_075 := self.marc['075']:
                 subfield_b = field_075['b']
                 if subfield_b == 'f':
                     self.json_dict['conference'] = True
@@ -311,7 +342,7 @@ class Transformation(object):
         tags = ['100']
         agent = 'bf:Person'
         subfields = {'a': ', ', 'b': ', ', 'c': ', ', 'd': ', ', 'x': ' - - '}
-        if self.marc.get_fields('110') or self.marc.get_fields('111'):
+        if self.marc.get_fields('110', '111'):
             tags = []
             subfields = {'a': ', ', 'b': '. ', 'n': ', ', 'd': ', ', 'c': ', ',
                          'e': '. ', 'g': '. ', 'k': '. ', 't': '. ',
@@ -356,12 +387,9 @@ class Transformation(object):
             if self.marc.get_fields('411'):
                 tag = '411'
         variant_names = self.json_dict.get('variant_name', [])
-        variant_name = build_string_list_from_fields(
-            record=self.marc,
-            tag=tag,
-            subfields=subfields
-        )
-        if variant_name:
+        if variant_name := build_string_list_from_fields(
+            record=self.marc, tag=tag, subfields=subfields
+        ):
             variant_names += variant_name
         if variant_names:
             self.json_dict['variant_name'] = variant_names
@@ -382,12 +410,9 @@ class Transformation(object):
             self.logger.info(
                 'Call Function', 'trans_gnd_variant_access_point'
             )
-        variant_access_point = build_string_list_from_fields(
-            record=self.marc,
-            tag=tag,
-            subfields=subfields
-        )
-        if variant_access_point:
+        if variant_access_point := build_string_list_from_fields(
+            record=self.marc, tag=tag, subfields=subfields
+        ):
             self.json_dict['variant_access_point'] = variant_access_point
 
     def trans_gnd_parallel_access_point(self):
@@ -406,22 +431,17 @@ class Transformation(object):
             self.logger.info(
                 'Call Function', 'trans_gnd_parallel_access_point'
             )
-        parallel_access_point = build_string_list_from_fields(
-            record=self.marc,
-            tag=tag,
-            subfields=subfields
-        )
-        if parallel_access_point:
+        if parallel_access_point := build_string_list_from_fields(
+            record=self.marc, tag=tag, subfields=subfields
+        ):
             self.json_dict['parallel_access_point'] = parallel_access_point
 
     def trans_gnd_country_associated(self):
         """Transformation country_associated 043 $c codes ISO 3166-1."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_gnd_country_associated')
-        field_043 = self.marc['043']
-        if field_043:
-            subfield_c = field_043['c']
-            if subfield_c:
+        if field_043 := self.marc['043']:
+            if subfield_c := field_043['c']:
                 country_split = subfield_c.split('-')
                 if len(country_split) > 1:
                     country = COUNTRY_UNIMARC_MARC21.get(country_split[1])

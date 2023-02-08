@@ -138,9 +138,9 @@ class Transformation(object):
                 'Call Function', 'trans_idref_variant_access_point')
         tag = '480' if self.marc['480'] else '450'
         subfields = {'a': ', ', 'x': ' - ', 'y': ' - ', 'z': ' - '}
-        variant_access_points = build_string_list_from_fields(
-            self.marc, tag, subfields)
-        if variant_access_points:
+        if variant_access_points := build_string_list_from_fields(
+            self.marc, tag, subfields
+        ):
             self.json_dict['variant_access_point'] = variant_access_points
 
     def trans_idref_relation(self):

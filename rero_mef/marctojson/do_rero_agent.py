@@ -88,10 +88,8 @@ class Transformation(object):
                 'Call Function', 'trans_rero_birth_and_death_dates')
         birth_date = ''
         death_date = ''
-        field_100 = self.marc['100']
-        if field_100:
-            subfield_d = field_100['d']
-            if subfield_d:
+        if field_100 := self.marc['100']:
+            if subfield_d := field_100['d']:
                 dates_string = re.sub(r'\s+', ' ', subfield_d).strip()
                 dates = dates_string.split('-')
                 birth_date = dates[0]
@@ -223,14 +221,13 @@ class Transformation(object):
             if self.marc.get_fields('411'):
                 tag = '411'
         variant_names = self.json_dict.get('variant_name', [])
-        variant_name = build_string_list_from_fields(
+        if variant_name := build_string_list_from_fields(
             record=self.marc,
             tag=tag,
             subfields=subfields,
             punctuation=punctuation,
-            spaced_punctuation=spaced_punctuation
-        )
-        if variant_name:
+            spaced_punctuation=spaced_punctuation,
+        ):
             variant_names += variant_name
         if variant_names:
             self.json_dict['variant_name'] = variant_names
@@ -253,14 +250,13 @@ class Transformation(object):
             if self.marc.get_fields('411'):
                 tag = '411'
         variant_access_points = self.json_dict.get('variant_access_point', [])
-        variant_access_point = build_string_list_from_fields(
+        if variant_access_point := build_string_list_from_fields(
             record=self.marc,
             tag=tag,
             subfields=subfields,
             punctuation=punctuation,
-            spaced_punctuation=spaced_punctuation
-        )
-        if variant_access_point:
+            spaced_punctuation=spaced_punctuation,
+        ):
             variant_access_points += variant_access_point
         if variant_access_points:
             self.json_dict['variant_access_point'] = variant_access_points
@@ -282,12 +278,11 @@ class Transformation(object):
                 tag = '710'
             if self.marc.get_fields('711'):
                 tag = '711'
-        parallel_access_point = build_string_list_from_fields(
+        if parallel_access_point := build_string_list_from_fields(
             record=self.marc,
             tag=tag,
             subfields=subfields,
             punctuation=punctuation,
-            spaced_punctuation=spaced_punctuation
-        )
-        if parallel_access_point:
+            spaced_punctuation=spaced_punctuation,
+        ):
             self.json_dict['parallel_access_point'] = parallel_access_point
