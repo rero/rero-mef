@@ -16,6 +16,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Helper."""
+
+import contextlib
 import copy
 import os
 import re
@@ -1252,15 +1254,12 @@ def replace_ctrl(text):
 def nice_field(field, ctrl=False, tab=False):
     """Changes MARC21 strings to more visible strings 1Fa -> $a with tag."""
     res = ''
-    try:
-        if tab:
-            res = 'tag[%s]\t%s' % \
-                (field.tag, nice_marc_field(field, ctrl, tab))
-        else:
-            res = 'tag[%s] %s' % \
-                (field.tag, nice_marc_field(field, ctrl, tab))
-    except Exception as err:
-        pass
+    with contextlib.suppress(Exception):
+        res = (
+            'tag[%s]\t%s' % (field.tag, nice_marc_field(field, ctrl, tab))
+            if tab
+            else f'tag[{field.tag}] {nice_marc_field(field, ctrl, tab)}'
+        )
     return res
 
 
@@ -1268,47 +1267,32 @@ def nice_marc_field(field, ctrl=False, tab=False):
     """Changes MARC21 strings to more visible strings 1Fa -> $a."""
     res = ''
     field = copy.deepcopy(field)
-    try:
+    with contextlib.suppress(Exception):
         if field.is_control_field():
-            if ctrl:
-                data = replace_ctrl(field.data)
-            else:
-                data = field.data
-            if tab:
-                res = '  \t' + data
-            else:
-                res = '   ' + data
+            data = replace_ctrl(field.data) if ctrl else field.data
+            res = '  \t' + data if tab else f'   {data}'
         else:
             res = ''
             # make indicator 1 nicer
-            if field.indicator1 != ' ':
-                res = field.indicator1
-            else:
-                res = '_'
+            res = field.indicator1 if field.indicator1 != ' ' else '_'
             # make indicator 2 nicer
-            if field.indicator2 != ' ':
-                res += field.indicator2
-            else:
-                res += '_'
+            res += field.indicator2 if field.indicator2 != ' ' else '_'
             # make subfields nicer
             for subfield in field:
                 sub_data = subfield[1]
                 if ctrl:
-                    if tab:
-                        res += '\t$' + subfield[0] + '\t' \
-                            + replace_ctrl(sub_data)
-                    else:
-                        res += ' $' + subfield[0] + ' ' \
-                            + replace_ctrl(sub_data)
+                    res += (
+                        '\t$' + subfield[0] + '\t' + replace_ctrl(sub_data)
+                        if tab
+                        else f' ${subfield[0]} {replace_ctrl(sub_data)}'
+                    )
                 else:
                     if subfield[0] == '6':
                         sub_data = "%-9s" % sub_data
                     if tab:
                         res += '\t$' + subfield[0] + '\t' + sub_data
                     else:
-                        res += ' $' + subfield[0] + ' ' + sub_data
-    except Exception as err:
-        pass
+                        res += f' ${subfield[0]} {sub_data}'
     return res
 
 
@@ -1319,7 +1303,7 @@ def nice_record(record, ctrl=False):
         leader = replace_ctrl(leader)
     nice = f'ldr: {leader}'
     for field in record:
-        nice += '%s: %s' % (field.tag, nice_marc_field(field, ctrl)) + '\n'
+        nice += f'{field.tag}: {nice_marc_field(field, ctrl)}' + '\n'
     return nice
 
 
@@ -1354,52 +1338,53 @@ def build_string_from_field(field, subfields, punctuation=',',
     from the given field tag and given subfields.
     the given separator is used as subfields delimiter.
     """
-    if field:
-        if not tag_grouping:
-            tag_grouping = []
-        grouping_data = []
-        grouping_code = []
-        for code, data in field:
-            if code in subfields:
-                if isinstance(data, (list, set)):
-                    data = subfields[code].join(data)
-                data = data.replace('\x98', '')
-                data = data.replace('\x9C', '')
-                data = data.replace(',,', ',')
-                data = remove_trailing_punctuation(
-                    data=data,
-                    punctuation=punctuation,
-                    spaced_punctuation=spaced_punctuation
-                )
-                if data := data.strip():
-                    for group in tag_grouping:
-                        if code in group['subtags']:
-                            code = group['subtags']
-                    if grouping_code and code == grouping_code[-1]:
-                        grouping_data[-1].append(data)
-                    else:
-                        grouping_code.append(code)
-                        grouping_data.append([data])
-        subfield_string = ''
-        for group in zip(grouping_code, grouping_data):
-            grouping_start = ''
-            grouping_end = ''
-            delimiter = subfields.get(group[0])
-            subdelimiter = subfields.get(group[0])
-            for grouping in tag_grouping:
-                if group[0] == grouping['subtags']:
-                    grouping_start = grouping.get('start', '')
-                    grouping_end = grouping.get('end', '')
-                    delimiter = grouping.get('delimiter', '')
-                    subdelimiter = grouping.get('subdelimiter', '')
+    if not field:
+        return
+    if not tag_grouping:
+        tag_grouping = []
+    grouping_data = []
+    grouping_code = []
+    for code, data in field:
+        if code in subfields:
+            if isinstance(data, (list, set)):
+                data = subfields[code].join(data)
+            data = data.replace('\x98', '')
+            data = data.replace('\x9C', '')
+            data = data.replace(',,', ',')
+            data = remove_trailing_punctuation(
+                data=data,
+                punctuation=punctuation,
+                spaced_punctuation=spaced_punctuation
+            )
+            if data := data.strip():
+                for group in tag_grouping:
+                    if code in group['subtags']:
+                        code = group['subtags']
+                if grouping_code and code == grouping_code[-1]:
+                    grouping_data[-1].append(data)
+                else:
+                    grouping_code.append(code)
+                    grouping_data.append([data])
+    subfield_string = ''
+    for group in zip(grouping_code, grouping_data):
+        grouping_start = ''
+        grouping_end = ''
+        delimiter = subfields.get(group[0])
+        subdelimiter = subfields.get(group[0])
+        for grouping in tag_grouping:
+            if group[0] == grouping['subtags']:
+                grouping_start = grouping.get('start', '')
+                grouping_end = grouping.get('end', '')
+                delimiter = grouping.get('delimiter', '')
+                subdelimiter = grouping.get('subdelimiter', '')
 
-            if subfield_string:
-                subfield_string += delimiter + grouping_start + \
-                    subdelimiter.join(group[1]) + grouping_end
-            else:
-                subfield_string = grouping_start + \
-                    subdelimiter.join(group[1]) + grouping_end
-        return subfield_string.strip()
+        if subfield_string:
+            subfield_string += delimiter + grouping_start + \
+                subdelimiter.join(group[1]) + grouping_end
+        else:
+            subfield_string = grouping_start + \
+                subdelimiter.join(group[1]) + grouping_end
+    return subfield_string.strip()
 
 
 def build_string_list_from_fields(record, tag, subfields, punctuation=',',
@@ -1436,13 +1421,10 @@ def has_roman_number(string, befor='', after=''):
     string befor roman numbers after: string behind roman number.
     """
     re_roman_number = re.compile(
-        r'(' + befor +
-        r'M{0,3}(?:CM|CD|D?C{0,3})(?:XC|XL|L?X{0,3})(?:IX|IV|V?I{0,3})' +
-        after + ')'
+        f'({befor}'
+        + r'M{0,3}(?:CM|CD|D?C{0,3})(?:XC|XL|L?X{0,3})(?:IX|IV|V?I{0,3})'
+        + after
+        + ')'
     )
     roman_numbers = re_roman_number.findall(string)
-    res = []
-    for roman_number in roman_numbers:
-        if roman_number:
-            res.append(roman_number)
-    return res
+    return [roman_number for roman_number in roman_numbers if roman_number]

@@ -17,7 +17,55 @@
 
 """Test GND auth person."""
 
-from agents_helpers import trans_prep
+import os
+
+from agents_helpers import build_xml_record_file, trans_prep
+from pymarc import marcxml
+
+from rero_mef.marctojson.do_gnd_agent import Transformation
+
+
+def test_no_person_or_organisation():
+    """Test no person or organisation."""
+    xml_part_to_add = """
+        <datafield tag="075" ind1=" " ind2=" ">
+            <subfield code="b">s</subfield>
+            <subfield code="2">gndgen</subfield>
+        </datafield>
+    """
+    build_xml_record_file(xml_part_to_add)
+    current_dir = os.path.dirname(__file__)
+    file_name = os.path.join(
+        current_dir, 'examples/xml_minimal_record.xml')
+    records = marcxml.parse_xml_to_array(
+        file_name, strict=False, normalize_form=None)
+    data = Transformation(marc=records[0], logger=None,
+                          verbose=False, transform=True)
+    assert data.json_dict == {
+        'NO TRANSFORMATION': 'Not a person or organisation: bf:Concept'}
+
+
+def test_no_100_110_111():
+    """Test np 100, 110, 111."""
+    xml_part_to_add = """
+        <datafield tag="075" ind1=" " ind2=" ">
+            <subfield code="b">p</subfield>
+            <subfield code="2">gndgen</subfield>
+        </datafield>
+        <datafield tag="075" ind1=" " ind2=" ">
+            <subfield code="b">piz</subfield>
+            <subfield code="2">gndspec</subfield>
+        </datafield>
+    """
+    build_xml_record_file(xml_part_to_add)
+    current_dir = os.path.dirname(__file__)
+    file_name = os.path.join(
+        current_dir, 'examples/xml_minimal_record.xml')
+    records = marcxml.parse_xml_to_array(
+        file_name, strict=False, normalize_form=None)
+    data = Transformation(marc=records[0], logger=None,
+                          verbose=False, transform=True)
+    assert data.json_dict == {'NO TRANSFORMATION': 'No 100 or 110 or 111'}
 
 
 def test_gnd_deleted():

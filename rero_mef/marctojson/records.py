@@ -99,8 +99,7 @@ class Records(pymarc.Record):
 
     def __iter__(self):
         """To support iteration."""
-        for result in self._iterator:
-            yield result
+        yield from self._iterator
 
     def get_error(self):
         """Get error from iterator."""
