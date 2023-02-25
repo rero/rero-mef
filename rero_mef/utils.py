@@ -997,46 +997,42 @@ def get_entity_indexer_class(entity):
         return search
 
 
-def write_link_json(
-    agent,
+def write_viaf_json(
     pidstore_file,
     metadata_file,
     viaf_pid,
     corresponding_data,
-    agent_pid,
     verbose=False
 ):
-    """Write a JSON record into file."""
-    key_per_catalog_id = {
-        'DNB': 'gnd_pid',
-        'RERO': 'rero_pid',
-        'SUDOC': 'idref_pid'
-    }
-    json_data = {'viaf_pid': viaf_pid}
-    write_to_file_viaf = False
-    for key, value in corresponding_data.items():
-        if key in key_per_catalog_id:
-            json_data[key_per_catalog_id[key]] = value
-            write_to_file_viaf = True
-    write_to_file = False
-    json_dump = json_data
+    """Write a JSON record into VIAF file."""
+    from rero_mef.agents import AgentViafRecord
+    json_data = {}
+    for source, value in corresponding_data.items():
+        if source in AgentViafRecord.sources:
+            key = AgentViafRecord.sources[source]
+            if pid := value.get('pid'):
+                json_data[f'{key}_pid'] = pid
+                if url := value.get('url'):
+                    json_data[key] = url
+        elif source == 'Wikipedia':
+            if pid := value.get('pid'):
+                json_data['wiki_pid'] = pid
+            if url := value.get('url'):
+                json_data['wiki'] = url
+        elif source == 'Identities':
+            json_data['worldcat'] = value.get('url')
 
-    agent_pid = viaf_pid
-    add_schema(json_dump, 'viaf')
-    json_dump['pid'] = agent_pid
-    del json_dump['viaf_pid']
+    add_schema(json_data, 'viaf')
+    json_data['pid'] = viaf_pid
     # only save VIAF data with used pids
-    write_to_file = write_to_file_viaf if agent == 'viaf' else True
-    if write_to_file:
-        record_uuid = str(uuid4())
-        date = str(datetime.now(timezone.utc))
-        pidstore_file.write(
-            pidstore_csv_line(agent, agent_pid, record_uuid, date)
-        )
-        metadata_file.write(metadata_csv_line(json_dump, record_uuid, date))
-        if verbose:
-            click.echo(f'  {agent}: {json_dump}')
-    return write_to_file
+    record_uuid = str(uuid4())
+    date = str(datetime.now(timezone.utc))
+    pidstore_file.write(
+        pidstore_csv_line('viaf', viaf_pid, record_uuid, date)
+    )
+    metadata_file.write(metadata_csv_line(json_data, record_uuid, date))
+    if verbose:
+        click.echo(f'  VIAF: {json_data}')
 
 
 def append_fixtures_new_identifiers(identifier, pids, pid_type):

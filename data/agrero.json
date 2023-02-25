@@ -1,362 +1,3818 @@
 [
   {
-    "md5": "e46818a77f0b8c5f676351781323d1f0",
-    "pid": "A000009346",
+    "md5": "7d6afdacace2d90936dbf0572c733d1f",
+    "pid": "A028868344",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
     "bf:Agent": "bf:Person",
-    "identifier": "http://data.rero.ch/02-A000009346",
+    "identifier": "http://data.rero.ch/02-A028868344",
     "variant_name": [
-      "Aranton d'Alex, Jean d',",
-      "Aranthon d'Alex, Jean d',",
-      "Alex, Jean d'Arenthon d',"
+      "Caoursin, William,",
+      "Caorsinus, Guilelmus,",
+      "Caoursin, Guillelmus,",
+      "Cahoursin, Guillaume,",
+      "Caorsin, Gulielmo,",
+      "Caorsin, Guillermus,",
+      "Guillaume Caoursin,"
     ],
-    "date_of_birth": "1620",
-    "date_of_death": "1695",
-    "preferred_name": "Arenthon d'Alex, Jean d',",
+    "date_of_birth": "(1430?",
+    "date_of_death": "1501)",
+    "preferred_name": "Caoursin, Guillaume,",
     "variant_access_point": [
-      "Aranton d'Alex, Jean d', 1620-1695",
-      "Aranthon d'Alex, Jean d', 1620-1695",
-      "Alex, Jean d'Arenthon d', 1620-1695"
+      "Caoursin, William, (1430?-1501)",
+      "Caorsinus, Guilelmus, (1430?-1501)",
+      "Caoursin, Guillelmus, (1430?-1501)",
+      "Cahoursin, Guillaume, (1430?-1501)",
+      "Caorsin, Gulielmo, (1430?-1501)",
+      "Caorsin, Guillermus, (1430?-1501)",
+      "Guillaume Caoursin, (1430?-1501)"
     ],
-    "authorized_access_point": "Arenthon d'Alex, Jean d', 1620-1695",
+    "authorized_access_point": "Caoursin, Guillaume, (1430?-1501)",
     "biographical_information": [
-      "Prince-\u00e9v\u00eaque de Gen\u00e8ve (1661-1695)"
+      "Vice-chancelier de l'Ordre de Saint-Jean de J\u00e9rusalem"
     ]
   },
   {
-    "md5": "7badff1fad1b3179ba1ba9bdf25a9bf3",
-    "pid": "A000065776",
+    "md5": "67e593cc8761d37201baf1b9b4b5ac90",
+    "pid": "A003048129",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
     "bf:Agent": "bf:Person",
-    "identifier": "http://data.rero.ch/02-A000065776",
-    "variant_name": [
-      "Cavalieri, Pius Franchi de",
-      "Franchi De Cavalieri, Pietro Pio",
-      "Franchi De Cavalieri, Pius"
-    ],
-    "preferred_name": "Franchi De Cavalieri, Pio Pietro",
-    "variant_access_point": [
-      "Cavalieri, Pius Franchi de",
-      "Franchi De Cavalieri, Pietro Pio",
-      "Franchi De Cavalieri, Pius"
-    ],
-    "authorized_access_point": "Franchi De Cavalieri, Pio Pietro"
+    "identifier": "http://data.rero.ch/02-A003048129",
+    "preferred_name": "Brown, George Isaac",
+    "authorized_access_point": "Brown, George Isaac"
   },
   {
-    "md5": "11f264777581fcb816a74c28d05553b5",
-    "pid": "A000070488",
+    "md5": "9ea0e46fed269cc94d501502dffffa59",
+    "pid": "A009426238",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
     "bf:Agent": "bf:Person",
-    "identifier": "http://data.rero.ch/02-A000070488",
-    "variant_name": [
-      "Bonqueval, J.G. de"
-    ],
-    "preferred_name": "Genty de Bonqueval, J",
-    "variant_access_point": [
-      "Bonqueval, J.G. de"
-    ],
-    "authorized_access_point": "Genty de Bonqueval, J"
+    "identifier": "http://data.rero.ch/02-A009426238",
+    "preferred_name": "Luard, Honey",
+    "authorized_access_point": "Luard, Honey"
   },
   {
-    "md5": "2b1a18ffab5e93b126d089d2e5379466",
-    "pid": "A003671569",
-    "bf:Agent": "bf:Organisation",
-    "conference": false,
-    "identifier": "http://data.rero.ch/02-A003671569",
-    "variant_name": [
-      "Parlement europ\u00e9en. DG4",
-      "Parlement europ\u00e9en. Generaldirektion Wissenschaft",
-      "Parlement europ\u00e9en. Directorate General for Research"
-    ],
-    "preferred_name": "Parlement europ\u00e9en. Direction g\u00e9n\u00e9rale des \u00e9tudes",
-    "variant_access_point": [
-      "Parlement europ\u00e9en. DG4",
-      "Parlement europ\u00e9en. Generaldirektion Wissenschaft",
-      "Parlement europ\u00e9en. Directorate General for Research"
-    ],
-    "authorized_access_point": "Parlement europ\u00e9en. Direction g\u00e9n\u00e9rale des \u00e9tudes"
-  },
-  {
-    "md5": "9a84175e56df06dd9c4e9a564d34b5c4",
-    "pid": "A005353099",
-    "bf:Agent": "bf:Organisation",
-    "conference": false,
-    "identifier": "http://data.rero.ch/02-A005353099",
-    "preferred_name": "G\u00fcrzenich-Orchester K\u00f6lner Philharmoniker",
-    "authorized_access_point": "G\u00fcrzenich-Orchester K\u00f6lner Philharmoniker",
-    "biographical_information": [
-      "Jusqu'en 1986: G\u00fcrzenich-Orchester (K\u00f6ln)",
-      "Jusqu'en 1986: K\u00f6lner Philharmoniker",
-      "D\u00e8s 1986: G\u00fcrzenich-Orchester K\u00f6lner Philharmoniker"
-    ]
-  },
-  {
-    "md5": "980b127758f806da1ad917589a594a12",
-    "pid": "A005464637",
-    "bf:Agent": "bf:Organisation",
-    "conference": false,
-    "identifier": "http://data.rero.ch/02-A005464637",
-    "variant_name": [
-      "Institut de recherches sur les civilisations de l'Occident moderne (Paris)",
-      "Unit\u00e9 de recherches sur les civilisations de l'Occident moderne (Paris)",
-      "URCOM (Unit\u00e9 de recherches sur les civilisations de l'Occident moderne) (Paris)"
-    ],
-    "preferred_name": "Universit\u00e9 de Paris 4. Institut de recherches sur les civilisations de l'Occident moderne",
-    "variant_access_point": [
-      "Institut de recherches sur les civilisations de l'Occident moderne (Paris)",
-      "Unit\u00e9 de recherches sur les civilisations de l'Occident moderne (Paris)",
-      "URCOM (Unit\u00e9 de recherches sur les civilisations de l'Occident moderne) (Paris)"
-    ],
-    "authorized_access_point": "Universit\u00e9 de Paris 4. Institut de recherches sur les civilisations de l'Occident moderne"
-  },
-  {
-    "md5": "23d44ce5a4a9eaa6d00b174e796467d0",
-    "pid": "A005472911",
-    "bf:Agent": "bf:Organisation",
-    "conference": false,
-    "identifier": "http://data.rero.ch/02-A005472911",
-    "variant_name": [
-      "Institut d'administration des entreprises (Rennes : ?-1970)"
-    ],
-    "preferred_name": "Universit\u00e9 de Rennes. Institut d'administration des entreprises",
-    "variant_access_point": [
-      "Institut d'administration des entreprises (Rennes : ?-1970)"
-    ],
-    "authorized_access_point": "Universit\u00e9 de Rennes. Institut d'administration des entreprises",
-    "biographical_information": [
-      "Jusqu'en 1970: Universit\u00e9 de Rennes. Institut d'administration des entreprises",
-      "D\u00e8s 1970: Universit\u00e9 de Rennes 1. Institut d'administration des entreprises"
-    ]
-  },
-  {
-    "md5": "f85ee7377ce74a69d30828a225752747",
-    "pid": "A005591402",
+    "md5": "3edd8052d72e8a50988423abed6ed388",
+    "pid": "A003300349",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
     "bf:Agent": "bf:Person",
-    "identifier": "http://data.rero.ch/02-A005591402",
-    "variant_name": [
-      "Amboise, L\u00e9on d'",
-      "L\u00e9on, d'Amboise"
-    ],
-    "preferred_name": "Guillemin, L\u00e9on",
-    "variant_access_point": [
-      "Amboise, L\u00e9on d'",
-      "L\u00e9on, d'Amboise"
-    ],
-    "authorized_access_point": "Guillemin, L\u00e9on",
-    "biographical_information": [
-      "L\u00e9on d'Amboise est le pseud. de L\u00e9on Guillemin"
-    ]
+    "identifier": "http://data.rero.ch/02-A003300349",
+    "preferred_name": "Giusti, Giambattista",
+    "authorized_access_point": "Giusti, Giambattista"
   },
   {
-    "md5": "370239fe4f5431ca3b36284f9026e2da",
-    "pid": "A009238698",
-    "bf:Agent": "bf:Organisation",
-    "conference": false,
-    "identifier": "http://data.rero.ch/02-A009238698",
-    "preferred_name": "Pipe Trio",
-    "authorized_access_point": "Pipe Trio"
-  },
-  {
-    "md5": "eb9f4559b841ebb23b3aa81f48c75cb2",
-    "pid": "A009535178",
+    "md5": "2e575fbcfcde8ee8244e34615ffae041",
+    "pid": "A019010974",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
     "bf:Agent": "bf:Person",
-    "qualifier": "de Barbanson",
-    "identifier": "http://data.rero.ch/02-A009535178",
+    "identifier": "http://data.rero.ch/02-A019010974",
     "variant_name": [
-      "Barban\u00e7on, Constantin de"
+      "Tetsuo, Owada,"
     ],
-    "preferred_name": "Constantin, de Barbanson",
+    "date_of_birth": "1944",
+    "preferred_name": "Owada, Tetsuo,",
     "variant_access_point": [
-      "Barban\u00e7on, Constantin de"
-    ],
-    "authorized_access_point": "Constantin, de Barbanson"
-  },
-  {
-    "md5": "8490c0706e4d85befe6a1763153a64d8",
-    "pid": "A009962747",
-    "bf:Agent": "bf:Organisation",
-    "conference": false,
-    "identifier": "http://data.rero.ch/02-A009962747",
-    "variant_name": [
-      "European Coal and Steel Community",
-      "Europ\u00e4ische Gemeinschaft f\u00fcr Kohle und Stahl",
-      "Comunit\u00e0 europea del carbone e dell'acciaio",
-      "CECA (Communaut\u00e9 europ\u00e9enne du charbon et de l'acier)",
-      "ECSC (European Coal and Steel Community)",
-      "EGKS (Europ\u00e4ische Gemeinschaft f\u00fcr Kohle und Stahl)"
-    ],
-    "preferred_name": "Communaut\u00e9 europ\u00e9enne du charbon et de l'acier",
-    "variant_access_point": [
-      "European Coal and Steel Community",
-      "Europ\u00e4ische Gemeinschaft f\u00fcr Kohle und Stahl",
-      "Comunit\u00e0 europea del carbone e dell'acciaio",
-      "CECA (Communaut\u00e9 europ\u00e9enne du charbon et de l'acier)",
-      "ECSC (European Coal and Steel Community)",
-      "EGKS (Europ\u00e4ische Gemeinschaft f\u00fcr Kohle und Stahl)"
-    ],
-    "authorized_access_point": "Communaut\u00e9 europ\u00e9enne du charbon et de l'acier",
-    "biographical_information": [
-      "Sous le descripteur \"COMMUNAUTE EUROPEENNE DU CHARBON ET DE L'ACIER\", on trouve les documents traitant de l'organisation cr\u00e9\u00e9e par le Trait\u00e9 de Paris (1951) jusqu'\u00e0 sa dissolution en 2002",
-      "Sous les descripteurs \"COMMUNAUTE EUROPEENNE\", \"COMMUNAUTE EUROPEENNE DE L'ENERGIE ATOMIQUE\" et \"COMMUNAUTE EUROPEENNE DU CHARBON ET DE L'ACIER\", on trouve uniquement les documents traitant sp\u00e9cifiquement de ces organisations, en particulier avant leur regroupement en 1967",
-      "Sous le descripteur \"COMMUNAUTES EUROPEENNES\", on trouve les documents traitant de l'ensemble des Communaut\u00e9s, du Trait\u00e9 de fusion (1967) au Trait\u00e9 sur l'Union europ\u00e9enne (1993)"
-    ]
-  },
-  {
-    "md5": "f7c64698afa7f5653da5f6e2a471a4e4",
-    "pid": "A012320736",
-    "bf:Agent": "bf:Organisation",
-    "conference": true,
-    "identifier": "http://data.rero.ch/02-A012320736",
-    "preferred_name": "Congr\u00e8s de psychiatrie et de neurologie de langue fran\u00e7aise",
-    "authorized_access_point": "Congr\u00e8s de psychiatrie et de neurologie de langue fran\u00e7aise (78 : 1980 : Reims)"
-  },
-  {
-    "md5": "0654556e79b0a5993f1a3f21e2538522",
-    "pid": "A017671081",
-    "bf:Agent": "bf:Person",
-    "identifier": "http://data.rero.ch/02-A017671081",
-    "variant_name": [
-      "Aernoudt, Pierre,",
-      "Arnold, Joseph,"
-    ],
-    "date_of_birth": "1811",
-    "date_of_death": "1865",
-    "preferred_name": "Arnoudt, Pierre J.,",
-    "variant_access_point": [
-      "Aernoudt, Pierre, 1811-1865",
-      "Arnold, Joseph, 1811-1865"
-    ],
-    "authorized_access_point": "Arnoudt, Pierre J., 1811-1865",
-    "biographical_information": [
-      "J\u00e9suite (\u00e0 partir de 1835 ; ordonn\u00e9 pr\u00eatre en 1843) ; v\u00e9cut aux Etats-Unis \u00e0 partir de 1835, \u00e9crivit aussi en latin"
-    ]
-  },
-  {
-    "md5": "a0899531d7e144d6fddf862902296756",
-    "pid": "A017991779",
-    "bf:Agent": "bf:Person",
-    "identifier": "http://data.rero.ch/02-A017991779",
-    "variant_name": [
-      "Catalano, Giuseppe,",
-      "Catalanus, Josephus,",
-      "Catalani, Josephus,",
-      "Catalano, Josepho,"
-    ],
-    "date_of_birth": "1698",
-    "date_of_death": "1764",
-    "preferred_name": "Catalani, Giuseppe,",
-    "variant_access_point": [
-      "Catalano, Giuseppe, 1698-1764",
-      "Catalanus, Josephus, 1698-1764",
-      "Catalani, Josephus, 1698-1764",
-      "Catalano, Josepho, 1698-1764"
-    ],
-    "authorized_access_point": "Catalani, Giuseppe, 1698-1764",
-    "biographical_information": [
-      "Historien, th\u00e9ologien et juriste"
-    ]
-  },
-  {
-    "md5": "c6b87e7bfc29646948f5429209965caf",
-    "pid": "A021799923",
-    "bf:Agent": "bf:Person",
-    "identifier": "http://data.rero.ch/02-A021799923",
-    "variant_name": [
-      "Kouro\u00fadi\u0332s, K\u00f3\u0332stas"
-    ],
-    "preferred_name": "Kouroud\u0113s, K\u014dstas",
-    "variant_access_point": [
-      "Kouro\u00fadi\u0332s, K\u00f3\u0332stas"
+      "Tetsuo, Owada, 1944-"
     ],
     "parallel_access_point": [
-      "\u039a\u03bf\u03c5\u03c1\u03bf\u03cd\u03b4\u03b7\u03c2, \u039a\u03ce\u03c3\u03c4\u03b1\u03c2"
+      "\u5c0f\u548c\u7530\u54f2\u7537, 1944-"
     ],
-    "authorized_access_point": "Kouroud\u0113s, K\u014dstas"
-  },
-  {
-    "md5": "63217758345f5fdbd0be66a2286b2632",
-    "pid": "A022480124",
-    "bf:Agent": "bf:Person",
-    "identifier": "http://data.rero.ch/02-A022480124",
-    "variant_name": [
-      "Bernard, Bayle,"
-    ],
-    "date_of_birth": "1807",
-    "date_of_death": "1875",
-    "preferred_name": "Bernard, William Bayle,",
-    "variant_access_point": [
-      "Bernard, Bayle, 1807-1875"
-    ],
-    "authorized_access_point": "Bernard, William Bayle, 1807-1875"
-  },
-  {
-    "md5": "48d1e9960cb7c0bd89d2fbb674569087",
-    "pid": "A023655346",
-    "bf:Agent": "bf:Person",
-    "identifier": "http://data.rero.ch/02-A023655346",
-    "variant_name": [
-      "De Cavalieri, Giovanni Battista,",
-      "Cavalleriis, Baptista de,",
-      "Cavalleriis, Giovanni Battista de,",
-      "Cavalieri, Gianbattista,"
-    ],
-    "date_of_birth": "ca.1525",
-    "date_of_death": "1601",
-    "preferred_name": "Cavalieri, Giovanni Battista,",
-    "variant_access_point": [
-      "De Cavalieri, Giovanni Battista, ca.1525-1601",
-      "Cavalleriis, Baptista de, ca.1525-1601",
-      "Cavalleriis, Giovanni Battista de, ca.1525-1601",
-      "Cavalieri, Gianbattista, ca.1525-1601"
-    ],
-    "authorized_access_point": "Cavalieri, Giovanni Battista, ca.1525-1601",
+    "authorized_access_point": "Owada, Tetsuo, 1944-",
     "biographical_information": [
-      "Graveur, dessinateur et \u00e9diteur"
+      "Docteur \u00e8s lettres, dipl\u00f4m\u00e9 de l'Universit\u00e9 de Waseda, T\u014dky\u014d, Japon. - En poste \u00e0 l'Universit\u00e9 de Shizuoka, Japon (en 2006). - Sp\u00e9cialiste de l'histoire m\u00e9di\u00e9vale du Japon"
     ]
   },
   {
-    "md5": "9d9fe3b19e907d9c733bf1c4028b8da0",
-    "pid": "A024285452",
+    "md5": "3d89c36c601a11523af8c4983ab82d8e",
+    "pid": "A024255039",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
     "bf:Agent": "bf:Person",
-    "identifier": "http://data.rero.ch/02-A024285452",
-    "date_of_birth": "1983",
-    "preferred_name": "Soyarslan, \u00c7i\u01e7dem,",
-    "authorized_access_point": "Soyarslan, \u00c7i\u01e7dem, 1983-",
+    "identifier": "http://data.rero.ch/02-A024255039",
+    "preferred_name": "Anzemberger, Guy P.",
+    "authorized_access_point": "Anzemberger, Guy P."
+  },
+  {
+    "md5": "2f701551d5974d3e686a73cce3def9fa",
+    "pid": "A024075381",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A024075381",
+    "preferred_name": "Meester de Ravestein, E",
+    "authorized_access_point": "Meester de Ravestein, E"
+  },
+  {
+    "md5": "cdb3565d69715d10fb1b8dd734675194",
+    "pid": "A009687650",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A009687650",
+    "preferred_name": "Joseph, Branden Wayne",
+    "authorized_access_point": "Joseph, Branden Wayne"
+  },
+  {
+    "md5": "9ce0201ef2875a52d333416f73e16d08",
+    "pid": "A014026079",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A014026079",
+    "preferred_name": "Wiese, Ren\u00e9",
+    "authorized_access_point": "Wiese, Ren\u00e9"
+  },
+  {
+    "md5": "95e70ce656dec97fdbf420dec0c772a0",
+    "pid": "A011493066",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A011493066",
+    "preferred_name": "Leitner, Marina",
+    "authorized_access_point": "Leitner, Marina"
+  },
+  {
+    "md5": "748a952b57a872f79f16a81c8ebffadc",
+    "pid": "A024043552",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A024043552",
+    "variant_name": [
+      "Madani, Rahma Benhamou El,",
+      "Benhamou El Madani, Rahma,"
+    ],
+    "date_of_birth": "1966",
+    "preferred_name": "El Madani, Rahma Benhamou,",
+    "variant_access_point": [
+      "Madani, Rahma Benhamou El, 1966-",
+      "Benhamou El Madani, Rahma, 1966-"
+    ],
+    "authorized_access_point": "El Madani, Rahma Benhamou, 1966-",
     "biographical_information": [
-      "Artiste lyrique (soprano)"
+      "Productrice, r\u00e9alisatrice, sc\u00e9nariste"
     ]
   },
   {
-    "md5": "bf13b602d6494f21385cbac14b029716",
-    "pid": "A027454547",
-    "bf:Agent": "bf:Organisation",
-    "conference": false,
-    "identifier": "http://data.rero.ch/02-A027454547",
-    "preferred_name": "Van Halen (groupe musical)",
-    "authorized_access_point": "Van Halen (groupe musical)"
+    "md5": "58e9a279cf4409a2613bedb5cd4e7665",
+    "pid": "A003782234",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003782234",
+    "preferred_name": "Salv\u00e1, Vicente",
+    "authorized_access_point": "Salv\u00e1, Vicente"
   },
   {
-    "md5": "85ad5ae7222d0f32634ce6691d1aad52",
-    "pid": "A028240818",
+    "md5": "c3d4fce3bebc1091f2bef94b80d5f782",
+    "pid": "A003427813",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003427813",
+    "preferred_name": "Johnson, John F",
+    "authorized_access_point": "Johnson, John F"
+  },
+  {
+    "md5": "0cd4f4f0f126d755b9e2772b7ad582bf",
+    "pid": "A003531943",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003531943",
+    "preferred_name": "Lot, Fernand",
+    "authorized_access_point": "Lot, Fernand"
+  },
+  {
+    "md5": "62e34ddd9ca6fb1f09ebd0bfc82a1f1a",
+    "pid": "A003185209",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003185209",
+    "preferred_name": "Doly, Guy",
+    "authorized_access_point": "Doly, Guy"
+  },
+  {
+    "md5": "7557dd5488319dd90fbb08dbdc8d6bb7",
+    "pid": "A016816789",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A016816789",
+    "preferred_name": "Lekhina, Ekaterina",
+    "authorized_access_point": "Lekhina, Ekaterina"
+  },
+  {
+    "md5": "65c30db755c20f5dbf2c3b4fd93d24a8",
+    "pid": "A012387266",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A012387266",
+    "preferred_name": "Internationales Symposium f\u00fcr Viktimologie 1979 :",
+    "authorized_access_point": "Internationales Symposium f\u00fcr Viktimologie (3 : 1979 : M\u00fcnster-Westfalen)"
+  },
+  {
+    "md5": "1dab1c9fef5c0cadf0d354308f31dc41",
+    "pid": "A012329066",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "qualifier": "Dr en sc. nat.",
+    "identifier": "http://data.rero.ch/02-A012329066",
+    "preferred_name": "Huebner, Hans, Dr en sc. nat.",
+    "authorized_access_point": "Huebner, Hans, Dr en sc. nat."
+  },
+  {
+    "md5": "fb56b1e058fe1167219de903ff93edf2",
+    "pid": "A026123991",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A026123991",
+    "preferred_name": "Cardoso, Ant\u00f3nio",
+    "authorized_access_point": "Cardoso, Ant\u00f3nio"
+  },
+  {
+    "md5": "00ee087e74c895bb3810d11fa9ea19e6",
+    "pid": "A021643724",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A021643724",
+    "variant_name": [
+      "Wen-hsien, Guo"
+    ],
+    "preferred_name": "Guo, Wen-hsien",
+    "variant_access_point": [
+      "Wen-hsien, Guo"
+    ],
+    "authorized_access_point": "Guo, Wen-hsien"
+  },
+  {
+    "md5": "0e65826d2d5b5ff606570815b08547e7",
+    "pid": "A018459512",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "qualifier": "m\u00e9decin",
+    "identifier": "http://data.rero.ch/02-A018459512",
+    "preferred_name": "Schl\u00fcssel, m\u00e9decin",
+    "authorized_access_point": "Schl\u00fcssel, m\u00e9decin"
+  },
+  {
+    "md5": "dfa6db1c6f49d5166fd83d3dacaa6313",
+    "pid": "A009279090",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A009279090",
+    "preferred_name": "Douchy, Herv\u00e9",
+    "authorized_access_point": "Douchy, Herv\u00e9"
+  },
+  {
+    "md5": "4685b0ec3769e44640d09a6fdd84bf87",
+    "pid": "A005821830",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A005821830",
+    "preferred_name": "Green, Owen Mortimer",
+    "authorized_access_point": "Green, Owen Mortimer"
+  },
+  {
+    "md5": "d79a21646e85aad467e0c94205aaecde",
+    "pid": "A021918604",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A021918604",
+    "preferred_name": "Na\u1e63r, Marsel",
+    "authorized_access_point": "Na\u1e63r, Marsel"
+  },
+  {
+    "md5": "fa5aeed956eb0a0ef9ae34548634591c",
+    "pid": "A012368293",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
     "bf:Agent": "bf:Organisation",
     "conference": false,
-    "identifier": "http://data.rero.ch/02-A028240818",
+    "identifier": "http://data.rero.ch/02-A012368293",
+    "preferred_name": "Association internationale de philosophie du droit et de philosophie sociale. Deutsche Sektion. Tagung (1996 :",
+    "authorized_access_point": "Association internationale de philosophie du droit et de philosophie sociale. Deutsche Sektion. Tagung (1996 : Jena)"
+  },
+  {
+    "md5": "86c35ba0531dba4b47f29f7420504587",
+    "pid": "A012378544",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012378544",
+    "preferred_name": "Universit\u00e9 de Lausanne. Centre du droit de l'entreprise. Journ\u00e9e d'\u00e9tude (1990 :",
+    "authorized_access_point": "Universit\u00e9 de Lausanne. Centre du droit de l'entreprise. Journ\u00e9e d'\u00e9tude (1990 : Lausanne)"
+  },
+  {
+    "md5": "7d1265f0a9bb20df1685bb2da20f698a",
+    "pid": "A020351109",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A020351109",
+    "preferred_name": "Petersen, Syndy",
+    "authorized_access_point": "Petersen, Syndy"
+  },
+  {
+    "md5": "67bba570ebe81f5750cdffa41108defc",
+    "pid": "A012346982",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012346982",
+    "preferred_name": "Commission internationale de juristes. Conf\u00e9rence (1985 :",
+    "authorized_access_point": "Commission internationale de juristes. Conf\u00e9rence (1985 : Nairobi)"
+  },
+  {
+    "md5": "2c9496b12ab0776579a343daeb821bf1",
+    "pid": "A012409616",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012409616",
+    "preferred_name": "Universit\u00e0 cattolica del Sacro Cuore (Milano). Conference (1990 :",
+    "authorized_access_point": "Universit\u00e0 cattolica del Sacro Cuore (Milano). Conference (1990 : Trento)"
+  },
+  {
+    "md5": "2d7532f9c40a750e4adb55bf54d3c2be",
+    "pid": "A018395567",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018395567",
+    "date_of_birth": "1986",
+    "preferred_name": "Kull, Iara,",
+    "authorized_access_point": "Kull, Iara, 1986-"
+  },
+  {
+    "md5": "6ee856d91c845cb55666835fef2bfc23",
+    "pid": "A012368815",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A012368815",
+    "preferred_name": "Colloque sur le patrimoine syriaque 1994 :",
+    "authorized_access_point": "Colloque sur le patrimoine syriaque (2 : 1994 : Antelias)"
+  },
+  {
+    "md5": "eded3f5ae23e9c8ce91ea49a94d76095",
+    "pid": "A018475973",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018475973",
+    "date_of_birth": "1910",
+    "date_of_death": "1997",
+    "preferred_name": "Bielawski, J\u00f3zef,",
+    "authorized_access_point": "Bielawski, J\u00f3zef, 1910-1997"
+  },
+  {
+    "md5": "3281b52dd1a7bcea679e1e0386acec18",
+    "pid": "A027449905",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A027449905",
+    "date_of_birth": "1957",
+    "preferred_name": "Deloupy, Bernard,",
+    "authorized_access_point": "Deloupy, Bernard, 1957-",
+    "biographical_information": [
+      "Publicitaire, journaliste, auteur de romans policiers. - Coach en communication (en 2018)"
+    ]
+  },
+  {
+    "md5": "5fc513acf3370b8cf5a9de85d0b74caa",
+    "pid": "A023668772",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A023668772",
+    "preferred_name": "Micha\u0142ek, Andrzej",
+    "authorized_access_point": "Micha\u0142ek, Andrzej"
+  },
+  {
+    "md5": "035b15d0ca54a302bb64f978b616de9f",
+    "pid": "A027698830",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A027698830",
+    "date_of_birth": "1942",
+    "preferred_name": "Davies, John,",
+    "authorized_access_point": "Davies, John, 1942-"
+  },
+  {
+    "md5": "be9392b55301c5f1136b419f36bb1127",
+    "pid": "A013505146",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013505146",
     "variant_name": [
-      "Compagnie PO",
-      "Compagnie des chemins de fer de Paris \u00e0 Orl\u00e9ans",
-      "Compagnie des chemins de fer P. O. Midi",
-      "Compagnie des chemins de fer d'Orl\u00e9ans et du Midi",
-      "Chemin de fer d'Orl\u00e9ans",
-      "Compagnie d'Orl\u00e9ans",
-      "Compagnie du chemin de fer de Paris \u00e0 Orl\u00e9ans"
+      "Spi\u0332lio\u0332t\u00e1ki\u0332s, K.K"
     ],
-    "preferred_name": "Compagnie du chemin de fer de Paris \u00e0 Orl\u00e9ans (Paris)",
+    "preferred_name": "Sp\u0113li\u014dtak\u0113s, K.K",
     "variant_access_point": [
-      "Compagnie PO",
-      "Compagnie des chemins de fer de Paris \u00e0 Orl\u00e9ans",
-      "Compagnie des chemins de fer P. O. Midi",
-      "Compagnie des chemins de fer d'Orl\u00e9ans et du Midi",
-      "Chemin de fer d'Orl\u00e9ans",
-      "Compagnie d'Orl\u00e9ans",
-      "Compagnie du chemin de fer de Paris \u00e0 Orl\u00e9ans"
+      "Spi\u0332lio\u0332t\u00e1ki\u0332s, K.K"
     ],
-    "authorized_access_point": "Compagnie du chemin de fer de Paris \u00e0 Orl\u00e9ans (Paris)"
+    "parallel_access_point": [
+      "\u03a3\u03c0\u03b7\u03bb\u03b9\u03c9\u03c4\u03ac\u03ba\u03b7\u03c2, \u039a.\u039a"
+    ],
+    "authorized_access_point": "Sp\u0113li\u014dtak\u0113s, K.K"
+  },
+  {
+    "md5": "fca83edc120220c07ae9fda1fbe8ee7a",
+    "pid": "A013753495",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013753495",
+    "preferred_name": "Bogdan-Verger, Olimpia",
+    "authorized_access_point": "Bogdan-Verger, Olimpia"
+  },
+  {
+    "md5": "a5bee56444e8eff7bf3fcc179c50b725",
+    "pid": "A003421797",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003421797",
+    "preferred_name": "Jastrz\u0119biec-Zielonka, Ludwik",
+    "authorized_access_point": "Jastrz\u0119biec-Zielonka, Ludwik"
+  },
+  {
+    "md5": "2a59710f4c787405c8aa0735e163a0c3",
+    "pid": "A023114350",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A023114350",
+    "date_of_birth": "1965",
+    "preferred_name": "Matthews, Gelien,",
+    "authorized_access_point": "Matthews, Gelien, 1965-"
+  },
+  {
+    "md5": "3750b3e8205f630e01de12b9190ff419",
+    "pid": "A003037886",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003037886",
+    "preferred_name": "Brandolin, Mario",
+    "authorized_access_point": "Brandolin, Mario"
+  },
+  {
+    "md5": "73b0007df5e5125a3f800ad29b2728aa",
+    "pid": "A021514179",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A021514179",
+    "date_of_birth": "1979",
+    "preferred_name": "Dubbini, Rachele,",
+    "authorized_access_point": "Dubbini, Rachele, 1979-",
+    "biographical_information": [
+      "Arch\u00e9ologue"
+    ]
+  },
+  {
+    "md5": "e250499c12cad57930145d3c6c04a857",
+    "pid": "A005732208",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A005732208",
+    "preferred_name": "Busch, Sylvia",
+    "authorized_access_point": "Busch, Sylvia"
+  },
+  {
+    "md5": "62d18e9c8441e1602492c1cbafc2b1e8",
+    "pid": "A012396940",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012396940",
+    "preferred_name": "Internacia Katolika Unui\u011do Esperantista. Kongreso 1996 :",
+    "authorized_access_point": "Internacia Katolika Unui\u011do Esperantista. Kongreso (12 : 1996 : Szombathely)"
+  },
+  {
+    "md5": "6d35d757449be3791260dfba0f9a10fd",
+    "pid": "A009519020",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A009519020",
+    "variant_name": [
+      "Da Costa, Carla Tavares",
+      "Tavares Da Costa, Carla"
+    ],
+    "preferred_name": "Costa, Carla Tavares da",
+    "variant_access_point": [
+      "Da Costa, Carla Tavares",
+      "Tavares Da Costa, Carla"
+    ],
+    "authorized_access_point": "Costa, Carla Tavares da"
+  },
+  {
+    "md5": "f1d8411e1e645c4c1fcf447a8d32414b",
+    "pid": "A028986344",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A028986344",
+    "preferred_name": "Association por International Servicie",
+    "authorized_access_point": "Association por International Servicie"
+  },
+  {
+    "md5": "02330a00e131c79ad6066e059effd03a",
+    "pid": "A018613224",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018613224",
+    "preferred_name": "Dumouchel, Jacques",
+    "authorized_access_point": "Dumouchel, Jacques"
+  },
+  {
+    "md5": "e886c2c6b1b1809e5be515d50ba25d15",
+    "pid": "A016513981",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A016513981",
+    "preferred_name": "Weber, Renaud",
+    "authorized_access_point": "Weber, Renaud"
+  },
+  {
+    "md5": "2462110708b3953f3ac00ac551e4d7ff",
+    "pid": "A027582518",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A027582518",
+    "date_of_birth": "1944",
+    "preferred_name": "Wiedemann, Herbert,",
+    "authorized_access_point": "Wiedemann, Herbert, 1944-",
+    "biographical_information": [
+      "Professeur de piano sp\u00e9cialis\u00e9 en improvisation \u00e0 l'Universit\u00e9 des arts de Berlin de 1988 \u00e0 2016"
+    ]
+  },
+  {
+    "md5": "043d1509491fe44477cd119819b38d2e",
+    "pid": "A003830445",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003830445",
+    "preferred_name": "Siegmund, Bernhard",
+    "authorized_access_point": "Siegmund, Bernhard"
+  },
+  {
+    "md5": "3a3385ec5cebc259fae732c450baa7ba",
+    "pid": "A017173033",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017173033",
+    "preferred_name": "Hungerb\u00fchler, Ivo",
+    "authorized_access_point": "Hungerb\u00fchler, Ivo"
+  },
+  {
+    "md5": "d51395982ee89c19f1258e4162ee3fb9",
+    "pid": "A018087920",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018087920",
+    "preferred_name": "Schwandt, Michael",
+    "authorized_access_point": "Schwandt, Michael"
+  },
+  {
+    "md5": "8dda661409c6d53e99387e7c5e5c6b76",
+    "pid": "A021975601",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A021975601",
+    "preferred_name": "Frances-Claude",
+    "authorized_access_point": "Frances-Claude"
+  },
+  {
+    "md5": "a7989ae1f223355e7b1197b634fd890f",
+    "pid": "A012527993",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A012527993",
+    "preferred_name": "Cours m\u00e9dico-juridique (1969 :",
+    "authorized_access_point": "Cours m\u00e9dico-juridique (1969 : Ferrara)"
+  },
+  {
+    "md5": "0ee44f2257572082c6070fc2f3181939",
+    "pid": "A003363900",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003363900",
+    "preferred_name": "Henriot, Jean-Claude",
+    "authorized_access_point": "Henriot, Jean-Claude"
+  },
+  {
+    "md5": "725b324863665195952b10ec53f194f8",
+    "pid": "A016768352",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "qualifier": "musicien",
+    "identifier": "http://data.rero.ch/02-A016768352",
+    "preferred_name": "Patry, Andr\u00e9 J., musicien",
+    "authorized_access_point": "Patry, Andr\u00e9 J., musicien"
+  },
+  {
+    "md5": "29a32a63872b00f9a9d464cd9397b488",
+    "pid": "A020122584",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A020122584",
+    "preferred_name": "Rosset, Xavier",
+    "authorized_access_point": "Rosset, Xavier"
+  },
+  {
+    "md5": "d890e719b16481730353360ca7282a98",
+    "pid": "A018331793",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018331793",
+    "preferred_name": "Fiebiger, Rainer",
+    "authorized_access_point": "Fiebiger, Rainer"
+  },
+  {
+    "md5": "37f8c0c2f8e9f5695bd1f5c3fee0ca5f",
+    "pid": "A020103298",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A020103298",
+    "preferred_name": "Hron\u00e9k, Upravil Miroslav",
+    "authorized_access_point": "Hron\u00e9k, Upravil Miroslav"
+  },
+  {
+    "md5": "7bf9275829a3c7ed3a206a31886a0d4e",
+    "pid": "A018556919",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018556919",
+    "preferred_name": "Kn\u00fcfermann, Eckar",
+    "authorized_access_point": "Kn\u00fcfermann, Eckar"
+  },
+  {
+    "md5": "3e6edb6f202c405aa9cdf0ee9090f44d",
+    "pid": "A025723446",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A025723446",
+    "preferred_name": "Kaliska, Maria",
+    "authorized_access_point": "Kaliska, Maria"
+  },
+  {
+    "md5": "09903b4ec9f5da1234f83b79428d19bf",
+    "pid": "A022476006",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A022476006",
+    "preferred_name": "Exposition internationale (1876 :",
+    "authorized_access_point": "Exposition internationale (1876 : Philadelphia). Section suisse"
+  },
+  {
+    "md5": "9b6b5613a60fb65b58444681e11c29de",
+    "pid": "A002981924",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002981924",
+    "preferred_name": "Beca\u00efa, Melchisedec",
+    "authorized_access_point": "Beca\u00efa, Melchisedec"
+  },
+  {
+    "md5": "341d3a3daba0752c1c9eb1b8bb3aa089",
+    "pid": "A012462643",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012462643",
+    "preferred_name": "Universit\u00e9 de Clermont-Ferrand. Centre de recherches sur les litt\u00e9ratures modernes et contemporaines. Colloque international",
+    "authorized_access_point": "Universit\u00e9 de Clermont-Ferrand. Centre de recherches sur les litt\u00e9ratures modernes et contemporaines. Colloque international (Clermont-Ferrand)"
+  },
+  {
+    "md5": "3de3429d5ab09d32107b7acc7c73b58b",
+    "pid": "A003360509",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003360509",
+    "preferred_name": "Helbich, Wolfgang J",
+    "authorized_access_point": "Helbich, Wolfgang J"
+  },
+  {
+    "md5": "84a1e1fbd26920a6f9bf68e9b4b4c73c",
+    "pid": "A023166695",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A023166695",
+    "preferred_name": "Reynolds, Catherine",
+    "authorized_access_point": "Reynolds, Catherine"
+  },
+  {
+    "md5": "0c9f72f083e8ba27def2f4836bce9492",
+    "pid": "A002941440",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002941440",
+    "preferred_name": "Artl, Gerhard",
+    "authorized_access_point": "Artl, Gerhard"
+  },
+  {
+    "md5": "cd84a780caf0edf2a3702113e346e279",
+    "pid": "A003436041",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003436041",
+    "preferred_name": "Juteau, Danielle",
+    "authorized_access_point": "Juteau, Danielle"
+  },
+  {
+    "md5": "c17378ab22dd0e47bcdf92ae8d46f02c",
+    "pid": "A003552475",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003552475",
+    "preferred_name": "Maister, David H",
+    "authorized_access_point": "Maister, David H"
+  },
+  {
+    "md5": "26837ffa73387ed2d1aeef1bb1ef20e0",
+    "pid": "A003245434",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "qualifier": "entomologue",
+    "identifier": "http://data.rero.ch/02-A003245434",
+    "variant_name": [
+      "Fischer, Maximilian, entomologue"
+    ],
+    "preferred_name": "Fischer, Max, entomologue",
+    "variant_access_point": [
+      "Fischer, Maximilian, entomologue"
+    ],
+    "authorized_access_point": "Fischer, Max, entomologue"
+  },
+  {
+    "md5": "afef1d165efc3275ceb09fc443b365a7",
+    "pid": "A003853351",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003853351",
+    "preferred_name": "Spiess, Bernhard",
+    "authorized_access_point": "Spiess, Bernhard"
+  },
+  {
+    "md5": "5665ffecc6f33516793b98c613a8874d",
+    "pid": "A017944030",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017944030",
+    "preferred_name": "Sandner, Henrike",
+    "authorized_access_point": "Sandner, Henrike"
+  },
+  {
+    "md5": "5178d6d86e16a99f82689ae8f1721c53",
+    "pid": "A017383534",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017383534",
+    "preferred_name": "Ming-Yuet, Kee",
+    "authorized_access_point": "Ming-Yuet, Kee"
+  },
+  {
+    "md5": "35801f5ed55ce49186c42e4441ef483a",
+    "pid": "A003101806",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003101806",
+    "preferred_name": "Chiarini, Claude",
+    "authorized_access_point": "Chiarini, Claude"
+  },
+  {
+    "md5": "86f0d93a00b7593cacd47bf155aff348",
+    "pid": "A018699407",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018699407",
+    "preferred_name": "Janssen, Hildegonda",
+    "authorized_access_point": "Janssen, Hildegonda"
+  },
+  {
+    "md5": "636dfe98876e73545059770863f1504b",
+    "pid": "A025688432",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A025688432",
+    "preferred_name": "Ribeiro, Marc",
+    "authorized_access_point": "Ribeiro, Marc"
+  },
+  {
+    "md5": "9bd9cee3ec04bce31d3611899cabbcf8",
+    "pid": "A003182838",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A003182838",
+    "preferred_name": "Divertimento Vocale (Fribourg)",
+    "authorized_access_point": "Divertimento Vocale (Fribourg)"
+  },
+  {
+    "md5": "627a0bf00eb40c298bc23d6bf02b596e",
+    "pid": "A012525949",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012525949",
+    "preferred_name": "Nations Unies. Service de l'assistance technique. Seminar (1960 :",
+    "authorized_access_point": "Nations Unies. Service de l'assistance technique. Seminar (1960 : Leysin)"
+  },
+  {
+    "md5": "db1ec10ce3fb21c9fb01c79452f3759f",
+    "pid": "A002961093",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002961093",
+    "preferred_name": "Baillargeon, Guy",
+    "authorized_access_point": "Baillargeon, Guy"
+  },
+  {
+    "md5": "968b8d5148a7d42a9d2469a2d60ce031",
+    "pid": "A012465613",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012465613",
+    "preferred_name": "Alliance mondiale des unions chr\u00e9tiennes f\u00e9minines. Council meeting (1947 :",
+    "authorized_access_point": "Alliance mondiale des unions chr\u00e9tiennes f\u00e9minines. Council meeting (1947 : Hangchow)"
+  },
+  {
+    "md5": "3f6bc10055af04744a12ecba7ead8e83",
+    "pid": "A028529691",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A028529691",
+    "date_of_birth": "1989",
+    "preferred_name": "Wietlisbach, St\u00e9phanie,",
+    "authorized_access_point": "Wietlisbach, St\u00e9phanie, 1989-",
+    "biographical_information": [
+      "Juriste"
+    ]
+  },
+  {
+    "md5": "a9a10ea55a6be33557cd56d724b56085",
+    "pid": "A011417162",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A011417162",
+    "preferred_name": "Oelenheinz, Leopold",
+    "authorized_access_point": "Oelenheinz, Leopold"
+  },
+  {
+    "md5": "a1d618012f43273af473b4bd9efe6651",
+    "pid": "A011007424",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A011007424",
+    "preferred_name": "Bellini, Emmanuel",
+    "authorized_access_point": "Bellini, Emmanuel",
+    "biographical_information": [
+      "Dates de vie: 1904-"
+    ]
+  },
+  {
+    "md5": "56eedc2f1b4c92014c725ec1e19e5018",
+    "pid": "A018093417",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A018093417",
+    "preferred_name": "Salon international du livre et de la presse 1990 :",
+    "authorized_access_point": "Salon international du livre et de la presse (4 : 1990 : Gen\u00e8ve)"
+  },
+  {
+    "md5": "7cc1cdba2cc9d4d3befa7e2e5a7a816f",
+    "pid": "A003093717",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A003093717",
+    "preferred_name": "Chambre syndicale des soci\u00e9t\u00e9s d'\u00e9tudes et de conseils. Section Organisation et formation (Paris)",
+    "authorized_access_point": "Chambre syndicale des soci\u00e9t\u00e9s d'\u00e9tudes et de conseils. Section Organisation et formation (Paris)"
+  },
+  {
+    "md5": "bfb9de494d28cef1e5fb26a05858728e",
+    "pid": "A019156002",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A019156002",
+    "preferred_name": "Lalonde, Jean-Yves",
+    "authorized_access_point": "Lalonde, Jean-Yves"
+  },
+  {
+    "md5": "f5034ff541ac7bea219850a44dcd0e99",
+    "pid": "A003080186",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003080186",
+    "preferred_name": "Carter, Bob",
+    "authorized_access_point": "Carter, Bob"
+  },
+  {
+    "md5": "9cf723fdbc08c687ffce55a25a05da0a",
+    "pid": "A022784340",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A022784340",
+    "preferred_name": "D. M.",
+    "authorized_access_point": "D. M."
+  },
+  {
+    "md5": "0b1613c217ec51151e436276a98f549a",
+    "pid": "A003975282",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003975282",
+    "preferred_name": "Wildeboer, Ina Hinderika",
+    "authorized_access_point": "Wildeboer, Ina Hinderika"
+  },
+  {
+    "md5": "2547ece83d3d83c55952dfa02012f1a0",
+    "pid": "A003516733",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003516733",
+    "date_of_birth": "1839",
+    "date_of_death": "1900",
+    "preferred_name": "Levi, Hermann,",
+    "authorized_access_point": "Levi, Hermann, 1839-1900"
+  },
+  {
+    "md5": "2f0cdb391fea15f8580b27fcb3474a03",
+    "pid": "A003494285",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003494285",
+    "preferred_name": "Lange, Bastian",
+    "authorized_access_point": "Lange, Bastian"
+  },
+  {
+    "md5": "aef8fcd57e157844a94dbb8f10c44e3e",
+    "pid": "A014065225",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A014065225",
+    "preferred_name": "Serventy, Dominic Louis",
+    "authorized_access_point": "Serventy, Dominic Louis"
+  },
+  {
+    "md5": "457e1d7dcd36e0b13c56bee3acfa4016",
+    "pid": "A022997177",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A022997177",
+    "preferred_name": "Potvin, G\u00e9rard",
+    "authorized_access_point": "Potvin, G\u00e9rard"
+  },
+  {
+    "md5": "89afb97371c38ebe5e7fd4eb868202c5",
+    "pid": "A003491484",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003491484",
+    "preferred_name": "Lamberton, Ch",
+    "authorized_access_point": "Lamberton, Ch"
+  },
+  {
+    "md5": "122fcab391e8e214398e2f445198ad8e",
+    "pid": "A024083167",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A024083167",
+    "preferred_name": "Vernazza, Livia",
+    "authorized_access_point": "Vernazza, Livia"
+  },
+  {
+    "md5": "2b9ff9165f204f8b12bc6a10017aaa33",
+    "pid": "A025367912",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A025367912",
+    "preferred_name": "N\u00e4r\u00e4, Katarina",
+    "authorized_access_point": "N\u00e4r\u00e4, Katarina"
+  },
+  {
+    "md5": "98bd18171fb8b51345635ca828053ab7",
+    "pid": "A016678629",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A016678629",
+    "variant_name": [
+      "Hjarl Petersen, Jane"
+    ],
+    "preferred_name": "Petersen, Jane Hjarl",
+    "variant_access_point": [
+      "Hjarl Petersen, Jane"
+    ],
+    "authorized_access_point": "Petersen, Jane Hjarl",
+    "biographical_information": [
+      "Arch\u00e9ologue danoise"
+    ]
+  },
+  {
+    "md5": "e6f9aa0be88ac10462a3555639c3bec9",
+    "pid": "A018750238",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018750238",
+    "preferred_name": "Lafite, Elisabeth",
+    "authorized_access_point": "Lafite, Elisabeth"
+  },
+  {
+    "md5": "952720896b380e49d6dbfbfae8ec2224",
+    "pid": "A017187491",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017187491",
+    "preferred_name": "Kleinhenz, Barbara",
+    "authorized_access_point": "Kleinhenz, Barbara"
+  },
+  {
+    "md5": "2af5b744d18abd2788d1b1f689e7eeb3",
+    "pid": "A024099458",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A024099458",
+    "preferred_name": "Stewart, Katherine A.",
+    "authorized_access_point": "Stewart, Katherine A."
+  },
+  {
+    "md5": "4b18d7ae79945d2671c4d3ef73aa964f",
+    "pid": "A003641265",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003641265",
+    "preferred_name": "Nievergelt, Dieter",
+    "authorized_access_point": "Nievergelt, Dieter"
+  },
+  {
+    "md5": "addfdff6890d9b20ff5af0462cfeba98",
+    "pid": "A012856933",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012856933",
+    "preferred_name": "Schola Saint-Hymnemode (Montana)",
+    "authorized_access_point": "Schola Saint-Hymnemode (Montana)"
+  },
+  {
+    "md5": "f4ce023c8d50cc14597cf8a69708101e",
+    "pid": "A012430693",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012430693",
+    "preferred_name": "Universit\u00e9 libre de Bruxelles. Centre de droit international. Colloque (2003 :",
+    "authorized_access_point": "Universit\u00e9 libre de Bruxelles. Centre de droit international. Colloque (2003 : Paris)"
+  },
+  {
+    "md5": "f75709be2e0820ecbead582fdd4f302e",
+    "pid": "A003883717",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003883717",
+    "preferred_name": "S\u00e9ebold, \u00c9ric",
+    "authorized_access_point": "S\u00e9ebold, \u00c9ric"
+  },
+  {
+    "md5": "cdce3e453878339b6b8673d173550307",
+    "pid": "A006035318",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A006035318",
+    "preferred_name": "Birget, J.-C",
+    "authorized_access_point": "Birget, J.-C"
+  },
+  {
+    "md5": "7c4394d8ed6129efca05169ae1be1d81",
+    "pid": "A003719235",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003719235",
+    "preferred_name": "P\u0103tr\u0103s\u0326canu, Petru V",
+    "authorized_access_point": "P\u0103tr\u0103s\u0326canu, Petru V"
+  },
+  {
+    "md5": "5f01750211f38d7d267af118150bff5a",
+    "pid": "A023227823",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A023227823",
+    "preferred_name": "Boissy, Jacques",
+    "authorized_access_point": "Boissy, Jacques"
+  },
+  {
+    "md5": "da62c4d6c8e81d6e44fa2da820e71ede",
+    "pid": "A012442717",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A012442717",
+    "preferred_name": "Exposition europ\u00e9enne d'art 1954-1955 :",
+    "authorized_access_point": "Exposition europ\u00e9enne d'art (1 : 1954-1955 : Bruxelles)"
+  },
+  {
+    "md5": "1be44a1a69e13d3b34126ae9baafd8bd",
+    "pid": "A012513294",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012513294",
+    "preferred_name": "Italia. Ministero di grazia e giustizia. Congr\u00e8s (1983 :",
+    "authorized_access_point": "Italia. Ministero di grazia e giustizia. Congr\u00e8s (1983 : Milano)"
+  },
+  {
+    "md5": "eb30df0e3a3346041c167f6aea1d5788",
+    "pid": "A024416324",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A024416324",
+    "preferred_name": "Lindblad, Waldemar",
+    "authorized_access_point": "Lindblad, Waldemar"
+  },
+  {
+    "md5": "7778dde2a172a72c24bed3050a411999",
+    "pid": "A003827929",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003827929",
+    "preferred_name": "Shimizu, Akitoshi",
+    "authorized_access_point": "Shimizu, Akitoshi"
+  },
+  {
+    "md5": "8e354090ae2ec69ee679b299c377645e",
+    "pid": "A003913856",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003913856",
+    "preferred_name": "Tsuda, Yukio",
+    "authorized_access_point": "Tsuda, Yukio"
+  },
+  {
+    "md5": "08966ddc6be8060ad1484bc12929dcd9",
+    "pid": "A002992084",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002992084",
+    "preferred_name": "Benzoni, Gino",
+    "authorized_access_point": "Benzoni, Gino"
+  },
+  {
+    "md5": "1de6eeca54a2690b14b077955973341e",
+    "pid": "A023693839",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A023693839",
+    "preferred_name": "Rotta, Julius C",
+    "authorized_access_point": "Rotta, Julius C"
+  },
+  {
+    "md5": "0ce7a5f971b0bf75cb6345b543f07270",
+    "pid": "A002968314",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002968314",
+    "preferred_name": "Barbizet, Jacques",
+    "authorized_access_point": "Barbizet, Jacques"
+  },
+  {
+    "md5": "5042d4d004ad7115bcb8bfdca610074a",
+    "pid": "A003398237",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003398237",
+    "preferred_name": "Ihori, Toshihiro",
+    "authorized_access_point": "Ihori, Toshihiro"
+  },
+  {
+    "md5": "7d7a9b2b79457190da83382f3c002a1c",
+    "pid": "A003206780",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003206780",
+    "preferred_name": "Echard, William E",
+    "authorized_access_point": "Echard, William E"
+  },
+  {
+    "md5": "3b1328bdec37ba72c1588ce605cde5bd",
+    "pid": "A016871460",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A016871460",
+    "variant_name": [
+      "MacDonnell, Thomas Michael",
+      "Mc Donnell, Thomas Michael",
+      "Mac Donnell, Thomas Michael"
+    ],
+    "preferred_name": "McDonnell, Thomas Michael",
+    "variant_access_point": [
+      "MacDonnell, Thomas Michael",
+      "Mc Donnell, Thomas Michael",
+      "Mac Donnell, Thomas Michael"
+    ],
+    "authorized_access_point": "McDonnell, Thomas Michael"
+  },
+  {
+    "md5": "57c55b8c4fc0794a8844961f5f34a353",
+    "pid": "A003985806",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003985806",
+    "preferred_name": "Woolson, Robert F",
+    "authorized_access_point": "Woolson, Robert F"
+  },
+  {
+    "md5": "af2020ade253ca5c6be08d6bf05eaf35",
+    "pid": "A003378837",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003378837",
+    "preferred_name": "Hoijer, Harry",
+    "authorized_access_point": "Hoijer, Harry"
+  },
+  {
+    "md5": "1325068b034ceb93f45baa1999223b22",
+    "pid": "A003491429",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003491429",
+    "variant_name": [
+      "Lambert, William Wilson"
+    ],
+    "preferred_name": "Lambert, William W",
+    "variant_access_point": [
+      "Lambert, William Wilson"
+    ],
+    "authorized_access_point": "Lambert, William W"
+  },
+  {
+    "md5": "7deaddba4d5e61557972ff722a96b965",
+    "pid": "A017435658",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017435658",
+    "preferred_name": "Gabathuler, Chlo\u00e9",
+    "authorized_access_point": "Gabathuler, Chlo\u00e9"
+  },
+  {
+    "md5": "47c02395af3e432cbcd1f783313f1aa9",
+    "pid": "A017784112",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017784112",
+    "preferred_name": "Furse, Raymond W",
+    "authorized_access_point": "Furse, Raymond W"
+  },
+  {
+    "md5": "50add244181fce5df10bbdbbd6681fcb",
+    "pid": "A003752143",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003752143",
+    "preferred_name": "Robinson, John Michael",
+    "authorized_access_point": "Robinson, John Michael"
+  },
+  {
+    "md5": "90198ee9b638ae612fbbb2a30024001a",
+    "pid": "A003645251",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003645251",
+    "variant_name": [
+      "Von Normann, Reinhard",
+      "VonNormann, Reinhard"
+    ],
+    "preferred_name": "Normann, Reinhard von",
+    "variant_access_point": [
+      "Von Normann, Reinhard",
+      "VonNormann, Reinhard"
+    ],
+    "authorized_access_point": "Normann, Reinhard von"
+  },
+  {
+    "md5": "28870d00b145226e2b36d37fdfd88f82",
+    "pid": "A003243348",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003243348",
+    "preferred_name": "Findlay, William",
+    "authorized_access_point": "Findlay, William"
+  },
+  {
+    "md5": "2ae4361264756cbf352f4092e6639219",
+    "pid": "A003572511",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003572511",
+    "preferred_name": "Matko, Dubravko J.I",
+    "authorized_access_point": "Matko, Dubravko J.I"
+  },
+  {
+    "md5": "7deb37ddf8051591f8dcc4a1071dd320",
+    "pid": "A016415566",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A016415566",
+    "preferred_name": "Melin, Pierre",
+    "authorized_access_point": "Melin, Pierre"
+  },
+  {
+    "md5": "6661dd361760c5edaf05d5034beceac5",
+    "pid": "A011983307",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A011983307",
+    "preferred_name": "Bhatt, Anil",
+    "authorized_access_point": "Bhatt, Anil"
+  },
+  {
+    "md5": "0cd0cbc1cfdea5e501fe9671f2fed983",
+    "pid": "A012394672",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012394672",
+    "preferred_name": "Techno-Z FH-Salzburg. Institute for Information Economy and New Media",
+    "authorized_access_point": "Techno-Z FH-Salzburg. Institute for Information Economy and New Media"
+  },
+  {
+    "md5": "fa13cebc1f580de8254832d6785f2e4b",
+    "pid": "A014025587",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "qualifier": "directeur de Dixi S.A.",
+    "identifier": "http://data.rero.ch/02-A014025587",
+    "preferred_name": "Castella, Paul, directeur de Dixi S.A.",
+    "authorized_access_point": "Castella, Paul, directeur de Dixi S.A."
+  },
+  {
+    "md5": "dbea3f38292fac9df46f0bd6fc5b4335",
+    "pid": "A018548221",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018548221",
+    "preferred_name": "Klingelh\u00f6ffer, Kerstin",
+    "authorized_access_point": "Klingelh\u00f6ffer, Kerstin"
+  },
+  {
+    "md5": "f59818e47b63b0f19192aef80a5a8496",
+    "pid": "A021706387",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A021706387",
+    "preferred_name": "Holzer, Bettina",
+    "authorized_access_point": "Holzer, Bettina"
+  },
+  {
+    "md5": "a66b748e0219b1cc34d9aa791a040646",
+    "pid": "A012427298",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A012427298",
+    "preferred_name": "Convegno internazionale della ceramica 1998 :",
+    "authorized_access_point": "Convegno internazionale della ceramica (31 : 1998 : Albisola)"
+  },
+  {
+    "md5": "ca4d1d94a9a4c47eba50f67987464888",
+    "pid": "A023154358",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A023154358",
+    "preferred_name": "Colloquia on \"Sexual Violence as an International Crime: Interdisciplinary Approaches\" (2009 :",
+    "authorized_access_point": "Colloquia on \"Sexual Violence as an International Crime: Interdisciplinary Approaches\" (2009 : Den Haag)"
+  },
+  {
+    "md5": "cab2e254184e78913c7e9517fb3b6d2b",
+    "pid": "A020092462",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A020092462",
+    "preferred_name": "Meng, Florent",
+    "authorized_access_point": "Meng, Florent"
+  },
+  {
+    "md5": "51cbf863b05c49d2068ea126eda81abb",
+    "pid": "A017556608",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "qualifier": "(de Tyr sainte)",
+    "identifier": "http://data.rero.ch/02-A017556608",
+    "variant_name": [
+      "Christina (de Bolsena ; sainte)",
+      "Christine (de Bolsena ; sainte)"
+    ],
+    "preferred_name": "Christine (de Tyr ; sainte)",
+    "variant_access_point": [
+      "Christina (de Bolsena ; sainte)",
+      "Christine (de Bolsena ; sainte)"
+    ],
+    "authorized_access_point": "Christine (de Tyr ; sainte)",
+    "biographical_information": [
+      "Dates de vie: 3e s. (fin) - 4e s. (d\u00e9but)"
+    ]
+  },
+  {
+    "md5": "104c75f8e4439383350410cf0b5ad3c5",
+    "pid": "A003352968",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003352968",
+    "preferred_name": "Haudry, Jean",
+    "authorized_access_point": "Haudry, Jean"
+  },
+  {
+    "md5": "d811cb20122f591a51848553521a22ed",
+    "pid": "A002966255",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002966255",
+    "preferred_name": "Banks, Tony",
+    "authorized_access_point": "Banks, Tony"
+  },
+  {
+    "md5": "9774e25bba4c4c9deeec8e510ea7b632",
+    "pid": "A011686664",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A011686664",
+    "preferred_name": "Aprikian, Garbis",
+    "authorized_access_point": "Aprikian, Garbis"
+  },
+  {
+    "md5": "ab92f733611d4551f37b90f4e7491848",
+    "pid": "A003489450",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003489450",
+    "preferred_name": "Lagowski, Jeanne M",
+    "authorized_access_point": "Lagowski, Jeanne M"
+  },
+  {
+    "md5": "bea15ecc4e093bc07ff688ff6591ee1a",
+    "pid": "A000108719",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A000108719",
+    "variant_name": [
+      "Macclaskey, Marilyn H. Jones"
+    ],
+    "preferred_name": "Macclaskey, Marilyn H",
+    "variant_access_point": [
+      "Macclaskey, Marilyn H. Jones"
+    ],
+    "authorized_access_point": "Macclaskey, Marilyn H"
+  },
+  {
+    "md5": "d98004e1ea2386b50c00b5fe9ae29dc0",
+    "pid": "A003264908",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003264908",
+    "preferred_name": "Friedman, William Frederick",
+    "authorized_access_point": "Friedman, William Frederick"
+  },
+  {
+    "md5": "a958d83b242171b396d6496baf9ecd39",
+    "pid": "A003416346",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003416346",
+    "preferred_name": "Jacobsen, Thorkild",
+    "authorized_access_point": "Jacobsen, Thorkild"
+  },
+  {
+    "md5": "946046638949a4fff9f498a5c813d5e6",
+    "pid": "A018070048",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018070048",
+    "date_of_birth": "578",
+    "date_of_death": "648",
+    "preferred_name": "Fang, Xuanling,",
+    "parallel_access_point": [
+      "\u623f\u7384\u9f61, 578-648"
+    ],
+    "authorized_access_point": "Fang, Xuanling, 578-648"
+  },
+  {
+    "md5": "bb9a01555e10d93e2bd4f7ba3668b0d7",
+    "pid": "A002963001",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002963001",
+    "preferred_name": "Baldi, Marialuisa",
+    "authorized_access_point": "Baldi, Marialuisa"
+  },
+  {
+    "md5": "a59f7d78793636a60be0681b7f226fcc",
+    "pid": "A003055423",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003055423",
+    "preferred_name": "Bufalino, Gesualdo",
+    "authorized_access_point": "Bufalino, Gesualdo"
+  },
+  {
+    "md5": "e0adf64b3c8f9f03ac729620ff2cad20",
+    "pid": "A003275937",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003275937",
+    "preferred_name": "Gallahue, David L",
+    "authorized_access_point": "Gallahue, David L"
+  },
+  {
+    "md5": "48126f48b19fd7f28ba1a5d7b258caa8",
+    "pid": "A003839353",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003839353",
+    "preferred_name": "Smith, Hilrie Shelton",
+    "authorized_access_point": "Smith, Hilrie Shelton"
+  },
+  {
+    "md5": "e94ffcd058dcce30ceffd442e97a1a0d",
+    "pid": "A003870613",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003870613",
+    "preferred_name": "Strobel, Howard Austin",
+    "authorized_access_point": "Strobel, Howard Austin"
+  },
+  {
+    "md5": "9858116e159fb17fed10ae48d0da5f12",
+    "pid": "A017326126",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017326126",
+    "preferred_name": "Subba Rao, N.S.",
+    "authorized_access_point": "Subba Rao, N.S."
+  },
+  {
+    "md5": "8e33fcb9d6181d875cb27a7ce5820332",
+    "pid": "A003981555",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003981555",
+    "variant_name": [
+      "With, Hans-Joachim de",
+      "De With, Hans-Joachim"
+    ],
+    "preferred_name": "With, Hans de",
+    "variant_access_point": [
+      "With, Hans-Joachim de",
+      "De With, Hans-Joachim"
+    ],
+    "authorized_access_point": "With, Hans de",
+    "biographical_information": [
+      "Juriste allemand, n\u00e9 \u00e0 Gera/Th\u00fcringen en 1932"
+    ]
+  },
+  {
+    "md5": "a93dd2ee28ec00896f75cf02e17cf8e2",
+    "pid": "A023720699",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A023720699",
+    "date_of_birth": "1934",
+    "preferred_name": "Kr\u00fcger, Renate,",
+    "authorized_access_point": "Kr\u00fcger, Renate, 1934-"
+  },
+  {
+    "md5": "0bf546f01d5fd29df5e6a773352b466d",
+    "pid": "A003389620",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003389620",
+    "preferred_name": "Hull, Richard W",
+    "authorized_access_point": "Hull, Richard W"
+  },
+  {
+    "md5": "5cf55504b7a730d9b4aaf57ba32998a6",
+    "pid": "A003817832",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003817832",
+    "preferred_name": "Seebohm, Thomas M",
+    "authorized_access_point": "Seebohm, Thomas M"
+  },
+  {
+    "md5": "e77743a920dd3897538088cec9d8494f",
+    "pid": "A003973251",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003973251",
+    "preferred_name": "Widstrand, Axel",
+    "authorized_access_point": "Widstrand, Axel"
+  },
+  {
+    "md5": "07cdb252dcdffd8c300dc0b334fee66c",
+    "pid": "A003077749",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003077749",
+    "preferred_name": "Carlson, Sven H",
+    "authorized_access_point": "Carlson, Sven H"
+  },
+  {
+    "md5": "4ae880a6eb1ea4f69d5d6b8ec6ef630d",
+    "pid": "A012393385",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012393385",
+    "preferred_name": "Etudes d'anthroponymie m\u00e9di\u00e9vale. Rencontres 1986-1987 :",
+    "authorized_access_point": "Etudes d'anthroponymie m\u00e9di\u00e9vale. Rencontres (1-2 : 1986-1987 : Azay-le-Ferron)"
+  },
+  {
+    "md5": "1173787d8418420d285ca3c2e21278ef",
+    "pid": "A027747343",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A027747343",
+    "preferred_name": "Gelbhaus, Tea",
+    "authorized_access_point": "Gelbhaus, Tea"
+  },
+  {
+    "md5": "951492c611d7c913c9abb52620de13c1",
+    "pid": "A013706277",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013706277",
+    "preferred_name": "Kilcher, Jules",
+    "authorized_access_point": "Kilcher, Jules"
+  },
+  {
+    "md5": "74d470555d050afda7f96166d93261a0",
+    "pid": "A003943767",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003943767",
+    "preferred_name": "Vimond, Jack",
+    "authorized_access_point": "Vimond, Jack"
+  },
+  {
+    "md5": "f6bc4caa6d309c123d29af3c8863b9db",
+    "pid": "A003795823",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003795823",
+    "preferred_name": "Schick, Frederic",
+    "authorized_access_point": "Schick, Frederic"
+  },
+  {
+    "md5": "b4280151b4f1c11ec12808cb803e2ff2",
+    "pid": "A006159385",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A006159385",
+    "preferred_name": "Hanssen, Christian",
+    "authorized_access_point": "Hanssen, Christian"
+  },
+  {
+    "md5": "41a789b6e93c9052906cad8e53ff0a37",
+    "pid": "A017097186",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A017097186",
+    "preferred_name": "Eherechtskommission des deutschen Rates f\u00fcr internationales Privatrecht",
+    "authorized_access_point": "Eherechtskommission des deutschen Rates f\u00fcr internationales Privatrecht"
+  },
+  {
+    "md5": "e809d8421094ca3515d52b8ce7fb8e3c",
+    "pid": "A003103659",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A003103659",
+    "variant_name": [
+      "Choeur mixte (Estavayer-le-Gibloux)"
+    ],
+    "preferred_name": "Choeur mixte paroissial (Estavayer-le-Gibloux)",
+    "variant_access_point": [
+      "Choeur mixte (Estavayer-le-Gibloux)"
+    ],
+    "authorized_access_point": "Choeur mixte paroissial (Estavayer-le-Gibloux)"
+  },
+  {
+    "md5": "0a435b18e3907f607cfbb1d581863432",
+    "pid": "A009084334",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A009084334",
+    "preferred_name": "Krieghoff, Hans",
+    "authorized_access_point": "Krieghoff, Hans"
+  },
+  {
+    "md5": "648c945e2c54f0d4694a38e0847bb7dc",
+    "pid": "A017594651",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017594651",
+    "preferred_name": "Zufferey, Ernest",
+    "authorized_access_point": "Zufferey, Ernest"
+  },
+  {
+    "md5": "3f77c9adc11812ab5962ca36caa674ed",
+    "pid": "A003066204",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003066204",
+    "preferred_name": "B\u00e9guin, Christine",
+    "authorized_access_point": "B\u00e9guin, Christine"
+  },
+  {
+    "md5": "08afcbb9dd8cd5bcd1aacc05c83d0301",
+    "pid": "A012509199",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "qualifier": "fr\u00e8re",
+    "identifier": "http://data.rero.ch/02-A012509199",
+    "preferred_name": "B., fr\u00e8re",
+    "authorized_access_point": "B., fr\u00e8re"
+  },
+  {
+    "md5": "f2eb74be4b3e8c6d716b8aba7ddc5895",
+    "pid": "A022944034",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A022944034",
+    "preferred_name": "Inhabitant and Friend to the Corps",
+    "authorized_access_point": "Inhabitant and Friend to the Corps"
+  },
+  {
+    "md5": "c710707f01dcb66c20edde5bed37e66a",
+    "pid": "A023193920",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A023193920",
+    "preferred_name": "Mourdon, Jean-Paul",
+    "authorized_access_point": "Mourdon, Jean-Paul"
+  },
+  {
+    "md5": "5c06174c429de7f51bee9c985e338440",
+    "pid": "A012457267",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012457267",
+    "preferred_name": "American Mathematical Society. Symposium 1970 :",
+    "authorized_access_point": "American Mathematical Society. Symposium (5 : 1970 : Chicago)"
+  },
+  {
+    "md5": "e16f5165e7c93353a273ce8b2342f52a",
+    "pid": "A003531595",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003531595",
+    "variant_name": [
+      "Jacob, Bernard Lortat-,"
+    ],
+    "date_of_birth": "1941",
+    "preferred_name": "Lortat-Jacob, Bernard,",
+    "variant_access_point": [
+      "Jacob, Bernard Lortat-, 1941-"
+    ],
+    "authorized_access_point": "Lortat-Jacob, Bernard, 1941-",
+    "biographical_information": [
+      "Ethnomusicologue. - Directeur de recherche au CNRS et responsable du Laboratoire d'ethnomusicologie CBRS du Mus\u00e9e de l'homme, Paris (en 2001)"
+    ]
+  },
+  {
+    "md5": "964861c521c3a215dd4e248dd3579fd5",
+    "pid": "A003743887",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003743887",
+    "variant_name": [
+      "Richelet, C\u00e9sare-Pierre,",
+      "Richelet, C\u00e9sar Pierre,"
+    ],
+    "date_of_birth": "ca. 1626",
+    "date_of_death": "1698",
+    "preferred_name": "Richelet, Pierre,",
+    "variant_access_point": [
+      "Richelet, C\u00e9sare-Pierre, ca. 1626-1698",
+      "Richelet, C\u00e9sar Pierre, ca. 1626-1698"
+    ],
+    "authorized_access_point": "Richelet, Pierre, ca. 1626-1698",
+    "biographical_information": [
+      "Lexicographe"
+    ]
+  },
+  {
+    "md5": "fc8d7609a72112b305772602996ba510",
+    "pid": "A003618794",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003618794",
+    "preferred_name": "Munslow, Alun",
+    "authorized_access_point": "Munslow, Alun"
+  },
+  {
+    "md5": "99387734b33fc092cc949e32df72af1b",
+    "pid": "A018477130",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018477130",
+    "preferred_name": "Na\u0304ji\u0304, Hila\u0304l",
+    "parallel_access_point": [
+      "\u0646\u0627\u062c\u064a\u060c \u0647\u0644\u0627\u0644"
+    ],
+    "authorized_access_point": "Na\u0304ji\u0304, Hila\u0304l"
+  },
+  {
+    "md5": "330cbd8ec5a5f2174045b208d372074b",
+    "pid": "A003364295",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003364295",
+    "variant_name": [
+      "Henschel, G.A.L.,",
+      "Henschel,"
+    ],
+    "date_of_birth": "1806",
+    "date_of_death": "1852",
+    "preferred_name": "Henschel, G.A. Louis,",
+    "variant_access_point": [
+      "Henschel, G.A.L., 1806-1852",
+      "Henschel, 1806-1852"
+    ],
+    "authorized_access_point": "Henschel, G.A. Louis, 1806-1852",
+    "biographical_information": [
+      "Philologue et lexicographe. - N\u00e9 \u00e0 Minden (Allemagne), mort \u00e0 Paris. - A aussi \u00e9crit en allemand et en latin"
+    ]
+  },
+  {
+    "md5": "4be100d91dd358a2d56fe998793035ce",
+    "pid": "A003969580",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003969580",
+    "preferred_name": "Westbrook, Jack Hall",
+    "authorized_access_point": "Westbrook, Jack Hall"
+  },
+  {
+    "md5": "5ac79105a8e7fc09e0036b81fa545add",
+    "pid": "A025244362",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A025244362",
+    "preferred_name": "Valloni, Renzo",
+    "authorized_access_point": "Valloni, Renzo"
+  },
+  {
+    "md5": "f6a1862b7b56ff01b52eb8b1eb6608dd",
+    "pid": "A013278476",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013278476",
+    "preferred_name": "Vrecken, Paul van der",
+    "authorized_access_point": "Vrecken, Paul van der"
+  },
+  {
+    "md5": "32b3c90e8252cb5122ac57c678fb4dc1",
+    "pid": "A012591999",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A012591999",
+    "preferred_name": "Schneikert, Elisabeth",
+    "authorized_access_point": "Schneikert, Elisabeth"
+  },
+  {
+    "md5": "ed05d2990d1b43a1b8bdfeb545c1a4c8",
+    "pid": "A000103142",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A000103142",
+    "variant_name": [
+      "Lavoix, Henri, numismate"
+    ],
+    "preferred_name": "Lavoix, Michel Henri",
+    "variant_access_point": [
+      "Lavoix, Henri, numismate"
+    ],
+    "authorized_access_point": "Lavoix, Michel Henri"
+  },
+  {
+    "md5": "03fbbe78d12bc0f8fcc9873f118b5a9f",
+    "pid": "A010938873",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A010938873",
+    "preferred_name": "Florent, Romain",
+    "authorized_access_point": "Florent, Romain"
+  },
+  {
+    "md5": "419993f72e342959cc17c0ff6bff222e",
+    "pid": "A003588933",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003588933",
+    "preferred_name": "Meyer, Armand",
+    "authorized_access_point": "Meyer, Armand"
+  },
+  {
+    "md5": "c08f4710bd9154087ca5ce17fb92f729",
+    "pid": "A003085874",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003085874",
+    "preferred_name": "Cazenave, Philippe",
+    "authorized_access_point": "Cazenave, Philippe"
+  },
+  {
+    "md5": "cd0626d88906b9cbd1a91b37a41355c6",
+    "pid": "A003265730",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003265730",
+    "preferred_name": "Frisch, Christine",
+    "authorized_access_point": "Frisch, Christine"
+  },
+  {
+    "md5": "51bad0a540040ad6841538488776e239",
+    "pid": "A013784156",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013784156",
+    "preferred_name": "Parisi, Chiara",
+    "authorized_access_point": "Parisi, Chiara"
+  },
+  {
+    "md5": "722f28f9acd6484187dc0a6acdd4cfce",
+    "pid": "A027644407",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A027644407",
+    "preferred_name": "Boileau, G\u00e9ry",
+    "authorized_access_point": "Boileau, G\u00e9ry"
+  },
+  {
+    "md5": "ddcdd2893fb60ede7b131e188cd4bfcc",
+    "pid": "A003302604",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003302604",
+    "preferred_name": "Glynn, Prudence",
+    "authorized_access_point": "Glynn, Prudence"
+  },
+  {
+    "md5": "309df2523eda9593c4c71f9ab5e7be5b",
+    "pid": "A003594199",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003594199",
+    "preferred_name": "Milanowski, W\u0142odzimierz",
+    "authorized_access_point": "Milanowski, W\u0142odzimierz"
+  },
+  {
+    "md5": "ff5dafd02655952b878066cf8f7b612c",
+    "pid": "A014087607",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A014087607",
+    "preferred_name": "Fronsac, Henri",
+    "authorized_access_point": "Fronsac, Henri"
+  },
+  {
+    "md5": "dd3e7910352ba4b96ae7cb454a4edf2e",
+    "pid": "A013786026",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013786026",
+    "preferred_name": "Blaser, C\u00e9line",
+    "authorized_access_point": "Blaser, C\u00e9line"
+  },
+  {
+    "md5": "5b5ccfdc0e805bad0ea8cfef30fad517",
+    "pid": "A012506176",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012506176",
+    "preferred_name": "Hochschule Sankt Gallen f\u00fcr Wirtschafts- und Sozialwissenschaften. Schweizerisches Institut f\u00fcr Verwaltungskurse. Kurs 1967 :",
+    "authorized_access_point": "Hochschule Sankt Gallen f\u00fcr Wirtschafts- und Sozialwissenschaften. Schweizerisches Institut f\u00fcr Verwaltungskurse. Kurs (122 : 1967 : Sankt Gallen)"
+  },
+  {
+    "md5": "77d13e21bcefdf832398a9d14a8d5c78",
+    "pid": "A012473809",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012473809",
+    "preferred_name": "United States. Congress 1961 :",
+    "authorized_access_point": "United States. Congress (87 : 1961 : Washington)"
+  },
+  {
+    "md5": "348a94e7b1c619b5715efd7fc3d8bffd",
+    "pid": "A013094655",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013094655",
+    "preferred_name": "Rumpf, Heinrich L.",
+    "authorized_access_point": "Rumpf, Heinrich L."
+  },
+  {
+    "md5": "cd3a39a0cadd34bf1f929ff795b57d72",
+    "pid": "A020317114",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A020317114",
+    "preferred_name": "Herath, H.M.A",
+    "authorized_access_point": "Herath, H.M.A"
+  },
+  {
+    "md5": "784588f94c72c2cb50461131aba3cff4",
+    "pid": "A016303136",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A016303136",
+    "preferred_name": "Cleasson, Urban",
+    "authorized_access_point": "Cleasson, Urban"
+  },
+  {
+    "md5": "a49c2bd370de4773de29a7983d3f482a",
+    "pid": "A011113114",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A011113114",
+    "variant_name": [
+      "Sde-srid Sa\u1e45s-rgyas-rgya-mtsho",
+      "Sangye Gyatso",
+      "Gyatso, Sangye"
+    ],
+    "preferred_name": "Sa\u1e45s-rgyas-rgya-mtsho, Sde-srid",
+    "variant_access_point": [
+      "Sde-srid Sa\u1e45s-rgyas-rgya-mtsho",
+      "Sangye Gyatso",
+      "Gyatso, Sangye"
+    ],
+    "authorized_access_point": "Sa\u1e45s-rgyas-rgya-mtsho, Sde-srid"
+  },
+  {
+    "md5": "6e122b2e356694d272a39b1e8fa08b72",
+    "pid": "A006065033",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A006065033",
+    "preferred_name": "Mahtab, H.K",
+    "authorized_access_point": "Mahtab, H.K"
+  },
+  {
+    "md5": "404929e2a4d276ae642caac7cbe7f5a9",
+    "pid": "A003966124",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003966124",
+    "preferred_name": "Weisz, Paul B",
+    "authorized_access_point": "Weisz, Paul B"
+  },
+  {
+    "md5": "a7f404468748a8c7cd0cd8704b034578",
+    "pid": "A011736857",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A011736857",
+    "preferred_name": "Jurjevics, Juris",
+    "authorized_access_point": "Jurjevics, Juris"
+  },
+  {
+    "md5": "84bdf4463e99ba94594c41be05bef170",
+    "pid": "A009590113",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A009590113",
+    "date_of_birth": "1952",
+    "preferred_name": "Haas, Jean-Fran\u00e7ois,",
+    "authorized_access_point": "Haas, Jean-Fran\u00e7ois, 1952-",
+    "biographical_information": [
+      "Ecrivain, enseignant. N\u00e9 \u00e0 Courtaman (Suisse, FR)"
+    ]
+  },
+  {
+    "md5": "3f6c353ad9cc1d24776466492087bfde",
+    "pid": "A003768835",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003768835",
+    "preferred_name": "Ruchonnet, Charles",
+    "authorized_access_point": "Ruchonnet, Charles"
+  },
+  {
+    "md5": "a9b2a83253bb81239aa551ff25401729",
+    "pid": "A012494600",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A012494600",
+    "preferred_name": "Congr\u00e8s international des secr\u00e9taires communaux 1910 :",
+    "authorized_access_point": "Congr\u00e8s international des secr\u00e9taires communaux (5 : 1910 : Bruxelles)"
+  },
+  {
+    "md5": "fdf8f0202f133c8392f2ab1813ef6064",
+    "pid": "A003389663",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003389663",
+    "preferred_name": "Hulme, David",
+    "authorized_access_point": "Hulme, David"
+  },
+  {
+    "md5": "c6b2189921c138a18ecf010ec7e4ac12",
+    "pid": "A008584612",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A008584612",
+    "preferred_name": "Redner, Sidney",
+    "authorized_access_point": "Redner, Sidney"
+  },
+  {
+    "md5": "dfc4563a974bf2eb527f9930369360ff",
+    "pid": "A002971659",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002971659",
+    "preferred_name": "Barrett-Ayres, Reginald",
+    "authorized_access_point": "Barrett-Ayres, Reginald"
+  },
+  {
+    "md5": "18d53b8614056480e471aed823ebc2ab",
+    "pid": "A003477398",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003477398",
+    "preferred_name": "Kr\u00fcger, Sabine",
+    "authorized_access_point": "Kr\u00fcger, Sabine"
+  },
+  {
+    "md5": "5d0a960cc5c41c032dba89f40df1a65f",
+    "pid": "A028751062",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A028751062",
+    "preferred_name": "Stras, Laurie",
+    "authorized_access_point": "Stras, Laurie",
+    "biographical_information": [
+      "Auteur d'un ouvrage sur la musique populaire am\u00e9ricaine et enseignante \u00e0 l'Universit\u00e9 de Southampton (2012)"
+    ]
+  },
+  {
+    "md5": "c957f74eefa0f620de4658611dcdbdf4",
+    "pid": "A025694319",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A025694319",
+    "preferred_name": "Sibears, Daniel M.",
+    "authorized_access_point": "Sibears, Daniel M."
+  },
+  {
+    "md5": "4edf7dd5fec685750d416605459134ef",
+    "pid": "A003993743",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003993743",
+    "preferred_name": "Zacher, Peter",
+    "authorized_access_point": "Zacher, Peter"
+  },
+  {
+    "md5": "2a8baf025d58aa09ed8a9317beacf136",
+    "pid": "A025983847",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A025983847",
+    "variant_name": [
+      "Millamoto, Mar\u00eda Esther Quintana",
+      "Quintana, Mar\u00eda Esther",
+      "Quintana M., Mar\u00eda Esther"
+    ],
+    "preferred_name": "Quintana Millamoto, Mar\u00eda Esther",
+    "variant_access_point": [
+      "Millamoto, Mar\u00eda Esther Quintana",
+      "Quintana, Mar\u00eda Esther",
+      "Quintana M., Mar\u00eda Esther"
+    ],
+    "authorized_access_point": "Quintana Millamoto, Mar\u00eda Esther"
+  },
+  {
+    "md5": "05aef4040b1f2c5a27ee10f1ad04c6fc",
+    "pid": "A003345261",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003345261",
+    "preferred_name": "Hancock, David",
+    "authorized_access_point": "Hancock, David"
+  },
+  {
+    "md5": "f21d517fb4b22ea816dd23a627503119",
+    "pid": "A012086274",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A012086274",
+    "preferred_name": "Langie, Kazimierz",
+    "authorized_access_point": "Langie, Kazimierz"
+  },
+  {
+    "md5": "ca4ac1f9a6703f4149fbca5ff5824da4",
+    "pid": "A010941010",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A010941010",
+    "preferred_name": "Rodriguez, Raquel",
+    "authorized_access_point": "Rodriguez, Raquel"
+  },
+  {
+    "md5": "8bc4d328267d1a98efd7bf27bfda830c",
+    "pid": "A012346177",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "qualifier": "m\u00e9decin",
+    "identifier": "http://data.rero.ch/02-A012346177",
+    "preferred_name": "Monnier, Jean-Fran\u00e7ois, m\u00e9decin",
+    "authorized_access_point": "Monnier, Jean-Fran\u00e7ois, m\u00e9decin"
+  },
+  {
+    "md5": "8777dd6f79a9c240cd8f153505fdc872",
+    "pid": "A011817228",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A011817228",
+    "preferred_name": "Hopf, Friedrich-Eugen",
+    "authorized_access_point": "Hopf, Friedrich-Eugen"
+  },
+  {
+    "md5": "0328f5e36ad8bfd4fed3e2d159e9d4cc",
+    "pid": "A012443563",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012443563",
+    "preferred_name": "Institute of Management Sciences (Providence). Journ\u00e9es d'\u00e9tudes (1960 :",
+    "authorized_access_point": "Institute of Management Sciences (Providence). Journ\u00e9es d'\u00e9tudes (1960 : Paris)"
+  },
+  {
+    "md5": "5cd10ef75c7869262bc903e603f9c2eb",
+    "pid": "A002942098",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002942098",
+    "preferred_name": "Aschengreen, Franz",
+    "authorized_access_point": "Aschengreen, Franz"
+  },
+  {
+    "md5": "0a6ef8d14d4b7e97402a3d6b51a5b4e6",
+    "pid": "A003971618",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003971618",
+    "preferred_name": "White, Miriam Harker",
+    "authorized_access_point": "White, Miriam Harker"
+  },
+  {
+    "md5": "e5b34b3d4df0efbc63482578d77d454e",
+    "pid": "A012353728",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A012353728",
+    "preferred_name": "Colloque sur les repr\u00e9sentations des groupes finis (1988 :",
+    "authorized_access_point": "Colloque sur les repr\u00e9sentations des groupes finis (1988 : Marseille-Luminy)"
+  },
+  {
+    "md5": "987aa66165ccc8ef851b5933aa6e6b23",
+    "pid": "A021609811",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A021609811",
+    "preferred_name": "Becker, Madeleine",
+    "authorized_access_point": "Becker, Madeleine"
+  },
+  {
+    "md5": "a0bdab5323ea813e58581b6c2c7feecf",
+    "pid": "A018617749",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A018617749",
+    "preferred_name": "Lustersaal (Judenburg)",
+    "authorized_access_point": "Lustersaal (Judenburg)"
+  },
+  {
+    "md5": "c221cc8cfafc7dd8ca61d78dc8b7390d",
+    "pid": "A023116917",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A023116917",
+    "preferred_name": "Sagon, Evelyne",
+    "authorized_access_point": "Sagon, Evelyne"
+  },
+  {
+    "md5": "4ac7e5ffe2a62b7e9f499d54b3291046",
+    "pid": "A012498346",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A012498346",
+    "preferred_name": "Congreso sudamericano de zoologia 1959 :",
+    "authorized_access_point": "Congreso sudamericano de zoologia (1 : 1959 : La Plata)"
+  },
+  {
+    "md5": "6cfdd00334a11ecdac842d9552548e33",
+    "pid": "A013346407",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013346407",
+    "preferred_name": "Topf, Helmut",
+    "authorized_access_point": "Topf, Helmut"
+  },
+  {
+    "md5": "00ef767c51ee7f8883e47d548b3229c5",
+    "pid": "A003055215",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003055215",
+    "preferred_name": "Buenemann, Gerd",
+    "authorized_access_point": "Buenemann, Gerd"
+  },
+  {
+    "md5": "3627fbb2ea5de733833f8771a412df96",
+    "pid": "A027191227",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A027191227",
+    "preferred_name": "Moskowitz, Marina",
+    "authorized_access_point": "Moskowitz, Marina"
+  },
+  {
+    "md5": "f9135738a3403fe31ed546556bacf9fb",
+    "pid": "A006389498",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A006389498",
+    "preferred_name": "Chrze\u015bcijanin",
+    "authorized_access_point": "Chrze\u015bcijanin"
+  },
+  {
+    "md5": "a31419b1152c60d7aabcfa12bdb16d65",
+    "pid": "A008729062",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A008729062",
+    "preferred_name": "Cinquin, Fran\u00e7ois",
+    "authorized_access_point": "Cinquin, Fran\u00e7ois"
+  },
+  {
+    "md5": "e2453ac041d327268e8ba6dff49a79ee",
+    "pid": "A003370921",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003370921",
+    "variant_name": [
+      "Higham, Robin D.S.,",
+      "Higham, Robin David Stewart,"
+    ],
+    "date_of_birth": "1925",
+    "preferred_name": "Higham, Robin,",
+    "variant_access_point": [
+      "Higham, Robin D.S., 1925-",
+      "Higham, Robin David Stewart, 1925-"
+    ],
+    "authorized_access_point": "Higham, Robin, 1925-"
+  },
+  {
+    "md5": "5201e18349324a1d0f53ee6f5da88c90",
+    "pid": "A022553969",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A022553969",
+    "preferred_name": "Paquet, Fran\u00e7ois",
+    "authorized_access_point": "Paquet, Fran\u00e7ois"
+  },
+  {
+    "md5": "bd67d105b6d4bc6255155e044a2f9532",
+    "pid": "A025987021",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A025987021",
+    "preferred_name": "Imhanobe, Sylvester Omoregie",
+    "authorized_access_point": "Imhanobe, Sylvester Omoregie"
+  },
+  {
+    "md5": "71a97eb933442150191578b4459ad7a0",
+    "pid": "A027664950",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A027664950",
+    "preferred_name": "Leunen, Nico",
+    "authorized_access_point": "Leunen, Nico"
+  },
+  {
+    "md5": "8155f087947dff0279483de6a78f2a5f",
+    "pid": "A018610634",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018610634",
+    "preferred_name": "Abbott, Colleen",
+    "authorized_access_point": "Abbott, Colleen"
+  },
+  {
+    "md5": "f9057ad2c0d45b7d4eb1851f5f6e736a",
+    "pid": "A017565309",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017565309",
+    "variant_name": [
+      "Abraham, Ernst A.,"
+    ],
+    "date_of_birth": "1906",
+    "preferred_name": "Abraham, Ernst August,",
+    "variant_access_point": [
+      "Abraham, Ernst A., 1906-"
+    ],
+    "authorized_access_point": "Abraham, Ernst August, 1906-",
+    "biographical_information": [
+      "Economiste"
+    ]
+  },
+  {
+    "md5": "d2bbcd589a05b31c4d8198d965880303",
+    "pid": "A003947464",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003947464",
+    "preferred_name": "Vogelsang-Wenke, Heike",
+    "authorized_access_point": "Vogelsang-Wenke, Heike"
+  },
+  {
+    "md5": "2af81379d82f35a7530e9a1fe139666d",
+    "pid": "A005995031",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A005995031",
+    "preferred_name": "Dion, Linda",
+    "authorized_access_point": "Dion, Linda"
+  },
+  {
+    "md5": "87922244234d4dd7f3f15fee212e7495",
+    "pid": "A022990131",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A022990131",
+    "preferred_name": "Wedjolo-Akatshi, Marguerite",
+    "authorized_access_point": "Wedjolo-Akatshi, Marguerite"
+  },
+  {
+    "md5": "943f4a48c49fd95f1f560cfccf68e4fa",
+    "pid": "A018432097",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A018432097",
+    "preferred_name": "Centro per gli studi storici italo-germanici in Trento. Convegno internazionale (2005 :",
+    "authorized_access_point": "Centro per gli studi storici italo-germanici in Trento. Convegno internazionale (2005 : Trento)"
+  },
+  {
+    "md5": "5cfa814dcf6b9d0d995b67747f22716a",
+    "pid": "A018726776",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018726776",
+    "preferred_name": "Pugin, J.",
+    "authorized_access_point": "Pugin, J."
+  },
+  {
+    "md5": "4af997e5b272e5a8b454f973a0d90cd0",
+    "pid": "A016484771",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A016484771",
+    "date_of_birth": "1965",
+    "preferred_name": "Gibson, Kevin,",
+    "authorized_access_point": "Gibson, Kevin, 1965-"
+  },
+  {
+    "md5": "870de603b17d34533cfc08e13b22a4bf",
+    "pid": "A022533394",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A022533394",
+    "preferred_name": "Reimer, Vera",
+    "authorized_access_point": "Reimer, Vera"
+  },
+  {
+    "md5": "89712b253873701d87e273cc62c913a7",
+    "pid": "A013395525",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A013395525",
+    "preferred_name": "Espace Mont-Blanc. Comit\u00e9 de pilotage Sch\u00e9ma de d\u00e9veloppement durable",
+    "authorized_access_point": "Espace Mont-Blanc. Comit\u00e9 de pilotage Sch\u00e9ma de d\u00e9veloppement durable"
+  },
+  {
+    "md5": "6c678dcadbf2148eeb54f286484c8e13",
+    "pid": "A021650553",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A021650553",
+    "preferred_name": "\u00d6hninger, Johann J.",
+    "authorized_access_point": "\u00d6hninger, Johann J."
+  },
+  {
+    "md5": "5006487a9608d77bac94cd9234def3cf",
+    "pid": "A003019667",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003019667",
+    "preferred_name": "Boillat, Christian",
+    "authorized_access_point": "Boillat, Christian"
+  },
+  {
+    "md5": "4a955e8aeafcc540f648de45c3b35926",
+    "pid": "A009306109",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A009306109",
+    "preferred_name": "Soldt, Johannes",
+    "authorized_access_point": "Soldt, Johannes"
+  },
+  {
+    "md5": "1eb948e1507571b9d591624abca6bc3e",
+    "pid": "A003825451",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003825451",
+    "preferred_name": "Shanks, Daniel",
+    "authorized_access_point": "Shanks, Daniel"
+  },
+  {
+    "md5": "769d3ca0e7c4cead35df50d816f44a1a",
+    "pid": "A003789261",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003789261",
+    "variant_name": [
+      "Savile, Douglas B. O.,",
+      "Savile, Douglas Barton Osborne,"
+    ],
+    "date_of_birth": "1909",
+    "date_of_death": "2000",
+    "preferred_name": "Savile, D. B. O.,",
+    "variant_access_point": [
+      "Savile, Douglas B. O., 1909-2000",
+      "Savile, Douglas Barton Osborne, 1909-2000"
+    ],
+    "authorized_access_point": "Savile, D. B. O., 1909-2000",
+    "biographical_information": [
+      "Mycologue, phytopathologiste et biologiste canadien d'origine irlandaise"
+    ]
+  },
+  {
+    "md5": "1251195c036b0155e63c6ba30ad8bdcf",
+    "pid": "A010176792",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A010176792",
+    "preferred_name": "Schiavazzi, Piero",
+    "authorized_access_point": "Schiavazzi, Piero"
+  },
+  {
+    "md5": "0c4b96909fbf1a9b8b3b043ada3a8eaf",
+    "pid": "A020228645",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A020228645",
+    "preferred_name": "Routon, Kenneth",
+    "authorized_access_point": "Routon, Kenneth"
+  },
+  {
+    "md5": "9193fb6b120b3991d613c8ded398508a",
+    "pid": "A003188796",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003188796",
+    "preferred_name": "Douglas, Claire",
+    "authorized_access_point": "Douglas, Claire"
+  },
+  {
+    "md5": "b00d69a9390626205a2b4debe2737aff",
+    "pid": "A003256978",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003256978",
+    "preferred_name": "Frager, Robert",
+    "authorized_access_point": "Frager, Robert"
+  },
+  {
+    "md5": "111267c203659051e25136ed71055248",
+    "pid": "A018345923",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018345923",
+    "preferred_name": "Galanopoulos, Philippe",
+    "authorized_access_point": "Galanopoulos, Philippe"
+  },
+  {
+    "md5": "2e677e0bb91ebc3daaa85dcdba899bd9",
+    "pid": "A003514292",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003514292",
+    "preferred_name": "Leron, Uri",
+    "authorized_access_point": "Leron, Uri"
+  },
+  {
+    "md5": "8ca21a1a51e94d8adbf32c0aa165281f",
+    "pid": "A003203987",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003203987",
+    "preferred_name": "D\u00edaz, Janet Winecoff",
+    "authorized_access_point": "D\u00edaz, Janet Winecoff"
+  },
+  {
+    "md5": "346af13e9940e93afc3afa53f8b73acf",
+    "pid": "A003441673",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003441673",
+    "preferred_name": "Kaplan, Robert B",
+    "authorized_access_point": "Kaplan, Robert B"
+  },
+  {
+    "md5": "f90f7c2c4f550d84ac12fe5b2c180bc6",
+    "pid": "A024413945",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A024413945",
+    "variant_name": [
+      "Macdonald, A. de L\u00e9ry,",
+      "Mc Donald, Archibald Chaussegros de L\u00e9ry,",
+      "Mac Donald, Archibald Chaussegros de L\u00e9ry,",
+      "McDonald, Archibald Chaussegros de L\u00e9ry,"
+    ],
+    "date_of_birth": "1862",
+    "date_of_death": "1939",
+    "preferred_name": "Macdonald, Archibald Chaussegros de L\u00e9ry,",
+    "variant_access_point": [
+      "Macdonald, A. de L\u00e9ry, 1862-1939",
+      "Mc Donald, Archibald Chaussegros de L\u00e9ry, 1862-1939",
+      "Mac Donald, Archibald Chaussegros de L\u00e9ry, 1862-1939",
+      "McDonald, Archibald Chaussegros de L\u00e9ry, 1862-1939"
+    ],
+    "authorized_access_point": "Macdonald, Archibald Chaussegros de L\u00e9ry, 1862-1939",
+    "biographical_information": [
+      "Avocat, historien, g\u00e9n\u00e9alogiste, maire de Rigaud et homme d'affaires"
+    ]
+  },
+  {
+    "md5": "e5a4bfb48c124fd86f26918303cbe45d",
+    "pid": "A008730051",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A008730051",
+    "preferred_name": "Otomo, Masaku",
+    "authorized_access_point": "Otomo, Masaku"
+  },
+  {
+    "md5": "ab870637f37959761fc93f2533d7c04a",
+    "pid": "A020053143",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A020053143",
+    "preferred_name": "Ruhierre, Edme",
+    "authorized_access_point": "Ruhierre, Edme"
+  },
+  {
+    "md5": "436710c33537426466adcefad4997905",
+    "pid": "A002912942",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002912942",
+    "preferred_name": "Aiken, Lewis R",
+    "authorized_access_point": "Aiken, Lewis R"
+  },
+  {
+    "md5": "5b69c8010712c2f642aaea0fa9709257",
+    "pid": "A003454993",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003454993",
+    "preferred_name": "Kingma, J",
+    "authorized_access_point": "Kingma, J"
+  },
+  {
+    "md5": "a738ace7e8a96230e3143ec843b35ec5",
+    "pid": "A003849275",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003849275",
+    "preferred_name": "Sorabji, Corn\u00e9lia",
+    "authorized_access_point": "Sorabji, Corn\u00e9lia"
+  },
+  {
+    "md5": "ef3e7d948e676447dea303125bc36063",
+    "pid": "A002940495",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002940495",
+    "preferred_name": "Aronson, Robert H",
+    "authorized_access_point": "Aronson, Robert H"
+  },
+  {
+    "md5": "adc7a243bb90fa2ab3a06802cec4337d",
+    "pid": "A013193457",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013193457",
+    "preferred_name": "Verseils, Marcel",
+    "authorized_access_point": "Verseils, Marcel"
+  },
+  {
+    "md5": "f3c56bef945d4f3c655931f020bccb39",
+    "pid": "A012338211",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "qualifier": "anthropologue",
+    "identifier": "http://data.rero.ch/02-A012338211",
+    "preferred_name": "Desjardins, Michel, anthropologue",
+    "authorized_access_point": "Desjardins, Michel, anthropologue"
+  },
+  {
+    "md5": "206d1254aa8ff0ae1257ba59a3689fca",
+    "pid": "A018351276",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A018351276",
+    "preferred_name": "Institut international de sociologie juridique (O\u00f1ati). Workshop (2008 :",
+    "authorized_access_point": "Institut international de sociologie juridique (O\u00f1ati). Workshop (2008 : O\u00f1ati)"
+  },
+  {
+    "md5": "046127e6f2a634535b26bb44879a7834",
+    "pid": "A012506877",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A012506877",
+    "preferred_name": "International Cultural Heritage Informatics Meeting (1999 :",
+    "authorized_access_point": "International Cultural Heritage Informatics Meeting (1999 : Washington)"
+  },
+  {
+    "md5": "5a523e3464f7ccc8b274211a6479ae42",
+    "pid": "A027194665",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A027194665",
+    "preferred_name": "Fernando, Anthony Francis Tissa",
+    "authorized_access_point": "Fernando, Anthony Francis Tissa"
+  },
+  {
+    "md5": "16b7d794845b810c919eca575aea544b",
+    "pid": "A003625161",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003625161",
+    "preferred_name": "M\u00fcnichsdorfer, Friedrich",
+    "authorized_access_point": "M\u00fcnichsdorfer, Friedrich"
+  },
+  {
+    "md5": "f774f620b32d5baba1a5d99a7ed0ca26",
+    "pid": "A012408608",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012408608",
+    "preferred_name": "Universit\u00e9 de Paris 4. Institut de recherches sur les civilisations de l'Occident moderne. Colloque (1996)",
+    "authorized_access_point": "Universit\u00e9 de Paris 4. Institut de recherches sur les civilisations de l'Occident moderne. Colloque (1996)"
+  },
+  {
+    "md5": "aea577273c9249cefa955cd7d59bd12d",
+    "pid": "A018051739",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A018051739",
+    "preferred_name": "Nederland. Ministerie van Buitenlandse Zaken. Symposium (2009 :",
+    "authorized_access_point": "Nederland. Ministerie van Buitenlandse Zaken. Symposium (2009 : Den Haag)"
+  },
+  {
+    "md5": "17fd97d3e77ec4b62ffe138f76ef3804",
+    "pid": "A000016955",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A000016955",
+    "date_of_birth": "1813",
+    "date_of_death": "1882",
+    "preferred_name": "Batissier, Louis,",
+    "authorized_access_point": "Batissier, Louis, 1813-1882",
+    "biographical_information": [
+      "B. Lewis est le pseudonyme de Louis Batissier",
+      "M\u00e9decin. - Inspecteur de monuments historiques de l'Allier"
+    ]
+  },
+  {
+    "md5": "e56aa72dae23124e7e2da54e46201263",
+    "pid": "A003833071",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003833071",
+    "preferred_name": "Simon, George T",
+    "authorized_access_point": "Simon, George T"
+  },
+  {
+    "md5": "f02c10074da798dc0e5b3ec2b4fe38a4",
+    "pid": "A003780412",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003780412",
+    "preferred_name": "Salisbury, Harrison Evans",
+    "authorized_access_point": "Salisbury, Harrison Evans"
+  },
+  {
+    "md5": "75a7b0a68a4077c4fa2f16934ab73e0e",
+    "pid": "A017696857",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017696857",
+    "preferred_name": "Laval, Roseline",
+    "authorized_access_point": "Laval, Roseline"
+  },
+  {
+    "md5": "cea2ed1e94b1bc8389aa12b064c7bcad",
+    "pid": "A003685283",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003685283",
+    "preferred_name": "Pestieau, Pierre",
+    "authorized_access_point": "Pestieau, Pierre"
+  },
+  {
+    "md5": "86a35461a639b3aa1b04e37cf98083ac",
+    "pid": "A013970354",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013970354",
+    "preferred_name": "Weiglin, Paul",
+    "authorized_access_point": "Weiglin, Paul"
+  },
+  {
+    "md5": "dfeb85da71f35a9c7b2160838bed2cf8",
+    "pid": "A003146897",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003146897",
+    "preferred_name": "Cullen, Gordon",
+    "authorized_access_point": "Cullen, Gordon"
+  },
+  {
+    "md5": "1108c5e2e6f4a9c3de77b4b707a2e12b",
+    "pid": "A013993183",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013993183",
+    "preferred_name": "Barbi, Elisabetta",
+    "authorized_access_point": "Barbi, Elisabetta"
+  },
+  {
+    "md5": "7c24dd97faa91b1530950ba28e2cb4e8",
+    "pid": "A003733566",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003733566",
+    "preferred_name": "Regis, Roger",
+    "authorized_access_point": "Regis, Roger"
+  },
+  {
+    "md5": "e8a8d3196cf1a52f0d6d7c5abd900f1e",
+    "pid": "A020500799",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A020500799",
+    "preferred_name": "Lapp, Axel",
+    "authorized_access_point": "Lapp, Axel"
+  },
+  {
+    "md5": "91a2cb12c81623ac7c5d0ac2a80af5d5",
+    "pid": "A027062343",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A027062343",
+    "preferred_name": "Grellety, R\u00e9mi",
+    "authorized_access_point": "Grellety, R\u00e9mi"
+  },
+  {
+    "md5": "67ca545da9005310151869c3ca642f1b",
+    "pid": "A003084316",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003084316",
+    "preferred_name": "Cattaneo, Aldo",
+    "authorized_access_point": "Cattaneo, Aldo"
+  },
+  {
+    "md5": "86e92b94a1d01b26815664a875df0a08",
+    "pid": "A023425677",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A023425677",
+    "variant_name": [
+      "Masahiro, Eguchi,"
+    ],
+    "date_of_birth": "1930",
+    "preferred_name": "Eguchi, Masahiro,",
+    "variant_access_point": [
+      "Masahiro, Eguchi, 1930-"
+    ],
+    "parallel_access_point": [
+      "\u6c5f\u53e3\u6b63\u5f18, 1930-"
+    ],
+    "authorized_access_point": "Eguchi, Masahiro, 1930-"
+  },
+  {
+    "md5": "73333125fe3eee3e601409049135902d",
+    "pid": "A025504164",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A025504164",
+    "preferred_name": "Saul, Matthew",
+    "authorized_access_point": "Saul, Matthew"
+  },
+  {
+    "md5": "4fb049a57248de23d9fed671ad85d252",
+    "pid": "A003418109",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003418109",
+    "preferred_name": "Jain, Mahendra Kumar",
+    "authorized_access_point": "Jain, Mahendra Kumar"
+  },
+  {
+    "md5": "db4d8d0cdc0a108851cd88443f1131ae",
+    "pid": "A018879902",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018879902",
+    "preferred_name": "Gassmann, Aude",
+    "authorized_access_point": "Gassmann, Aude"
+  },
+  {
+    "md5": "3ddf93832366f1f0f52a25003c948590",
+    "pid": "A012440656",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012440656",
+    "preferred_name": "Universit\u00e9 de Tours. Institut d'histoire de la presse et de l'opinion",
+    "authorized_access_point": "Universit\u00e9 de Tours. Institut d'histoire de la presse et de l'opinion"
+  },
+  {
+    "md5": "9309341c2cde842fece998a41a361a53",
+    "pid": "A023189262",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A023189262",
+    "date_of_birth": "1970",
+    "preferred_name": "Ye, Xiaobin,",
+    "authorized_access_point": "Ye, Xiaobin, 1970-"
+  },
+  {
+    "md5": "cf198e01bf4e9e6fc1823be8b7793e68",
+    "pid": "A003094880",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003094880",
+    "preferred_name": "Chansler, John F",
+    "authorized_access_point": "Chansler, John F"
+  },
+  {
+    "md5": "d95a9b6f1cf6693605d7f298024eae08",
+    "pid": "A002939817",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002939817",
+    "preferred_name": "Arnold, Gregory C",
+    "authorized_access_point": "Arnold, Gregory C"
+  },
+  {
+    "md5": "d68168a1a45f9d2f12c75cdce5264d25",
+    "pid": "A026155985",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "qualifier": "Denis",
+    "identifier": "http://data.rero.ch/02-A026155985",
+    "preferred_name": "Eyraud, Denis",
+    "authorized_access_point": "Eyraud, Denis"
+  },
+  {
+    "md5": "79138adbec18a380fc80f8017d099f74",
+    "pid": "A003399601",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003399601",
+    "preferred_name": "Inamoto, Noboru",
+    "authorized_access_point": "Inamoto, Noboru"
+  },
+  {
+    "md5": "afe113f50f34a6b0ee3f6defeb8e1dd7",
+    "pid": "A020436263",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A020436263",
+    "preferred_name": "Harmony, Korine",
+    "authorized_access_point": "Harmony, Korine"
+  },
+  {
+    "md5": "6bee758da482f3934da3cda419d66720",
+    "pid": "A018456288",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018456288",
+    "preferred_name": "Halperin, Natalie",
+    "authorized_access_point": "Halperin, Natalie"
+  },
+  {
+    "md5": "2f8dc1fe676a30886212cf394bb5bf92",
+    "pid": "A012391465",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012391465",
+    "preferred_name": "Universit\u00e9 Jean Monnet (Saint-Etienne). Groupe de recherches ib\u00e9riques et ib\u00e9ro-am\u00e9ricaines. Colloque international (2002 :",
+    "authorized_access_point": "Universit\u00e9 Jean Monnet (Saint-Etienne). Groupe de recherches ib\u00e9riques et ib\u00e9ro-am\u00e9ricaines. Colloque international (2002 : Saint-Etienne)"
+  },
+  {
+    "md5": "cf21cbb3b5104fa8fb60836fba124adf",
+    "pid": "A022774320",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A022774320",
+    "preferred_name": "Love-Trade, Jack",
+    "authorized_access_point": "Love-Trade, Jack"
+  },
+  {
+    "md5": "ffae57d8410aabb6bc8ce424cc198902",
+    "pid": "A017513975",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "qualifier": "sc\u00e9nariste",
+    "identifier": "http://data.rero.ch/02-A017513975",
+    "preferred_name": "Martin, Rainer, sc\u00e9nariste",
+    "authorized_access_point": "Martin, Rainer, sc\u00e9nariste"
+  },
+  {
+    "md5": "9a12cd9900ec76d491ab5ae1d7abea4f",
+    "pid": "A003889324",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003889324",
+    "preferred_name": "Taubman, Howard",
+    "authorized_access_point": "Taubman, Howard"
+  },
+  {
+    "md5": "67dc91d3ae0a655c72d97ccbcc87e1f9",
+    "pid": "A018651679",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018651679",
+    "preferred_name": "Logean, Sylvie",
+    "authorized_access_point": "Logean, Sylvie"
+  },
+  {
+    "md5": "64458dc96b072035837ba8686fdc9685",
+    "pid": "A003919082",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003919082",
+    "preferred_name": "Ulstrup, Jens",
+    "authorized_access_point": "Ulstrup, Jens"
+  },
+  {
+    "md5": "c864d6c06d78f305c25bbf122ae758e8",
+    "pid": "A003863577",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003863577",
+    "preferred_name": "Stern, Guy",
+    "authorized_access_point": "Stern, Guy"
+  },
+  {
+    "md5": "00f468c8ecaf5282771c3fbf9013ef33",
+    "pid": "A002940438",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002940438",
+    "preferred_name": "Aronoff, Mark",
+    "authorized_access_point": "Aronoff, Mark"
+  },
+  {
+    "md5": "e1d7d19b0c7df72c27defa2ec0de5a06",
+    "pid": "A003546689",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003546689",
+    "preferred_name": "MacLaughlin, John A",
+    "authorized_access_point": "MacLaughlin, John A"
+  },
+  {
+    "md5": "86478c3f0fb20cc0c7864e5404ae01af",
+    "pid": "A003328096",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003328096",
+    "preferred_name": "Guerrero Zamora, Juan",
+    "authorized_access_point": "Guerrero Zamora, Juan"
+  },
+  {
+    "md5": "5dd27f184c7846d1c9b51990e9d8fbc6",
+    "pid": "A025454683",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A025454683",
+    "date_of_birth": "1939",
+    "preferred_name": "Brown, Jonathan,",
+    "authorized_access_point": "Brown, Jonathan, 1939-"
+  },
+  {
+    "md5": "680df692f88db0126d0022e59a3b9847",
+    "pid": "A003379503",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003379503",
+    "preferred_name": "Hollander, John",
+    "authorized_access_point": "Hollander, John"
+  },
+  {
+    "md5": "0fcd1781c409c4202bf8c313ab7aa24e",
+    "pid": "A000047084",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A000047084",
+    "variant_name": [
+      "Gupta, Jyotitindra Das"
+    ],
+    "preferred_name": "Das Gupta, Jyotirindra",
+    "variant_access_point": [
+      "Gupta, Jyotitindra Das"
+    ],
+    "authorized_access_point": "Das Gupta, Jyotirindra"
+  },
+  {
+    "md5": "bb1996f818cd471a7f15b4f184ebafcd",
+    "pid": "A003375801",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003375801",
+    "preferred_name": "Hocks, Richard A",
+    "authorized_access_point": "Hocks, Richard A"
+  },
+  {
+    "md5": "e5e1447547825bce6ba1a00daf8872c5",
+    "pid": "A003378581",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003378581",
+    "preferred_name": "Hohenberger, Adam",
+    "authorized_access_point": "Hohenberger, Adam"
+  },
+  {
+    "md5": "37d2b43ab5d51118526d56080d2f16da",
+    "pid": "A014258973",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A014258973",
+    "preferred_name": "Joye, Isabelle",
+    "authorized_access_point": "Joye, Isabelle"
+  },
+  {
+    "md5": "60adafed6820cc67e23286786256e9ac",
+    "pid": "A017468446",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017468446",
+    "preferred_name": "Meyer, Susanna",
+    "authorized_access_point": "Meyer, Susanna"
+  },
+  {
+    "md5": "508632de99b5f428f1eab6f456ce53a0",
+    "pid": "A003632361",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003632361",
+    "preferred_name": "Navacelle, Geoffroy de",
+    "authorized_access_point": "Navacelle, Geoffroy de"
+  },
+  {
+    "md5": "e00dbdb767b710bd68c4b8ccb35c874d",
+    "pid": "A018623512",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018623512",
+    "preferred_name": "Arizmendi, Luis",
+    "authorized_access_point": "Arizmendi, Luis"
+  },
+  {
+    "md5": "86fcbc79a6b85192f9ba972afad0bd49",
+    "pid": "A012506256",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012506256",
+    "preferred_name": "F\u00e9d\u00e9ration internationale de l'habitation et de l'urbanisme. Congr\u00e8s 1958 :",
+    "authorized_access_point": "F\u00e9d\u00e9ration internationale de l'habitation et de l'urbanisme. Congr\u00e8s (34 : 1958 : Li\u00e8ge)"
+  },
+  {
+    "md5": "2897c8163617f4a7b265824b4d298230",
+    "pid": "A012313815",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A012313815",
+    "date_of_birth": "1923",
+    "preferred_name": "Kretzschmar, Serge,",
+    "authorized_access_point": "Kretzschmar, Serge, 1923-"
+  },
+  {
+    "md5": "6cc311dcae1c1824fcad7eb67efd753d",
+    "pid": "A018346336",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A018346336",
+    "preferred_name": "Antigos Refeit\u00f3rios da Mundet (Seixal)",
+    "authorized_access_point": "Antigos Refeit\u00f3rios da Mundet (Seixal)"
+  },
+  {
+    "md5": "63e884c0150686c1859163d66d1e4b9f",
+    "pid": "A012448425",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012448425",
+    "preferred_name": "Union internationale des instituts de recherches foresti\u00e8res. Seminaire (1972 :",
+    "authorized_access_point": "Union internationale des instituts de recherches foresti\u00e8res. Seminaire (1972 : Z\u00fcrich)"
+  },
+  {
+    "md5": "712952d558cf625a84e04fa97ff05842",
+    "pid": "A003794788",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003794788",
+    "preferred_name": "Schenker, Franz",
+    "authorized_access_point": "Schenker, Franz"
+  },
+  {
+    "md5": "492bfd8f2a165bb8c4a1f8d1e2ea242a",
+    "pid": "A017158101",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A017158101",
+    "preferred_name": "Naciri, Khaled",
+    "authorized_access_point": "Naciri, Khaled"
+  },
+  {
+    "md5": "68c7a73c81175dd808757035038e50f2",
+    "pid": "A020232527",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A020232527",
+    "preferred_name": "Rey, Antoinette",
+    "authorized_access_point": "Rey, Antoinette",
+    "biographical_information": [
+      "Dates de vie: 1880-1938"
+    ]
+  },
+  {
+    "md5": "51378d4ad1b7d241a903e53c4910b34a",
+    "pid": "A023182560",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A023182560",
+    "preferred_name": "Hafner, Elias",
+    "authorized_access_point": "Hafner, Elias"
+  },
+  {
+    "md5": "76684d31943c41b687851149b01e4d0f",
+    "pid": "A026408718",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A026408718",
+    "preferred_name": "Monkelbaan, Joachim",
+    "authorized_access_point": "Monkelbaan, Joachim"
+  },
+  {
+    "md5": "8c01aea5b295a51b96c71e0f06690401",
+    "pid": "A014242112",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A014242112",
+    "preferred_name": "Rasmussen, Kenneth A.",
+    "authorized_access_point": "Rasmussen, Kenneth A."
+  },
+  {
+    "md5": "5b9c6073a7c505fe7de51e47d74c929d",
+    "pid": "A002953651",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002953651",
+    "preferred_name": "Avdotine, L.N",
+    "authorized_access_point": "Avdotine, L.N"
+  },
+  {
+    "md5": "17af98f1a3347e1e306dc810d8605458",
+    "pid": "A012431876",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012431876",
+    "preferred_name": "University of Western Ontario (London, Canada). North American Society for the Study of Romanticism. Conference (1993 :",
+    "authorized_access_point": "University of Western Ontario (London, Canada). North American Society for the Study of Romanticism. Conference (1993 : London, Canada)"
+  },
+  {
+    "md5": "b4ac481053aa065f33c5005a82534759",
+    "pid": "A012470564",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012470564",
+    "preferred_name": "University of North Carolina (Chapel Hill). University library. Hanes Foundation",
+    "authorized_access_point": "University of North Carolina (Chapel Hill). University library. Hanes Foundation"
+  },
+  {
+    "md5": "39fc4d35c8fe80711509cf317c25d7ca",
+    "pid": "A021992182",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A021992182",
+    "preferred_name": "Fondeville, Richard",
+    "authorized_access_point": "Fondeville, Richard",
+    "biographical_information": [
+      "Dates de vie: 18e s."
+    ]
+  },
+  {
+    "md5": "1985d2cf5df97f4f77f4ccf24e84a297",
+    "pid": "A027745860",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A027745860",
+    "preferred_name": "Flamant, Gaspard",
+    "authorized_access_point": "Flamant, Gaspard"
+  },
+  {
+    "md5": "3761bbb0e65ee02fa88b0b7ac37fbf1c",
+    "pid": "A003508662",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003508662",
+    "preferred_name": "Legorjus, Philippe",
+    "authorized_access_point": "Legorjus, Philippe"
+  },
+  {
+    "md5": "0695e1766baa7dabbcf07b79762de465",
+    "pid": "A025926750",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A025926750",
+    "preferred_name": "Feroumont, Bernadette",
+    "authorized_access_point": "Feroumont, Bernadette"
+  },
+  {
+    "md5": "852f53c0b55765bfa425df63f92abca2",
+    "pid": "A003488727",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003488727",
+    "preferred_name": "Laffont, Pierre",
+    "authorized_access_point": "Laffont, Pierre"
+  },
+  {
+    "md5": "2dea6ddd4d3a2eff5f7040661f16648e",
+    "pid": "A003575662",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003575662",
+    "preferred_name": "Mavituna, Ferda",
+    "authorized_access_point": "Mavituna, Ferda"
+  },
+  {
+    "md5": "fbddcedd18edef9707cf5c96ab95e979",
+    "pid": "A002941414",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002941414",
+    "preferred_name": "Artioli, Umberto",
+    "authorized_access_point": "Artioli, Umberto"
+  },
+  {
+    "md5": "6166696de775454319fdba7fc57cb935",
+    "pid": "A003171170",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003171170",
+    "preferred_name": "Dertouzos, James N",
+    "authorized_access_point": "Dertouzos, James N"
+  },
+  {
+    "md5": "4bc658f96951d07cdb25fbee61daf2c5",
+    "pid": "A000018483",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "qualifier": "d'Anoia",
+    "identifier": "http://data.rero.ch/02-A000018483",
+    "variant_name": [
+      "Anoia, Berenguer d'"
+    ],
+    "preferred_name": "Berenguer, d'Anoia",
+    "variant_access_point": [
+      "Anoia, Berenguer d'"
+    ],
+    "authorized_access_point": "Berenguer, d'Anoia"
+  },
+  {
+    "md5": "7a62a20aacd62ffd2bee431013a8e228",
+    "pid": "A003562973",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003562973",
+    "preferred_name": "Markham, Adam",
+    "authorized_access_point": "Markham, Adam"
+  },
+  {
+    "md5": "8880702558a5912ced5b926fee74f5c4",
+    "pid": "A014091750",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A014091750",
+    "date_of_birth": "1941",
+    "preferred_name": "Novak, David,",
+    "authorized_access_point": "Novak, David, 1941-"
+  },
+  {
+    "md5": "b33e661ccc360765bffd8e143ccb7bbf",
+    "pid": "A012045625",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A012045625",
+    "variant_name": [
+      "Tim\u010denko, Irina Petrovna"
+    ],
+    "preferred_name": "Timchenko, Irina Petrovna",
+    "variant_access_point": [
+      "Tim\u010denko, Irina Petrovna"
+    ],
+    "parallel_access_point": [
+      "\u0422\u0438\u043c\u0447\u0435\u043d\u043a\u043e, \u0418\u0440\u0438\u043d\u0430 \u041f\u0435\u0442\u0440\u043e\u0432\u043d\u0430"
+    ],
+    "authorized_access_point": "Timchenko, Irina Petrovna"
+  },
+  {
+    "md5": "08a7304287324817e943abbe46dce317",
+    "pid": "A003301693",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003301693",
+    "preferred_name": "Gleitman, Henry",
+    "authorized_access_point": "Gleitman, Henry"
+  },
+  {
+    "md5": "247e987d9939ee141f0c57ff51547921",
+    "pid": "A003111864",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003111864",
+    "preferred_name": "Cloonan, Mich\u00e8le Valerie",
+    "authorized_access_point": "Cloonan, Mich\u00e8le Valerie"
+  },
+  {
+    "md5": "bbccb0b131b5b471dea250870e0d088b",
+    "pid": "A013627680",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013627680",
+    "preferred_name": "Beardsall, Jeffery F.",
+    "authorized_access_point": "Beardsall, Jeffery F."
+  },
+  {
+    "md5": "386fa8406fdda6d474af96925455ffa0",
+    "pid": "A003223430",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003223430",
+    "preferred_name": "Estle, Thomas Leo",
+    "authorized_access_point": "Estle, Thomas Leo"
+  },
+  {
+    "md5": "e734e92f70added337eb642c38ecf60f",
+    "pid": "A003312980",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003312980",
+    "preferred_name": "Graf, Arnim",
+    "authorized_access_point": "Graf, Arnim"
+  },
+  {
+    "md5": "fb8904792b02584b2b70a8e1ffe2fe51",
+    "pid": "A003389309",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003389309",
+    "preferred_name": "Hugues-Hallett, Penelope",
+    "authorized_access_point": "Hugues-Hallett, Penelope"
+  },
+  {
+    "md5": "843566f01f0e914a908fd24802cf324f",
+    "pid": "A003981870",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003981870",
+    "preferred_name": "Witte, Siegfried",
+    "authorized_access_point": "Witte, Siegfried"
+  },
+  {
+    "md5": "2ada43d7433df7c61e6e33ab0fa012dd",
+    "pid": "A003531526",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003531526",
+    "preferred_name": "Lornell, Kip",
+    "authorized_access_point": "Lornell, Kip"
+  },
+  {
+    "md5": "2e4599e8bd645b234af696b8b33fc0d9",
+    "pid": "A003688082",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003688082",
+    "preferred_name": "Peulevey, Georges L",
+    "authorized_access_point": "Peulevey, Georges L"
+  },
+  {
+    "md5": "17b0db2cff502db717621c9568fed126",
+    "pid": "A003706170",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003706170",
+    "preferred_name": "Portenier, Claude",
+    "authorized_access_point": "Portenier, Claude"
+  },
+  {
+    "md5": "57999e67321635856c313bb7d8cccfc7",
+    "pid": "A002992522",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002992522",
+    "preferred_name": "Berczy, M",
+    "authorized_access_point": "Berczy, M"
+  },
+  {
+    "md5": "8f08e5e9208869702c4f732803bd7dd8",
+    "pid": "A003995908",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003995908",
+    "preferred_name": "Zatouroff, Michael",
+    "authorized_access_point": "Zatouroff, Michael"
+  },
+  {
+    "md5": "f266e4128a3680900e812dc05a0c5492",
+    "pid": "A018795339",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A018795339",
+    "preferred_name": "Power, Alacoque",
+    "authorized_access_point": "Power, Alacoque"
+  },
+  {
+    "md5": "4c73f0bd225e53f9b55265d20a301df5",
+    "pid": "A012388774",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "qualifier": "Jr.",
+    "identifier": "http://data.rero.ch/02-A012388774",
+    "preferred_name": "Lowry, Eddie R., Jr.",
+    "authorized_access_point": "Lowry, Eddie R., Jr."
+  },
+  {
+    "md5": "a51c360f00ea1a38d60d46c7f8b7e74a",
+    "pid": "A002929473",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002929473",
+    "preferred_name": "Andreu, Rafael",
+    "authorized_access_point": "Andreu, Rafael"
+  },
+  {
+    "md5": "1fe485e2b097d3414d7e1b0e8716c968",
+    "pid": "A013135052",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013135052",
+    "preferred_name": "Korth, Konrad",
+    "authorized_access_point": "Korth, Konrad"
+  },
+  {
+    "md5": "b7fa826e0fbdc1d3092a6ad241782e3b",
+    "pid": "A011981174",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A011981174",
+    "preferred_name": "Luke, Jeff S",
+    "authorized_access_point": "Luke, Jeff S"
+  },
+  {
+    "md5": "cbc8abaa62db761e64dca42bcde4663c",
+    "pid": "A021665049",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A021665049",
+    "preferred_name": "Institut atlantique des affaires internationales (Paris). Conference (1980 :",
+    "authorized_access_point": "Institut atlantique des affaires internationales (Paris). Conference (1980 : M\u00e9xico)"
+  },
+  {
+    "md5": "56d99df40699a1fd6b90b520d4a52392",
+    "pid": "A014273717",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A014273717",
+    "preferred_name": "Kummer, Jodok",
+    "authorized_access_point": "Kummer, Jodok"
+  },
+  {
+    "md5": "fdb40c6adac1648316873f3d008465e0",
+    "pid": "A013583535",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013583535",
+    "preferred_name": "Hayward, Joseph",
+    "authorized_access_point": "Hayward, Joseph"
+  },
+  {
+    "md5": "dd737ba109c624c0aa7ddc4b50fde038",
+    "pid": "A003520958",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003520958",
+    "preferred_name": "Liesegang, Helmuth",
+    "authorized_access_point": "Liesegang, Helmuth"
+  },
+  {
+    "md5": "72ed1db838dd7f9a1b151ec4f23cf60b",
+    "pid": "A023452640",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A023452640",
+    "preferred_name": "Delley, Jean-Louis",
+    "authorized_access_point": "Delley, Jean-Louis"
+  },
+  {
+    "md5": "8d030721c48d0e6a9ed467eddd4566f1",
+    "pid": "A012105454",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A012105454",
+    "preferred_name": "Weaving, Rachel",
+    "authorized_access_point": "Weaving, Rachel"
+  },
+  {
+    "md5": "4799d1516f4a5b6ed6e1631631592979",
+    "pid": "A003734370",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003734370",
+    "preferred_name": "Reichelt, Thomas",
+    "authorized_access_point": "Reichelt, Thomas"
+  },
+  {
+    "md5": "d7124b822c43c06bc1f41a6a5a18cad2",
+    "pid": "A013436592",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013436592",
+    "preferred_name": "Mattes, Larry J.",
+    "authorized_access_point": "Mattes, Larry J."
+  },
+  {
+    "md5": "ee3269980d1d958f7af0ae4672e4c034",
+    "pid": "A012726948",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A012726948",
+    "date_of_birth": "1942",
+    "preferred_name": "Fontaine, Jean-Marc,",
+    "authorized_access_point": "Fontaine, Jean-Marc, 1942-"
+  },
+  {
+    "md5": "45a7b78ad988490f654dbe2b0df98e72",
+    "pid": "A006173574",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A006173574",
+    "preferred_name": "Sch\u00f6nw\u00e4lder, Karen",
+    "authorized_access_point": "Sch\u00f6nw\u00e4lder, Karen"
+  },
+  {
+    "md5": "6ca36c5c1baa6b43f82865611e73a73d",
+    "pid": "A003861370",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003861370",
+    "preferred_name": "Steinbr\u00fcgge, Lieselotte",
+    "authorized_access_point": "Steinbr\u00fcgge, Lieselotte"
+  },
+  {
+    "md5": "a8b79302c21fd2511fb4e51130966615",
+    "pid": "A012416378",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A012416378",
+    "preferred_name": "F\u00eates du Rh\u00f4ne 1984 :",
+    "authorized_access_point": "F\u00eates du Rh\u00f4ne (31 : 1984 : Monthey)"
+  },
+  {
+    "md5": "69afd424b4b4d891213a91a0ab50992c",
+    "pid": "A003489212",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003489212",
+    "preferred_name": "Lagerberg, Eric",
+    "authorized_access_point": "Lagerberg, Eric"
+  },
+  {
+    "md5": "3bf49d1d6e46a8290c797aa903213cb1",
+    "pid": "A003797257",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003797257",
+    "preferred_name": "Schipper, Lee",
+    "authorized_access_point": "Schipper, Lee"
+  },
+  {
+    "md5": "2606065864fc586a9eb4634c3b201267",
+    "pid": "A012771324",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A012771324",
+    "preferred_name": "B\u00e9ville, Louis Th\u00e9ophile de",
+    "authorized_access_point": "B\u00e9ville, Louis Th\u00e9ophile de",
+    "biographical_information": [
+      "Dates de vie: 1734-1816"
+    ]
+  },
+  {
+    "md5": "c827682814a413c1a9b30defdfb6ed54",
+    "pid": "A012457605",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A012457605",
+    "preferred_name": "Conf\u00e9rence du Jeune Barreau de Bruxelles. Colloque (1992 :",
+    "authorized_access_point": "Conf\u00e9rence du Jeune Barreau de Bruxelles. Colloque (1992 : Bruxelles)"
+  },
+  {
+    "md5": "f29bc1f5fdbbd37f32f7c6e6d039827a",
+    "pid": "A013796408",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A013796408",
+    "preferred_name": "Simmen, Denise",
+    "authorized_access_point": "Simmen, Denise"
+  },
+  {
+    "md5": "09ee85ac4067cd57828320f0658cc92f",
+    "pid": "A013688478",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": false,
+    "identifier": "http://data.rero.ch/02-A013688478",
+    "preferred_name": "Rencontres de d\u00e9cembre (La Chaux-de-Fonds)",
+    "authorized_access_point": "Rencontres de d\u00e9cembre (La Chaux-de-Fonds)"
+  },
+  {
+    "md5": "aa3c5e696b346894952c19a5f7228596",
+    "pid": "A012484207",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Organisation",
+    "conference": true,
+    "identifier": "http://data.rero.ch/02-A012484207",
+    "preferred_name": "Convegno celebrativo del Quinto centenario dell'unione della Chiesa latina e della Chiesa greca (1989 :",
+    "authorized_access_point": "Convegno celebrativo del Quinto centenario dell'unione della Chiesa latina e della Chiesa greca (1989 : Firenze)"
+  },
+  {
+    "md5": "00b90cdb698eb6f2b0a284a09f3c60ba",
+    "pid": "A003471767",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A003471767",
+    "preferred_name": "Kraft, Roger",
+    "authorized_access_point": "Kraft, Roger"
+  },
+  {
+    "md5": "a054f4e7a22d4f2fd5f6c6575986b4a2",
+    "pid": "A014313002",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A014313002",
+    "preferred_name": "Jonneret, Jean-Claude",
+    "authorized_access_point": "Jonneret, Jean-Claude"
+  },
+  {
+    "md5": "c58561c6049ed77a40a939bd91e06291",
+    "pid": "A002922621",
+    "$schema": "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://data.rero.ch/02-A002922621",
+    "preferred_name": "Alver, Bente Gullveig",
+    "authorized_access_point": "Alver, Bente Gullveig"
   }
 ]

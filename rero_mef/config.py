@@ -29,6 +29,7 @@ from datetime import timedelta
 
 from invenio_records_rest.facets import terms_filter
 
+from .agents import AgentViafRecord
 from .agents.gnd.models import AgentGndIdentifier
 from .agents.idref.models import AgentIdrefIdentifier
 from .agents.mef.models import AgentMefIdentifier
@@ -483,22 +484,8 @@ RECORDS_REST_FACETS = dict(
         }
     ),
     viaf=dict(
-        aggs=dict(
-            gnd=dict(
-                filter=dict(exists=dict(field="gnd_pid"))
-            ),
-            idref=dict(
-                filter=dict(exists=dict(field="idref_pid"))
-            ),
-            rero=dict(
-                filter=dict(exists=dict(field="rero_pid"))
-            ),
-        ),
-        filters={
-            'gnd': exists_filter('gnd_pid'),
-            'idref': exists_filter('idref_pid'),
-            'rero': exists_filter('rero_pid'),
-        }
+        aggs=AgentViafRecord.aggregations(),
+        filters=AgentViafRecord.filters()
     ),
     agents_gnd=dict(
         aggs=dict(

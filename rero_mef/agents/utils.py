@@ -26,7 +26,7 @@ import click
 from flask import current_app
 
 from ..utils import get_entity_class, metadata_csv_line, \
-    number_records_in_file, pidstore_csv_line, progressbar, write_link_json
+    number_records_in_file, pidstore_csv_line, progressbar, write_viaf_json
 
 
 def write_mef_files(pid, data, pidstore, metadata, ids):
@@ -191,12 +191,12 @@ def create_viaf_files(
     :param verbose: Verbose.
     :returns: count of processed VIAF records.
     """
+    from rero_mef.agents import AgentViafRecord
     if verbose:
         click.echo('  Start ...')
-
-    agent_pid = 0
-    corresponding_data = {}
     count = 0
+    corresponding_data = {}
+    use = False
     with (
             open(
                 viaf_pidstore_file_name, 'w', encoding='utf-8'
@@ -212,39 +212,51 @@ def create_viaf_files(
         fields = row.rstrip().split('\t')
         assert len(fields) == 2
         previous_viaf_pid = fields[0].split('/')[-1]
+        # go back to first line in file
         viaf_in_file.seek(0)
         for row in viaf_in_file:
             fields = row.rstrip().split('\t')
             assert len(fields) == 2
             viaf_pid = fields[0].split('/')[-1]
             if viaf_pid != previous_viaf_pid:
-                agent_pid += 1
-                if write_link_json(
-                    agent='viaf',
-                    pidstore_file=viaf_pidstore,
-                    metadata_file=viaf_metadata,
-                    viaf_pid=previous_viaf_pid,
-                    corresponding_data=corresponding_data,
-                    agent_pid=str(agent_pid),
-                    verbose=verbose
-                ):
+                if use:
+                    write_viaf_json(
+                        pidstore_file=viaf_pidstore,
+                        metadata_file=viaf_metadata,
+                        viaf_pid=previous_viaf_pid,
+                        corresponding_data=corresponding_data,
+                        verbose=verbose
+                    )
                     count += 1
+                use = False
                 corresponding_data = {}
                 previous_viaf_pid = viaf_pid
             corresponding = fields[1].split('|')
             if len(corresponding) == 2:
-                corresponding_data[corresponding[0]] = corresponding[1]
+                corresponding_data.setdefault(
+                    corresponding[0], {'pid': corresponding[1]})
+                if corresponding[0] in AgentViafRecord.sources_used:
+                    use = True
+            corresponding = fields[1].split('@')
+            if len(corresponding) == 2:
+                if corresponding[0] == 'Wikipedia':
+                    # multiple wikipedia
+                    corresponding_data.setdefault(corresponding[0], {})
+                    corresponding_data[corresponding[0]].setdefault('url', [])
+                    corresponding_data[corresponding[0]]['url'].append(
+                        corresponding[1])
+                else:
+                    corresponding_data.setdefault(
+                        corresponding[0], {'url': corresponding[1]})
         # save the last record
-        agent_pid += 1
-        if write_link_json(
-            agent='viaf',
-            pidstore_file=viaf_pidstore,
-            metadata_file=viaf_metadata,
-            viaf_pid=previous_viaf_pid,
-            corresponding_data=corresponding_data,
-            agent_pid=str(agent_pid),
-            verbose=verbose
-        ):
+        if use:
+            write_viaf_json(
+                pidstore_file=viaf_pidstore,
+                metadata_file=viaf_metadata,
+                viaf_pid=previous_viaf_pid,
+                corresponding_data=corresponding_data,
+                verbose=verbose
+            )
             count += 1
     if verbose:
         click.echo(f'  VIAF records created: {count}')

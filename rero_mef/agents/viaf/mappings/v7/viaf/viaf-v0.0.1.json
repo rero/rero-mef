@@ -17,10 +17,58 @@
       "gnd_pid": {
         "type": "keyword"
       },
-      "rero_pid": {
+      "gnd": {
         "type": "keyword"
       },
       "idref_pid": {
+        "type": "keyword"
+      },
+      "idref": {
+        "type": "keyword"
+      },
+      "rero_pid": {
+        "type": "keyword"
+      },
+      "rero": {
+        "type": "keyword"
+      },
+      "sz_pid": {
+        "type": "keyword"
+      },
+      "sz": {
+        "type": "keyword"
+      },
+      "bne_pid": {
+        "type": "keyword"
+      },
+      "bne": {
+        "type": "keyword"
+      },
+      "bnf_pid": {
+        "type": "keyword"
+      },
+      "bnf": {
+        "type": "keyword"
+      },
+      "iccu_pid": {
+        "type": "keyword"
+      },
+      "iccu": {
+        "type": "keyword"
+      },
+      "isni_pid": {
+        "type": "keyword"
+      },
+      "isni": {
+        "type": "keyword"
+      },
+      "wiki_pid": {
+        "type": "keyword"
+      },
+      "wiki": {
+        "type": "keyword"
+      },
+      "worldcat": {
         "type": "keyword"
       },
       "_created": {

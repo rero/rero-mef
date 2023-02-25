@@ -66,10 +66,12 @@ def test_get_online(mock_get, app, agent_viaf_online_response):
     )
     data, msg = AgentViafRecord.get_online_record('SUDOC', '076515788')
     assert data == {
-        'pid': '124294761',
+        'bnf': 'http://catalogue.bnf.fr/ark:/12148/cb125442835',
+        'bnf_pid': '12544283',
+        'gnd': 'http://d-nb.info/gnd/1248506-8',
         'gnd_pid': '969004222',
-        'idref_pid':
-        '076515788'
+        'pid': '124294761',
+        'idref_pid': '076515788'
     }
     assert msg == (
         'VIAF get: 076515788       '
