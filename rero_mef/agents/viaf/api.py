@@ -17,6 +17,8 @@
 
 """API for manipulating VIAF record."""
 
+from copy import deepcopy
+
 import click
 import requests
 from elasticsearch_dsl.query import Q
@@ -30,6 +32,7 @@ from .providers import ViafProvider
 from ..api import Action, ReroIndexer, ReroMefRecord
 from ..mef.api import AgentMefRecord
 from ..utils import get_entity_class
+from ...filter import exists_filter
 from ...utils import get_entity_class, progressbar, requests_retry_session
 
 
@@ -56,6 +59,83 @@ class AgentViafRecord(ReroMefRecord):
     name = 'viaf'
     model_cls = ViafMetadata
     search = AgentViafSearch
+    # https://viaf.org/
+    sources = {
+        'DNB': 'gnd',  # German National Library
+        'SUDOC': 'idref',  # Sudoc [ABES], France
+        'RERO': 'rero',  # RERO - Library Network of Western Switzerland
+        'SZ': 'sz',  # Swiss National Library
+        'BNE': 'bne',  # National Library of Spain
+        'BNF': 'bnf',  # National Library of France
+        'ICCU': 'iccu',  # Central Institute for the Union Catalogue of the Italian libraries  # noqa
+        'ISNI': 'isni',  # ISNI
+        'WKP': 'wiki'  # Wikidata
+        # 'LC': 'loc',  # Library of Congress
+        # 'SELIBR': 'selibr',  # National Library of Sweden
+        # 'NLA': 'nla',  # National Library of Australia
+        # 'PTBNP': 'ptbnp',  # National Library of Portugal
+        # 'BLBNB': 'BLBNB',  # National Library of Brazil
+        # 'NKC': 'nkc',  # National Library of the Czech Republic
+        # 'J9U': 'j9u',  # National Library of Israel
+        # 'EGAXA': 'egaxa',  # Library of Alexandria, Egypt
+        # 'BAV': 'bav',  # Vatican Library
+        # 'CAOONL': 'caoonl',  # Library and Archives Canada/PFAN
+        # 'JPG': 'jpg',  # Union List of Artist Names [Getty Research Institute]  # noqa
+        # 'NUKAT': 'nukat',  # NUKAT Center of Warsaw University Library
+        # 'NSZL': 'NSZL',  # National Széchényi Library, Hungary
+        # 'VLACC': 'vlacc',  # Flemish Public Libraries National Library of Russia  # noqa
+        # 'NTA': 'nta',  # National Library of Netherlands
+        # 'BIBSYS': 'bibsys',  # BIBSYS
+        # 'GRATEVE': 'grateve',  # National Library of Greece
+        # 'ARBABN': 'arbabn',  # National Library of Argentina
+        # 'W2Z': 'w2z',  # National Library of Norway
+        # 'DBC': 'dbc',  # DBC (Danish Bibliographic Center)
+        # 'NDL': 'ndl',  # National Diet Library, Japan
+        # 'NII': 'nii',  # NII (Japan)
+        # 'NLB': 'nlb',  # National Library Board, Singapore
+        # 'LNB': 'lnb',  # National Library of Latvia
+        # 'PLWABN': 'plwabn',  # National Library of Poland
+        # 'BNC': 'BNC',  # National Library of Catalonia
+        # 'LNL': 'lnl',  # Lebanese National Library
+        # 'PERSEUS': 'perseus',  # Perseus Digital Library
+        # 'SRP': 'srp',  # Syriac Reference Portal
+        # 'N6I': 'n6i',  # National Library of Ireland
+        # 'NSK': 'nsk',  # National and University Library in Zagreb
+        # 'CYT': 'cyt',  # National Central Library, Taiwan
+        # 'B2Q': 'b2q',  # National Library and Archives of Québec
+        # 'KRLNK': 'krlnk',  # National Library of Korea
+        # 'BNL': 'BNL',  # National Library of Luxembourg
+        # 'BNCHL': 'bnchl',  # National Library of Chile
+        # 'MRBNR': 'mrbnr',  # National Library of Morocco
+        # 'XA': 'xa',  # xA Extended Authorities
+        # 'XR': 'xr',  # xR Extended Relationships
+        # 'FAST': 'fast',  # FAST Subjects
+        # 'ERRR': 'errr',  # National Library of Estonia
+        # 'UIY': 'uiy',  # National and University Library of Iceland (NULI)
+        # 'NYNYRILM': 'nynyrilm',  # Repertoire International de Litterature Musicale, Inc. (RILM)  # noqa
+        # 'DE663': 'de663',  # International Inventory of Musical Sources (RISM)  # noqa
+        # 'SIMACOB': 'simacob',  # NUK/COBISS.SI, Slovenia
+        # 'LIH': 'lih',  # National Library of Lithuania
+        # 'SKMASNL': 'skmasnl',  # Slovak National Library
+        # 'UAE': 'uae',  # United Arab Emirates University
+    }
+    sources_used = ('DNB', 'SUDOC', 'RERO')
+
+    @classmethod
+    def filters(cls):
+        """Filters for sources."""
+        return {
+            source: exists_filter(f'{source}_pid')
+            for source in cls.sources.values()
+        }
+
+    @classmethod
+    def aggregations(cls):
+        """Aggregations for sources."""
+        return {
+            source: dict(filter=dict(exists=dict(field=f'{source}_pid')))
+            for source in cls.sources.values()
+        }
 
     def create_mef_and_agents(self, dbcommit=False, reindex=False,
                               online=None, verbose=False,
@@ -205,18 +285,16 @@ class AgentViafRecord(ReroMefRecord):
                        link = get the VIAF link record
         :returns: VIAF record as json
         """
-        source_code = {
-            'DNB': 'gnd_pid',
-            'SUDOC': 'idref_pid',
-            'RERO': 'rero_pid'
-        }
         viaf_format = '/viaf.json'
         if format == 'link':
             viaf_format = '/justlinks.json'
             format = 'raw'
         viaf_url = current_app.config.get('RERO_MEF_VIAF_BASE_URL')
-        url = (f'{viaf_url}/viaf/sourceID/'
-               f'{viaf_source_code}|{pid}{viaf_format}')
+        url = f'{viaf_url}/viaf'
+        if viaf_source_code.upper() == 'VIAF':
+            url = f'{url}/{pid}{viaf_format}'
+        else:
+            url = f'{url}/sourceID/{viaf_source_code}|{pid}{viaf_format}'
         response = requests_retry_session().get(url)
         result = {}
         if response.status_code == requests.codes.ok:
@@ -224,25 +302,67 @@ class AgentViafRecord(ReroMefRecord):
             if format == 'raw':
                 return response.json(), msg
             data_json = response.json()
-            result['pid'] = data_json['viafID']
-            sources = data_json.get('sources', {}).get('source')
-            if isinstance(sources, dict):
-                sources = [sources]
-            for source in sources:
-                text = source.get('#text', '|').split('|')
-                if text[0] in source_code:
-                    result[source_code[text[0]]] = text[1]
+            result['pid'] = data_json.get('viafID')
+            if sources := data_json.get('sources', {}).get('source'):
+                if isinstance(sources, dict):
+                    sources = [sources]
+                for source in sources:
+                    # get pid
+                    text = source.get('#text', '|')
+                    text = text.split('|')
+                    if bib_source := cls.sources.get(text[0]):
+                        result[f'{bib_source}_pid'] = text[1]
+                        # get URL
+                        if nsid := source.get('@nsid'):
+                            if nsid.startswith('http'):
+                                result[bib_source] = nsid
+                # get Wikipedia and WorldCat URLs
+                if result.get('wiki_pid'):
+                    x_links = data_json.get('xLinks', {}).get('xLink', [])
+                    for x_link in x_links:
+                        if 'worldcat' in x_link:
+                            result['worldcat'] = x_link
+                        elif isinstance(x_link, dict):
+                            text = x_link.get('#text')
+                            if text and 'wikipedia' in text:
+                                result.setdefault('wiki', []).append(text)
         # make sure we got a VIAF with the same pid for source
-        if result.get(source_code.get(viaf_source_code)) == pid:
+        if viaf_source_code.upper() == 'VIAF':
+            if result.get('pid') == pid:
+                return result, msg
+        elif result.get(f'{cls.sources.get(viaf_source_code)}_pid') == pid:
             return result, msg
         return {}, f'VIAF get: {pid:<15} {url} | NO RECORD'
+
+    def update_online(self, dbcommit=False, reindex=False):
+        """Update online.
+
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex record.
+        :returns: record and actions message.
+        """
+        from rero_mef.api import Action
+        online_data, _ = self.get_online_record(
+            viaf_source_code='VIAF',
+            pid=self.pid
+            )
+        if online_data:
+            online_data['$schema'] = self['$schema']
+            if online_data == self:
+                return self, Action.UPTODATE
+            else:
+                return self.update(
+                    data=online_data,
+                    dbcommit=dbcommit,
+                    reindex=reindex
+                ), Action.UPDATE
+        return None, Action.DISCARD
 
     @classmethod
     def get_viaf(cls, agent):
         """Get VIAF record by agent.
 
         :param agent: Agency do get corresponding VIAF record.
-        :param online: Try to get VIAF record online if not exist.
         """
         if isinstance(agent, AgentMefRecord):
             return [cls.get_record_by_pid(agent.get('viaf_pid'))]
@@ -362,15 +482,14 @@ class AgentViafRecord(ReroMefRecord):
     def get_pids_with_multiple_viaf(cls, verbose=False):
         """Get agent pids with multiple MEF records.
 
-        :params record_types: Record types (pid_types).
         :param verbose: Verbose.
-        :returns: pids, multiple pids, missing pids.
+        :returns: pids.
         """
         multiple_pids = {
-            'gnd_pid': {},
-            'idref_pid': {},
-            'rero_pid': {}
+            f'{cls.sources.get(source)}_pid': {}
+            for source in cls.sources_used
         }
+        cleaned_pids = deepcopy(multiple_pids)
         progress = progressbar(
             items=AgentViafSearch()
             .params(preserve_order=True)
@@ -382,19 +501,14 @@ class AgentViafRecord(ReroMefRecord):
         for hit in progress:
             viaf_pid = hit.pid
             data = hit.to_dict()
-            for agent in multiple_pids:
-                if pid := data.get(agent):
-                    multiple_pids[agent].setdefault(pid, [])
-                    multiple_pids[agent][pid].append(viaf_pid)
-        cleaned_pids = {
-            'gnd_pid': {},
-            'idref_pid': {},
-            'rero_pid': {}
-        }
-        for agent, pids in multiple_pids.items():
+            for source in multiple_pids:
+                if pid := data.get(source):
+                    multiple_pids[source].setdefault(pid, [])
+                    multiple_pids[source][pid].append(viaf_pid)
+        for source, pids in multiple_pids.items():
             for pid, viaf_pids in pids.items():
                 if len(viaf_pids) > 1:
-                    cleaned_pids[agent][pid] = viaf_pids
+                    cleaned_pids[source][pid] = viaf_pids
         return cleaned_pids
 
 

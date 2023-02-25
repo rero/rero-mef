@@ -17,7 +17,6 @@
 
 """Record serialization."""
 
-
 import contextlib
 
 from flask import current_app, request, url_for
@@ -45,7 +44,6 @@ def add_links(pid, record):
                 links['mef'] = url
     viaf_url = current_app.config.get('RERO_MEF_VIAF_BASE_URL')
     links['viaf.org'] = f'{viaf_url}/viaf/{str(viaf_pid)}'
-
     link_factory = default_links_factory_with_additional(links)
     return link_factory(pid)
 

@@ -40,8 +40,7 @@ def agents():
 @agents.command()
 @click.option('-k', '--enqueue', 'enqueue', is_flag=True, default=False,
               help="Enqueue record creation.")
-@click.option('-o', '--online', 'online', multiple=True,
-              default=['aidref', 'aggnd', 'agrero'])
+@click.option('-o', '--online', 'online', multiple=True, default=[])
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @click.option('-V', '--online_verbose', 'online_verbose', is_flag=True,
               default=False)

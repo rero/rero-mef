@@ -32,9 +32,13 @@ def test_view_agents_viaf(client, agent_viaf_record):
     res = client.get(url, follow_redirects=True)
     assert res.status_code == 200
     assert json.loads(res.get_data(as_text=True))['aggregations'] == {
+        'bne': {'doc_count': 0},
+        'bnf': {'doc_count': 0},
         'gnd': {'doc_count': 1},
-        'idref': {'doc_count': 1},
-        'rero': {'doc_count': 1}
+        'iccu': {'doc_count': 0},         'idref': {'doc_count': 1},
+        'isni': {'doc_count': 0},         'rero': {'doc_count': 1},
+        'sz': {'doc_count': 0},
+        'wiki': {'doc_count': 0},
     }
 
     url = url_for('api_blueprint.agent_viaf_redirect_item', pid=pid)

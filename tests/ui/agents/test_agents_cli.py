@@ -54,10 +54,18 @@ def test_create_csv_viaf_mef(script_info, tmpdir):
         id = data[2]
         # don't use the first two lines with dates.
         assert data[3:] == [
-            '{"rero_pid": "A003863577", '
+            '{"bne_pid": "XX871391", '
+            '"worldcat": '
+            '"http://www.worldcat.org/identities/lccn-n50022446", '
+            '"wiki": ["http://en.wikipedia.org/wiki/Guy_Stern", '
+            '"http://de.wikipedia.org/wiki/Guy_Stern", '
+            '"http://ar.wikipedia.org/wiki/'
+            '\\\\u0642\\\\u0627\\\\u064a_\\\\u0633\\\\u062a'
+            '\\\\u064a\\\\u0631\\\\u0646"], '
+            '"rero_pid": "A003863577", '
             '"$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json", '
             '"pid": "108685760"}',
-            '1'
+            '1',
         ]
     with open(viaf_pidstore) as in_file:
         pidstore_count = sum(1 for _ in in_file)

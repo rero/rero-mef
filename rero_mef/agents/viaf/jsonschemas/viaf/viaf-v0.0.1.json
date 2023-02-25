@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Schema for VIAF authority",
+  "title": "Schema for VIAF contributor",
   "type": "object",
   "required": [
     "$schema",
@@ -10,7 +10,7 @@
   "properties": {
     "$schema": {
       "title": "Schema",
-      "description": "Schema to VIAF authority record.",
+      "description": "Schema to VIAF contributor record.",
       "type": "string",
       "minLength": 7
     },
@@ -20,19 +20,124 @@
       "minLength": 1
     },
     "gnd_pid": {
-      "title": "GND authority ID",
+      "title": "GND contributor ID",
       "type": "string",
       "minLength": 1
     },
-    "rero_pid": {
-      "title": "RERO authority ID",
+    "gnd": {
+      "title": "GND contributor URL",
       "type": "string",
-      "minLength": 1
+      "format": "uri",
+      "pattern": "^(https?)://.*$",
+      "minLength": 7
     },
     "idref_pid": {
-      "title": "IDREF authority ID",
+      "title": "IDREF contributor ID",
       "type": "string",
       "minLength": 1
+    },
+    "IDREF": {
+      "title": "IDREF contributor URL",
+      "type": "string",
+      "format": "uri",
+      "pattern": "^(https?)://.*$",
+      "minLength": 7
+    },
+    "rero_pid": {
+      "title": "RERO contributor ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "rero": {
+      "title": "RERO contributor URL",
+      "type": "string",
+      "format": "uri",
+      "pattern": "^(https?)://.*$",
+      "minLength": 7
+    },
+    "sz_pid": {
+      "title": "SZ contributor ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "sz": {
+      "title": "SZ contributor URL",
+      "type": "string",
+      "format": "uri",
+      "pattern": "^(https?)://.*$",
+      "minLength": 7
+    },
+    "bne_pid": {
+      "title": "BNE contributor ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "bne": {
+      "title": "BNE contributor URL",
+      "type": "string",
+      "format": "uri",
+      "pattern": "^(https?)://.*$",
+      "minLength": 7
+    },
+    "bnf_pid": {
+      "title": "BNF contributor ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "bnf": {
+      "title": "BNF contributor URL",
+      "type": "string",
+      "format": "uri",
+      "pattern": "^(https?)://.*$",
+      "minLength": 7
+    },
+    "iccu_pid": {
+      "title": "ICCU contributor ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "iccu": {
+      "title": "ICCU contributor URL",
+      "type": "string",
+      "format": "uri",
+      "pattern": "^(https?)://.*$",
+      "minLength": 7
+    },
+    "isni_pid": {
+      "title": "ISNI contributor ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "isni": {
+      "title": "ISNI contributor URL",
+      "type": "string",
+      "format": "uri",
+      "pattern": "^(https?)://.*$",
+      "minLength": 7
+    },
+    "wiki_pid": {
+      "title": "Wikipedia contributor ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "wiki": {
+      "title": "Wikipedia links",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "title": "Wikipedia link",
+        "type": "string",
+        "format": "uri",
+        "pattern": "^(https?)://.*$",
+        "minLength": 7
+      }
+    },
+    "worldcat": {
+      "title": "WorldCat contributor URL",
+      "type": "string",
+      "format": "uri",
+      "pattern": "^(https?)://.*$",
+      "minLength": 7
     },
     "md5": {
       "title": "MD5",
