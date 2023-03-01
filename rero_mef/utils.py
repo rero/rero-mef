@@ -38,6 +38,7 @@ from uuid import uuid4
 import click
 import ijson
 import psycopg2
+import requests
 import sqlalchemy
 from dateutil import parser
 from flask import current_app
@@ -53,6 +54,8 @@ from invenio_pidstore.models import PersistentIdentifier
 from invenio_records_rest.utils import obj_or_import_string
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from pymarc.marcxml import parse_xml_to_array
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 from sickle import Sickle, oaiexceptions
 from sickle.iterator import OAIItemIterator
 from sickle.oaiexceptions import NoRecordsMatch
@@ -468,7 +471,7 @@ def oai_get_record(id, name, transformation, access_token=None,
     except Exception as err:
         msg = f'OAI-{name:<12} get: {id:<15} {full_url} | NO RECORD'
         if debug:
-            raise Exception(msg)
+            raise
         return None, msg
     records = parse_xml_to_array(StringIO(record.raw))
     if debug:
@@ -1209,3 +1212,29 @@ def generate(search, deleted):
             yield ', '
         yield json.dumps(record)
     yield ']'
+
+
+def requests_retry_session(retries=5, backoff_factor=0.5,
+                           status_forcelist=(500, 502, 504), session=None):
+    """Request retry session.
+
+    :params retries: The total number of retry attempts to make.
+    :params backoff_factor: Sleep between failed requests.
+        {backoff factor} * (2 ** ({number of total retries} - 1))
+    :params status_forcelist: The HTTP response codes to retry on..
+    :params session: Session to use.
+    :returns: http request session.
+
+    """
+    session = session or requests.Session()
+    retry = Retry(
+        total=retries,
+        read=retries,
+        connect=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=status_forcelist,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    return session

@@ -214,6 +214,10 @@ IDENTIFIERS = {
 
 RERO_MEF_APP_BASE_URL = 'https://mef.rero.ch'
 RERO_MEF_VIAF_BASE_URL = 'http://www.viaf.org'
+RERO_MEF_AGENTS_RERO_GET_RECORD = 'http://data.rero.ch/02-{id}/marcxml'
+RERO_MEF_AGENTS_GND_GET_RECORD = 'https://services.dnb.de/sru/authorities' \
+    '?version=1.1&operation=searchRetrieve&query=idn%3D{id}' \
+    '&recordSchema=MARC21-xml'
 
 SEARCH_CLIENT_CONFIG = dict(
     timeout=30,

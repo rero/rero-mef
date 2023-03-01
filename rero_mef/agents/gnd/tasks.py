@@ -17,14 +17,17 @@
 
 """Tasks used by  RERO-MEF."""
 
+import requests
 from celery import shared_task
 from flask import current_app
+from pymarc.marcxml import parse_xml_to_array
 from sickle import Sickle
+from six import BytesIO
 
 from .api import AgentGndRecord
 from ...marctojson.do_gnd_agent import Transformation
-from ...utils import MyOAIItemIterator, oai_get_record, \
-    oai_process_records_from_dates, oai_save_records_from_dates
+from ...utils import MyOAIItemIterator, oai_process_records_from_dates, \
+    oai_save_records_from_dates, requests_retry_session
 
 
 @shared_task
@@ -88,12 +91,30 @@ def save_records_from_dates(file_name, from_date=None, until_date=None,
 
 @shared_task
 def gnd_get_record(id, debug=False):
-    """Get a record from GND OAI repo."""
-    return oai_get_record(
-        id=id,
-        name='agents.gnd',
-        transformation=Transformation,
-        access_token=current_app.config.get('RERO_OAI_GND_TOKEN'),
-        identifier='oai:dnb.de/authorities/',
-        debug=debug
-    )
+    """Get a record from GND SRU repo.
+
+    GND documentation:
+    https://www.dnb.de/DE/Service/Hilfe/Katalog/kataloghilfe.html?nn=587750#link
+    https://services.dnb.de/sru/authorities?version=1.1
+    &operation=searchRetrieve&query=idn%3D007355440&recordSchema=MARC21-xml
+    """
+    url = current_app.config.get(
+        'RERO_MEF_AGENTS_GND_GET_RECORD').replace('{id}', id)
+    trans_record = None
+    msg = f'SRU-agents.gnd  get: {id:<15} {url}'
+    try:
+        response = requests_retry_session().get(url)
+        status_code = response.status_code
+        if status_code == requests.codes.ok:
+            if records := parse_xml_to_array(BytesIO(response.content)):
+                trans_record = Transformation(records[0]).json
+                msg = f'{msg} | OK'
+            else:
+                msg = f'{msg} | No record'
+        else:
+            msg = f'{msg} | HTTP Error: {status_code}'
+    except Exception as err:
+        msg = f'{msg} | Error: {err}'
+        if debug:
+            raise
+    return trans_record, msg

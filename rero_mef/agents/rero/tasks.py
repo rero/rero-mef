@@ -19,10 +19,12 @@
 
 import requests
 from celery import shared_task
+from flask import current_app
 from pymarc.marcxml import parse_xml_to_array
 from six import BytesIO
 
 from ...marctojson.do_rero_agent import Transformation
+from ...utils import requests_retry_session
 
 
 @shared_task
@@ -33,16 +35,22 @@ def rero_get_record(id, debug=False):
     http://data.rero.ch/
     http://data.rero.ch/02-A000069866/marcxml
     """
-    url = f'http://data.rero.ch/02-{id}/marcxml'
+    url = current_app.config.get(
+        'RERO_MEF_AGENTS_RERO_GET_RECORD').replace('{id}', id)
+    msg = f'API-agents.rero  get: {id:<15} {url}'
     trans_record = None
     try:
-        response = requests.get(url)
+        response = requests_retry_session().get(url)
         if response.status_code == requests.codes.ok:
             if records := parse_xml_to_array(BytesIO(response.content)):
                 trans_record = Transformation(records[0]).json
-                msg = f'API-agents.rero  get: {id:<15} {url} | OK'
+                msg = f'{msg} | OK'
+            else:
+                msg = f'{msg} | ERROR NO DATA'
+        else:
+            msg = f'{msg} | ERROR HTTP: {response.status_code}'
     except Exception as err:
-        msg = f'API-agents.rero  get: {id:<15} {url} | {err}'
+        msg = f'{msg} | ERROR: {err}'
         if debug:
-            raise Exception(msg)
+            raise
     return trans_record, msg
