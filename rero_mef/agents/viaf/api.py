@@ -30,7 +30,7 @@ from .providers import ViafProvider
 from ..api import Action, ReroIndexer, ReroMefRecord
 from ..mef.api import AgentMefRecord
 from ..utils import get_entity_class
-from ...utils import get_entity_class, progressbar
+from ...utils import get_entity_class, progressbar, requests_retry_session
 
 
 class AgentViafSearch(RecordsSearch):
@@ -71,9 +71,9 @@ class AgentViafRecord(ReroMefRecord):
         """
         actions = {}
         mef_actions = {}
-        agent_record = None
         online = online or []
         for agent in self.get_agents_pids():
+            agent_record = None
             action = Action.UPTODATE
             agent_class = agent['record_class']
             pid = agent['pid']
@@ -217,7 +217,7 @@ class AgentViafRecord(ReroMefRecord):
         viaf_url = current_app.config.get('RERO_MEF_VIAF_BASE_URL')
         url = (f'{viaf_url}/viaf/sourceID/'
                f'{viaf_source_code}|{pid}{viaf_format}')
-        response = requests.get(url)
+        response = requests_retry_session().get(url)
         result = {}
         if response.status_code == requests.codes.ok:
             msg = f'VIAF get: {pid:<15} {url} | OK'

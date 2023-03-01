@@ -77,9 +77,10 @@ def test_oai_get_record(mock_get, app, init_oai,
     online_gnd, msg = AgentGndRecord.get_online_record('139205527')
     assert online_gnd == aggnd_data_139205527
     assert msg == (
-        'OAI-agents.gnd   get: 139205527       '
-        'http://services.dnb.de/oai/repository?verb=GetRecord&metadataPrefix'
-        '=MARC21-xml&identifier=oai:dnb.de/authorities/139205527 | OK'
+        'SRU-agents.gnd  get: 139205527       '
+        'https://services.dnb.de/sru/authorities?version=1.1'
+        '&operation=searchRetrieve&query=idn%3D139205527'
+        '&recordSchema=MARC21-xml | OK'
     )
 
 

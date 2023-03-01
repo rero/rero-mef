@@ -58,7 +58,7 @@ def test_get_pids_with_multiple_viaf(app, agent_viaf_record):
         mef_record.delete(dbcommit=True, delindex=True, force=True)
 
 
-@mock.patch('requests.get')
+@mock.patch('requests.Session.get')
 def test_get_online(mock_get, app, agent_viaf_online_response):
     """Test get VIAF online."""
     mock_get.return_value = mock_response(
@@ -88,9 +88,10 @@ def test_get_online(mock_get, app, agent_viaf_online_response):
     )
 
 
+@mock.patch('requests.Session.get')
 @mock.patch('requests.get')
-def test_create_mef_and_agents_online(mock_get, app, agent_viaf_record,
-                                      script_info):
+def test_create_mef_and_agents_online(mock_get, mock_session_get, app,
+                                      agent_viaf_record, script_info):
     """Test create MEF and agents online."""
     # We need OAI harvest informations for the online functions.
     runner = CliRunner()
@@ -110,6 +111,9 @@ def test_create_mef_and_agents_online(mock_get, app, agent_viaf_record,
         'concepts.idref https://www.idref.fr/OAI/oai.jsp Added',
     ]
     mock_get.return_value = mock_response(
+        content=''
+    )
+    mock_session_get.return_value = mock_response(
         content=''
     )
     actions, mef_actions = agent_viaf_record.create_mef_and_agents(
