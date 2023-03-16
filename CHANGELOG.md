@@ -1,5 +1,22 @@
 # Changelog
 
+## [v0.11.0](https://github.com/rero/rero-mef/tree/v0.11.0) (2023-03-16)
+
+[Full Changelog](https://github.com/rero/rero-mef/compare/v0.10.0...v0.11.0)
+
+**Changes:**
+* agents GND: Get online record by SRU [\#124](https://github.com/rero/rero-mef/pull/124) (by @rerowep)
+* agents: fix MEF and VIAF [\#117](https://github.com/rero/rero-mef/pull/117) (by @rerowep)
+* agents: fix gnd person [\#121](https://github.com/rero/rero-mef/pull/121) (by @rerowep)
+* dependencies: update the dependencies lock file [\#115](https://github.com/rero/rero-mef/pull/115) (by @rerowep)
+* MEF: fix get updated [\#119](https://github.com/rero/rero-mef/pull/119) (by @rerowep)
+* fix dnb redirect to [\#116](https://github.com/rero/rero-mef/pull/116) (by @rerowep)
+* dependencies: update the dependencies lock file [\#109](https://github.com/rero/rero-mef/pull/109) (by @rerowep)
+* agents, concepts: better changed api [\#114](https://github.com/rero/rero-mef/pull/114) (by @rerowep)
+* cli : fix wait_empty_tasks [\#112](https://github.com/rero/rero-mef/pull/112) (by @rerowep)
+* dojson: fix error logging [\#111](https://github.com/rero/rero-mef/pull/111) (by @rerowep)
+* idref: fix agent IdRef redirection [\#110](https://github.com/rero/rero-mef/pull/110) (by @rerowep)
+
 ## [v0.10.0](https://github.com/rero/rero-mef/tree/v0.10.0) (2022-09-19)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.9.0...v0.10.0)
@@ -28,7 +45,7 @@
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.8.0...v0.9.0)
 
-* Fix handling of agents that have been deleted from source [\#79](https://github.com/rero/rero-mef/pull/79) 
+* Fix handling of agents that have been deleted from source [\#79](https://github.com/rero/rero-mef/pull/79)
 and [\#84](https://github.com/rero/rero-mef/pull/84) (by @rerowep)
 * Fix authorized access points [\#83](https://github.com/rero/rero-mef/pull/83) (by @rerowep)
 * Update dependencies [\#82](https://github.com/rero/rero-mef/pull/82) (by @rerowep)
