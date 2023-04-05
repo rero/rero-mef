@@ -17,6 +17,9 @@
       "bf:Agent": {
         "type": "keyword"
       },
+      "type": {
+        "type": "keyword"
+      },
       "md5": {
         "type": "keyword"
       },
@@ -28,6 +31,20 @@
       },
       "identifier": {
         "type": "keyword"
+      },
+      "identifiedBy": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "keyword"
+          },
+          "source": {
+            "type": "keyword"
+          },
+          "value": {
+            "type": "keyword"
+          }
+        }
       },
       "date_of_birth": {
         "type": "text"

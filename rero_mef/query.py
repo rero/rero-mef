@@ -60,7 +60,11 @@ def and_search_factory(self, search, query_parser=None):
     urlkwargs.add('q', query_string)
 
     # include deleted
-    with_deleted = request.args.get('with_deleted')
+    with_deleted = request.args.get(
+        'with_deleted',
+        default=False,
+        type=lambda v: v.lower() in ['true', '1']
+    )
     if not with_deleted:
         search = search.filter('bool', must_not=[
             Q('exists', field='deleted'),  # no deleted MEF's

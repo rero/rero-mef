@@ -4,7 +4,8 @@
   "type": "object",
   "required": [
     "$schema",
-    "pid"
+    "pid",
+    "type"
   ],
   "additionalProperties": false,
   "properties": {
@@ -26,19 +27,48 @@
     },
     "gnd": {
       "title": "GND agent ID",
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "title": "ref",
+          "type": "string",
+          "pattern": "^https://mef.rero.ch/api/agents/gnd/.*?$"
+        }
+      }
     },
     "rero": {
       "title": "RERO agent ID",
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "title": "ref",
+          "type": "string",
+          "pattern": "^https://mef.rero.ch/api/agents/rero/.*?$"
+        }
+      }
     },
     "idref": {
       "title": "IDREF agent ID",
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "title": "ref",
+          "type": "string",
+          "pattern": "^https://mef.rero.ch/api/agents/idref/.*?$"
+        }
+      }
     },
     "deleted": {
       "title": "Deletion date",
       "type": "string"
+    },
+    "type": {
+      "title": "Type",
+      "type": "string",
+      "enum": [
+        "bf:Person",
+        "bf:Organisation"
+      ]
     }
   }
 }

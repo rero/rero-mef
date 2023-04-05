@@ -239,11 +239,11 @@ RECORDS_REST_ENDPOINTS = dict(
         search_type=None,
         record_serializers={
             'application/json': ('rero_mef.agents.mef.serializers'
-                                 ':json_v1_agent_mef_response'),
+                                 ':json_agent_mef_response'),
         },
         search_serializers={
-            'application/json': ('invenio_records_rest.serializers'
-                                 ':json_v1_search'),
+            'application/json': ('rero_mef.agents.mef.serializers'
+                                 ':json_agent_mef_search'),
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/agents/mef/',
@@ -264,11 +264,11 @@ RECORDS_REST_ENDPOINTS = dict(
         search_type=None,
         record_serializers={
             'application/json': ('rero_mef.agents.viaf.serializers'
-                                 ':json_v1_agent_viaf_response'),
+                                 ':json_agent_viaf_response'),
         },
         search_serializers={
-            'application/json': ('invenio_records_rest.serializers'
-                                 ':json_v1_search'),
+            'application/json': ('rero_mef.agents.viaf.serializers'
+                                 ':json_agent_viaf_search'),
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/agents/viaf/',
@@ -289,11 +289,11 @@ RECORDS_REST_ENDPOINTS = dict(
         search_type=None,
         record_serializers={
             'application/json': ('rero_mef.agents.serializers'
-                                 ':json_v1_agent_response'),
+                                 ':json_agent_response'),
         },
         search_serializers={
-            'application/json': ('invenio_records_rest.serializers'
-                                 ':json_v1_search'),
+            'application/json': ('rero_mef.agents.serializers'
+                                 ':json_agent_search'),
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/agents/gnd/',
@@ -314,11 +314,11 @@ RECORDS_REST_ENDPOINTS = dict(
         search_type=None,
         record_serializers={
             'application/json': ('rero_mef.agents.serializers'
-                                 ':json_v1_agent_response'),
+                                 ':json_agent_response'),
         },
         search_serializers={
-            'application/json': ('invenio_records_rest.serializers'
-                                 ':json_v1_search'),
+            'application/json': ('rero_mef.agents.serializers'
+                                 ':json_agent_search'),
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/agents/idref/',
@@ -340,11 +340,11 @@ RECORDS_REST_ENDPOINTS = dict(
         search_type=None,
         record_serializers={
             'application/json': ('rero_mef.agents.serializers'
-                                 ':json_v1_agent_response'),
+                                 ':json_agent_response'),
         },
         search_serializers={
-            'application/json': ('invenio_records_rest.serializers'
-                                 ':json_v1_search'),
+            'application/json': ('rero_mef.agents.serializers'
+                                 ':json_agent_search'),
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/agents/rero/',
@@ -365,11 +365,11 @@ RECORDS_REST_ENDPOINTS = dict(
         search_type=None,
         record_serializers={
             'application/json': ('rero_mef.concepts.mef.serializers'
-                                 ':json_v1_concept_mef_response'),
+                                 ':json_concept_mef_response'),
         },
         search_serializers={
-            'application/json': ('invenio_records_rest.serializers'
-                                 ':json_v1_search'),
+            'application/json': ('rero_mef.concepts.mef.serializers'
+                                 ':json_concept_mef_search'),
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/concepts/mef/',
@@ -391,11 +391,11 @@ RECORDS_REST_ENDPOINTS = dict(
         search_type=None,
         record_serializers={
             'application/json': ('rero_mef.concepts.serializers'
-                                 ':json_v1_concept_response'),
+                                 ':json_concept_response'),
         },
         search_serializers={
-            'application/json': ('invenio_records_rest.serializers'
-                                 ':json_v1_search'),
+            'application/json': ('rero_mef.concepts.serializers'
+                                 ':json_concept_search'),
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/concepts/rero/',
@@ -417,11 +417,11 @@ RECORDS_REST_ENDPOINTS = dict(
         search_type=None,
         record_serializers={
             'application/json': ('rero_mef.concepts.serializers'
-                                 ':json_v1_concept_response'),
+                                 ':json_concept_response'),
         },
         search_serializers={
-            'application/json': ('invenio_records_rest.serializers'
-                                 ':json_v1_search'),
+            'application/json': ('rero_mef.concepts.serializers'
+                                 ':json_concept_search'),
         },
         search_factory_imp='rero_mef.query:and_search_factory',
         list_route='/concepts/idref/',

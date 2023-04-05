@@ -67,6 +67,7 @@ class Transformation(object):
             self.logger.info('Call Function', 'trans_idref_pid')
         if field_001 := self.marc['001']:
             self.json_dict['pid'] = field_001.data
+            self.json_dict['type'] = 'bf:Concept'
 
     def trans_idref_bnf_type(self):
         """Transformation bnf_type from field 008."""
@@ -86,7 +87,7 @@ class Transformation(object):
             identifiers.append({
                 'type': 'uri',
                 'value': field_003.data.strip(),
-                'source': 'IdRef'
+                'source': 'IDREF'
             })
         for field_033 in self.marc.get_fields('033'):
             subfield_2 = field_033['2']

@@ -180,8 +180,14 @@ class Transformation(object):
         for field_024 in fields_024:
             subfields_0 = field_024['0']
             subfields_2 = field_024['2']
-            if subfields_0 and subfields_2 and subfields_2 == 'gnd':
+            if subfields_0 and subfields_2 == 'gnd':
+                # TODO: delete identifier
                 self.json_dict['identifier'] = subfields_0
+                self.json_dict.setdefault('identifiedBy', []).append({
+                    'type': 'uri',
+                    'value': subfields_0,
+                    'source': 'GND'
+                })
 
     def trans_gnd_birth_and_death_dates(self):
         """Transformation birth_date and death_date."""
@@ -366,6 +372,7 @@ class Transformation(object):
             )
             for authorized_access_point in authorized_access_points:
                 self.json_dict['bf:Agent'] = agent
+                self.json_dict['type'] = agent
                 if self.json_dict.get('authorized_access_point'):
                     variant_access_points.append(authorized_access_point)
                 else:

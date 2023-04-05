@@ -109,11 +109,17 @@ def es_db_counts():
     - difference between the count in elasticsearch and database
     :return: jsonified count for elasticsearch and documents
     """
-    difference_db_es = request.args.get('diff', False)
-    with_deleted = request.args.get('deleted', False)
     return jsonify({'data': Monitoring().info(
-        with_deleted=with_deleted,
-        difference_db_es=difference_db_es
+        with_deleted=request.args.get(
+            'deleted',
+            default=False,
+            type=lambda v: v.lower() in ['true', '1']
+        ),
+        difference_db_es=request.args.get(
+            'diff',
+            default=False,
+            type=lambda v: v.lower() in ['true', '1']
+        )
     )})
 
 
@@ -140,10 +146,18 @@ def check_es_db_counts():
     :return: jsonified health status for elasticsearch and database counts
     """
     result = {'data': {'status': 'green'}}
-    difference_db_es = request.args.get('diff', False)
-    with_deleted = request.args.get('deleted', False)
-    if checks := Monitoring().check(with_deleted=with_deleted,
-                                    difference_db_es=difference_db_es):
+    if checks := Monitoring().check(
+        with_deleted=request.args.get(
+            'deleted',
+            default=False,
+            type=lambda v: v.lower() in ['true', '1']
+        ),
+        difference_db_es=request.args.get(
+            'diff',
+            default=False,
+            type=lambda v: v.lower() in ['true', '1']
+        )
+    ):
         errors = []
         for doc_type, doc_type_data in checks.items():
             links = {'about': url_for(
@@ -217,7 +231,7 @@ def missing_pids(doc_type):
         )
     except Exception:
         api_url = None
-    delay = request.args.get('delay', 1)
+    delay = request.args.get('delay', default=1, type=int)
     mon = Monitoring(time_delta=delay).missing(doc_type)
     if mon.get('ERROR'):
         return {

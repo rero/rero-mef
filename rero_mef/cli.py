@@ -852,7 +852,7 @@ def export(output_path, pid_type, verbose, indent, schema):
     for p_type in pid_type:
         output_file_name = os.path.join(output_path, f'{p_type}.json')
         click.secho(
-            f'Export {pid_type} records: {output_file_name}',
+            f'Export {p_type} records: {output_file_name}',
             fg='green'
         )
         record_class = obj_or_import_string(
