@@ -20,6 +20,13 @@
       "type": "string",
       "minLength": 1
     },
+    "type": {
+      "title": "Type",
+      "type": "string",
+      "enum": [
+        "bf:Concept"
+      ]
+    },
     "md5": {
       "title": "MD5",
       "type": "string",
@@ -179,7 +186,7 @@
       "items": {
         "type": "object",
         "properties": {
-          "nodeType": {
+          "noteType": {
             "enum": [
               "dataSource",
               "dataNotFound",

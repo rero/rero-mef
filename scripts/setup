@@ -162,10 +162,10 @@ function create_csv () {
     # Create CSV files from json
     for ENTITY in aggnd aidref agrero corero
     do
-        invenio fixtures create-csv ${ENTITY} ${OUTPUT_DIR}/${ENTITY}.json ${OUTPUT_DIR} &
+        invenio fixtures create-csv ${ENTITY} ${OUTPUT_DIR}/${ENTITY}.json ${OUTPUT_DIR}
     done
-    trap 'jobs -p | xargs kill' EXIT
-    wait
+    # trap 'jobs -p | xargs kill' EXIT
+    # wait
     info_msg "Create VIAF CSV files from viaf.txt: ${OUTPUT_DIR}"
     # Create VIAF CSV files from viaf.txt
     invenio agents create-csv-viaf ${OUTPUT_DIR}/viaf.txt ${OUTPUT_DIR}

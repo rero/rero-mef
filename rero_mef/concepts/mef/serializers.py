@@ -21,7 +21,8 @@ from flask import request, url_for
 from invenio_records_rest.links import default_links_factory_with_additional
 from invenio_records_rest.schemas import RecordSchemaJSONV1
 from invenio_records_rest.serializers.json import JSONSerializer
-from invenio_records_rest.serializers.response import record_responsify
+from invenio_records_rest.serializers.response import record_responsify, \
+    search_responsify
 
 from ...utils import get_entity_classes
 
@@ -65,19 +66,15 @@ class ReroMefSerializer(JSONSerializer):
         :param links_factory: Factory function for record links.
         """
         rec = record
-        if request and request.args.get('resolve'):
-            rec = record.replace_refs()
+        rec['type'] = 'bf:Concept'
+        if request:
+            rec = rec.add_information(
+                resolve=request.args.get('resolve'),
+                sources=request.args.get('sources')
+            )
             # because the replace_refs loose the record original model. We need
             # to reset it to have correct 'created'/'updated' output data
             rec.model = record.model
-        if request and request.args.get('sources'):
-            sources = []
-            # TODO: add the list of sources into the current_app.config
-            if 'rero' in rec:
-                sources.append('rero')
-            if 'idref' in rec:
-                sources.append('idref')
-            rec['sources'] = sources
 
         concept_classes = get_entity_classes()
         for concept, concept_classe in concept_classes.items():
@@ -85,11 +82,11 @@ class ReroMefSerializer(JSONSerializer):
                 local_link(concept, concept_classe.name, rec)
 
         return super(ReroMefSerializer, self).serialize(
-             pid=pid, record=rec, links_factory=add_links, kwargs=kwargs)
+             pid=pid, record=rec, links_factory=add_links, **kwargs)
 
 
-json_v1 = ReroMefSerializer(RecordSchemaJSONV1)
+_json = ReroMefSerializer(RecordSchemaJSONV1)
 """JSON v1 serializer."""
 
-json_v1_concept_mef_response = record_responsify(
-    json_v1, 'application/rero+json')
+json_concept_mef_response = record_responsify(_json, 'application/rero+json')
+json_concept_mef_search = search_responsify(_json, 'application/rero+json')

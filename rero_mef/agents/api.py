@@ -16,6 +16,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 """API for manipulating records."""
 
+from copy import deepcopy
+
 from .mef.api import build_ref_string
 from ..api import Action, ReroIndexer, ReroMefRecord
 
@@ -123,6 +125,13 @@ class AgentRecord(ReroMefRecord):
         for mef_record in AgentMefRecord.get_mef(self.pid, self.name):
             mef_record.reindex(forceindex=forceindex)
         return result
+
+    def add_information(self, resolve=False, sources=False):
+        """Add information to record."""
+        data = deepcopy(self)
+        if not data.get('type'):
+            data['type'] = data['bf:Agent']
+        return data
 
 
 class AgentIndexer(ReroIndexer):

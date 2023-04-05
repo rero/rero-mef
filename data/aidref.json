@@ -3,6 +3,7 @@
     "md5": "9f4c8d121b5e671c96f6ad2eef7c72b5",
     "pid": "02638714X",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "fre"
     ],
@@ -35,6 +36,7 @@
     "md5": "a80deb9789b47e25801fcf5d5b02aab3",
     "pid": "027483061",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "mul"
     ],
@@ -73,6 +75,7 @@
     "md5": "2336cee11a355c63084a8335e2cb879f",
     "pid": "02778259X",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/02778259X",
     "preferred_name": "Van Halen ( groupe )",
@@ -85,6 +88,7 @@
     "md5": "05439dbbf0784f2d089a2fb52950d301",
     "pid": "028893670",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "mul"
     ],
@@ -115,6 +119,7 @@
     "md5": "1b697efbdd1940b04236a42fa70b9d45",
     "pid": "029402360",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "fre"
     ],
@@ -142,6 +147,7 @@
     "md5": "b4ee1175dfd7bf7045b4d3e52afc2773",
     "pid": "030348722",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "ger"
     ],
@@ -162,6 +168,7 @@
     "md5": "aea40104cb806fcebb25ace0254103fa",
     "pid": "03227758X",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "fre"
     ],
@@ -184,6 +191,7 @@
     "md5": "90303b0620bf454e7d674ac7e3f8b5a9",
     "pid": "033967776",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -209,6 +217,7 @@
     "md5": "8c4257edd51f2f7f84c20c8e95663cf9",
     "pid": "03459910X",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "eng"
     ],
@@ -233,6 +242,7 @@
     "md5": "f2c813843c221b93efeeb9ef3966aa7f",
     "pid": "034875891",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "mul"
     ],
@@ -255,6 +265,7 @@
     "md5": "6d2ceda8ddf71401fb59195e24ea9bad",
     "pid": "057286752",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -277,6 +288,7 @@
     "md5": "321972dea346c135084cf976e37c85fb",
     "pid": "068979401",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "ita"
     ],
@@ -313,6 +325,7 @@
     "md5": "29b139e640301a02426413ba0192d9ed",
     "pid": "069632421",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "fre"
     ],
@@ -330,6 +343,7 @@
     "md5": "5e5eaa83ae144e150daac9b0548fc9ee",
     "pid": "069774331",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -355,6 +369,7 @@
     "md5": "4b487bfdef976b39164528b289003932",
     "pid": "070483981",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "lat"
     ],
@@ -381,6 +396,7 @@
     "md5": "a68f2f853cf5472cee72e475a5e626e6",
     "pid": "071579478",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "fre"
     ],
@@ -393,6 +409,7 @@
     "md5": "dc868a97faba5f82e1608de44901fa28",
     "pid": "071593462",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "fre"
     ],
@@ -405,6 +422,7 @@
     "md5": "eb884e5bb0ba4adb99502f9bce2c630d",
     "pid": "073462012",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "ita"
     ],
@@ -429,6 +447,7 @@
     "md5": "dc2099f0193f9277850c97156ad5393b",
     "pid": "073668818",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "mon"
     ],
@@ -470,6 +489,7 @@
     "md5": "7c71dc22587ce7c895d9b5b034b80bf5",
     "pid": "074087061",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -484,6 +504,7 @@
     "md5": "1003b578e802a1fc1abc5a73f2c42e78",
     "pid": "075825686",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "fre"
     ],
@@ -520,6 +541,7 @@
     "md5": "98d5c79c1ca524a575e5921054c91f28",
     "pid": "076515788",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "mul"
     ],
@@ -541,6 +563,7 @@
     "md5": "8c473b58aeede0c6c3fd02710a905be3",
     "pid": "076675246",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -558,6 +581,7 @@
     "md5": "012e00dc0ed4367d513e43fee7b24253",
     "pid": "077723953",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "fre"
     ],
@@ -573,6 +597,7 @@
     "md5": "625b9124ea724015644295f356a6ea72",
     "pid": "078047315",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "fre"
     ],
@@ -595,6 +620,7 @@
     "md5": "f35202455b5d8917b26c4eb026a2997c",
     "pid": "078061911",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/078061911",
     "preferred_name": "Man and women's lover",
@@ -609,6 +635,7 @@
     "md5": "d65dd14bd8c12742b07e9aca11fefecb",
     "pid": "078069084",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/078069084",
     "variant_name": [
@@ -635,6 +662,7 @@
     "md5": "fd24b7b8ec4d279cde14eb4bf993d17f",
     "pid": "078633907",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -670,6 +698,7 @@
     "md5": "104e81191d82104d5acaaa4f53df7a89",
     "pid": "079206557",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/079206557",
     "preferred_name": "Universal ( Groupe de vari\u00e9t\u00e9s antillaises )",
@@ -684,6 +713,7 @@
     "md5": "41d5ad0caf8e81f982b3519169d216b0",
     "pid": "079491251",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "eng"
     ],
@@ -702,6 +732,7 @@
     "md5": "09aadd38498ccb4589c76fc8f62eb0e0",
     "pid": "08049188X",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/08049188X",
     "preferred_name": "Les B\u00e9laisi\u00e8res",
@@ -716,6 +747,7 @@
     "md5": "ce009fc531ec1993f6241852854b3ed1",
     "pid": "080491898",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/080491898",
     "preferred_name": "Les Doudous de la Grande Terre",
@@ -730,6 +762,7 @@
     "md5": "e83d67e024f380bd5bd126567572c219",
     "pid": "080715060",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/080715060",
     "preferred_name": "Cour des grand",
@@ -744,6 +777,7 @@
     "md5": "3023b1bfe567d337ec9d3ca45dbc8fa4",
     "pid": "080785425",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/080785425",
     "variant_name": [
@@ -765,6 +799,7 @@
     "md5": "925047b8336eb69482c493793c0daa49",
     "pid": "080809197",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/080809197",
     "preferred_name": "Lenny Dee versus DJ Paul",
@@ -780,6 +815,7 @@
     "md5": "f64353f9e742878fc731ca9a300432a7",
     "pid": "080826660",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/080826660",
     "variant_name": [
@@ -801,6 +837,7 @@
     "md5": "a5ede736138d1ff75389a6ee8a6cb4c0",
     "pid": "080852629",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/080852629",
     "preferred_name": "Pipe Trio",
@@ -816,6 +853,7 @@
     "md5": "127be1e758a6807daf0b7e885478d4c7",
     "pid": "081337418",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "fre"
     ],
@@ -831,6 +869,7 @@
     "md5": "522d158c37fa60dbb1c0c626ab69859d",
     "pid": "081589093",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -863,6 +902,7 @@
     "md5": "45f54009d7da6487d98c4403aa565059",
     "pid": "081780931",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "ger"
     ],
@@ -886,6 +926,7 @@
     "md5": "40b4916064a373956cbfee39ff3fd501",
     "pid": "081816529",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "ger"
     ],
@@ -917,6 +958,7 @@
     "md5": "706ae29f3d67b84780a796adb4476388",
     "pid": "08233367X",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/08233367X",
     "preferred_name": "Voci di a Gravona",
@@ -931,6 +973,7 @@
     "md5": "4e70326fdd007639437e4488e4bd3945",
     "pid": "083442774",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "language": [
       "fre"
     ],
@@ -945,6 +988,7 @@
     "md5": "4da984867c0a52e9b19219b12cfd4377",
     "pid": "085209910",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "lat"
     ],
@@ -962,6 +1006,7 @@
     "md5": "6ee98e0e0be0b9c3be78f864f270d7f5",
     "pid": "085649562",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/085649562",
     "preferred_name": "Le Party d'\u00c9dith",
@@ -976,6 +1021,7 @@
     "md5": "8910e173749272dddff452dba1635e1b",
     "pid": "086912909",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/086912909",
     "preferred_name": "I Cantori di Carpino",
@@ -992,6 +1038,7 @@
     "md5": "b26117a1af9c7e7dfa7884807922051e",
     "pid": "087876035",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1017,6 +1064,7 @@
     "md5": "05db1d5032b9a619809a10032a0073b6",
     "pid": "088356809",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1035,6 +1083,7 @@
     "md5": "e32a1389ea9fcfda1b36b71f8d66cf27",
     "pid": "095116672",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1064,6 +1113,7 @@
     "md5": "3d358ff9acb854d6a7c35b9ccc86e669",
     "pid": "097556505",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1081,6 +1131,7 @@
     "md5": "ad94a0eeeaf430f7d4006405fcb3c012",
     "pid": "098326635",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1111,6 +1162,7 @@
     "md5": "b4e034e8b008c5562a0a157ecee76402",
     "pid": "104547677",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1128,6 +1180,7 @@
     "md5": "8b00628fa05a3950fd19fd665544633a",
     "pid": "106993542",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "eng"
     ],
@@ -1141,6 +1194,7 @@
     "md5": "4fe62f07e423d88fe157265a33221563",
     "pid": "112244424",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1164,6 +1218,7 @@
     "md5": "16fcbc141a15142feadd021fde10d3c3",
     "pid": "124563627",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1180,6 +1235,7 @@
     "md5": "3e572d466996f649c7e350d0a1390b4e",
     "pid": "130990221",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1205,6 +1261,7 @@
     "md5": "34d6b0f51aea9c16b9dc65809a74c1ab",
     "pid": "131513168",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1230,6 +1287,7 @@
     "md5": "64cd67c357838eea965268995094512f",
     "pid": "147013283",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1257,6 +1315,7 @@
     "md5": "b773e1215c3e734e76e2d5fec5739d03",
     "pid": "149367430",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "grc",
       "lat"
@@ -1283,6 +1342,7 @@
     "md5": "d7bac4d91d12ab988d0e9e184c13e7d6",
     "pid": "154079693",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1301,6 +1361,7 @@
     "md5": "9e799dfda247cc19f26270a60a2dee7b",
     "pid": "156591324",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1318,6 +1379,7 @@
     "md5": "1fab811d07fb3f5c8f62251d3020e405",
     "pid": "165617845",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "ita"
     ],
@@ -1341,6 +1403,7 @@
     "md5": "a31a20f5ddd72dffdd8716b2dc3e0eb9",
     "pid": "16777154X",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1365,6 +1428,7 @@
     "md5": "e18d662beb3d3d438d548e961738d0f8",
     "pid": "172347343",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1385,6 +1449,7 @@
     "md5": "a6dfb076c5dfe12db1059b453ae62047",
     "pid": "179863436",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "gre"
     ],
@@ -1401,6 +1466,7 @@
     "md5": "d87e71f810ef6669084cb97da82bc98b",
     "pid": "183349199",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "ita",
       "lat"
@@ -1427,6 +1493,7 @@
     "md5": "817650c17f96688f9cc07ee091e94258",
     "pid": "189341793",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1450,6 +1517,7 @@
     "md5": "d1cccbd8f29c1b6bad6c967b2027b7ca",
     "pid": "192777475",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1479,6 +1547,7 @@
     "md5": "c5c6626cc7d93c89dbc53934bd64e2bd",
     "pid": "196562643",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1496,6 +1565,7 @@
     "md5": "69bdcbda767abb74e1217b3285a567fb",
     "pid": "197394787",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "gre"
     ],
@@ -1516,6 +1586,7 @@
     "md5": "3a3f98d85241e45b0ddaf010b21d9d6a",
     "pid": "223404543",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],
@@ -1536,6 +1607,7 @@
     "md5": "e21fcac609b87a0afddeea93d0011b0b",
     "pid": "233021523",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "language": [
       "fre"
     ],

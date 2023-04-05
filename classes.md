@@ -64,7 +64,7 @@ class AgentMefRecord{
     search = AgentMefSearch
     mef_type = 'AGENTS'
     get_all_missing_viaf_pids(cls, verbose=False)
-    replace_refs(self)
+    add_information(self, resolve=False, sources=False)
     get_latest(cls, pid_type, pid)
 }
 
@@ -77,7 +77,7 @@ class ConceptMefRecord{
     search = ConceptMefSearch
     mef_type = 'CONCEPTS'
     entities = ['idref', 'rero']
-    replace_refs(self)
+    add_information(self, resolve=False, sources=False)
     get_latest(cls, pid_type, pid)
 }
 
@@ -104,6 +104,7 @@ class AgentRecord{
     create_or_update_mef(self, dbcommit=False, reindex=False)
     get_online_record(cls, id, debug=False)
     reindex(self, forceindex=False)
+    add_information(self, resolve=False, sources=False)
 }
 
 class ConceptRecord{
@@ -113,6 +114,7 @@ class ConceptRecord{
     create_or_update_mef(self, dbcommit=False, reindex=False)
     get_online_record(cls, id, debug=False)
     reindex(self, forceindex=False)
+    add_information(self, resolve=False, sources=False)
 }
 
 class ConceptIdrefRecord {

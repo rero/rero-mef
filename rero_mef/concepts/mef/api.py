@@ -72,13 +72,37 @@ class ConceptMefRecord(EntityMefRecord):
         """Replace $ref with real data."""
         data = deepcopy(self)
         data = super().replace_refs()
-        sources = []
+        data['sources'] = [
+            concept for concept in self.entities if data.get(concept)]
+        data['type'] = 'bf:Concept'
+        return data
+
+    def add_information(self, resolve=False, sources=False):
+        """Add information to record."""
+        replace_refs_data = deepcopy(self).replace_refs()
+        data = replace_refs_data if resolve else deepcopy(self)
+        my_sources = []
         for concept in self.entities:
-            if data.get(concept):
-                sources.append(concept)
-                if metadata := data[concept].get('metadata'):
-                    data[concept] = metadata
-        data['sources'] = sources
+            if concept_data := data.get(concept):
+                # we got a error status in data
+                if concept_data.get('status'):
+                    data.pop(concept)
+                    current_app.logger.error(
+                        f'MEF replace refs {data.get("pid")} {concept}'
+                        f' status: {concept_data.get("status")}'
+                        f' {concept_data.get("message")}')
+                else:
+                    my_sources.append(concept)
+                for concept in self.entities:
+                    if concept_data := replace_refs_data.get(concept):
+                        if metadata := concept_data.get('metadata'):
+                            data[concept] = metadata
+                        if not data[concept].get('type'):
+                            data[concept]['type'] = 'bf:Concept'
+        if my_sources and (resolve or sources):
+            data['sources'] = my_sources
+        if not data.get('type'):
+            data['type'] = 'bf:Concept'
         return data
 
     @classmethod
@@ -103,6 +127,12 @@ class ConceptMefRecord(EntityMefRecord):
                 if search.count() > 0:
                     new_data = next(search.scan()).to_dict()
                     new_pid = new_data.get('idref', {}).get('pid')
+            for concept in cls.entities:
+                if concept_data := data.get(concept):
+                    if not concept_data.get('type'):
+                        data[concept]['type'] = 'bf:Concept'
+            if not data.get('type'):
+                data['type'] = 'bf:Concept'
             return cls.get_latest(pid_type=pid_type, pid=new_pid) \
                 if new_pid else data
         return {}

@@ -30,6 +30,9 @@
     "deleted": {
       "title": "Deletion date",
       "type": "string"
+    },
+    "type": {
+      "type": "keyword"
     }
   }
 }

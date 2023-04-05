@@ -104,6 +104,23 @@ class AgentMefRecord(EntityMefRecord):
         data = deepcopy(self)
         data = super().replace_refs()
         sources = []
+        type_ = None
+        for agent in self.entities:
+            if agent_data := data.get(agent):
+                type_ = agent_data['bf:Agent']
+                if not agent_data.get('type'):
+                    agent_data['type'] = type_
+                sources.append(agent)
+        data['sources'] = sources
+        if type_:
+            data['type'] = type_
+        return data
+
+    def add_information(self, resolve=False, sources=False):
+        """Add information to record."""
+        replace_refs_data = deepcopy(self).replace_refs()
+        data = replace_refs_data if resolve else deepcopy(self)
+        my_sources = []
         for agent in self.entities:
             if agent_data := data.get(agent):
                 # we got a error status in data
@@ -114,13 +131,19 @@ class AgentMefRecord(EntityMefRecord):
                         f' status: {agent_data.get("status")}'
                         f' {agent_data.get("message")}')
                 else:
-                    sources.append(agent)
-                    if metadata := data[agent].get('metadata'):
-                        data[agent] = metadata
-                        data['type'] = metadata['bf:Agent']
-                    else:
-                        data['type'] = data[agent]['bf:Agent']
-        data['sources'] = sources
+                    my_sources.append(agent)
+                for agent in self.entities:
+                    if agent_data := replace_refs_data.get(agent):
+                        if metadata := replace_refs_data[agent] \
+                                .get('metadata'):
+                            data[agent] = metadata
+                        if not replace_refs_data[agent].get('type'):
+                            agent_type = replace_refs_data[agent]['bf:Agent']
+                            data[agent]['type'] = agent_type
+                            if not data.get('type'):
+                                data['type'] = agent_type
+        if my_sources and (resolve or sources):
+            data['sources'] = my_sources
         return data
 
     @classmethod
@@ -145,6 +168,12 @@ class AgentMefRecord(EntityMefRecord):
                 if search.count() > 0:
                     new_data = next(search.scan()).to_dict()
                     new_pid = new_data.get('idref', {}).get('pid')
+            for agent in cls.entities:
+                if agent_data := data.get(agent):
+                    if not agent_data.get('type'):
+                        data[agent]['type'] = data[agent]['bf:Agent']
+                        if not data.get('type'):
+                            data['type'] = data[agent]['bf:Agent']
             return cls.get_latest(pid_type=pid_type, pid=new_pid) \
                 if new_pid else data
         return {}

@@ -3,6 +3,7 @@
     "md5": "e46818a77f0b8c5f676351781323d1f0",
     "pid": "A000009346",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "identifier": "http://data.rero.ch/02-A000009346",
     "variant_name": [
       "Aranton d'Alex, Jean d',",
@@ -26,6 +27,7 @@
     "md5": "7badff1fad1b3179ba1ba9bdf25a9bf3",
     "pid": "A000065776",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "identifier": "http://data.rero.ch/02-A000065776",
     "variant_name": [
       "Cavalieri, Pius Franchi de",
@@ -44,6 +46,7 @@
     "md5": "11f264777581fcb816a74c28d05553b5",
     "pid": "A000070488",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "identifier": "http://data.rero.ch/02-A000070488",
     "variant_name": [
       "Bonqueval, J.G. de"
@@ -58,6 +61,7 @@
     "md5": "2b1a18ffab5e93b126d089d2e5379466",
     "pid": "A003671569",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A003671569",
     "variant_name": [
@@ -77,6 +81,7 @@
     "md5": "9a84175e56df06dd9c4e9a564d34b5c4",
     "pid": "A005353099",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A005353099",
     "preferred_name": "G\u00fcrzenich-Orchester K\u00f6lner Philharmoniker",
@@ -91,6 +96,7 @@
     "md5": "980b127758f806da1ad917589a594a12",
     "pid": "A005464637",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A005464637",
     "variant_name": [
@@ -110,6 +116,7 @@
     "md5": "23d44ce5a4a9eaa6d00b174e796467d0",
     "pid": "A005472911",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A005472911",
     "variant_name": [
@@ -129,6 +136,7 @@
     "md5": "f85ee7377ce74a69d30828a225752747",
     "pid": "A005591402",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "identifier": "http://data.rero.ch/02-A005591402",
     "variant_name": [
       "Amboise, L\u00e9on d'",
@@ -148,6 +156,7 @@
     "md5": "370239fe4f5431ca3b36284f9026e2da",
     "pid": "A009238698",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A009238698",
     "preferred_name": "Pipe Trio",
@@ -157,6 +166,7 @@
     "md5": "eb9f4559b841ebb23b3aa81f48c75cb2",
     "pid": "A009535178",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "qualifier": "de Barbanson",
     "identifier": "http://data.rero.ch/02-A009535178",
     "variant_name": [
@@ -172,6 +182,7 @@
     "md5": "8490c0706e4d85befe6a1763153a64d8",
     "pid": "A009962747",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A009962747",
     "variant_name": [
@@ -202,6 +213,7 @@
     "md5": "f7c64698afa7f5653da5f6e2a471a4e4",
     "pid": "A012320736",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": true,
     "identifier": "http://data.rero.ch/02-A012320736",
     "preferred_name": "Congr\u00e8s de psychiatrie et de neurologie de langue fran\u00e7aise",
@@ -211,6 +223,7 @@
     "md5": "0654556e79b0a5993f1a3f21e2538522",
     "pid": "A017671081",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "identifier": "http://data.rero.ch/02-A017671081",
     "variant_name": [
       "Aernoudt, Pierre,",
@@ -232,6 +245,7 @@
     "md5": "a0899531d7e144d6fddf862902296756",
     "pid": "A017991779",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "identifier": "http://data.rero.ch/02-A017991779",
     "variant_name": [
       "Catalano, Giuseppe,",
@@ -257,6 +271,7 @@
     "md5": "c6b87e7bfc29646948f5429209965caf",
     "pid": "A021799923",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "identifier": "http://data.rero.ch/02-A021799923",
     "variant_name": [
       "Kouro\u00fadi\u0332s, K\u00f3\u0332stas"
@@ -274,6 +289,7 @@
     "md5": "63217758345f5fdbd0be66a2286b2632",
     "pid": "A022480124",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "identifier": "http://data.rero.ch/02-A022480124",
     "variant_name": [
       "Bernard, Bayle,"
@@ -290,6 +306,7 @@
     "md5": "48d1e9960cb7c0bd89d2fbb674569087",
     "pid": "A023655346",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "identifier": "http://data.rero.ch/02-A023655346",
     "variant_name": [
       "De Cavalieri, Giovanni Battista,",
@@ -315,6 +332,7 @@
     "md5": "9d9fe3b19e907d9c733bf1c4028b8da0",
     "pid": "A024285452",
     "bf:Agent": "bf:Person",
+    "type": "bf:Person",
     "identifier": "http://data.rero.ch/02-A024285452",
     "date_of_birth": "1983",
     "preferred_name": "Soyarslan, \u00c7i\u01e7dem,",
@@ -327,6 +345,7 @@
     "md5": "bf13b602d6494f21385cbac14b029716",
     "pid": "A027454547",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A027454547",
     "preferred_name": "Van Halen (groupe musical)",
@@ -336,6 +355,7 @@
     "md5": "85ad5ae7222d0f32634ce6691d1aad52",
     "pid": "A028240818",
     "bf:Agent": "bf:Organisation",
+    "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A028240818",
     "variant_name": [

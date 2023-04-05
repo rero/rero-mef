@@ -29,6 +29,14 @@
         "bf:Organisation"
       ]
     },
+    "type": {
+      "title": "Type",
+      "type": "string",
+      "enum": [
+        "bf:Person",
+        "bf:Organisation"
+      ]
+    },
     "md5": {
       "title": "MD5",
       "type": "string",

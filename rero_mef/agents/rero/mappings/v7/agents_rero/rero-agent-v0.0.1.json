@@ -17,6 +17,9 @@
       "bf:Agent": {
         "type": "keyword"
       },
+      "type": {
+        "type": "keyword"
+      },
       "md5": {
         "type": "keyword"
       },
