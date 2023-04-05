@@ -31,7 +31,8 @@ def test_idref_pid():
     trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
     trans.trans_idref_pid()
     assert trans.json == {
-        'pid': '249594463'
+        'pid': '249594463',
+        'type': 'bf:Concept'
     }
 
 
@@ -75,7 +76,7 @@ def test_idref_identifier():
         'identifiedBy': [
             {
                 'type': 'uri',
-                'source': 'IdRef',
+                'source': 'IDREF',
                 'value': 'http://www.idref.fr/249594463'
             },
             {

@@ -5,6 +5,7 @@
   "required": [
     "$schema",
     "pid",
+    "type",
     "identifiedBy",
     "authorized_access_point"
   ],
@@ -19,6 +20,13 @@
       "title": "Concept record ID",
       "type": "string",
       "minLength": 1
+    },
+    "type": {
+      "title": "Type",
+      "type": "string",
+      "enum": [
+        "bf:Concept"
+      ]
     },
     "md5": {
       "title": "MD5",
@@ -46,7 +54,7 @@
             "enum": [
               "BNF",
               "RERO",
-              "IdRef"
+              "IDREF"
             ]
           },
           "value": {
@@ -179,7 +187,7 @@
       "items": {
         "type": "object",
         "properties": {
-          "nodeType": {
+          "noteType": {
             "enum": [
               "dataSource",
               "dataNotFound",

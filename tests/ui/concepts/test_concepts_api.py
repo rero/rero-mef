@@ -42,7 +42,8 @@ def test_create_concept_record(
         '$schema': f'{SCHEMA_URL}/mef-concept-v0.0.1.json',
         'idref': {'$ref': 'https://mef.rero.ch/api/concepts/idref/050548115'},
         'deleted': '2022-09-03T07:07:32.526780+00:00',
-        'pid': '1'
+        'pid': '1',
+        'type': 'bf:Concept'
     }
 
     rero_record, action = ConceptReroRecord.create_or_update(
@@ -56,6 +57,7 @@ def test_create_concept_record(
         '$schema': f'{SCHEMA_URL}/mef-concept-v0.0.1.json',
         'rero': {'$ref': 'https://mef.rero.ch/api/concepts/rero/A021001006'},
         'pid': '2',
+        'type': 'bf:Concept'
     }
 
     mef_rec_resolved = m_record.replace_refs()

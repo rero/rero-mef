@@ -59,6 +59,9 @@
           "bf:Agent": {
             "type": "keyword"
           },
+          "type": {
+            "type": "keyword"
+          },
           "md5": {
             "type": "keyword"
           },
@@ -150,6 +153,9 @@
           "bf:Agent": {
             "type": "keyword"
           },
+          "type": {
+            "type": "keyword"
+          },
           "md5": {
             "type": "keyword"
           },
@@ -239,6 +245,9 @@
             "type": "keyword"
           },
           "bf:Agent": {
+            "type": "keyword"
+          },
+          "type": {
             "type": "keyword"
           },
           "md5": {

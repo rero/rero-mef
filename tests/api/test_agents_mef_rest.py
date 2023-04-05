@@ -35,7 +35,9 @@ def test_view_agents_mef(client, agent_mef_record, agent_gnd_record,
     assert res.status_code == 308
     res = client.get(url, follow_redirects=True)
     assert res.status_code == 200
-    assert json.loads(res.get_data(as_text=True))['aggregations'] == {
+    json_data = json.loads(res.get_data(as_text=True))
+    assert json_data['hits']['total'] == 1
+    assert json_data['aggregations'] == {
         'agent_type': {
             'buckets': [
                 {'doc_count': 1, 'key': 'bf:Person'}
@@ -78,7 +80,7 @@ def test_mef_get_latest(agent_mef_record, agent_idref_record,
                         agent_gnd_redirect_record,
                         agent_mef_gnd_redirect_record):
     """Test MEF get latest."""
-    mef_data = agent_mef_record.replace_refs()
+    mef_data = agent_mef_record.add_information(resolve=True)
     # No new record found
     assert AgentMefRecord.get_latest(pid_type='idref', pid='XXX') == {}
 
@@ -117,7 +119,7 @@ def test_agents_mef_get_idref_latest(client,
                                      agent_idref_redirect_record,
                                      agent_mef_idref_redirect_record):
     """Test agents MEF get latest."""
-    mef_data = agent_mef_idref_redirect_record.replace_refs()
+    mef_data = agent_mef_idref_redirect_record.add_information(resolve=True)
     # New IdRef record is one redirect IdRef record
     data = AgentMefRecord.get_latest(pid_type='idref',
                                      pid=agent_idref_record.pid)
@@ -152,7 +154,8 @@ def test_agents_mef_get_updated(client, agent_mef_record, agent_idref_record,
         # the same time string used in ES
         return f'{date.isoformat()}+00:00'
 
-    mef_data = agent_mef_idref_redirect_record.replace_refs()
+    mef_data = agent_mef_idref_redirect_record.add_information(resolve=True)
+    mef_data.pop('sources')
     # New IdRef record is one redirect IdRef record
     res, data = postdata(
         client,

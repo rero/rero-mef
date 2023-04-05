@@ -27,7 +27,6 @@ import gc
 import hashlib
 import json
 import os
-import traceback
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from io import StringIO
@@ -328,16 +327,20 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                         msg = f'Creating {name} {idx}: {err}'
                         if rec:
                             msg += f'\n{rec}'
-                        current_app.logger.error(msg)
-                        if debug:
-                            traceback.print_exc()
+                        current_app.logger.error(
+                            msg,
+                            exc_info=debug,
+                            stack_info=debug
+                        )
             except NoRecordsMatch:
                 from_date = from_date + timedelta(days=days_span + 1)
                 continue
             except Exception as err:
-                current_app.logger.error(err)
-                if debug:
-                    traceback.print_exc()
+                current_app.logger.error(
+                    err,
+                    exc_info=debug,
+                    stack_info=debug
+                )
                 count = -1
                 if verbose:
                     click.echo(
@@ -608,15 +611,15 @@ def metadata_csv_line(record, record_uuid, date):
     return metadata_line + os.linesep
 
 
-def pidstore_csv_line(agent, agent_pid, record_uuid, date):
+def pidstore_csv_line(entity, entity_pid, record_uuid, date):
     """Build CSV pidstore table line."""
     created_date = updated_date = date
     sep = '\t'
     pidstore_data = [
         created_date,
         updated_date,
-        agent,
-        agent_pid,
+        entity,
+        entity_pid,
         'R',
         'rec',
         record_uuid,
@@ -674,7 +677,7 @@ def db_copy_to(filehandle, table, columns):
     connection.close()
 
 
-def bulk_index(agent, uuids, verbose=False):
+def bulk_index(entity, uuids, verbose=False):
     """Bulk index records."""
     if verbose:
         click.echo(f' add to index: {len(uuids)}')
@@ -683,7 +686,7 @@ def bulk_index(agent, uuids, verbose=False):
     from .api import ReroIndexer
     while retry:
         try:
-            ReroIndexer().bulk_index(uuids, doc_type=agent)
+            ReroIndexer().bulk_index(uuids, doc_type=entity)
             retry = False
         except Exception as exc:
             msg = f'Bulk Index Error: retry in {minutes} min {exc}'
@@ -695,9 +698,9 @@ def bulk_index(agent, uuids, verbose=False):
             minutes *= 2
 
 
-def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
-                    reindex=False):
-    """Bulk load agent data to table."""
+def bulk_load_entity(entity, data, table, columns, bulk_count=0, verbose=False,
+                     reindex=False):
+    """Bulk load entity data to table."""
     if bulk_count <= 0:
         bulk_count = current_app.config.get('BULK_CHUNK_COUNT', 100000)
     count = 0
@@ -719,7 +722,7 @@ def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
                     diff_time = end_time - start_time
                     start_time = end_time
                     click.echo(
-                        f'{agent} copy from file: '
+                        f'{entity} copy from file: '
                         f'{count} {diff_time.seconds}s',
                         nl=False
                     )
@@ -727,7 +730,7 @@ def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
                 buffer.close()
 
                 if index >= 0 and reindex:
-                    bulk_index(agent=agent, uuids=buffer_uuid,
+                    bulk_index(entity=entity, uuids=buffer_uuid,
                                verbose=verbose)
                     buffer_uuid.clear()
                 elif verbose:
@@ -742,7 +745,7 @@ def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
             end_time = datetime.now(timezone.utc)
             diff_time = end_time - start_time
             click.echo(
-                f'{agent} copy from file: {count} {diff_time.seconds}s',
+                f'{entity} copy from file: {count} {diff_time.seconds}s',
                 nl=False
             )
         buffer.flush()
@@ -750,7 +753,7 @@ def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
         db_copy_from(buffer=buffer, table=table, columns=columns)
         buffer.close()
         if index >= 0 and reindex:
-            bulk_index(agent=agent, uuids=buffer_uuid, verbose=verbose)
+            bulk_index(entity=entity, uuids=buffer_uuid, verbose=verbose)
             buffer_uuid.clear()
         elif verbose:
             click.echo()
@@ -759,11 +762,11 @@ def bulk_load_agent(agent, data, table, columns, bulk_count=0, verbose=False,
     gc.collect()
 
 
-def bulk_load_metadata(agent, metadata, bulk_count=0, verbose=True,
+def bulk_load_metadata(entity, metadata, bulk_count=0, verbose=True,
                        reindex=False):
-    """Bulk load agent data to metadata table."""
-    agent_class = get_entity_class(agent)
-    table, identifier = agent_class.get_metadata_identifier_names()
+    """Bulk load entity data to metadata table."""
+    entity_class = get_entity_class(entity)
+    table, identifier = entity_class.get_metadata_identifier_names()
     columns = (
         'created',
         'updated',
@@ -771,8 +774,8 @@ def bulk_load_metadata(agent, metadata, bulk_count=0, verbose=True,
         'json',
         'version_id'
     )
-    bulk_load_agent(
-        agent=agent,
+    bulk_load_entity(
+        entity=entity,
         data=metadata,
         table=table,
         columns=columns,
@@ -782,8 +785,9 @@ def bulk_load_metadata(agent, metadata, bulk_count=0, verbose=True,
     )
 
 
-def bulk_load_pids(agent, pidstore, bulk_count=0, verbose=True, reindex=False):
-    """Bulk load agent data to metadata table."""
+def bulk_load_pids(entity, pidstore, bulk_count=0, verbose=True,
+                   reindex=False):
+    """Bulk load entity data to metadata table."""
     table = 'pidstore_pid'
     columns = (
         'created',
@@ -794,8 +798,8 @@ def bulk_load_pids(agent, pidstore, bulk_count=0, verbose=True, reindex=False):
         'object_type',
         'object_uuid',
     )
-    bulk_load_agent(
-        agent=agent,
+    bulk_load_entity(
+        entity=entity,
         data=pidstore,
         table=table,
         columns=columns,
@@ -805,13 +809,13 @@ def bulk_load_pids(agent, pidstore, bulk_count=0, verbose=True, reindex=False):
     )
 
 
-def bulk_load_ids(agent, ids, bulk_count=0, verbose=True, reindex=False):
-    """Bulk load agent data to id table."""
-    agent_class = get_entity_class(agent)
-    metadata, identifier = agent_class.get_metadata_identifier_names()
+def bulk_load_ids(entity, ids, bulk_count=0, verbose=True, reindex=False):
+    """Bulk load entity data to id table."""
+    entity_class = get_entity_class(entity)
+    metadata, identifier = entity_class.get_metadata_identifier_names()
     columns = ('recid', )
-    bulk_load_agent(
-        agent=agent,
+    bulk_load_entity(
+        entity=entity,
         data=ids,
         table=identifier,
         columns=columns,
@@ -821,8 +825,8 @@ def bulk_load_ids(agent, ids, bulk_count=0, verbose=True, reindex=False):
     )
 
 
-def bulk_save_agent(agent, file_name, table, columns, verbose=False):
-    """Bulk save agent data to file."""
+def bulk_save_entity(file_name, table, columns, verbose=False):
+    """Bulk save entity data to file."""
     with open(file_name, 'w', encoding='utf-8') as output_file:
         db_copy_to(
             filehandle=output_file,
@@ -831,12 +835,12 @@ def bulk_save_agent(agent, file_name, table, columns, verbose=False):
         )
 
 
-def bulk_save_metadata(agent, file_name, verbose=False):
-    """Bulk save agent data from metadata table."""
+def bulk_save_metadata(entity, file_name, verbose=False):
+    """Bulk save entity data from metadata table."""
     if verbose:
-        click.echo(f'{agent} save to file: {file_name}')
-    agent_class = get_entity_class(agent)
-    metadata, identifier = agent_class.get_metadata_identifier_names()
+        click.echo(f'{entity} save to file: {file_name}')
+    entity_class = get_entity_class(entity)
+    metadata, identifier = entity_class.get_metadata_identifier_names()
     columns = (
         'created',
         'updated',
@@ -844,8 +848,7 @@ def bulk_save_metadata(agent, file_name, verbose=False):
         'json',
         'version_id'
     )
-    bulk_save_agent(
-        agent=agent,
+    bulk_save_entity(
         file_name=file_name,
         table=metadata,
         columns=columns,
@@ -853,10 +856,10 @@ def bulk_save_metadata(agent, file_name, verbose=False):
     )
 
 
-def bulk_save_pids(agent, file_name, verbose=False):
-    """Bulk save agent data from pids table."""
+def bulk_save_pids(entity, file_name, verbose=False):
+    """Bulk save entity data from pids table."""
     if verbose:
-        click.echo(f'{agent} save to file: {file_name}')
+        click.echo(f'{entity} save to file: {file_name}')
     table = 'pidstore_pid'
     columns = (
         'created',
@@ -868,8 +871,7 @@ def bulk_save_pids(agent, file_name, verbose=False):
         'object_uuid',
     )
     tmp_file_name = f'{file_name}_tmp'
-    bulk_save_agent(
-        agent=agent,
+    bulk_save_entity(
         file_name=tmp_file_name,
         table=table,
         columns=columns,
@@ -878,19 +880,18 @@ def bulk_save_pids(agent, file_name, verbose=False):
     # clean pid file
     with open(tmp_file_name, 'r') as file_in:
         with open(file_name, "w") as file_out:
-            file_out.writelines(line for line in file_in if agent in line)
+            file_out.writelines(line for line in file_in if entity in line)
     os.remove(tmp_file_name)
 
 
-def bulk_save_ids(agent, file_name, verbose=False):
-    """Bulk save agent data from id table."""
+def bulk_save_ids(entity, file_name, verbose=False):
+    """Bulk save entity data from id table."""
     if verbose:
-        click.echo(f'{agent} save to file: {file_name}')
-    agent_class = get_entity_class(agent)
-    metadata, identifier = agent_class.get_metadata_identifier_names()
+        click.echo(f'{entity} save to file: {file_name}')
+    entity_class = get_entity_class(entity)
+    metadata, identifier = entity_class.get_metadata_identifier_names()
     columns = ('recid', )
-    bulk_save_agent(
-        agent=agent,
+    bulk_save_entity(
         file_name=file_name,
         table=identifier,
         columns=columns,
@@ -916,60 +917,60 @@ def add_md5(record):
     return record
 
 
-def add_schema(record, agent):
+def add_schema(record, entity):
     """Add the $schema to the record."""
     with current_app.app_context():
         schemas = current_app.config.get('RECORDS_JSON_SCHEMA')
-        if agent in schemas:
+        if entity in schemas:
             base_url = current_app.config.get('RERO_MEF_APP_BASE_URL')
             endpoint = current_app.config.get('JSONSCHEMAS_ENDPOINT')
-            schema = schemas[agent]
+            schema = schemas[entity]
             record['$schema'] = f'{base_url}{endpoint}{schema}'
     return record
 
 
-def create_csv_file(input_file, agent, pidstore, metadata):
-    """Create agent CSV file to load."""
+def create_csv_file(input_file, entity, pidstore, metadata):
+    """Create entity CSV file to load."""
     count = 0
     with \
-            open(input_file, 'r', encoding='utf-8') as agent_file, \
-            open(metadata, 'w', encoding='utf-8') as agent_metadata_file, \
-            open(pidstore, 'w', encoding='utf-8') as agent_pids_file:
+            open(input_file, 'r', encoding='utf-8') as entity_file, \
+            open(metadata, 'w', encoding='utf-8') as entity_metadata_file, \
+            open(pidstore, 'w', encoding='utf-8') as entity_pids_file:
 
-        for record in ijson.items(agent_file, "item"):
-            if agent == 'viaf':
+        for record in ijson.items(entity_file, "item"):
+            if entity == 'viaf':
                 record['pid'] = record['viaf_pid']
 
             ordered_record = add_md5(record)
-            add_schema(ordered_record, agent)
+            add_schema(ordered_record, entity)
 
             record_uuid = str(uuid4())
             date = str(datetime.now(timezone.utc))
 
-            agent_metadata_file.write(
+            entity_metadata_file.write(
                 metadata_csv_line(ordered_record, record_uuid, date)
             )
 
-            agent_pids_file.write(
-                pidstore_csv_line(agent, record['pid'], record_uuid, date)
+            entity_pids_file.write(
+                pidstore_csv_line(entity, record['pid'], record_uuid, date)
             )
             count += 1
     return count
 
 
 def get_entity_classes(without_mef_viaf=True):
-    """Get agent classes from config."""
-    agents = {}
+    """Get entity classes from config."""
+    entities = {}
     endpoints = deepcopy(current_app.config.get('RECORDS_REST_ENDPOINTS', {}))
     if without_mef_viaf:
         endpoints.pop('mef', None)
         endpoints.pop('viaf', None)
         endpoints.pop('comef', None)
-    for agent in endpoints:
+    for entity in endpoints:
         if record_class := obj_or_import_string(
-                endpoints[agent].get('record_class')):
-            agents[agent] = record_class
-    return agents
+                endpoints[entity].get('record_class')):
+            entities[entity] = record_class
+    return entities
 
 
 def get_endpoint_class(entity, class_name):
@@ -1138,7 +1139,7 @@ class JsonWriter(object):
 
 
 def mef_get_all_missing_entity_pids(mef_class, entity, verbose=False):
-    """Get all missing agent pids.
+    """Get all missing entity pids.
 
     :param mef_class: MEF class to use.
     :param entity: entity name to get the missing pids.
@@ -1167,10 +1168,10 @@ def mef_get_all_missing_entity_pids(mef_class, entity, verbose=False):
     )
     for hit in progress:
         data = hit.to_dict()
-        if agent_pid := data.get(name, {}).get('pid'):
-            res = missing_pids.pop(agent_pid, False)
+        if entity_pid := data.get(name, {}).get('pid'):
+            res = missing_pids.pop(entity_pid, False)
             if not res:
-                non_existing_pids[hit.pid] = agent_pid
+                non_existing_pids[hit.pid] = entity_pid
         else:
             no_pids.append(hit.pid)
     return list(missing_pids), non_existing_pids, no_pids
@@ -1178,10 +1179,10 @@ def mef_get_all_missing_entity_pids(mef_class, entity, verbose=False):
 
 def get_mefs_endpoints():
     """Get all enpoints for MEF's."""
-    from .agents import AgentMefRecord
-    from .agents.utils import get_agent_endpoints
-    from .concepts import ConceptMefRecord
-    from .concepts.utils import get_concept_endpoints
+    from rero_mef.agents import AgentMefRecord
+    from rero_mef.agents.utils import get_agent_endpoints
+    from rero_mef.concepts import ConceptMefRecord
+    from rero_mef.concepts.utils import get_concept_endpoints
 
     mefs = [{
         'mef_class': AgentMefRecord,

@@ -68,17 +68,57 @@ class ConceptMefRecord(EntityMefRecord):
     mef_type = 'CONCEPTS'
     entities = ['idref', 'rero']
 
+    @classmethod
+    def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
+               reindex=False, md5=True, **kwargs):
+        """Create a new agent record."""
+        data['type'] = 'bf:Concept'
+        return super().create(
+            data=data,
+            id_=id_,
+            delete_pid=delete_pid,
+            dbcommit=dbcommit,
+            reindex=reindex,
+            md5=False,
+            **kwargs
+        )
+
     def replace_refs(self):
         """Replace $ref with real data."""
         data = deepcopy(self)
         data = super().replace_refs()
-        sources = []
+        data['sources'] = [
+            concept for concept in self.entities if data.get(concept)]
+        return data
+
+    def add_information(self, resolve=False, sources=False):
+        """Add information to record.
+
+        Sources will be also added if resolve is True.
+        :param resolve: resolve $refs
+        :param sources: Add sources information to record
+        :returns: record
+        """
+        replace_refs_data = deepcopy(self).replace_refs()
+        data = replace_refs_data if resolve else deepcopy(self)
+        my_sources = []
         for concept in self.entities:
-            if data.get(concept):
-                sources.append(concept)
-                if metadata := data[concept].get('metadata'):
-                    data[concept] = metadata
-        data['sources'] = sources
+            if concept_data := data.get(concept):
+                # we got a error status in data
+                if concept_data.get('status'):
+                    data.pop(concept)
+                    current_app.logger.error(
+                        f'MEF replace refs {data.get("pid")} {concept}'
+                        f' status: {concept_data.get("status")}'
+                        f' {concept_data.get("message")}')
+                else:
+                    my_sources.append(concept)
+                for concept in self.entities:
+                    if concept_data := replace_refs_data.get(concept):
+                        if metadata := concept_data.get('metadata'):
+                            data[concept] = metadata
+        if my_sources and (resolve or sources):
+            data['sources'] = my_sources
         return data
 
     @classmethod

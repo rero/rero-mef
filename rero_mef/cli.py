@@ -404,7 +404,7 @@ def save_csv(entities, output_directory, verbose):
         if verbose:
             click.echo(f'  Save pidstore: {file_name}')
         bulk_save_pids(entity, file_name=file_name, verbose=False)
-        if entity == 'mef':
+        if entity in ['mef', 'comef']:
             file_name = os.path.join(output_directory, f'{entity}_id.csv')
             if verbose:
                 click.echo(f'  Save ID: {file_name}')
@@ -843,7 +843,7 @@ def export(output_path, pid_type, verbose, indent, schema):
     for p_type in pid_type:
         output_file_name = os.path.join(output_path, f'{p_type}.json')
         click.secho(
-            f'Export {pid_type} records: {output_file_name}',
+            f'Export {p_type} records: {output_file_name}',
             fg='green'
         )
         record_class = obj_or_import_string(

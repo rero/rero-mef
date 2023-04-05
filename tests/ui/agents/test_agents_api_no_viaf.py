@@ -38,6 +38,7 @@ def test_create_agent_record_no_viaf_links(
             'https://mef.rero.ch/schemas/mef/mef-v0.0.1.json',
         'gnd': {'$ref': 'https://mef.rero.ch/api/agents/gnd/12391664X'},
         'pid': '1',
+        'type': 'bf:Person'
     }
 
     rero_record, action = AgentReroRecord.create_or_update(
@@ -53,6 +54,7 @@ def test_create_agent_record_no_viaf_links(
             'https://mef.rero.ch/schemas/mef/mef-v0.0.1.json',
         'pid': '2',
         'rero': {'$ref': 'https://mef.rero.ch/api/agents/rero/A023655346'},
+        'type': 'bf:Person'
     }
 
     idref_record, action = AgentIdrefRecord.create_or_update(
@@ -68,4 +70,5 @@ def test_create_agent_record_no_viaf_links(
             'https://mef.rero.ch/schemas/mef/mef-v0.0.1.json',
         'idref': {'$ref': 'https://mef.rero.ch/api/agents/idref/069774331'},
         'pid': '3',
+        'type': 'bf:Person'
     }

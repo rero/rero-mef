@@ -14,6 +14,9 @@
       "pid": {
         "type": "keyword"
       },
+      "type": {
+        "type": "keyword"
+      },
       "md5": {
         "type": "keyword"
       },
@@ -89,11 +92,36 @@
       "note": {
         "type": "object",
         "properties": {
-          "nodeType": {
+          "noteType": {
             "type": "keyword"
           },
           "label": {
             "type": "text"
+          }
+        }
+      },
+      "closeMatch": {
+        "type": "object",
+        "properties": {
+          "authorized_access_point": {
+            "type": "text"
+          },
+          "source": {
+            "type": "keyword"
+          },
+          "identifiedBy": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "keyword"
+              },
+              "source": {
+                "type": "keyword"
+              },
+              "value": {
+                "type": "text"
+              }
+            }
           }
         }
       },

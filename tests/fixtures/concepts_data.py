@@ -60,7 +60,8 @@ def concept_rero_data():
             "Activités d'éveil (enseignement primaire)",
             "Disciplines d'éveil",
             "Éveil, Activités d'"
-        ]
+        ],
+        "type": "bf:Concept"
     }
 
 
@@ -79,7 +80,7 @@ def concept_idref_data():
         }],
         "deleted": "2022-09-03T07:07:32.526780+00:00",
         "identifiedBy": [{
-            "source": "IdRef",
+            "source": "IDREF",
             "type": "uri",
             "value": "http://www.idref.fr/050548115"
         }],
@@ -115,7 +116,8 @@ def concept_idref_data():
         "variant_access_point": [
             "XXXXX",
             "Dialectes franco-provençaux"
-        ]
+        ],
+        "type": "bf:Concept"
     }
 
 
@@ -148,7 +150,7 @@ def concept_idref_redirect_data():
             "source": "RVMLaval"
         }],
         "identifiedBy": [{
-            "source": "IdRef",
+            "source": "IDREF",
             "type": "uri",
             "value": "http://www.idref.fr/027276694"
         }, {
@@ -234,7 +236,8 @@ def concept_idref_redirect_data():
             "Franco-provençal (langue)",
             "Franco-provençal (langue) - Dialectes",
             "Francoprovençal (langue) - Dialectes"
-        ]
+        ],
+        "type": "bf:Concept"
     }
 
 
@@ -246,7 +249,8 @@ def concept_mef_rero_data():
         "mef-concept-v0.0.1.json",
         "rero": {
             "$ref": "https://mef.rero.ch/api/concepts/rero/A021001006"
-        }
+        },
+        "type": "bf:Concept"
     }
 
 
@@ -259,7 +263,8 @@ def concept_mef_idref_data():
         "deleted": "2022-09-03T07:07:32.545630+00:00",
         "idref": {
             "$ref": "https://mef.rero.ch/api/concepts/idref/050548115"
-        }
+        },
+        "type": "bf:Concept"
     }
 
 
@@ -272,4 +277,5 @@ def concept_mef_idref_redirect_data():
         "idref": {
             "$ref": "https://mef.rero.ch/api/concepts/idref/027276694"
         },
+        "type": "bf:Concept"
     }

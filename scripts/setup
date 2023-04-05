@@ -100,11 +100,11 @@ function oai_init () {
     invenio oaiharvester initconfig ./data/oaisources.yml
     # we got the last GND files on 10 2020 from here:
     # https://data.dnb.de/GND/
-    invenio oaiharvester set-last-run -n agents.gnd -d 2020-06-21
+    invenio oaiharvester set-last-run -n agents.gnd -d 2023-05-01
     # we got the last idref files on 10 2020 with:
     # invenio oaiharvester save idref.mrc -n idref -f 1990-01-01
-    invenio oaiharvester set-last-run -n agents.idref -d 2020-10-01
-    invenio oaiharvester set-last-run -n concepts.idref -d 2020-10-01
+    invenio oaiharvester set-last-run -n agents.idref -d 2023-05-01
+    invenio oaiharvester set-last-run -n concepts.idref -d 2023-05-01
 }
 
 function sample_load () {
@@ -114,7 +114,7 @@ function sample_load () {
 
     for ENTITY in aggnd aidref agrero
     do
-      info_msg "Importing ${ENTITY} agent records:"
+      info_msg "Importing ${ENTITY} records:"
       dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY}
     done
 
@@ -130,17 +130,17 @@ function sample_load () {
 function deploy () {
     INPUT_DIR=$1
     info_msg "Start loading CSV records to database: ${INPUT_DIR}"
-    # Load agents CSV files to db
-    for ENTITY in aggnd aidref agrero corero viaf
+    # Load CSV files to db
+    for ENTITY in aggnd aidref agrero viaf corero cidref
     do
         invenio fixtures load-csv ${ENTITY} ${INPUT_DIR}/${ENTITY}_pidstore.csv ${INPUT_DIR}/${ENTITY}_metadata.csv --verbose --reindex
     done
     invenio fixtures load-csv mef ${INPUT_DIR}/mef_pidstore.csv ${INPUT_DIR}/mef_metadata.csv --ids_file ${INPUT_DIR}/mef_id.csv --verbose --reindex
+    invenio fixtures load-csv comef ${INPUT_DIR}/comef_pidstore.csv ${INPUT_DIR}/comef_metadata.csv --ids_file ${INPUT_DIR}/comef_id.csv --verbose --reindex
     oai_init
     invenio utils runindex --raise-on-error --concurrency 8 --delayed
     invenio utils runindex --raise-on-error
     # invenio utils reindex-missing -v
-    invenio agents-counts
 }
 
 function create_json () {
@@ -162,10 +162,10 @@ function create_csv () {
     # Create CSV files from json
     for ENTITY in aggnd aidref agrero corero
     do
-        invenio fixtures create-csv ${ENTITY} ${OUTPUT_DIR}/${ENTITY}.json ${OUTPUT_DIR} &
+        invenio fixtures create-csv ${ENTITY} ${OUTPUT_DIR}/${ENTITY}.json ${OUTPUT_DIR}
     done
-    trap 'jobs -p | xargs kill' EXIT
-    wait
+    # trap 'jobs -p | xargs kill' EXIT
+    # wait
     info_msg "Create VIAF CSV files from viaf.txt: ${OUTPUT_DIR}"
     # Create VIAF CSV files from viaf.txt
     invenio agents create-csv-viaf ${OUTPUT_DIR}/viaf.txt ${OUTPUT_DIR}
@@ -228,7 +228,7 @@ function usage () {
 }
 
 if [[ $# -eq 0 ]] ; then
-    info_msg "Start sample loading of all types of agents"
+    info_msg "Start sample loading of all types of entities"
     db_init
     sample_load
 else

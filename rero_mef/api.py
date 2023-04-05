@@ -136,7 +136,7 @@ class ReroMefRecord(Record):
             data = add_schema(data, agent_record.provider.pid_type)
             # save the records old data if the new one is empty
             copy_fields = ['pid', '$schema', 'identifier', 'identifiedBy',
-                           'authorized_access_point', 'bf:Agent',
+                           'authorized_access_point', 'type', 'bf:Agent',
                            'relation_pid', 'deleted']
             original_data = {
                 k: v for k, v in agent_record.items() if k in copy_fields}

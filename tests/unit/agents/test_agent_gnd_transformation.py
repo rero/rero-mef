@@ -209,6 +209,11 @@ def test_gnd_identifier():
     trans.trans_gnd_identifier()
     assert trans.json == {
         'identifier': 'http://d-nb.info/gnd/100000193',
+        'identifiedBy': [{
+            'source': 'GND',
+            'type': 'uri',
+            'value': 'http://d-nb.info/gnd/100000193'
+        }],
     }
 
 
@@ -593,7 +598,8 @@ def test_gnd_authorized_access_point():
     trans.trans_gnd_authorized_access_point()
     assert trans.json == {
         'authorized_access_point': 'Johannes Paul, II., Papst, 1920-2005',
-        'bf:Agent': 'bf:Person'
+        'bf:Agent': 'bf:Person',
+        'type': 'bf:Person'
     }
 
 
@@ -609,7 +615,8 @@ def test_gnd_authorized_access_point_organisation():
     trans.trans_gnd_authorized_access_point()
     assert trans.json == {
         'authorized_access_point': 'The Young Gods. Musikgruppe',
-        'bf:Agent': 'bf:Organisation'
+        'bf:Agent': 'bf:Organisation',
+        'type': 'bf:Organisation'
     }
 
 

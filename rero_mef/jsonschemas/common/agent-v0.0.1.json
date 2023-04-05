@@ -5,6 +5,7 @@
   "required": [
     "$schema",
     "pid",
+    "type",
     "identifier",
     "authorized_access_point"
   ],
@@ -22,6 +23,14 @@
       "minLength": 1
     },
     "bf:Agent": {
+      "title": "Type",
+      "type": "string",
+      "enum": [
+        "bf:Person",
+        "bf:Organisation"
+      ]
+    },
+    "type": {
       "title": "Type",
       "type": "string",
       "enum": [
@@ -70,6 +79,36 @@
       "description": "XXX (cf. RDA)",
       "type": "string",
       "format": "uri"
+    },
+    "identifiedBy": {
+      "title": "Identifier",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "value"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "bf:Local",
+              "uri"
+            ]
+          },
+          "source": {
+            "enum": [
+              "GND",
+              "RERO",
+              "IDREF"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      }
     },
     "date_of_birth": {
       "title": "Date of birth",
