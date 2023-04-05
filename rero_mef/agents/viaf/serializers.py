@@ -19,11 +19,12 @@
 
 import contextlib
 
-from flask import current_app, request, url_for
+from flask import current_app, url_for
 from invenio_records_rest.links import default_links_factory_with_additional
 from invenio_records_rest.schemas import RecordSchemaJSONV1
 from invenio_records_rest.serializers.json import JSONSerializer
-from invenio_records_rest.serializers.response import record_responsify
+from invenio_records_rest.serializers.response import record_responsify, \
+    search_responsify
 
 from ..mef.api import AgentMefSearch
 
@@ -72,19 +73,12 @@ class ReroMefSerializer(JSONSerializer):
         :param record: Record instance.
         :param links_factory: Factory function for record links.
         """
-        rec = record
-        if request and request.args.get('resolve'):
-            rec = record.replace_refs()
-            # because the replace_refs loose the record original model. We need
-            # to reset it to have correct 'created'/'updated' output data
-            rec.model = record.model
-
         return super(ReroMefSerializer, self).serialize(
-            pid=pid, record=rec, links_factory=add_links, **kwargs)
+            pid=pid, record=record, links_factory=add_links, **kwargs)
 
 
-json_v1 = ReroMefSerializer(RecordSchemaJSONV1)
+json_ = ReroMefSerializer(RecordSchemaJSONV1)
 """JSON v1 serializer."""
 
-json_v1_agent_viaf_response = record_responsify(
-    json_v1, 'application/rero+json')
+json_agent_viaf_response = record_responsify(json_, 'application/rero+json')
+json_agent_viaf_search = search_responsify(json_, 'application/rero+json')

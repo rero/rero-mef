@@ -31,7 +31,12 @@ def test_rero_identifier():
     trans.trans_rero_identifier()
     assert trans.json == {
         'pid': 'A000070488',
-        'identifier': 'http://data.rero.ch/02-A000070488'
+        'identifier': 'http://data.rero.ch/02-A000070488',
+        'identifiedBy': [{
+            'source': 'RERO',
+            'type': 'uri',
+            'value': 'http://data.rero.ch/02-A000070488'
+        }]
     }
 
 
@@ -214,7 +219,8 @@ def test_rero_authorized_access_point():
     trans.trans_rero_authorized_access_point()
     assert trans.json == {
         'authorized_access_point': 'Brontë, Charlotte, 1816-1855 écrivain',
-        'bf:Agent': 'bf:Person'
+        'bf:Agent': 'bf:Person',
+        'type': 'bf:Person'
     }
 
     xml_part_to_add = """
@@ -230,6 +236,7 @@ def test_rero_authorized_access_point():
     assert trans.json == {
         'authorized_access_point': 'Paul VI pape 1897-1978',
         'bf:Agent': 'bf:Organisation',
+        'type': 'bf:Organisation',
         'conference': False,
     }
 

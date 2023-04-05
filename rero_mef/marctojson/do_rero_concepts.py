@@ -61,6 +61,7 @@ class Transformation(object):
         if field_035 and field_035['a']:
             identifier = field_035['a']
             self.json_dict['pid'] = identifier
+            self.json_dict['type'] = 'bf:Concept'
             identifiers.append({
                 'type': 'bf:Local',
                 'source': 'RERO',

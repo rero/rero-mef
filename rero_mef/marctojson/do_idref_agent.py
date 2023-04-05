@@ -211,7 +211,13 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_identifier')
         if field_003 := self.marc['003']:
+            # TODO: delete identifier
             self.json_dict['identifier'] = field_003.data
+            self.json_dict.setdefault('identifiedBy', []).append({
+                'type': 'uri',
+                'value': field_003.data,
+                'source': 'IDREF'
+            })
 
     def trans_idref_birth_and_death_dates(self):
         """Transformation birth_date and death_date."""
@@ -383,6 +389,7 @@ class Transformation(object):
         )
         for authorized_access_point in authorized_access_points:
             self.json_dict['bf:Agent'] = agent
+            self.json_dict['type'] = agent
             if self.json_dict.get('authorized_access_point'):
                 variant_access_points.append(authorized_access_point)
             else:

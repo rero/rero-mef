@@ -53,6 +53,7 @@ def test_create_agent_record_with_viaf_links(
         '$schema': 'https://mef.rero.ch/schemas/mef/mef-v0.0.1.json',
         'gnd': {'$ref': 'https://mef.rero.ch/api/agents/gnd/12391664X'},
         'pid': '1',
+        'type': 'bf:Person',
         'viaf_pid': '66739143'
     }
     assert viaf_record.get_agents_records() == [agent_gnd_data]
@@ -74,6 +75,7 @@ def test_create_agent_record_with_viaf_links(
         'gnd': {'$ref': 'https://mef.rero.ch/api/agents/gnd/12391664X'},
         'pid': '1',
         'rero': {'$ref': 'https://mef.rero.ch/api/agents/rero/A023655346'},
+        'type': 'bf:Person',
         'viaf_pid': '66739143'
     }
     assert viaf_record.get_agents_records() == [
@@ -92,6 +94,7 @@ def test_create_agent_record_with_viaf_links(
         'idref': {'$ref': 'https://mef.rero.ch/api/agents/idref/069774331'},
         'pid': '1',
         'rero': {'$ref': 'https://mef.rero.ch/api/agents/rero/A023655346'},
+        'type': 'bf:Person',
         'viaf_pid': '66739143'
     }
     assert viaf_record.get_agents_records() == [

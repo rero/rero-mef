@@ -29,7 +29,7 @@ from .models import AgentMefMetadata
 from .providers import MefProvider
 from ...api import ReroIndexer
 from ...api_mef import EntityMefRecord
-from ...utils import progressbar
+from ...utils import get_entity_classes, progressbar
 
 
 def build_ref_string(agent_pid, agent):
@@ -99,11 +99,55 @@ class AgentMefRecord(EntityMefRecord):
 
         return list(missing_pids), non_existing_pids
 
+    @classmethod
+    def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
+               reindex=False, md5=True, **kwargs):
+        """Create a new agent record."""
+        # replace_refs_data = deepcopy(data).replace_refs()
+        data['type'] = 'bf:Person'
+        entity_classes = get_entity_classes()
+        for agent in cls.entities:
+            if agent := data.get(agent):
+                ref_split = agent['$ref'].split('/')
+                ref_type = ref_split[-2]
+                ref_pid = ref_split[-1]
+                for _, entity_class in entity_classes.items():
+                    if entity_class.name == ref_type:
+                        if entity_rec := entity_class.get_record_by_pid(
+                            ref_pid
+                        ):
+                            data['type'] = entity_rec['type']
+                            break
+
+        return super().create(
+            data=data,
+            id_=id_,
+            delete_pid=delete_pid,
+            dbcommit=dbcommit,
+            reindex=reindex,
+            md5=False,
+            **kwargs
+        )
+
     def replace_refs(self):
         """Replace $ref with real data."""
         data = deepcopy(self)
         data = super().replace_refs()
-        sources = []
+        sources = [agent for agent in self.entities if data.get(agent)]
+        data['sources'] = sources
+        return data
+
+    def add_information(self, resolve=False, sources=False):
+        """Add information to record.
+
+        Sources will be also added if resolve is True.
+        :param resolve: resolve $refs
+        :param sources: Add sources information to record
+        :returns: record
+        """
+        replace_refs_data = deepcopy(self).replace_refs()
+        data = replace_refs_data if resolve else deepcopy(self)
+        my_sources = []
         for agent in self.entities:
             if agent_data := data.get(agent):
                 # we got a error status in data
@@ -114,13 +158,14 @@ class AgentMefRecord(EntityMefRecord):
                         f' status: {agent_data.get("status")}'
                         f' {agent_data.get("message")}')
                 else:
-                    sources.append(agent)
-                    if metadata := data[agent].get('metadata'):
-                        data[agent] = metadata
-                        data['type'] = metadata['bf:Agent']
-                    else:
-                        data['type'] = data[agent]['bf:Agent']
-        data['sources'] = sources
+                    my_sources.append(agent)
+                for agent in self.entities:
+                    if agent_data := replace_refs_data.get(agent):
+                        if metadata := replace_refs_data[agent] \
+                                .get('metadata'):
+                            data[agent] = metadata
+        if my_sources and (resolve or sources):
+            data['sources'] = my_sources
         return data
 
     @classmethod
@@ -145,6 +190,12 @@ class AgentMefRecord(EntityMefRecord):
                 if search.count() > 0:
                     new_data = next(search.scan()).to_dict()
                     new_pid = new_data.get('idref', {}).get('pid')
+            for agent in cls.entities:
+                if agent_data := data.get(agent):
+                    if not agent_data.get('type'):
+                        data[agent]['type'] = agent_data['bf:Agent']
+                        if not data.get('type'):
+                            data['type'] = agent_data['bf:Agent']
             return cls.get_latest(pid_type=pid_type, pid=new_pid) \
                 if new_pid else data
         return {}
