@@ -211,7 +211,13 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_identifier')
         if field_003 := self.marc['003']:
+            # TODO: delete identifier
             self.json_dict['identifier'] = field_003.data
+            self.json_dict.setdefault('identifiedBy', []).append({
+                'type': 'uri',
+                'value': field_003.data,
+                'source': 'IdRef'
+            })
 
     def trans_idref_birth_and_death_dates(self):
         """Transformation birth_date and death_date."""

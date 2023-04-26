@@ -1138,6 +1138,11 @@ def aggnd_data_139205527():
         'country_associated': 'it',
         'gender': 'female',
         'identifier': 'http://d-nb.info/gnd/139205527',
+        'identifiedBy': [{
+            'source': 'GND',
+            'type': 'uri',
+            'value': 'http://d-nb.info/gnd/139205527'
+        }],
         'pid': '139205527',
         'preferred_name': 'Parisi, Chiara',
     }

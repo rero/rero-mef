@@ -1,10 +1,17 @@
 [
   {
-    "md5": "e46818a77f0b8c5f676351781323d1f0",
+    "md5": "882e148930c20dcfce343483f32ed817",
     "pid": "A000009346",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://data.rero.ch/02-A000009346",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A000009346",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "Aranton d'Alex, Jean d',",
       "Aranthon d'Alex, Jean d',",
@@ -24,11 +31,18 @@
     ]
   },
   {
-    "md5": "7badff1fad1b3179ba1ba9bdf25a9bf3",
+    "md5": "e724e4f557099404f276ce599eb8e013",
     "pid": "A000065776",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://data.rero.ch/02-A000065776",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A000065776",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "Cavalieri, Pius Franchi de",
       "Franchi De Cavalieri, Pietro Pio",
@@ -43,11 +57,18 @@
     "authorized_access_point": "Franchi De Cavalieri, Pio Pietro"
   },
   {
-    "md5": "11f264777581fcb816a74c28d05553b5",
+    "md5": "ef6d4ae7b35dca2be834bec8920f5b17",
     "pid": "A000070488",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://data.rero.ch/02-A000070488",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A000070488",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "Bonqueval, J.G. de"
     ],
@@ -58,12 +79,19 @@
     "authorized_access_point": "Genty de Bonqueval, J"
   },
   {
-    "md5": "2b1a18ffab5e93b126d089d2e5379466",
+    "md5": "ec4f09551341b2ef82c267374b6fadb5",
     "pid": "A003671569",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A003671569",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A003671569",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "Parlement europ\u00e9en. DG4",
       "Parlement europ\u00e9en. Generaldirektion Wissenschaft",
@@ -78,12 +106,19 @@
     "authorized_access_point": "Parlement europ\u00e9en. Direction g\u00e9n\u00e9rale des \u00e9tudes"
   },
   {
-    "md5": "9a84175e56df06dd9c4e9a564d34b5c4",
+    "md5": "2572f3d4b9aa106b12aafbe166bf722a",
     "pid": "A005353099",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A005353099",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A005353099",
+        "source": "RERO"
+      }
+    ],
     "preferred_name": "G\u00fcrzenich-Orchester K\u00f6lner Philharmoniker",
     "authorized_access_point": "G\u00fcrzenich-Orchester K\u00f6lner Philharmoniker",
     "biographical_information": [
@@ -93,12 +128,19 @@
     ]
   },
   {
-    "md5": "980b127758f806da1ad917589a594a12",
+    "md5": "e261f78e80f5ef4eda2ee02b0c4790a7",
     "pid": "A005464637",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A005464637",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A005464637",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "Institut de recherches sur les civilisations de l'Occident moderne (Paris)",
       "Unit\u00e9 de recherches sur les civilisations de l'Occident moderne (Paris)",
@@ -113,12 +155,19 @@
     "authorized_access_point": "Universit\u00e9 de Paris 4. Institut de recherches sur les civilisations de l'Occident moderne"
   },
   {
-    "md5": "23d44ce5a4a9eaa6d00b174e796467d0",
+    "md5": "5aff24872de6ed179b17e2182aedfa7d",
     "pid": "A005472911",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A005472911",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A005472911",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "Institut d'administration des entreprises (Rennes : ?-1970)"
     ],
@@ -133,11 +182,18 @@
     ]
   },
   {
-    "md5": "f85ee7377ce74a69d30828a225752747",
+    "md5": "56a5de6a37cf08c2b5f14ffd7a88c8c6",
     "pid": "A005591402",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://data.rero.ch/02-A005591402",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A005591402",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "Amboise, L\u00e9on d'",
       "L\u00e9on, d'Amboise"
@@ -153,22 +209,36 @@
     ]
   },
   {
-    "md5": "370239fe4f5431ca3b36284f9026e2da",
+    "md5": "f0b1cd2eeda9135beb5f5de9d0b6b7ce",
     "pid": "A009238698",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A009238698",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A009238698",
+        "source": "RERO"
+      }
+    ],
     "preferred_name": "Pipe Trio",
     "authorized_access_point": "Pipe Trio"
   },
   {
-    "md5": "eb9f4559b841ebb23b3aa81f48c75cb2",
+    "md5": "2ef3a3f14b958ed372163e6f1e5d7037",
     "pid": "A009535178",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "qualifier": "de Barbanson",
     "identifier": "http://data.rero.ch/02-A009535178",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A009535178",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "Barban\u00e7on, Constantin de"
     ],
@@ -179,12 +249,19 @@
     "authorized_access_point": "Constantin, de Barbanson"
   },
   {
-    "md5": "8490c0706e4d85befe6a1763153a64d8",
+    "md5": "be9a2f090aa7f17090bc2234fe02b028",
     "pid": "A009962747",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A009962747",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A009962747",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "European Coal and Steel Community",
       "Europ\u00e4ische Gemeinschaft f\u00fcr Kohle und Stahl",
@@ -210,21 +287,35 @@
     ]
   },
   {
-    "md5": "f7c64698afa7f5653da5f6e2a471a4e4",
+    "md5": "7eb1ddfa566fd00bcf4bbb6741c93bf5",
     "pid": "A012320736",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": true,
     "identifier": "http://data.rero.ch/02-A012320736",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A012320736",
+        "source": "RERO"
+      }
+    ],
     "preferred_name": "Congr\u00e8s de psychiatrie et de neurologie de langue fran\u00e7aise",
     "authorized_access_point": "Congr\u00e8s de psychiatrie et de neurologie de langue fran\u00e7aise (78 : 1980 : Reims)"
   },
   {
-    "md5": "0654556e79b0a5993f1a3f21e2538522",
+    "md5": "901853388c3353039c7227e8ada06a63",
     "pid": "A017671081",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://data.rero.ch/02-A017671081",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A017671081",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "Aernoudt, Pierre,",
       "Arnold, Joseph,"
@@ -242,11 +333,18 @@
     ]
   },
   {
-    "md5": "a0899531d7e144d6fddf862902296756",
+    "md5": "4fde6a61ef34d31fb79dfe5fca05987f",
     "pid": "A017991779",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://data.rero.ch/02-A017991779",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A017991779",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "Catalano, Giuseppe,",
       "Catalanus, Josephus,",
@@ -268,11 +366,18 @@
     ]
   },
   {
-    "md5": "c6b87e7bfc29646948f5429209965caf",
+    "md5": "1647f34ec937beea3f65997a17aea027",
     "pid": "A021799923",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://data.rero.ch/02-A021799923",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A021799923",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "Kouro\u00fadi\u0332s, K\u00f3\u0332stas"
     ],
@@ -286,11 +391,18 @@
     "authorized_access_point": "Kouroud\u0113s, K\u014dstas"
   },
   {
-    "md5": "63217758345f5fdbd0be66a2286b2632",
+    "md5": "db2fd09c378352afb2d3e3a5d79fbcc6",
     "pid": "A022480124",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://data.rero.ch/02-A022480124",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A022480124",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "Bernard, Bayle,"
     ],
@@ -303,11 +415,18 @@
     "authorized_access_point": "Bernard, William Bayle, 1807-1875"
   },
   {
-    "md5": "48d1e9960cb7c0bd89d2fbb674569087",
+    "md5": "4bedaf970e3d36a6d259e06b11dc99bd",
     "pid": "A023655346",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://data.rero.ch/02-A023655346",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A023655346",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "De Cavalieri, Giovanni Battista,",
       "Cavalleriis, Baptista de,",
@@ -329,11 +448,18 @@
     ]
   },
   {
-    "md5": "9d9fe3b19e907d9c733bf1c4028b8da0",
+    "md5": "509d100c05421eb2b3372c545335e66e",
     "pid": "A024285452",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://data.rero.ch/02-A024285452",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A024285452",
+        "source": "RERO"
+      }
+    ],
     "date_of_birth": "1983",
     "preferred_name": "Soyarslan, \u00c7i\u01e7dem,",
     "authorized_access_point": "Soyarslan, \u00c7i\u01e7dem, 1983-",
@@ -342,22 +468,36 @@
     ]
   },
   {
-    "md5": "bf13b602d6494f21385cbac14b029716",
+    "md5": "fb6cbbd264d730d7b4a3b323011752f4",
     "pid": "A027454547",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A027454547",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A027454547",
+        "source": "RERO"
+      }
+    ],
     "preferred_name": "Van Halen (groupe musical)",
     "authorized_access_point": "Van Halen (groupe musical)"
   },
   {
-    "md5": "85ad5ae7222d0f32634ce6691d1aad52",
+    "md5": "7481f889413dd9bd49d5c18c007f7907",
     "pid": "A028240818",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://data.rero.ch/02-A028240818",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://data.rero.ch/02-A028240818",
+        "source": "RERO"
+      }
+    ],
     "variant_name": [
       "Compagnie PO",
       "Compagnie des chemins de fer de Paris \u00e0 Orl\u00e9ans",

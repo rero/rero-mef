@@ -79,6 +79,36 @@
       "type": "string",
       "format": "uri"
     },
+    "identifiedBy": {
+      "title": "Identifier",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "value"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "bf:Local",
+              "uri"
+            ]
+          },
+          "source": {
+            "enum": [
+              "GND",
+              "RERO",
+              "IdRef"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "date_of_birth": {
       "title": "Date of birth",
       "description": "XXX (cf. RDA)",

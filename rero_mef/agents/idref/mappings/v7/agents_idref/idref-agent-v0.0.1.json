@@ -32,6 +32,20 @@
       "identifier": {
         "type": "keyword"
       },
+      "identifiedBy": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "keyword"
+          },
+          "source": {
+            "type": "keyword"
+          },
+          "value": {
+            "type": "text"
+          }
+        }
+      },
       "date_of_birth": {
         "type": "text"
       },

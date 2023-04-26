@@ -1,14 +1,21 @@
 [
   {
-    "md5": "9f4c8d121b5e671c96f6ad2eef7c72b5",
+    "md5": "defee5ea13493e288f86b063bdbe2a78",
     "pid": "02638714X",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "fre"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/02638714X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/02638714X",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Centre de recherches sur l'Occident moderne ( Paris )",
       "Institut de recherche sur les civilisations de l'Occident moderne ( Paris )",
@@ -33,15 +40,22 @@
     ]
   },
   {
-    "md5": "a80deb9789b47e25801fcf5d5b02aab3",
+    "md5": "479538061896c969c25786e22a3671cc",
     "pid": "027483061",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "mul"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/027483061",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/027483061",
+        "source": "IdRef"
+      }
+    ],
     "relation_pid": {
       "type": "redirect_from",
       "value": "029057183"
@@ -72,12 +86,19 @@
     ]
   },
   {
-    "md5": "2336cee11a355c63084a8335e2cb879f",
+    "md5": "df78b4401241cc2a67a0381fd0755ac8",
     "pid": "02778259X",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/02778259X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/02778259X",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Van Halen ( groupe )",
     "authorized_access_point": "Van Halen ( groupe )",
     "biographical_information": [
@@ -85,15 +106,22 @@
     ]
   },
   {
-    "md5": "05439dbbf0784f2d089a2fb52950d301",
+    "md5": "3531fffcfa05de1fea49236181a0786d",
     "pid": "028893670",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "mul"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/028893670",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/028893670",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Parlement europ\u00e9en. Directorate-general for research",
       "European Parliament. Directorate General for Research",
@@ -116,15 +144,22 @@
     "authorized_access_point": "Parlement europ\u00e9en. Direction g\u00e9n\u00e9rale des \u00e9tudes"
   },
   {
-    "md5": "1b697efbdd1940b04236a42fa70b9d45",
+    "md5": "ddcce17dff9b7f677e7d87e163dc52d9",
     "pid": "029402360",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "fre"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/029402360",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/029402360",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Universit\u00e9 scientifique et m\u00e9dicale ( Grenoble ). Facult\u00e9 de m\u00e9decine",
       "Universit\u00e9 scientifique et m\u00e9dicale ( Grenoble ). UFR de m\u00e9decine"
@@ -144,15 +179,22 @@
     ]
   },
   {
-    "md5": "b4ee1175dfd7bf7045b4d3e52afc2773",
+    "md5": "f338e7dc43ac7380e88660aad52560c7",
     "pid": "030348722",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "ger"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/030348722",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/030348722",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Bundesverband der Betriebskrankenkassen ( RFA )"
     ],
@@ -165,15 +207,22 @@
     "authorized_access_point": "Bundesverband der Betriebskrankenkassen ( Allemagne )"
   },
   {
-    "md5": "aea40104cb806fcebb25ace0254103fa",
+    "md5": "fbefec3ae56afd49e59dc9b008cb8048",
     "pid": "03227758X",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "fre"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/03227758X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/03227758X",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Camp d'internement de Compi\u00e8gne-Royallieu",
       "Frontstalag 122 ( Compi\u00e8gne, Oise )"
@@ -188,14 +237,21 @@
     "authorized_access_point": "Camp de Compi\u00e8gne-Royallieu"
   },
   {
-    "md5": "90303b0620bf454e7d674ac7e3f8b5a9",
+    "md5": "2c0fd641b48621f8e34e6d51157411df",
     "pid": "033967776",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/033967776",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/033967776",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Boiteau, Dieudonn\u00e9 Alexandre Paul",
       "Boiteau d'Ambly, Paul"
@@ -214,15 +270,22 @@
     ]
   },
   {
-    "md5": "8c4257edd51f2f7f84c20c8e95663cf9",
+    "md5": "aea3d149bf186e2b03aaa3cd98f72c9c",
     "pid": "03459910X",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "eng"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/03459910X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/03459910X",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Guns N' Roses",
       "GNR"
@@ -239,15 +302,22 @@
     ]
   },
   {
-    "md5": "f2c813843c221b93efeeb9ef3966aa7f",
+    "md5": "27f1147ca14dfc55c1475c690701caea",
     "pid": "034875891",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "mul"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/034875891",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/034875891",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "DPM"
     ],
@@ -262,14 +332,21 @@
     ]
   },
   {
-    "md5": "6d2ceda8ddf71401fb59195e24ea9bad",
+    "md5": "fc28c89ce675557c701a22b370e2029b",
     "pid": "057286752",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/057286752",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/057286752",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Objac, \u00c9mile d'"
     ],
@@ -285,14 +362,21 @@
     ]
   },
   {
-    "md5": "321972dea346c135084cf976e37c85fb",
+    "md5": "63c7e8ca1ed10dc1bd9a683d50151860",
     "pid": "068979401",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "ita"
     ],
     "identifier": "http://www.idref.fr/068979401",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/068979401",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Cavalleri, Giovanni Battista",
       "Cavalleriis, Giovanni-Battista de",
@@ -322,15 +406,22 @@
     ]
   },
   {
-    "md5": "29b139e640301a02426413ba0192d9ed",
+    "md5": "3acb333af1bdf09696115bdc802a30ea",
     "pid": "069632421",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "fre"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/069632421",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/069632421",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Institut d'Administration des Entreprises de Rennes",
     "country_associated": "fr",
     "date_of_establishment": "19XX",
@@ -340,15 +431,22 @@
     ]
   },
   {
-    "md5": "5e5eaa83ae144e150daac9b0548fc9ee",
+    "md5": "bdeeeef06e10d58c3100d2cc250c83f8",
     "pid": "069774331",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "qualifier": "grammairien",
     "identifier": "http://www.idref.fr/069774331",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/069774331",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Brissaeus, Nicolaus",
       "Brisset, Nicolas"
@@ -366,14 +464,21 @@
     ]
   },
   {
-    "md5": "4b487bfdef976b39164528b289003932",
+    "md5": "80f57687a1358734766500c9ee44f488",
     "pid": "070483981",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "lat"
     ],
     "identifier": "http://www.idref.fr/070483981",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/070483981",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Mamertus, Claudianus",
       "Claudianus Mamertus"
@@ -393,40 +498,61 @@
     ]
   },
   {
-    "md5": "a68f2f853cf5472cee72e475a5e626e6",
+    "md5": "ddf3eaf719995bf3b6dc65853d688a76",
     "pid": "071579478",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "fre"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/071579478",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/071579478",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Congr\u00e8s des \u00e9conomistes de langue fran\u00e7aise",
     "authorized_access_point": "Congr\u00e8s des \u00e9conomistes de langue fran\u00e7aise ( 21 ; 1961 ; Paris )"
   },
   {
-    "md5": "dc868a97faba5f82e1608de44901fa28",
+    "md5": "0c31d9c63b8b9c9eb86d55d800339326",
     "pid": "071593462",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "fre"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/071593462",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/071593462",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Congr\u00e8s des \u00e9conomistes de langue fran\u00e7aise",
     "authorized_access_point": "Congr\u00e8s des \u00e9conomistes de langue fran\u00e7aise ( 20 ; 1960 ; Paris )"
   },
   {
-    "md5": "eb884e5bb0ba4adb99502f9bce2c630d",
+    "md5": "73ee86932f1e14b3274e2f8f932dd4a7",
     "pid": "073462012",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "ita"
     ],
     "identifier": "http://www.idref.fr/073462012",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/073462012",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Franchi de' Cavalieri, Pius",
       "De' Cavalieri, Pio Franchi",
@@ -444,15 +570,22 @@
     "authorized_access_point": "Franchi de' Cavalieri, Pio Petro, 1869-1960"
   },
   {
-    "md5": "dc2099f0193f9277850c97156ad5393b",
+    "md5": "f8c28a607dd8547b9280447e4ecd6df9",
     "pid": "073668818",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "mon"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/073668818",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/073668818",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "\u0411\u041d\u041c\u0410\u0423 \u0428\u0438\u043d\u0436\u043b\u044d\u0445 \u0423\u0445\u0430\u0430\u043d\u044b \u0410\u043a\u0430\u0434\u0435\u043c\u0438. \u0422\u04af\u04af\u0445\u0438\u0439\u043d \u0425\u04af\u0440\u044d\u044d\u043b\u044d\u043d ( Oulan-Bator, Mongolie )",
       "Mongolyn \u0160in\u017el\u00e8h uhaany Akademi. T\u00f9\u00f9hijn h\u00f9r\u00e8\u00e8l\u00e8n",
@@ -486,14 +619,21 @@
     ]
   },
   {
-    "md5": "7c71dc22587ce7c895d9b5b034b80bf5",
+    "md5": "3419b0fee5aaeb2f46121eca39c83776",
     "pid": "074087061",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/074087061",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/074087061",
+        "source": "IdRef"
+      }
+    ],
     "date_of_birth": "1851",
     "date_of_death": "1925",
     "preferred_name": "Avesne, E. d'",
@@ -501,15 +641,22 @@
     "authorized_access_point": "Avesne, E. d', 1851-1925"
   },
   {
-    "md5": "1003b578e802a1fc1abc5a73f2c42e78",
+    "md5": "9590fbbf80c59865eea62d66196a54bc",
     "pid": "075825686",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "fre"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/075825686",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/075825686",
+        "source": "IdRef"
+      }
+    ],
     "relation_pid": {
       "type": "redirect_from",
       "value": "08602020X"
@@ -538,15 +685,22 @@
     ]
   },
   {
-    "md5": "98d5c79c1ca524a575e5921054c91f28",
+    "md5": "4a14d5c6f25de97f3495f57841cd3423",
     "pid": "076515788",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "mul"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/076515788",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/076515788",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Congr\u00e8s litt\u00e9raire international de la protection de la propri\u00e9t\u00e9 litt\u00e9raire dans les rapports internationaux"
     ],
@@ -560,15 +714,22 @@
     "authorized_access_point": "Congr\u00e8s litt\u00e9raire international ( 1878 ; Paris )"
   },
   {
-    "md5": "8c473b58aeede0c6c3fd02710a905be3",
+    "md5": "9f90995a68ffb32f00bcbabdd5702800",
     "pid": "076675246",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "qualifier": "g\u00e9ologue",
     "identifier": "http://www.idref.fr/076675246",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/076675246",
+        "source": "IdRef"
+      }
+    ],
     "date_of_birth": "19XX",
     "preferred_name": "Chesney, Marc, g\u00e9ologue",
     "country_associated": "fr",
@@ -578,15 +739,22 @@
     ]
   },
   {
-    "md5": "012e00dc0ed4367d513e43fee7b24253",
+    "md5": "7a39c0985bb2f3fdb493f4f3891d0794",
     "pid": "077723953",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "fre"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/077723953",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/077723953",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Congr\u00e8s des \u00e9conomistes de langue fran\u00e7aise",
     "country_associated": "fr",
     "date_of_termination": "1959",
@@ -594,15 +762,22 @@
     "authorized_access_point": "Congr\u00e8s des \u00e9conomistes de langue fran\u00e7aise ( 19 ; 1959 ; Paris )"
   },
   {
-    "md5": "625b9124ea724015644295f356a6ea72",
+    "md5": "1f21c750e709a44b4453a61ea42208ff",
     "pid": "078047315",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "fre"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/078047315",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/078047315",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "CIRE Nord",
       "Nord-Pas-de-Calais. Cellule interr\u00e9gionale d'\u00e9pid\u00e9miologie Nord"
@@ -617,12 +792,19 @@
     "authorized_access_point": "Cellule interr\u00e9gionale d'\u00e9pid\u00e9miologie Nord"
   },
   {
-    "md5": "f35202455b5d8917b26c4eb026a2997c",
+    "md5": "f398a70fff0ca21325774faea27b5670",
     "pid": "078061911",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/078061911",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/078061911",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Man and women's lover",
     "country_associated": "fr",
     "date_of_establishment": "19XX",
@@ -632,12 +814,19 @@
     ]
   },
   {
-    "md5": "d65dd14bd8c12742b07e9aca11fefecb",
+    "md5": "5e160c77c174373ffcc65266a09554b9",
     "pid": "078069084",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/078069084",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/078069084",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "G\u00fcrzenich Orchester K\u00f6ln",
       "Orchestre du G\u00fcrzenich de Cologne",
@@ -659,14 +848,21 @@
     ]
   },
   {
-    "md5": "fd24b7b8ec4d279cde14eb4bf993d17f",
+    "md5": "13fc788bc5cc80cbf54344cf671895f4",
     "pid": "078633907",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/078633907",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/078633907",
+        "source": "IdRef"
+      }
+    ],
     "relation_pid": {
       "type": "redirect_from",
       "value": "142901776"
@@ -695,12 +891,19 @@
     ]
   },
   {
-    "md5": "104e81191d82104d5acaaa4f53df7a89",
+    "md5": "597e0baaf62f601d3e8b16823687a811",
     "pid": "079206557",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/079206557",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/079206557",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Universal ( Groupe de vari\u00e9t\u00e9s antillaises )",
     "country_associated": "fr",
     "date_of_establishment": "19XX",
@@ -710,15 +913,22 @@
     ]
   },
   {
-    "md5": "41d5ad0caf8e81f982b3519169d216b0",
+    "md5": "a3e4bff59e2713c4176c906230bdc482",
     "pid": "079491251",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "eng"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/079491251",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/079491251",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Ultimation",
     "country_associated": "xxu",
     "date_of_establishment": "19XX",
@@ -729,12 +939,19 @@
     ]
   },
   {
-    "md5": "09aadd38498ccb4589c76fc8f62eb0e0",
+    "md5": "60069a8843bd271e1e34be053636dff1",
     "pid": "08049188X",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/08049188X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/08049188X",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Les B\u00e9laisi\u00e8res",
     "country_associated": "fr",
     "date_of_establishment": "19XX",
@@ -744,12 +961,19 @@
     ]
   },
   {
-    "md5": "ce009fc531ec1993f6241852854b3ed1",
+    "md5": "2a0891d9475cb8c29706577c1d750cfa",
     "pid": "080491898",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/080491898",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/080491898",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Les Doudous de la Grande Terre",
     "country_associated": "fr",
     "date_of_establishment": "19XX",
@@ -759,12 +983,19 @@
     ]
   },
   {
-    "md5": "e83d67e024f380bd5bd126567572c219",
+    "md5": "8a4885a6db187431832ba5955b20bc1f",
     "pid": "080715060",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/080715060",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/080715060",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Cour des grand",
     "country_associated": "cf",
     "date_of_establishment": "19XX",
@@ -774,12 +1005,19 @@
     ]
   },
   {
-    "md5": "3023b1bfe567d337ec9d3ca45dbc8fa4",
+    "md5": "54130bb8f9419316e17c139e197ae8a6",
     "pid": "080785425",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/080785425",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/080785425",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Cloud"
     ],
@@ -796,12 +1034,19 @@
     ]
   },
   {
-    "md5": "925047b8336eb69482c493793c0daa49",
+    "md5": "4397efafeb5af0a10a5f8e23271fc63f",
     "pid": "080809197",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/080809197",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/080809197",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Lenny Dee versus DJ Paul",
     "country_associated": "xx",
     "date_of_establishment": "19XX",
@@ -812,12 +1057,19 @@
     ]
   },
   {
-    "md5": "f64353f9e742878fc731ca9a300432a7",
+    "md5": "64dd0036d26776b84be9ebcdbdefae67",
     "pid": "080826660",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/080826660",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/080826660",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Triaca bum bum Alchemic folk orchestra"
     ],
@@ -834,12 +1086,19 @@
     ]
   },
   {
-    "md5": "a5ede736138d1ff75389a6ee8a6cb4c0",
+    "md5": "81baa94e123d348639b129dbce1df0c6",
     "pid": "080852629",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/080852629",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/080852629",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Pipe Trio",
     "country_associated": "xx",
     "date_of_establishment": "19XX",
@@ -850,15 +1109,22 @@
     ]
   },
   {
-    "md5": "127be1e758a6807daf0b7e885478d4c7",
+    "md5": "77a7e3f37156ceb664f6258a9bc4db61",
     "pid": "081337418",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "fre"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/081337418",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/081337418",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Congr\u00e8s des \u00e9conomistes de langue fran\u00e7aise",
     "country_associated": "fr",
     "date_of_termination": "1934",
@@ -866,15 +1132,22 @@
     "authorized_access_point": "Congr\u00e8s des \u00e9conomistes de langue fran\u00e7aise ( 02 ; 1934 ; Paris )"
   },
   {
-    "md5": "522d158c37fa60dbb1c0c626ab69859d",
+    "md5": "5523e498a5c51464499d5e0c3c457708",
     "pid": "081589093",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "qualifier": "duc d'",
     "identifier": "http://www.idref.fr/081589093",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/081589093",
+        "source": "IdRef"
+      }
+    ],
     "relation_pid": {
       "type": "redirect_from",
       "value": "150248199"
@@ -899,14 +1172,21 @@
     ]
   },
   {
-    "md5": "45f54009d7da6487d98c4403aa565059",
+    "md5": "749a73522dccb3efc7b98623f4051309",
     "pid": "081780931",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "ger"
     ],
     "identifier": "http://www.idref.fr/081780931",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/081780931",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Brockdorff, Cay Ludwig Georg Conrad, baron von"
     ],
@@ -923,15 +1203,22 @@
     ]
   },
   {
-    "md5": "40b4916064a373956cbfee39ff3fd501",
+    "md5": "63f8fc2e52a5dcaaf978f31adaa9049b",
     "pid": "081816529",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "ger"
     ],
     "qualifier": "reine de Prusse",
     "identifier": "http://www.idref.fr/081816529",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/081816529",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Elisabeth Christine, Queen, consort of Frederick II, King of Prussia",
       "\u00c9lisabeth-Christine de Brunswick Wolfenbuttel, reine de Prusse",
@@ -955,12 +1242,19 @@
     ]
   },
   {
-    "md5": "706ae29f3d67b84780a796adb4476388",
+    "md5": "e426068290f8f792ce89af9927c43b6e",
     "pid": "08233367X",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/08233367X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/08233367X",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Voci di a Gravona",
     "country_associated": "fr",
     "date_of_establishment": "19XX",
@@ -970,29 +1264,43 @@
     ]
   },
   {
-    "md5": "4e70326fdd007639437e4488e4bd3945",
+    "md5": "25d0e85d9dea97ae2bba8f1121150447",
     "pid": "083442774",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "language": [
       "fre"
     ],
     "conference": false,
     "identifier": "http://www.idref.fr/083442774",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/083442774",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Congr\u00e8s de psychiatrie et de neurologie de langue fran\u00e7aise",
     "country_associated": "fr",
     "date_of_establishment": "1980",
     "authorized_access_point": "Congr\u00e8s de psychiatrie et de neurologie de langue fran\u00e7aise ( 78 ; 1980 ; Reims )"
   },
   {
-    "md5": "4da984867c0a52e9b19219b12cfd4377",
+    "md5": "a681caffcbe1198ed41b06c54f196366",
     "pid": "085209910",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "lat"
     ],
     "identifier": "http://www.idref.fr/085209910",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/085209910",
+        "source": "IdRef"
+      }
+    ],
     "date_of_birth": "1665-02-12",
     "date_of_death": "1721-09-11",
     "preferred_name": "Camerarius, Rudolf Jakob",
@@ -1003,12 +1311,19 @@
     ]
   },
   {
-    "md5": "6ee98e0e0be0b9c3be78f864f270d7f5",
+    "md5": "edfb07320f690f7d7c84793bd6c776cf",
     "pid": "085649562",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/085649562",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/085649562",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Le Party d'\u00c9dith",
     "country_associated": "xxc",
     "date_of_establishment": "19XX",
@@ -1018,12 +1333,19 @@
     ]
   },
   {
-    "md5": "8910e173749272dddff452dba1635e1b",
+    "md5": "9dfadbd9ef10b2db0f605381511e5641",
     "pid": "086912909",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://www.idref.fr/086912909",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/086912909",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "I Cantori di Carpino",
     "country_associated": "it",
     "date_of_establishment": "19XX",
@@ -1035,15 +1357,22 @@
     ]
   },
   {
-    "md5": "b26117a1af9c7e7dfa7884807922051e",
+    "md5": "883f9ea671e4c5a463659e8be6f1db8b",
     "pid": "087876035",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "qualifier": "baron de",
     "identifier": "http://www.idref.fr/087876035",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/087876035",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Cauna, Bernard-Augustin de Cabannes, baron de",
       "Cabannes, Bernard-Augustin-Henri-Timoth\u00e9e",
@@ -1061,14 +1390,21 @@
     "authorized_access_point": "Cauna, Bernard-Augustin-Henri-Timoth\u00e9e de Cabannes, 1822-1883, baron de"
   },
   {
-    "md5": "05db1d5032b9a619809a10032a0073b6",
+    "md5": "bf49ff1ef6b9fa028c70486b3600f4e1",
     "pid": "088356809",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/088356809",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/088356809",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Bougleux, Louis-Auguste Montalant"
     ],
@@ -1080,15 +1416,22 @@
     "authorized_access_point": "Montalant-Bougleux, Louis-Auguste"
   },
   {
-    "md5": "e32a1389ea9fcfda1b36b71f8d66cf27",
+    "md5": "b35209092b3acf4bc9a4baebe471c6ab",
     "pid": "095116672",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "qualifier": "reine d'Espagne",
     "identifier": "http://www.idref.fr/095116672",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/095116672",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Maria Louisa de Orl\u00e9ans, reine d'Espagne",
       "Marie-Louise, reine d'Espagne",
@@ -1110,14 +1453,21 @@
     ]
   },
   {
-    "md5": "3d358ff9acb854d6a7c35b9ccc86e669",
+    "md5": "f2e2eb4730b11dab45df4fad0e962aec",
     "pid": "097556505",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/097556505",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/097556505",
+        "source": "IdRef"
+      }
+    ],
     "date_of_birth": "1761-02-23",
     "date_of_death": "1852-02-09",
     "preferred_name": "Fleuriau de Bellevue, Louis Benjamin",
@@ -1128,14 +1478,21 @@
     ]
   },
   {
-    "md5": "ad94a0eeeaf430f7d4006405fcb3c012",
+    "md5": "cfe0d29810ffb8565ea759601642abe3",
     "pid": "098326635",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/098326635",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/098326635",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Aranthon d'Alex, Jean",
       "Aranthon d'Alex, Jean d'",
@@ -1159,14 +1516,21 @@
     ]
   },
   {
-    "md5": "b4e034e8b008c5562a0a157ecee76402",
+    "md5": "1bda6120b03d7be42da5d624daa76cfd",
     "pid": "104547677",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/104547677",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/104547677",
+        "source": "IdRef"
+      }
+    ],
     "date_of_birth": "1582",
     "date_of_death": "1631",
     "preferred_name": "Constantin de Barbanson, Le P\u00e8re",
@@ -1177,28 +1541,42 @@
     ]
   },
   {
-    "md5": "8b00628fa05a3950fd19fd665544633a",
+    "md5": "2cc72b8ff3c276cab7bbc7bfcaee74a7",
     "pid": "106993542",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "eng"
     ],
     "qualifier": "Marquis of Ormonde",
     "identifier": "http://www.idref.fr/106993542",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/106993542",
+        "source": "IdRef"
+      }
+    ],
     "preferred_name": "Butler, James Edward William Theobald, Marquis of Ormonde",
     "country_associated": "xxk",
     "authorized_access_point": "Butler, James Edward William Theobald, Marquis of Ormonde"
   },
   {
-    "md5": "4fe62f07e423d88fe157265a33221563",
+    "md5": "014a9b3ec5b9ae2d762ca9031f64d20b",
     "pid": "112244424",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/112244424",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/112244424",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Chaperon, Nicolas"
     ],
@@ -1215,14 +1593,21 @@
     ]
   },
   {
-    "md5": "16fcbc141a15142feadd021fde10d3c3",
+    "md5": "fa25b7329e75fbc66f20ce19a64ed87f",
     "pid": "124563627",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/124563627",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/124563627",
+        "source": "IdRef"
+      }
+    ],
     "date_of_birth": "17",
     "preferred_name": "L\u00e9vrier-Champrion",
     "country_associated": "fr",
@@ -1232,14 +1617,21 @@
     ]
   },
   {
-    "md5": "3e572d466996f649c7e350d0a1390b4e",
+    "md5": "b62af7d4392371d840f1aa43b5e08be6",
     "pid": "130990221",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/130990221",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/130990221",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Descudier, Alfred",
       "Ego"
@@ -1258,15 +1650,22 @@
     ]
   },
   {
-    "md5": "34d6b0f51aea9c16b9dc65809a74c1ab",
+    "md5": "ac1bf78e674e322fca18e75dd00f8c34",
     "pid": "131513168",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "qualifier": "comte de",
     "identifier": "http://www.idref.fr/131513168",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/131513168",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Bourbon, Charles de"
     ],
@@ -1284,14 +1683,21 @@
     ]
   },
   {
-    "md5": "64cd67c357838eea965268995094512f",
+    "md5": "133a6e32366822b287f776c557281731",
     "pid": "147013283",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/147013283",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/147013283",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Philippe",
       "Am\u00e9d\u00e9e",
@@ -1312,15 +1718,22 @@
     ]
   },
   {
-    "md5": "b773e1215c3e734e76e2d5fec5739d03",
+    "md5": "354f3cd547ee45392d211e8608a3055e",
     "pid": "149367430",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "grc",
       "lat"
     ],
     "identifier": "http://www.idref.fr/149367430",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/149367430",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Hermonyme, Georges, de Sparte",
       "\u0395\u03c1\u03bc\u03ce\u03bd\u03c5\u03bc\u03bf\u03c2, \u0393\u03b5\u03ce\u03c1\u03b3\u03b9\u03bf\u03c2"
@@ -1339,15 +1752,22 @@
     ]
   },
   {
-    "md5": "d7bac4d91d12ab988d0e9e184c13e7d6",
+    "md5": "8734b57c88e44cec90ae232eb3b8bc9d",
     "pid": "154079693",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "qualifier": "Comte",
     "identifier": "http://www.idref.fr/154079693",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/154079693",
+        "source": "IdRef"
+      }
+    ],
     "date_of_birth": "1783",
     "date_of_death": "1862-11-17",
     "preferred_name": "Beaurepaire de Louvagny, Alexandre, Comte",
@@ -1358,14 +1778,21 @@
     ]
   },
   {
-    "md5": "9e799dfda247cc19f26270a60a2dee7b",
+    "md5": "3892a2e4fc0311a8129420bf059e5040",
     "pid": "156591324",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/156591324",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/156591324",
+        "source": "IdRef"
+      }
+    ],
     "date_of_birth": "1663",
     "date_of_death": "1711",
     "preferred_name": "Barr\u00eame, Gabriel",
@@ -1376,14 +1803,21 @@
     ]
   },
   {
-    "md5": "1fab811d07fb3f5c8f62251d3020e405",
+    "md5": "1063904a0ed74f582c60a67ca34f5e85",
     "pid": "165617845",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "ita"
     ],
     "identifier": "http://www.idref.fr/165617845",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/165617845",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Carelli, Francisco"
     ],
@@ -1400,14 +1834,21 @@
     ]
   },
   {
-    "md5": "a31a20f5ddd72dffdd8716b2dc3e0eb9",
+    "md5": "92f190f617f71e32e88413f95d08612b",
     "pid": "16777154X",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/16777154X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/16777154X",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Saint-Marc, Pierre-Urbain Corneille",
       "Corneille, Pierre"
@@ -1425,15 +1866,22 @@
     ]
   },
   {
-    "md5": "e18d662beb3d3d438d548e961738d0f8",
+    "md5": "ead97b58f1d36a009041d3cfa0bd6f84",
     "pid": "172347343",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "qualifier": "cur\u00e9",
     "identifier": "http://www.idref.fr/172347343",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/172347343",
+        "source": "IdRef"
+      }
+    ],
     "date_of_birth": "1809",
     "date_of_death": "1873-12-16",
     "preferred_name": "Chapelle, Fran\u00e7ois, cur\u00e9",
@@ -1446,14 +1894,21 @@
     ]
   },
   {
-    "md5": "a6dfb076c5dfe12db1059b453ae62047",
+    "md5": "32d4761564dca86036d486af7b861a8b",
     "pid": "179863436",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "gre"
     ],
     "identifier": "http://www.idref.fr/179863436",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/179863436",
+        "source": "IdRef"
+      }
+    ],
     "date_of_birth": "1972",
     "preferred_name": "Rogakos, Megakles",
     "country_associated": "gr",
@@ -1463,15 +1918,22 @@
     ]
   },
   {
-    "md5": "d87e71f810ef6669084cb97da82bc98b",
+    "md5": "0e1f4083adb87d4c712978aeea0ec72c",
     "pid": "183349199",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "ita",
       "lat"
     ],
     "identifier": "http://www.idref.fr/183349199",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/183349199",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Catalano, Giuseppe",
       "Catalanus, Josephus"
@@ -1490,15 +1952,22 @@
     ]
   },
   {
-    "md5": "817650c17f96688f9cc07ee091e94258",
+    "md5": "dc9c7ed0913118b5d6e5bf5428f5c7a7",
     "pid": "189341793",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "qualifier": "comte de",
     "identifier": "http://www.idref.fr/189341793",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/189341793",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Bourgevin Vialart de Saint-Morys, Etienne",
       "Vialart de Saint-Morys, Etienne de"
@@ -1514,14 +1983,21 @@
     "authorized_access_point": "Saint-Morys, Etienne Bourgevin Vialart, 1772-1817, comte de"
   },
   {
-    "md5": "d1cccbd8f29c1b6bad6c967b2027b7ca",
+    "md5": "1beba74af9aa9e1c44a05e4d4432a2a9",
     "pid": "192777475",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/192777475",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/192777475",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "M. M\u00e9rault",
       "M\u00e9rault, A.-R., abb\u00e9",
@@ -1544,14 +2020,21 @@
     ]
   },
   {
-    "md5": "c5c6626cc7d93c89dbc53934bd64e2bd",
+    "md5": "74982261b35bc9832eb95adaceb4f4c5",
     "pid": "196562643",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/196562643",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/196562643",
+        "source": "IdRef"
+      }
+    ],
     "date_of_birth": "1794",
     "date_of_death": "1859",
     "preferred_name": "Brondeau, Louis de",
@@ -1562,15 +2045,22 @@
     ]
   },
   {
-    "md5": "69bdcbda767abb74e1217b3285a567fb",
+    "md5": "5a711b8b20ecfa9624249d87de8e3697",
     "pid": "197394787",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "gre"
     ],
     "qualifier": "n\u00e9o-hell\u00e9niste",
     "identifier": "http://www.idref.fr/197394787",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/197394787",
+        "source": "IdRef"
+      }
+    ],
     "date_of_birth": "1957",
     "preferred_name": "S\u00e9rg\u012bs, Man\u00f3l\u012bs G., n\u00e9o-hell\u00e9niste",
     "country_associated": "gr",
@@ -1583,14 +2073,21 @@
     ]
   },
   {
-    "md5": "3a3f98d85241e45b0ddaf010b21d9d6a",
+    "md5": "8cc548e1a429a92d4ec1684c41cdd32d",
     "pid": "223404543",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/223404543",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/223404543",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "L\u00e9pinois, Eug\u00e8ne Louis Ernest de Buch\u00e8re de"
     ],
@@ -1604,14 +2101,21 @@
     "authorized_access_point": "Buch\u00e8re de L\u00e9pinois, Eug\u00e8ne Louis Ernest de"
   },
   {
-    "md5": "e21fcac609b87a0afddeea93d0011b0b",
+    "md5": "1f58dab52bd6ffd92b7f6d1107a3c62b",
     "pid": "233021523",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
     "identifier": "http://www.idref.fr/233021523",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/233021523",
+        "source": "IdRef"
+      }
+    ],
     "variant_name": [
       "Bagnano, Georges Libri-",
       "Books-Nabonag"

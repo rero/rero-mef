@@ -65,7 +65,13 @@ class Transformation(object):
             pid = field_035['a']
             identifier = f'http://data.rero.ch/02-{pid}'
             self.json_dict['pid'] = pid
+            # TODO: delete identifier
             self.json_dict['identifier'] = identifier
+            self.json_dict.setdefault('identifiedBy', []).append({
+                'type': 'uri',
+                'value': identifier,
+                'source': 'RERO'
+            })
 
     def trans_rero_birth_and_death_dates(self):
         """Transformation birth_date and death_date.

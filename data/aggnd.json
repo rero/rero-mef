@@ -1,11 +1,18 @@
 [
   {
-    "md5": "357c17f7ee09c8d8d3ef9207adc0671f",
+    "md5": "2f89aa75f33a4766c5254206b6a096d0",
     "pid": "00401653X",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/1002606-X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1002606-X",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Federal Association of Company Health Insurance Funds",
       "Association of Company Health Insurance Funds",
@@ -32,12 +39,19 @@
     "authorized_access_point": "Bundesverband der Betriebskrankenkassen"
   },
   {
-    "md5": "9d287c3e9dde431e16e055d02434fe7e",
+    "md5": "ca7797f6d03f30233170b5bae8b4a57b",
     "pid": "00402074X",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/1003478-X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1003478-X",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Communaute\u0301 europe\u0301enne du charbon et de l'acier",
       "European coal and steel community",
@@ -101,12 +115,19 @@
     ]
   },
   {
-    "md5": "38d94c7e0499ba6fc73da9dcc08f7571",
+    "md5": "299d47e0e58758e6622c50357bd1a6ec",
     "pid": "00421952X",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/1034729-X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1034729-X",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Universite\u0301 de Paris-Sorbonne. Institut de Recherche sur les Civilisations de l'Occident Moderne",
       "Universite\u0301 de Paris-Sorbonne. Institut de Recherches sur les Civilisations de l'Occident Moderne",
@@ -148,12 +169,19 @@
     "authorized_access_point": "Institut de Recherche sur les Civilisations de l'Occident Moderne. Paris"
   },
   {
-    "md5": "159c51ed378299fb9c3eca025dba667b",
+    "md5": "09efa1ed08dbe2df407f4be6b8a3730a",
     "pid": "007430779",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/2094183-3",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/2094183-3",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Generaldirektion Wissenschaft",
       "Direcc\u0327a\u0303o-Geral de Estudos",
@@ -190,23 +218,37 @@
     "authorized_access_point": "Europa\u0308isches Parlament. Generaldirektion Wissenschaft"
   },
   {
-    "md5": "bf8f042bc02fe594b9de7e25436fc2d7",
+    "md5": "fd3f32ee294343126941b2fbad45fb93",
     "pid": "008046662",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": true,
     "identifier": "http://d-nb.info/gnd/804666-9",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/804666-9",
+        "source": "GND"
+      }
+    ],
     "preferred_name": "Congre\u0300s de Psychiatrie et de Neurologie de Langue Franc\u0327aise, 78",
     "country_associated": "fr",
     "authorized_access_point": "Congre\u0300s de Psychiatrie et de Neurologie de Langue Franc\u0327aise, 78, 1980, Reims"
   },
   {
-    "md5": "312a56bd7fa97c29bedb524106665d9f",
+    "md5": "6712a1e9a11d65136cece8021c93efdc",
     "pid": "050534696",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/5053469-5",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/5053469-5",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Chemin de fer d'Orle\u0301ans",
       "Compagnie d'Orle\u0301ans",
@@ -224,24 +266,38 @@
     "authorized_access_point": "Compagnie du Chemin de Fer de Paris a\u0300 Orle\u0301ans"
   },
   {
-    "md5": "ca8a834ebd976880ec6d831e4d9b6980",
+    "md5": "ab7f9fa3d8ae101e9f11e132cf27876d",
     "pid": "051062763",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/16113016-1",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/16113016-1",
+        "source": "GND"
+      }
+    ],
     "preferred_name": "Institut d'Administration des Entreprises",
     "country_associated": "fr",
     "authorized_access_point": "Institut d'Administration des Entreprises. Rennes"
   },
   {
-    "md5": "b6e9429acdb81db81b1efaa85dae04d8",
+    "md5": "1d975655f55dec7fd77e378ff306e7aa",
     "pid": "100023754",
+    "type": "bf:Person",
     "gender": "male",
     "bf:Agent": "bf:Person",
-    "type": "bf:Person",
     "qualifier": "de Barbanson",
     "identifier": "http://d-nb.info/gnd/100023754",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/100023754",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Konstantin, von Barbanson",
       "Barbanson, Konstantin von",
@@ -286,12 +342,19 @@
     ]
   },
   {
-    "md5": "67f3bc022f12466ec7a69bda7ed8c000",
+    "md5": "69baacff57045704dd5a285aca0c4705",
     "pid": "1019749911",
+    "type": "bf:Person",
     "gender": "male",
     "bf:Agent": "bf:Person",
-    "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1019749911",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1019749911",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Bourbon, Charles de",
       "Charles, Soissons, Comte"
@@ -309,12 +372,19 @@
     ]
   },
   {
-    "md5": "876f6a89592f3ce910d82edd114732ec",
+    "md5": "7af9ddcadc7cbac0601cb44adca99aa3",
     "pid": "1020174943",
+    "type": "bf:Person",
     "gender": "male",
     "bf:Agent": "bf:Person",
-    "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1020174943",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1020174943",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Antin, Louis Antoine de Pardaillan de Gondrin d'",
       "Gondrin d'Antin, Louis Antoine de Pardaillan de",
@@ -335,12 +405,19 @@
     ]
   },
   {
-    "md5": "cebecd01b2375b95f3cd1e2cf8e20fdf",
+    "md5": "0811080b86603582090ec50694208674",
     "pid": "1032371390",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/1032371390",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1032371390",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Les Be\u0301laisie\u0300res et les Doudous de la Grande-Terre"
     ],
@@ -352,12 +429,19 @@
     "authorized_access_point": "Les Be\u0301laisie\u0300res et les Doudous de la Grande Terre"
   },
   {
-    "md5": "d0dedee1386074feb6b957dd545df78d",
+    "md5": "354da3bd094d6f7ab32caa29aa3c1027",
     "pid": "104189576",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "qualifier": "Spanien, Ko\u0308nigin, 1662-1689",
     "identifier": "http://d-nb.info/gnd/104189576",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/104189576",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Marie Luise, Espagne, reine",
       "Marie-Louise, Espagne, reine",
@@ -385,11 +469,18 @@
     "authorized_access_point": "Maria Luisa, Spanien, Ko\u0308nigin, 1662-1689, 1662-1689"
   },
   {
-    "md5": "79e50969e7f659769d8e7f7c922f3309",
+    "md5": "c77cdd2de1a5d5285bdd12349b814295",
     "pid": "1045857424",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1045857424",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1045857424",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Me\u0301rault De Bizy, Athanase Rene\u0301",
       "De Bizy, Athanase Rene\u0301 Me\u0301rault",
@@ -409,11 +500,18 @@
     "authorized_access_point": "Me\u0301rault De Bizy, Athanase-Rene\u0301, 1744-1835"
   },
   {
-    "md5": "cc5b6e556728b5e7801e33bbafb9ad23",
+    "md5": "d2b99169a34b964b1583a488ede01df5",
     "pid": "1053083351",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1053083351",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1053083351",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Alfaro Lafuente, Manuel Ibo",
       "Alfaro y Lafuente, Manuel Ibo",
@@ -437,11 +535,18 @@
     "authorized_access_point": "Ibo Alfaro Lafuente, Manuel, 1828-1885"
   },
   {
-    "md5": "5dcc2a35d57dd302ab480b5fcdbc5381",
+    "md5": "64f1a8d0cd3f8f68343cb856892341a1",
     "pid": "1055101586",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1055101586",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1055101586",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Ormonde, ... of",
       "Ormonde, James Edward William Theobald Butler of"
@@ -457,11 +562,18 @@
     "authorized_access_point": "Butler, James Edward William Theobald, 1844-1919"
   },
   {
-    "md5": "aacd4184aa47315350ac6e210af4856d",
+    "md5": "3eb8a217a0ba0da692122d5a7e2ef781",
     "pid": "1056901632",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1056901632",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1056901632",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Aranton D'Alex, Giovanni d'",
       "Alex, Jean d'Aranton d'",
@@ -490,11 +602,18 @@
     ]
   },
   {
-    "md5": "b0385764c1529aa4d1762ae4ef521b1c",
+    "md5": "7770e307578dbb151a939ce8712aef49",
     "pid": "1060580543",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1060580543",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1060580543",
+        "source": "GND"
+      }
+    ],
     "date_of_birth": "1851",
     "date_of_death": "1925",
     "preferred_name": "Avesne, E. d'",
@@ -502,12 +621,19 @@
     "authorized_access_point": "Avesne, E. d', 1851-1925"
   },
   {
-    "md5": "d3a2923e7fe2f761ef3b510d12b68898",
+    "md5": "3a8588527a53e820a87beac4b55af47d",
     "pid": "1073132285",
+    "type": "bf:Person",
     "gender": "male",
     "bf:Agent": "bf:Person",
-    "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1073132285",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1073132285",
+        "source": "GND"
+      }
+    ],
     "date_of_birth": "08.10.1758",
     "date_of_death": "17.09.1832",
     "preferred_name": "Carelli, Francesco",
@@ -515,11 +641,18 @@
     "authorized_access_point": "Carelli, Francesco, 1758-1832"
   },
   {
-    "md5": "deea413c05bda81ca161f7726728f990",
+    "md5": "9db1de060f3c2e9127665a3c3c6230d1",
     "pid": "1089786255",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1089786255",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1089786255",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Cailler, Rodolphe"
     ],
@@ -535,13 +668,20 @@
     ]
   },
   {
-    "md5": "425c6a82d586fd1f21789146accd79bc",
+    "md5": "1c4c05b7b40ace044b93a6a40d978361",
     "pid": "1117819884",
+    "type": "bf:Person",
     "gender": "male",
     "bf:Agent": "bf:Person",
-    "type": "bf:Person",
     "qualifier": "da San Giuseppe",
     "identifier": "http://d-nb.info/gnd/1117819884",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1117819884",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Ange, de Saint-Joseph",
       "Angelo, da Utri",
@@ -579,12 +719,19 @@
     ]
   },
   {
-    "md5": "e3e17e2a5102b26d39af8d07649abb11",
+    "md5": "f1bed07268b89cd9ed9c9e59512daac2",
     "pid": "11669355X",
+    "type": "bf:Person",
     "gender": "male",
     "bf:Agent": "bf:Person",
-    "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/11669355X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/11669355X",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Franchi de Cavalieri, Pio",
       "Cavalieri, Pio Franchi de",
@@ -642,12 +789,19 @@
     ]
   },
   {
-    "md5": "a611605c3996cc95b63293e020f40192",
+    "md5": "84b476341e9972377018cb9424e8c901",
     "pid": "117513601",
+    "type": "bf:Person",
     "gender": "male",
     "bf:Agent": "bf:Person",
-    "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/117513601",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/117513601",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Fleuriau de Belleville, Louis Benjamin",
       "Fleuriau de Bellevue, Louis",
@@ -670,12 +824,19 @@
     ]
   },
   {
-    "md5": "c4490b7c0025ff2c85a878459bfebb7f",
+    "md5": "e7c9e7a2e5f9068c1d3d703f1937beea",
     "pid": "117588768",
+    "type": "bf:Person",
     "gender": "male",
     "bf:Agent": "bf:Person",
-    "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/117588768",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/117588768",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Bernard, William Baile",
       "Bernard, William B.",
@@ -693,12 +854,19 @@
     "authorized_access_point": "Bernard, Bayle, 1807-1875"
   },
   {
-    "md5": "1451bf6d8aa9e750ff0780a44e8c8527",
+    "md5": "01ed681a5df6dac3c3db013e11c5f9ac",
     "pid": "117671533",
+    "type": "bf:Person",
     "gender": "male",
     "bf:Agent": "bf:Person",
-    "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/117671533",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/117671533",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Bagnano, Georgio Libri-",
       "Libri Bagnano, Georgio"
@@ -714,11 +882,18 @@
     "authorized_access_point": "Libri-Bagnano, Georgio, 1780-1835"
   },
   {
-    "md5": "36b20e443f8b5ba67f37ef7403cfbe83",
+    "md5": "c14207ca56fd03530104d664db77e108",
     "pid": "118095617",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/118095617",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/118095617",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Ambly, Paul Boiteau d'",
       "Boiteau, Paul",
@@ -742,12 +917,19 @@
     "authorized_access_point": "Boiteau D'Ambly, Paul, 1830-1886"
   },
   {
-    "md5": "8356eb52401765320b07a62fecd51868",
+    "md5": "58b35ebdc59d6bd27a9b7101578877f6",
     "pid": "118666762",
+    "type": "bf:Person",
     "gender": "male",
     "bf:Agent": "bf:Person",
-    "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/118666762",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/118666762",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Camerarius, Rudolf Jacob",
       "Camerarius, Rudolph Jakob",
@@ -793,13 +975,20 @@
     ]
   },
   {
-    "md5": "452a1868155ffd2ada821d414e3d91a3",
+    "md5": "e404e782e0692248636af30efcc666fb",
     "pid": "119120674",
+    "type": "bf:Person",
     "gender": "female",
     "bf:Agent": "bf:Person",
-    "type": "bf:Person",
     "qualifier": "Preu\u00dfen, Ko\u0308nigin",
     "identifier": "http://d-nb.info/gnd/119120674",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/119120674",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Elisabeth Christine, Braunschweig-Bevern, Herzogin",
       "Elisabet Christine, Preu\u00dfen, Ko\u0308nigin",
@@ -835,15 +1024,22 @@
     "authorized_access_point": "Elisabeth Christine, Preu\u00dfen, Ko\u0308nigin, 1715-1797"
   },
   {
-    "md5": "729068e05f9658616b4d7f190a937bb6",
+    "md5": "887e0f4091cdac1024661513d1ad3f2d",
     "pid": "119291088",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "language": [
       "lat"
     ],
     "qualifier": "Mamertus",
     "identifier": "http://d-nb.info/gnd/119291088",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/119291088",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Claudianus Ecdicius, Mamertus",
       "Claudianus, Viennensis",
@@ -900,11 +1096,18 @@
     ]
   },
   {
-    "md5": "02728606dfedd5e44e290637a2f15c31",
+    "md5": "1388b80c6b29c49f87647fe7230bfc86",
     "pid": "122101359",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/122101359",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/122101359",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Chapron, Nicolas",
       "Chapperon, Nicolas",
@@ -927,11 +1130,18 @@
     ]
   },
   {
-    "md5": "56b1523e8b10cc5750ef98e9768a13e6",
+    "md5": "44daa70617035477097d45259988118b",
     "pid": "12391664X",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/12391664X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/12391664X",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Cavaleriis, Joannes Baptista de",
       "Cavalleris, Joannes Baptista de",
@@ -1000,11 +1210,18 @@
     ]
   },
   {
-    "md5": "27e54e506f4dc18dd4d7ad7511e4126c",
+    "md5": "6b8d048b2fc997be259c03937ed797d6",
     "pid": "124813844",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/124813844",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/124813844",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Catalani, Josephus",
       "Catalano, Giuseppe",
@@ -1026,11 +1243,18 @@
     ]
   },
   {
-    "md5": "f96f8bf5ff7ce5c8ce580e631f3fbc0d",
+    "md5": "c241238b445b32d1f8fb7bf31e2cd19c",
     "pid": "124981933",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/124981933",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/124981933",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Saint-Morys, Etienne Bourgevin Vialard de",
       "Saint-Morys, E\u0301tienne Bourgelin Vialart de",
@@ -1075,11 +1299,18 @@
     "authorized_access_point": "Saint-Morys, E\u0301tienne Bourgevin Vialart de, 1772-1817"
   },
   {
-    "md5": "84e51d7ee7be9178f66a7585eb6aa6c5",
+    "md5": "39b51bfb254807ab80ada60191b37e35",
     "pid": "129943495",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/129943495",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/129943495",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Arnoult, Alexis E\u0301tienne Pierre Henri",
       "Arnoult, Alexis E."
@@ -1097,11 +1328,18 @@
     ]
   },
   {
-    "md5": "82270d369e01f3d91b8e9312a0225e58",
+    "md5": "bb4d68596d11a232158d5dfe9d4cb1fc",
     "pid": "130672289",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/130672289",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/130672289",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Cabannes Cauna, Bernard Augustin Henri Timothe\u0301e de",
       "Cabannes de Cauna, Bernard Augustin Henri Timothe\u0301e",
@@ -1122,12 +1360,19 @@
     "authorized_access_point": "Cauna, Bernard Augustin Henri Timothe\u0301e de Cabannes de, 1822-1883"
   },
   {
-    "md5": "47d4bf1da13338bc3149d973aa65e11b",
+    "md5": "fd1e30510e9c901bd751ca2b96c98fa3",
     "pid": "131543334",
+    "type": "bf:Person",
     "gender": "male",
     "bf:Agent": "bf:Person",
-    "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/131543334",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/131543334",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Serge\u0304s, Manole\u0304s",
       "Serge\u0304s, M. G.",
@@ -1156,11 +1401,18 @@
     ]
   },
   {
-    "md5": "a9da34766e9a6db0b5789665d1c39ade",
+    "md5": "b1a3931a7811455a9abdf99fb5f8e14c",
     "pid": "143032704",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/143032704",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/143032704",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Soyarslan, Cigdem"
     ],
@@ -1173,11 +1425,18 @@
     "authorized_access_point": "Soyarslan, Cig\u0306dem, 1983-"
   },
   {
-    "md5": "b1420914569198b30b43eee0c9d72ca9",
+    "md5": "1d3a11cf964c36ff3179a71ae99fc603",
     "pid": "172759757",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
+    "bf:Agent": "bf:Person",
     "identifier": "http://d-nb.info/gnd/172759757",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/172759757",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "Arnoudt, Pierre Joseph",
       "Arnoudt, Pierre",
@@ -1223,12 +1482,19 @@
     ]
   },
   {
-    "md5": "0702b3914d78ca6142e81de630a652ca",
+    "md5": "275825599a97551797bbabd225287521",
     "pid": "951795597",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/5230389-5",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/5230389-5",
+        "source": "GND"
+      }
+    ],
     "variant_name": [
       "GN'R",
       "Guns and Roses"
@@ -1249,12 +1515,19 @@
     ]
   },
   {
-    "md5": "764be174958b583d59d17eb9f528e665",
+    "md5": "56313bf2dd6ed31c841f71a228c47d5c",
     "pid": "969004222",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
+    "bf:Agent": "bf:Organisation",
     "conference": true,
     "identifier": "http://d-nb.info/gnd/1248506-8",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1248506-8",
+        "source": "GND"
+      }
+    ],
     "preferred_name": "Congre\u0300s Litte\u0301raire International",
     "country_associated": "fr",
     "authorized_access_point": "Congre\u0300s Litte\u0301raire International, 1878, Paris"

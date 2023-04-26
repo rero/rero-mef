@@ -209,6 +209,11 @@ def test_gnd_identifier():
     trans.trans_gnd_identifier()
     assert trans.json == {
         'identifier': 'http://d-nb.info/gnd/100000193',
+        'identifiedBy': [{
+            'source': 'GND',
+            'type': 'uri',
+            'value': 'http://d-nb.info/gnd/100000193'
+        }],
     }
 
 

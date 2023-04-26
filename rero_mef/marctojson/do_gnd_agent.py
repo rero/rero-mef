@@ -181,7 +181,13 @@ class Transformation(object):
             subfields_0 = field_024['0']
             subfields_2 = field_024['2']
             if subfields_0 and subfields_2 and subfields_2 == 'gnd':
+                # TODO: delete identifier
                 self.json_dict['identifier'] = subfields_0
+                self.json_dict.setdefault('identifiedBy', []).append({
+                    'type': 'uri',
+                    'value': subfields_0,
+                    'source': subfields_2.upper()
+                })
 
     def trans_gnd_birth_and_death_dates(self):
         """Transformation birth_date and death_date."""
