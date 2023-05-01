@@ -62,11 +62,15 @@ class AgentReroRecord(AgentRecord):
 class AgentReroIndexer(AgentIndexer):
     """ReroIndexer."""
 
-    record_class = AgentReroRecord
+    record_cls = AgentReroRecord
 
     def bulk_index(self, record_id_iterator):
         """Bulk index records.
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        self._bulk_op(record_id_iterator, op_type='index', doc_type='agrero')
+        self._bulk_op(
+            record_id_iterator,
+            op_type='index',
+            index=AgentReroSearch.Meta.index
+        )

@@ -151,11 +151,15 @@ class ConceptMefRecord(EntityMefRecord):
 class ConceptMefIndexer(ReroIndexer):
     """MefIndexer."""
 
-    record_class = ConceptMefRecord
+    record_cls = ConceptMefRecord
 
     def bulk_index(self, record_id_iterator):
         """Bulk index records.
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        self._bulk_op(record_id_iterator, op_type='index', doc_type='mef')
+        self._bulk_op(
+            record_id_iterator,
+            op_type='index',
+            index=ConceptMefSearch.Meta.index
+        )

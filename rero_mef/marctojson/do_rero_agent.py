@@ -60,18 +60,19 @@ class Transformation(object):
         """Transformation identifier from field 035."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_rero_identifier')
-        field_035 = self.marc['035']
-        if field_035 and field_035['a']:
-            pid = field_035['a']
-            identifier = f'http://data.rero.ch/02-{pid}'
-            self.json_dict['pid'] = pid
-            # TODO: delete identifier
-            self.json_dict['identifier'] = identifier
-            self.json_dict.setdefault('identifiedBy', []).append({
-                'type': 'uri',
-                'value': identifier,
-                'source': 'RERO'
-            })
+        if fields_035 := self.marc.get_fields('035'):
+            if fields_035[0].get('a'):
+                pid = fields_035[0]['a']
+                identifier = f'http://data.rero.ch/02-{pid}'
+                self.json_dict['pid'] = pid
+                self.json_dict['identifier'] = identifier
+                identified_by = self.json_dict.get('identifiedBy', [])
+                identified_by.append({
+                    'source': 'RERO',
+                    'type': 'uri',
+                    'value': identifier
+                })
+                self.json_dict['identifiedBy'] = identified_by
 
     def trans_rero_birth_and_death_dates(self):
         """Transformation birth_date and death_date.
@@ -92,14 +93,13 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function', 'trans_rero_birth_and_death_dates')
-        birth_date = ''
-        death_date = ''
-        if field_100 := self.marc['100']:
-            if subfield_d := field_100['d']:
-                dates_string = re.sub(r'\s+', ' ', subfield_d).strip()
+        if fields_100 := self.marc.get_fields('100'):
+            if fields_100[0].get('d'):
+                dates_string = re.sub(r'\s+', ' ', fields_100[0]['d']).strip()
                 dates = dates_string.split('-')
                 birth_date = dates[0]
                 # birth_date = format_100_date(dates[0])
+                death_date = ''
                 if len(dates) > 1:
                     death_date = dates[1]
                     # death_date = format_100_date(dates[1])

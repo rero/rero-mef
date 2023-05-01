@@ -57,30 +57,32 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_rero_identifier')
         identifiers = []
-        field_035 = self.marc['035']
-        if field_035 and field_035['a']:
-            identifier = field_035['a']
-            self.json_dict['pid'] = identifier
+        field_035 = self.marc.get_fields('035')
+        if field_035 and field_035[0].get('a'):
+            self.json_dict['pid'] = field_035[0]['a']
             self.json_dict['type'] = 'bf:Concept'
             identifiers.append({
                 'type': 'bf:Local',
                 'source': 'RERO',
-                'value': identifier.strip()
+                'value': field_035[0]['a'].strip()
             })
         for field_016 in self.marc.get_fields('016'):
-            for subfield_a in field_016.get_subfields('a'):
-                identifiers.append({
+            identifiers.extend(
+                {
                     'type': 'bf:Local',
                     'source': 'BNF',
                     'value': subfield_a.strip()
-                })
+                }
+                for subfield_a in field_016.get_subfields('a')
+            )
         for field_679 in self.marc.get_fields('679'):
-            for subfield_u in field_679.get_subfields('u'):
-                identifiers.append({
+            identifiers.extend(
+                {
                     'type': 'uri',
                     'value': subfield_u.strip()
-                })
-
+                }
+                for subfield_u in field_679.get_subfields('u')
+            )
         if identifiers:
             self.json_dict['identifiedBy'] = identifiers
 
@@ -97,9 +99,7 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function', 'trans_rero_authorized_access_point')
-        tag = '150'
-        if self.marc['155']:
-            tag = '155'
+        tag = '155' if self.marc.get_fields('155') else '150'
         self.json_dict['authorized_access_point'] = self.marc[tag]['a'].strip()
 
     def trans_rero_variant_access_point(self):
@@ -107,34 +107,32 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function', 'trans_rero_variant_access_point')
-        tag = '450'
-        if self.marc['455']:
-            tag = '455'
+        tag = '455' if self.marc.get_fields('455') else '450'
         subfields = {'a': ', ', 'x': ' - '}
-        variant_access_points = build_string_list_from_fields(
-            self.marc, tag, subfields)
-        if variant_access_points:
+        if variant_access_points := build_string_list_from_fields(
+            self.marc, tag, subfields
+        ):
             self.json_dict['variant_access_point'] = variant_access_points
 
     def trans_rero_relation(self):
         """Transformation broader related narrower 550 555."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_rero_relation')
-        tag = '555' if self.marc['555'] else '550'
+        tag = '555' if self.marc.get_fields('555') else '550'
         relations = {}
         for field in self.marc.get_fields(tag):
             relation_type = 'related'
-            if subfield_w := field['w']:
-                if subfield_w == 'g':
+            if field.get('w'):
+                if field['w'] == 'g':
                     relation_type = 'broader'
-                elif subfield_w == 'h':
+                elif field['w'] == 'h':
                     relation_type = 'narrower'
             relations.setdefault(relation_type, [])
-            if subfield_0 := field['0']:
-                relations[relation_type].append({'$ref': subfield_0})
-            elif subfield_a := field['a']:
+            if field.get('0'):
+                relations[relation_type].append({'$ref': field['0']})
+            elif field.get('a'):
                 relations[relation_type].append({
-                    'authorized_access_point': subfield_a.strip()
+                    'authorized_access_point': field['a'].strip()
                 })
 
         for relation, value in relations.items():
@@ -147,8 +145,8 @@ class Transformation(object):
             self.logger.info('Call Function', 'trans_rero_classification')
         classifications = []
         for field_072 in self.marc.get_fields('072'):
-            if subfield_a := field_072['a']:
-                classification = subfield_a.split('-')
+            if field_072.get('a'):
+                classification = field_072['a'].split('-')
                 if len(classification) == 2:
                     classifications.append({
                         'type': 'bf:ClassificationDdc',
@@ -166,12 +164,10 @@ class Transformation(object):
         close_matchs = []
         for field_682 in self.marc.get_fields('682'):
             with contextlib.suppress(Exception):
-                subfield_a = field_682['a']
-                subfield_v = field_682['v']
-                if subfield_a and subfield_v:
+                if field_682.get('a') and field_682.get('v'):
                     close_matchs.append({
-                        'authorized_access_point': subfield_a.strip(),
-                        'source': subfield_v.strip()
+                        'authorized_access_point': field_682['a'].strip(),
+                        'source': field_682['v'].strip()
                     })
         if close_matchs:
             self.json_dict['closeMatch'] = close_matchs
@@ -200,33 +196,26 @@ class Transformation(object):
             'REROtreatment': [],
         }
         for field in self.marc.get_fields('670'):
-            subfield_a = field['a']
-            if subfield_a:
-                notes['dataSource'].append(subfield_a.strip())
+            if field.get('a'):
+                notes['dataSource'].append(field['a'].strip())
         for field in self.marc.get_fields('675'):
-            subfield_a = field['a']
-            if subfield_a:
-                notes['dataNotFound'].append(subfield_a.strip())
+            if field.get('a'):
+                notes['dataNotFound'].append(field['a'].strip())
         for field in self.marc.get_fields('680'):
-            subfield_a = field['a']
-            if subfield_a and field.indicators == [' ', ' ']:
-                notes['general'].append(subfield_a.strip())
+            if field.get('a') and field.indicators == [' ', ' ']:
+                notes['general'].append(field['a'].strip())
         for field in self.marc.get_fields('667'):
-            subfield_a = field['a']
-            if subfield_a:
-                notes['nonPublic'].append(subfield_a.strip())
+            if field.get('a'):
+                notes['nonPublic'].append(field['a'].strip())
         for field in self.marc.get_fields('260'):
-            subfield_a = field['a']
-            if subfield_a and field.indicators in [[' ', ' '], [' ', '9']]:
-                notes['seeReference'].append(subfield_a.strip())
+            if field.get('a') and field.indicators in [[' ', ' '], [' ', '9']]:
+                notes['seeReference'].append(field['a'].strip())
         for field in self.marc.get_fields('360'):
-            subfield_a = field['a']
-            if subfield_a and field.indicators == [' ', ' ']:
-                notes['seeAlsoReference'].append(subfield_a.strip())
+            if field.get('a') and field.indicators == [' ', ' ']:
+                notes['seeAlsoReference'].append(field['a'].strip())
         for field in self.marc.get_fields('016'):
-            subfield_9 = field['9']
-            if subfield_9:
-                notes['REROtreatment'].append(subfield_9.strip())
+            if field.get('9'):
+                notes['REROtreatment'].append(field['9'].strip())
         for note, value in notes.items():
             if value:
                 self.json_dict.setdefault('note', [])

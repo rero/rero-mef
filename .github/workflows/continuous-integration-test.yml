@@ -43,7 +43,7 @@ jobs:
         poetry run ./scripts/bootstrap --ci --deploy E2E=yes
 
     - name: Run Test
-      run: poetry run ./run-tests.sh
+      run: poetry run poe run_tests
 
     - name: Coveralls
       if: ${{ matrix.dependencies == 'development' }}

@@ -82,6 +82,8 @@ class ReroMefSerializer(JSONSerializer):
             # because the replace_refs loose the record original model. We need
             # to reset it to have correct 'created'/'updated' output data
             rec.model = record.model
+            if not rec.get('type'):
+                rec['type'] = 'bf:Topic'
 
         concept_classes = get_entity_classes()
         for concept, concept_classe in concept_classes.items():

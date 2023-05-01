@@ -159,13 +159,14 @@ class Transformation(object):
         """Transformation old pids 035 $a $9 = sudoc."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_relation_pid')
-        fields_035 = self.marc.get_fields('035')
-        for field_035 in fields_035:
-            subfield_a = field_035['a']
-            subfield_9 = field_035['9']
-            if subfield_a and subfield_9 and subfield_9 == 'sudoc':
+        for field_035 in self.marc.get_fields('035'):
+            if (
+                field_035.get('a')
+                and field_035.get('9')
+                and field_035['9'] == 'sudoc'
+            ):
                 self.json_dict['relation_pid'] = {
-                    'value': subfield_a,
+                    'value': field_035['a'],
                     'type': 'redirect_from'
                 }
 
@@ -173,51 +174,51 @@ class Transformation(object):
         """Transformation gender 120 $a a:female, b: male, -:not known."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_gender')
-        gender = ""
-        field_120 = self.marc['120']
-        if field_120 and field_120['a']:
-            gender_type = field_120['a']
-            if gender_type == 'a':
-                gender = 'female'
-            elif gender_type == 'b':
-                gender = 'male'
-            elif gender_type == '-':
-                gender = 'not known'
-        if gender:
-            self.json_dict['gender'] = gender
+        if fields_120 := self.marc.get_fields('120'):
+            if fields_120[0].get('a'):
+                gender = None
+                gender_type = fields_120[0]['a']
+                if gender_type == 'a':
+                    gender = 'female'
+                elif gender_type == 'b':
+                    gender = 'male'
+                elif gender_type == '-':
+                    gender = 'not known'
+                if gender:
+                    self.json_dict['gender'] = gender
 
     def trans_idref_language(self):
         """Transformation language 101 $a."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_language')
-        language_list = []
-        if field_101 := self.marc['101']:
-            language_list.extend(language for language
-                                 in field_101.get_subfields('a')
-                                 if LANGUAGES.get(language))
-
-        if language_list:
-            self.json_dict['language'] = language_list
+        if fields_101 := self.marc.get_fields('101'):
+            if language_list := [
+                language
+                for language in fields_101[0].get_subfields('a')
+                if language in LANGUAGES
+            ]:
+                self.json_dict['language'] = language_list
 
     def trans_idref_pid(self):
         """Transformation pid from field 001."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_pid')
-        if field_001 := self.marc['001']:
-            self.json_dict['pid'] = field_001.data
+        if fields_001 := self.marc.get_fields('001'):
+            self.json_dict['pid'] = fields_001[0].data
 
     def trans_idref_identifier(self):
         """Transformation identifier from field 003."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_identifier')
-        if field_003 := self.marc['003']:
-            # TODO: delete identifier
-            self.json_dict['identifier'] = field_003.data
-            self.json_dict.setdefault('identifiedBy', []).append({
+        if fields_003 := self.marc.get_fields('003'):
+            self.json_dict['identifier'] = fields_003[0].data
+            identified_by = self.json_dict.get('identifiedBy', [])
+            identified_by.append({
+                'source': 'IDREF',
                 'type': 'uri',
-                'value': field_003.data,
-                'source': 'IDREF'
+                'value': fields_003[0].data
             })
+            self.json_dict['identifiedBy'] = identified_by
 
     def trans_idref_birth_and_death_dates(self):
         """Transformation birth_date and death_date."""
@@ -254,18 +255,17 @@ class Transformation(object):
                 'Call Function', 'trans_idref_birth_and_death_dates')
         birth_date = ''
         death_date = ''
-        field_103 = self.marc['103']
-        field_200 = self.marc['200']
-        if field_103:
-            if field_103['a']:
-                birth_date = format_103_date(field_103['a'])
-            if field_103['b']:
-                death_date = format_103_date(field_103['b'])
-        elif field_200 and field_200['f']:
-            dates = field_200['f'].split('-')
-            birth_date = format_200_date(dates[0])
-            if len(dates) > 1:
-                death_date = format_200_date(dates[1])
+        if fields_103 := self.marc.get_fields('103'):
+            if fields_103[0].get('a'):
+                birth_date = format_103_date(fields_103[0]['a'])
+            if fields_103[0].get('b'):
+                death_date = format_103_date(fields_103[0]['b'])
+        elif fields_200 := self.marc.get_fields('200'):
+            if fields_200[0].get('f'):
+                dates = fields_200[0]['f'].split('-')
+                birth_date = format_200_date(dates[0])
+                if len(dates) > 1:
+                    death_date = format_200_date(dates[1])
 
         start_date_name = 'date_of_birth'
         end_date_name = 'date_of_death'
@@ -498,8 +498,8 @@ class Transformation(object):
         """Transformation country_associated 102 $a codes ISO 3166-1."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_country_associated')
-        if field_102 := self.marc['102']:
-            if subfield_a := field_102['a']:
-                country = COUNTRY_UNIMARC_MARC21.get(subfield_a)
+        if fields_102 := self.marc.get_fields('102'):
+            if fields_102[0].get('a'):
+                country = COUNTRY_UNIMARC_MARC21.get(fields_102[0]['a'])
                 if COUNTRIES.get(country):
                     self.json_dict['country_associated'] = country
