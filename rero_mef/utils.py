@@ -261,6 +261,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
             try:
                 for idx, record in enumerate(request.ListRecords(**params), 1):
                     records = parse_xml_to_array(StringIO(record.raw))
+                    rec = None
                     try:
                         try:
                             updated = datetime.strptime(
@@ -327,20 +328,15 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                         msg = f'Creating {name} {idx}: {err}'
                         if rec:
                             msg += f'\n{rec}'
-                        current_app.logger.error(
-                            msg,
-                            exc_info=debug,
-                            stack_info=debug
-                        )
+                        current_app.logger.error(msg, exc_info=True,
+                                                 stack_info=True)
+                        import sys
+                        sys.exit(1)
             except NoRecordsMatch:
                 from_date = from_date + timedelta(days=days_span + 1)
                 continue
             except Exception as err:
-                current_app.logger.error(
-                    err,
-                    exc_info=debug,
-                    stack_info=debug
-                )
+                current_app.logger.error(err, exc_info=True, stack_info=True)
                 count = -1
                 if verbose:
                     click.echo(
@@ -683,10 +679,11 @@ def bulk_index(entity, uuids, verbose=False):
         click.echo(f' add to index: {len(uuids)}')
     retry = True
     minutes = 1
+    search_class = get_entity_search_class(entity)
     from .api import ReroIndexer
     while retry:
         try:
-            ReroIndexer().bulk_index(uuids, doc_type=entity)
+            ReroIndexer().bulk_index(uuids, index=search_class().Meta.index)
             retry = False
         except Exception as exc:
             msg = f'Bulk Index Error: retry in {minutes} min {exc}'

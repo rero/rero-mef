@@ -17,7 +17,7 @@
 
 """Test marctojson helper."""
 
-from pymarc import Field, Record
+from pymarc import Field, Record, Subfield
 
 from rero_mef.marctojson.helper import build_string_list_from_fields
 
@@ -30,9 +30,9 @@ def test_build_string_list_from_fields():
             tag='200',
             indicators=['0', '1'],
             subfields=[
-                'a', 'Cerasi',
-                'b', 'Claudio et Elena',
-                'x', "Collections d'art"
+                Subfield(code='a', value='Cerasi'),
+                Subfield(code='b', value='Claudio et Elena'),
+                Subfield(code='x', value="Collections d'art")
             ]))
     data = build_string_list_from_fields(
         record=record,
@@ -48,12 +48,12 @@ def test_build_string_list_from_fields():
             tag='210',
             indicators=['0', '1'],
             subfields=[
-                'a', 'Place of public./distr.',
-                'b', 'Address/publisher/dist.',
-                'c', 'Name of publisher/dist.',
-                'd', 'Date',
-                'e', 'Place',
-                'f', 'Address'
+                Subfield(code='a', value='Place of public./distr.'),
+                Subfield(code='b', value='Address/publisher/dist.'),
+                Subfield(code='c', value='Name of publisher/dist.'),
+                Subfield(code='d', value='Date'),
+                Subfield(code='e', value='Place'),
+                Subfield(code='f', value='Address')
             ]))
     data = build_string_list_from_fields(
         record=record,

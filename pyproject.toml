@@ -22,70 +22,80 @@ python = ">= 3.9, <3.10"
 ## when the python code will be executed a conflict exception will be raised.
 #------------------------------------------------------------------------------
 # Default from Invenio
-lxml = ">=4.3.0,<5.0.0"
+lxml = ">=4.9.1"
 marshmallow = ">=3.0.0,<4.0.0"
 uwsgi = ">=2.0"
 uwsgi-tools = ">=1.1.1"
 uwsgitop = ">=0.11"
 
-## Third party invenio modules used by RERO ILS
-invenio-oaiharvester = {tag = "v1.0.0a4", git = "https://github.com/inveniosoftware/invenio-oaiharvester.git"}
+## Third party inven## Third party invenio modules used by RERO EBOOKS
+invenio-oaiharvester = { git = "https://github.com/inveniosoftware/invenio-oaiharvester.git", tag = "v1.0.0a4" }
+invenio-search = {version = ">=2.1.0,<3.0.0", extras = ["elasticsearch7"]}
 
-## Invenio 3.2.1 base modules used by RERO ILS
-# same as invenio metadata extras without invenio-search-ui
-invenio-indexer = ">=1.2.0,<1.3.0"
-invenio-jsonschemas = ">=1.1.1,<1.2.0"
-invenio-pidstore = ">=1.2.1,<1.3.0"
-invenio-records-rest = ">=1.8.0,<1.9.0"
-invenio-records-ui= ">=1.2.0,<1.3.0"
-invenio-records = ">=1.5.0,<1.7.0"
-
-## Default from Invenio
-invenio = {version = ">=3.4.0,<3.5.0", extras = ["base", "postgresql", "auth", "elasticsearch7", "docs", "tests" ]}
-
-# TODO: jsonschema 4.0.0 is not working with invenio because there is a new parameter type!
-jsonschema = "<4.0.0"
-# TODO: missing in invenio_records
-sqlalchemy_continuum = ">1.3.0"
+# Invenio core modules
+invenio-app = ">=1.3.4,<1.4.0"
+invenio-base = ">=1.2.11,<1.3.0"
+invenio-cache = ">=1.1.1,<1.2.0"
+invenio-celery = ">=1.2.4,<1.3.0"
+invenio-config = ">=1.0.3,<1.1.0"
+invenio-i18n = ">=2.0.0,<3.0.0"
+invenio-db = {version = ">=1.0.14,<1.1.0", extras = ["postgresql"]}
+# Invenio base bundle
+invenio-admin = ">=1.4.0,<1.5.0"
+invenio-assets = ">=2.0.0,<3.0.0"
+invenio-formatter = ">=1.2.0,<1.3.0"
+invenio-logging = {version = ">=1.3.2,<1.4.0", extras = ["sentry-sdk"]}
+invenio-mail = ">=1.0.2,<1.1.0"
+invenio-rest = ">=1.2.8,<1.3.0"
+invenio-theme = ">=2.0.0,<3.0.0"
+# Invenio auth bundle
+invenio-access = ">=1.4.4,<1.5.0"
+invenio-accounts = ">=2.1.0,<2.2.0"
+invenio-oauth2server = ">=2.0.0,<2.1.0"
+invenio-oauthclient = ">=2.2.0,<3.0.0"
+invenio-userprofiles = ">=2.2.0,<2.3.0"
+# Invenio metadata bundle
+invenio-indexer = ">=2.1.0,<2.2.0"
+invenio-jsonschemas = ">=1.1.4,<1.2.0"
+invenio-oaiserver = ">=2.2.0,<2.3.0"
+invenio-pidstore = ">=1.3.0,<1.4.0"
+invenio-records-rest = ">=2.2.0,<2.3.0"
+invenio-records-ui = ">=1.2.0,<1.3.0"
+invenio-records = "2.1.0,<2.2.0"
+#invenio-search-ui = ">=2.4.0,<3.0.0"
+# Pinned due to before_first_request deprecation https://flask.palletsprojects.com/en/2.2.x/api/#flask.Flask.before_first_request
+Flask = ">=2.2.0,<2.3.0"
+dojson = ">=1.4.0"
+# TODO: dojson problem = AttributeError: 'Group' object has no attribute 'resultcallback'
+click = "<8.1.0"
 
 ## RERO ILS specific python modules
 PyYAML = ">=5.3.1"
-psutil = "*"
 ijson = ">=2.5.1"
-pymarc = "<5.0.0"
-celery = ">5.0.0"
-psycopg2-binary = ">2.9.0"
+pymarc = ">=5.0.0"
 
 ## Deployment
-# sentry
-invenio-logging = { version = ">=1.3.0,<1.4.0", extras = ["sentry-sdk", "sentry"] }
-Flask = "<2.0.0"
-# TODO: ImportError: cannot import name 'soft_unicode' from 'markupsafe'
-MarkupSafe = "<2.1.0"
-python-dotenv = "^0.13.0"
-WTForms = "<3.0.0"
-Jinja2 = "<3.0.0"
-itsdangerous = "<2.0.0"
-Werkzeug = "<2.0.0"
-click = "<8.0.0"
-jsonref = "<1.0.0"
-jsonresolver = "<0.3.2"
-dojson = "^1.4.0"
-rero-invenio-base = "^0.2.0"
+python-dotenv = ">=0.13.0"
+pydocstyle = ">=6.1.1"
+
+## RERO ILS specific python modules
+poethepoet = "*"
+# TODO: solve requires invenio-indexer (<2.0.0)
+rero-invenio-base = ">=0.2.1"
 sqlitedict = "^2.1.0"
+werkzeug = "<2.3.0"
 
 [tool.poetry.dev-dependencies]
 ## Python packages development dependencies (order matters)
 #----------------------------------------------------------
 ## Default from Invenio
-pytest-invenio = ">=1.4.0,<1.5.0"
+pytest-invenio = ">=2.1.0,<3.0.0"
+Sphinx = ">=4.5.0"
+## RERO ILS specific python packages
 safety = ">=1.8"
 mock = ">=2.0.0"
 autoflake = ">=1.3.1"
 appnope = { version = "*", optional = true }
-pydocstyle = "<6.2.0"
-# to solve: pytz
-setuptools = "<67.0.0"
 
 [project.console_scripts]
 rero-ils = "invenio_app.cli:cli"
@@ -194,12 +204,12 @@ pjson = "rero_mef.dojson.utils:dump"
 [tool.poe.tasks]
 bootstrap = {cmd = "./scripts/bootstrap", help = "Runs bootstrap"}
 console = {cmd = "./scripts/console", help = "Opens invenio shell"}
-run_tests = {cmd = "./run-tests.sh", help = "Runs all tests"}
-tests = {cmd = "pytest", help = "pytest"}
-tests_debug = {cmd = "./scripts/pytest -s --v --no-cov", help = "pytest -s --v --no-cov"}
 server = {cmd = "./scripts/server", help = "Starts the server "}
 setup = {cmd = "./scripts/setup", help = "Runs setup"}
 update = {cmd = "./scripts/update", help = "Runs update"}
+run_tests = {cmd = "./scripts/test", help = "Runs all tests"}
+tests = {cmd = "pytest", help = "pytest"}
+tests_debug = {cmd = "pytest -s -vv --no-cov", help = "pytest -s -vv --no-cov"}
 
 [build-system]
 requires = ["poetry>=0.12"]

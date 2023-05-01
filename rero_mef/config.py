@@ -236,7 +236,6 @@ RECORDS_REST_ENDPOINTS = dict(
         indexer_class="rero_mef.agents.mef.api:AgentMefIndexer",
         record_class="rero_mef.agents.mef.api:AgentMefRecord",
         search_index='mef',
-        search_type=None,
         record_serializers={
             'application/json': ('rero_mef.agents.mef.serializers'
                                  ':json_agent_mef_response'),
@@ -261,7 +260,6 @@ RECORDS_REST_ENDPOINTS = dict(
         indexer_class="rero_mef.agents.viaf.api:AgentViafIndexer",
         record_class="rero_mef.agents.viaf.api:AgentViafRecord",
         search_index='viaf',
-        search_type=None,
         record_serializers={
             'application/json': ('rero_mef.agents.viaf.serializers'
                                  ':json_agent_viaf_response'),
@@ -286,7 +284,6 @@ RECORDS_REST_ENDPOINTS = dict(
         indexer_class="rero_mef.agents.gnd.api:AgentGndIndexer",
         record_class="rero_mef.agents.gnd.api:AgentGndRecord",
         search_index='agents_gnd',
-        search_type=None,
         record_serializers={
             'application/json': ('rero_mef.agents.serializers'
                                  ':json_agent_response'),
@@ -311,7 +308,6 @@ RECORDS_REST_ENDPOINTS = dict(
         indexer_class="rero_mef.agents.idref.api:AgentIdrefIndexer",
         record_class="rero_mef.agents.idref.api:AgentIdrefRecord",
         search_index='agents_idref',
-        search_type=None,
         record_serializers={
             'application/json': ('rero_mef.agents.serializers'
                                  ':json_agent_response'),
@@ -337,7 +333,6 @@ RECORDS_REST_ENDPOINTS = dict(
         indexer_class="rero_mef.agents.rero.api:AgentReroIndexer",
         record_class="rero_mef.agents.rero.api:AgentReroRecord",
         search_index='agents_rero',
-        search_type=None,
         record_serializers={
             'application/json': ('rero_mef.agents.serializers'
                                  ':json_agent_response'),
@@ -362,7 +357,6 @@ RECORDS_REST_ENDPOINTS = dict(
         indexer_class="rero_mef.concepts.mef.api:ConceptMefIndexer",
         record_class="rero_mef.concepts.mef.api:ConceptMefRecord",
         search_index='concepts_mef',
-        search_type=None,
         record_serializers={
             'application/json': ('rero_mef.concepts.mef.serializers'
                                  ':json_concept_mef_response'),
@@ -388,7 +382,6 @@ RECORDS_REST_ENDPOINTS = dict(
         indexer_class="rero_mef.concepts.rero.api:ConceptReroIndexer",
         record_class="rero_mef.concepts.rero.api:ConceptReroRecord",
         search_index='concepts_rero',
-        search_type=None,
         record_serializers={
             'application/json': ('rero_mef.concepts.serializers'
                                  ':json_concept_response'),
@@ -414,7 +407,6 @@ RECORDS_REST_ENDPOINTS = dict(
         indexer_class="rero_mef.concepts.idref.api:ConceptIdrefIndexer",
         record_class="rero_mef.concepts.idref.api:ConceptIdrefRecord",
         search_index='concepts_idref',
-        search_type=None,
         record_serializers={
             'application/json': ('rero_mef.concepts.serializers'
                                  ':json_concept_response'),

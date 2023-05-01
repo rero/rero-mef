@@ -37,8 +37,8 @@ class Transformation(object):
 
     def _transform(self):
         """Call the transformation functions."""
-        if field_008 := self.marc['008']:
-            if field_008.data in ['Td8', 'Tf8']:
+        if fields_008 := self.marc.get_fields('008'):
+            if fields_008[0].data in ['Td8', 'Tf8']:
                 for func in dir(self):
                     if func.startswith('trans'):
                         func = getattr(self, func)
@@ -48,7 +48,8 @@ class Transformation(object):
                 self.json_dict = {'NO TRANSFORMATION': msg}
                 self.trans_idref_pid()
                 if self.logger and self.verbose:
-                    self.logger.info('Exclude FMeSH', self.marc['001'])
+                    self.logger.info(
+                        'Exclude FMeSH', self.marc.get_fields('001'))
         else:
             msg = 'No 008'
             if self.logger and self.verbose:
@@ -65,17 +66,17 @@ class Transformation(object):
         """Transformation identifier from field 001."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_pid')
-        if field_001 := self.marc['001']:
-            self.json_dict['pid'] = field_001.data
+        if field_001 := self.marc.get_fields('001'):
+            self.json_dict['pid'] = field_001[0].data
             self.json_dict['type'] = 'bf:Concept'
 
     def trans_idref_bnf_type(self):
         """Transformation bnf_type from field 008."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_bnf_type')
-        if field_008 := self.marc['008']:
+        if field_008 := self.marc.get_fields('008'):
             self.json_dict['bnf_type'] = 'sujet Rameau'
-            if field_008.data == 'Tf8':
+            if field_008[0].data == 'Tf8':
                 self.json_dict['bnf_type'] = 'genre/forme Rameau'
 
     def trans_idref_identifier(self):
@@ -83,21 +84,23 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_idref_identifier')
         identifiers = self.json_dict.get('identifiedBy', [])
-        if field_003 := self.marc['003']:
+        if field_003 := self.marc.get_fields('003'):
             identifiers.append({
                 'type': 'uri',
-                'value': field_003.data.strip(),
+                'value': field_003[0].data.strip(),
                 'source': 'IDREF'
             })
         for field_033 in self.marc.get_fields('033'):
-            subfield_2 = field_033['2']
-            if subfield_2 == 'BNF':
-                if subfield_a := field_033['a']:
-                    identifiers.append({
-                        'type': 'uri',
-                        'value': subfield_a.strip(),
-                        'source': 'BNF'
-                    })
+            if (
+                field_033.get('2')
+                and field_033['2'] == 'BNF'
+                and field_033.get('a')
+            ):
+                identifiers.append({
+                    'type': 'uri',
+                    'value': field_033['a'].strip(),
+                    'source': 'BNF'
+                })
         if identifiers:
             self.json_dict['identifiedBy'] = identifiers
 
@@ -107,11 +110,13 @@ class Transformation(object):
             self.logger.info('Call Function', 'trans_idref_relation_pid')
         fields_035 = self.marc.get_fields('035')
         for field_035 in fields_035:
-            subfield_a = field_035['a']
-            subfield_9 = field_035['9']
-            if subfield_a and subfield_9 and subfield_9 == 'sudoc':
+            if (
+                field_035.get('a')
+                and field_035.get('9')
+                and field_035['9'] == 'sudoc'
+            ):
                 self.json_dict['relation_pid'] = {
-                    'value': subfield_a,
+                    'value': field_035['a'],
                     'type': 'redirect_from'
                 }
 
@@ -127,7 +132,7 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function', 'trans_idref_authorized_access_point')
-        tag = '280' if self.marc['280'] else '250'
+        tag = '280' if self.marc.get_fields('280') else '250'
         subfields = {'a': ', ', 'x': ' - ', 'y': ' - ', 'z': ' - '}
         if authorized_ap := build_string_from_field(self.marc[tag], subfields):
             self.json_dict['authorized_access_point'] = authorized_ap
@@ -137,7 +142,7 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function', 'trans_idref_variant_access_point')
-        tag = '480' if self.marc['480'] else '450'
+        tag = '480' if self.marc.get_fields('480') else '450'
         subfields = {'a': ', ', 'x': ' - ', 'y': ' - ', 'z': ' - '}
         if variant_access_points := build_string_list_from_fields(
             self.marc, tag, subfields
@@ -152,7 +157,7 @@ class Transformation(object):
         for tag in ['550', '580', '515']:
             for field in self.marc.get_fields(tag):
                 relation_type = None
-                if subfield_5 := field['5']:
+                if subfield_5 := field.get('5'):
                     if subfield_5[0] == 'g':
                         relation_type = 'broader'
                     elif subfield_5[0] == 'h':
@@ -162,7 +167,7 @@ class Transformation(object):
                 if relation_type:
                     relations.setdefault(relation_type, [])
                     # TODO: $ref relation
-                    # if subfield_3 := field['3']:
+                    # if subfield_3 := field.get('3'):
                     #     relations[relation_type].append({
                     #         '$ref':
                     #         f'https://.../concepts/idref/{subfield_3}'
@@ -186,13 +191,13 @@ class Transformation(object):
             self.logger.info('Call Function', 'trans_idref_classification')
         classifications = []
         for field_686 in self.marc.get_fields('686'):
-            if subfield_a := field_686['a']:
+            if field_686.get('a'):
                 classification = {
                     'type': 'bf:ClassificationDdc',
-                    'classificationPortion': subfield_a.strip(),
+                    'classificationPortion': field_686['a'].strip(),
                 }
-                if subfield_c := field_686['c']:
-                    classification['name'] = subfield_c
+                if field_686.get('c'):
+                    classification['name'] = field_686['c']
                 classifications.append(classification)
         if classifications:
             self.json_dict['classification'] = classifications
@@ -204,19 +209,17 @@ class Transformation(object):
         close_matchs = []
         for field_822 in self.marc.get_fields('822'):
             with contextlib.suppress(Exception):
-                subfield_a = field_822['a']
-                subfield_2 = field_822['2']
                 close_match = {}
-                if subfield_a and subfield_2:
+                if field_822.get('a') and field_822.get('2'):
                     close_match = {
-                        'authorized_access_point': subfield_a.strip(),
-                        'source': subfield_2.strip()
+                        'authorized_access_point': field_822['a'].strip(),
+                        'source': field_822['2'].strip()
                     }
-                    if subfield_u := field_822['u']:
+                    if field_822.get('u'):
                         close_match['identifiedBy'] = {
                             'type': 'uri',
-                            'value': subfield_u.strip(),
-                            'source': subfield_2.strip()
+                            'value': field_822['u'].strip(),
+                            'source': field_822['2'].strip()
                         }
                 if close_match:
                     close_matchs.append(close_match)
@@ -243,17 +246,17 @@ class Transformation(object):
             'seeReference': []
         }
         for field in self.marc.get_fields('810'):
-            if subfield_a := field['a']:
-                notes['dataSource'].append(subfield_a.strip())
+            if field.get('a'):
+                notes['dataSource'].append(field['a'].strip())
         for field in self.marc.get_fields('815'):
-            if subfield_a := field['a']:
-                notes['dataNotFound'].append(subfield_a.strip())
+            if field.get('a'):
+                notes['dataNotFound'].append(field['a'].strip())
         for field in self.marc.get_fields('300', '330'):
-            if subfield_a := field['a']:
-                notes['general'].append(subfield_a.strip())
+            if field.get('a'):
+                notes['general'].append(field['a'].strip())
         for field in self.marc.get_fields('305', '310', '320'):
-            if subfield_a := field['a']:
-                notes['seeReference'].append(subfield_a.strip())
+            if field.get('a'):
+                notes['seeReference'].append(field['a'].strip())
         for note, value in notes.items():
             if value:
                 self.json_dict.setdefault('note', [])

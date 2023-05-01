@@ -67,7 +67,7 @@ class Transformation(object):
         - u Werk
         """
         for field_075 in self.marc.get_fields('075') or []:
-            if field_075['2'] == 'gndgen':
+            if field_075.get('2') and field_075['2'] == 'gndgen':
                 return RECORD_TYPES.get(field_075['b'])
 
     def _transform(self):
@@ -123,8 +123,7 @@ class Transformation(object):
             self.logger.info('Call Function', 'trans_gnd_relation_pid')
         fields_035 = self.marc.get_fields('682')
         for field_035 in fields_035:
-            subfield_i = field_035['i']
-            if subfield_i == 'Umlenkung':
+            if field_035.get('i') and field_035['i'] == 'Umlenkung':
                 subfields_0 = field_035.get_subfields('0')
                 for subfield_0 in subfields_0:
                     if subfield_0.startswith('(DE-101)'):
@@ -138,39 +137,36 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_gnd_gender')
         gender = ""
-        field_375 = self.marc['375']
-        if field_375 and field_375['a']:
-            gender_type = field_375['a']
-            if gender_type == '2':
-                gender = 'female'
-            elif gender_type == '1':
-                gender = 'male'
-            elif gender_type == ' ':
-                gender = 'not known'
-        if gender:
-            self.json_dict['gender'] = gender
+        if fields_375 := self.marc.get_fields('375'):
+            if fields_375[0].get('a'):
+                gender_type = fields_375[0]['a']
+                if gender_type == '2':
+                    gender = 'female'
+                elif gender_type == '1':
+                    gender = 'male'
+                elif gender_type == ' ':
+                    gender = 'not known'
+            if gender:
+                self.json_dict['gender'] = gender
 
     def trans_gnd_language(self):
         """Transformation language 377 $a."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_language')
-        field_377 = self.marc['377']
-        language_list = []
-        if field_377 and field_377['a']:
-            language_list.extend(
+        if field_377 := self.marc.get_fields('377'):
+            if language_list := [
                 language
-                for language in field_377.get_subfields('a')
-                if LANGUAGES.get(language)
-            )
-        if language_list:
-            self.json_dict['language'] = language_list
+                for language in field_377[0].get_subfields('a')
+                if language in LANGUAGES
+            ]:
+                self.json_dict['language'] = language_list
 
     def trans_gnd_pid(self):
         """Transformation pid from field 001."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_gnd_pid')
-        if field_001 := self.marc['001']:
-            self.json_dict['pid'] = field_001.data
+        if field_001 := self.marc.get_fields('001'):
+            self.json_dict['pid'] = field_001[0].data
 
     def trans_gnd_identifier(self):
         """Transformation identifier from field 001."""
@@ -178,10 +174,9 @@ class Transformation(object):
             self.logger.info('Call Function', 'trans_gnd_identifier')
         fields_024 = self.marc.get_fields('024')
         for field_024 in fields_024:
-            subfields_0 = field_024['0']
-            subfields_2 = field_024['2']
+            subfields_0 = field_024.get('0')
+            subfields_2 = field_024.get('2')
             if subfields_0 and subfields_2 == 'gnd':
-                # TODO: delete identifier
                 self.json_dict['identifier'] = subfields_0
                 self.json_dict.setdefault('identifiedBy', []).append({
                     'type': 'uri',
@@ -225,31 +220,33 @@ class Transformation(object):
             self.logger.info(
                 'Call Function', 'trans_gnd_birth_and_death_dates')
         dates_per_tag = {}
-        field_100 = self.marc['100']
-        if field_100 and field_100['d']:
-            dates_string = re.sub(r'\s+', ' ', field_100['d']).strip()
-            dates = dates_string.split('-')
-            dates_per_tag['100'] = {}
-            dates_per_tag['100']['birth_date'] = format_100_date(dates[0])
-            if len(dates) > 1:
-                death_date = format_100_date(dates[1])
-                dates_per_tag['100']['death_date'] = format_100_date(dates[1])
-
-        fields_548 = self.marc.get_fields('548')
-        for field_548 in fields_548:
-            subfields_a = field_548['a']
-            subfields_4 = field_548['4']
-            if subfields_a and subfields_4 and \
-                    subfields_4 in ('datl', 'datx', 'datb'):
-                dates = subfields_a.split('-')
-                birth_date = format_548_date(dates[0])
-                dates_per_tag[subfields_4] = {}
-                if birth_date:
-                    dates_per_tag[subfields_4]['birth_date'] = birth_date
+        if fields_100 := self.marc.get_fields('100'):
+            if fields_100[0].get('d'):
+                field_100_d = fields_100[0]['d']
+                dates_string = re.sub(r'\s+', ' ', field_100_d).strip()
+                dates = dates_string.split('-')
+                dates_per_tag['100'] = {}
+                dates_per_tag['100']['birth_date'] = format_100_date(dates[0])
                 if len(dates) > 1:
-                    death_date = format_548_date(dates[1])
-                    if death_date:
-                        dates_per_tag[subfields_4]['death_date'] = death_date
+                    death_date = format_100_date(dates[1])
+                    dates_per_tag['100']['death_date'] = format_100_date(
+                        dates[1])
+
+        for field_548 in self.marc.get_fields('548'):
+            if (
+                field_548.get('a')
+                and field_548.get('4')
+                and field_548['4'] in ('datl', 'datx', 'datb')
+            ):
+                dates = field_548['a'].split('-')
+                if birth_date := format_548_date(dates[0]):
+                    dates_per_tag.setdefault(field_548['4'], {})
+                    dates_per_tag[field_548['4']]['birth_date'] = birth_date
+                if len(dates) > 1:
+                    if death_date := format_548_date(dates[1]):
+                        dates_per_tag.setdefault(field_548['4'], {})
+                        dates_per_tag[
+                            field_548['4']]['death_date'] = death_date
 
         if self.marc.get_fields('110') or self.marc.get_fields('111'):
             date_of_establishment = get_date(dates_per_tag, 'birth_date')
@@ -308,12 +305,12 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_gnd_conference')
         if self.marc.get_fields('110') or self.marc.get_fields('111'):
-            if field_075 := self.marc['075']:
-                subfield_b = field_075['b']
-                if subfield_b == 'f':
-                    self.json_dict['conference'] = True
-                elif subfield_b == 'b':
-                    self.json_dict['conference'] = False
+            if field_075 := self.marc.get('075'):
+                if subfields_b := field_075.get('b'):
+                    if subfields_b[0] == 'f':
+                        self.json_dict['conference'] = True
+                    elif subfields_b[0] == 'b':
+                        self.json_dict['conference'] = False
 
     def trans_gnd_preferred_name(self):
         """Transformation preferred_name 100/110/111."""
@@ -447,9 +444,9 @@ class Transformation(object):
         """Transformation country_associated 043 $c codes ISO 3166-1."""
         if self.logger and self.verbose:
             self.logger.info('Call Function', 'trans_gnd_country_associated')
-        if field_043 := self.marc['043']:
-            if subfield_c := field_043['c']:
-                country_split = subfield_c.split('-')
+        if fields_043 := self.marc.get_fields('043'):
+            if fields_043[0].get('c'):
+                country_split = fields_043[0]['c'].split('-')
                 if len(country_split) > 1:
                     country = COUNTRY_UNIMARC_MARC21.get(country_split[1])
                     if COUNTRIES.get(country):

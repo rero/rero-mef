@@ -22,22 +22,20 @@ from enum import Enum
 from uuid import uuid4
 
 from celery import current_app as current_celery_app
-from elasticsearch import VERSION as ES_VERSION
 from elasticsearch.exceptions import NotFoundError
 from elasticsearch.helpers import bulk
-from elasticsearch.helpers import expand_action as default_expand_action
 from flask import current_app
 from invenio_db import db
 from invenio_indexer.api import RecordIndexer
-from invenio_indexer.utils import _es7_expand_action
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 from invenio_records.api import Record
 from invenio_records_rest.utils import obj_or_import_string
 from invenio_search import current_search
+from invenio_search.engine import search
 from kombu.compat import Consumer
 from sqlalchemy import func, text
-from sqlalchemy.exc import OperationalError, StatementError
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm.exc import NoResultFound
 
 from .utils import add_md5, add_schema
@@ -413,6 +411,7 @@ class ReroMefRecord(Record):
         except Exception:
             # provide default indexer if no indexer is defined in config.
             indexer = ReroIndexer
+            current_app.logger.error(f'Get indexer class {cls.__name__}')
         return indexer
 
     def delete_from_index(self):
@@ -465,34 +464,17 @@ class ReroMefRecord(Record):
 class ReroIndexer(RecordIndexer):
     """Indexing class for mef."""
 
-    index_error = {}
-
-    def bulk_index(self, record_id_iterator, doc_type=None):
+    def bulk_index(self, record_id_iterator, index=None):
         """Bulk index records.
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        self._bulk_op(record_id_iterator, op_type='index', doc_type=doc_type)
+        self._bulk_op(record_id_iterator, op_type='index', index=index)
 
-    def _get_indexer_class(self, payload):
-        """Get the record class from payload."""
-        # take the first defined doc type for finding the class
-        pid_type = payload.get('doc_type', 'rec')
-        try:
-            indexer = obj_or_import_string(
-                current_app.config[
-                    'RECORDS_REST_ENDPOINTS'][pid_type]['indexer_class']
-            )
-        except Exception:
-            # provide default indexer if no indexer is defined in config.
-            indexer = ReroIndexer
-        return indexer
-
-    def process_bulk_queue(self, es_bulk_kwargs=None, stats_only=True):
+    def process_bulk_queue(self, search_bulk_kwargs=None, stats_only=True):
         """Process bulk indexing queue.
 
-        :param dict es_bulk_kwargs: Passed to
-            :func:`elasticsearch:elasticsearch.helpers.bulk`.
+        :param dict search_bulk_kwargs: Passed to `search.helpers.bulk`.
         :param boolean stats_only: if `True` only report number of
             successful/failed operations instead of just number of
             successful and a list of error responses
@@ -507,17 +489,15 @@ class ReroIndexer(RecordIndexer):
 
             req_timeout = current_app.config['INDEXER_BULK_REQUEST_TIMEOUT']
 
-            es_bulk_kwargs = es_bulk_kwargs or {}
+            search_bulk_kwargs = search_bulk_kwargs or {}
+
             count = bulk(
                 self.client,
                 self._actionsiter(consumer.iterqueue()),
                 stats_only=stats_only,
                 request_timeout=req_timeout,
-                expand_action_callback=(
-                    _es7_expand_action if ES_VERSION[0] >= 7
-                    else default_expand_action
-                ),
-                **es_bulk_kwargs
+                expand_action_callback=search.helpers.expand_action,
+                **search_bulk_kwargs
             )
 
             consumer.close()
@@ -532,11 +512,10 @@ class ReroIndexer(RecordIndexer):
         for message in message_iterator:
             payload = message.decode()
             try:
-                indexer_class = self._get_indexer_class(payload)
                 if payload['op'] == 'delete':
-                    yield indexer_class()._delete_action(payload=payload)
+                    yield self._delete_action(payload=payload)
                 else:
-                    yield indexer_class()._index_action(payload=payload)
+                    yield self._index_action(payload=payload)
                 message.ack()
             except NoResultFound:
                 message.reject()
@@ -551,38 +530,23 @@ class ReroIndexer(RecordIndexer):
         """Bulk index action.
 
         :param payload: Decoded message body.
-        :returns: Dictionary defining an Elasticsearch bulk 'index' action.
+        :returns: Dictionary defining the search engine bulk 'index' action.
         """
-        get_record_error_count = 0
-        get_record_ok = False
-        while not get_record_ok and get_record_error_count < 5:
-            try:
-                record = self.record_class.get_record(payload['id'])
-                get_record_ok = True
-            except StatementError:
-                db.session.rollback()
-                get_record_error_count += 1
-                msg = ('INDEX ACTION StatementError: '
-                       f'{get_record_error_count} {payload["id"]}')
-                current_app.logger.error(msg)
-            except OperationalError:
-                get_record_error_count += 1
-                msg = ('INDEX ACTION OperationalError: '
-                       f'{get_record_error_count} {payload["id"]}')
-                current_app.logger.error(msg)
-                db.session.rollback()
+        record = self.record_cls.get_record(payload["id"])
+        index = self.record_to_index(record)
 
         arguments = {}
-        index, doc_type = self.record_to_index(record)
+        body = self._prepare_record(record, index, arguments)
+        index = self._prepare_index(index)
 
-        body = self._prepare_record(record, index, doc_type, arguments)
+        action = {
+            "_op_type": "index",
+            "_index": index,
+            "_id": str(record.id),
+            "_version": record.revision_id,
+            "_version_type": self._version_type,
+            "_source": body,
+        }
+        action.update(arguments)
 
-        return {
-            '_op_type': 'index',
-            '_index': index,
-            '_type': doc_type,
-            '_id': str(record.id),
-            '_version': record.revision_id,
-            '_version_type': self._version_type,
-            '_source': body
-        } | arguments
+        return action

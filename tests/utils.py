@@ -51,7 +51,7 @@ def create_and_login_monitoring_user(app, client):
             name='monitoring', description='Monitoring Group')
         datastore.add_role_to_user(user, role)
         datastore.commit()
-    login_user_via_session(client, user)
+    login_user_via_session(client, user=user)
     return email
 
 
