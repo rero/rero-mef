@@ -370,9 +370,13 @@ def load_csv(entity, pidstore_file, metadata_file, ids_file, bulk_count,
             fg='green',
             err=True
         )
-        bulk_load_ids(entity, ids_file, bulk_count=bulk_count, verbose=verbose)
+        try:
+            bulk_load_ids(entity, ids_file, bulk_count=bulk_count,
+                          verbose=verbose)
+        except Exception as err:
+            click.secho(f'Error: {err}', fg='red')
         # TODO: get entity identifier
-        # append_fixtures_new_identifiers(AgentMefIdentifier, [], 'mef')
+        # append_fixtures_new_identifiers(MefIdentifier, [], 'mef')
 
 
 @fixtures.command()
@@ -391,6 +395,11 @@ def save_csv(entities, output_directory, verbose):
                  'cidref', 'corero', 'comef'])
     :param verbose: Verbose.
     """
+    oai_names = {
+        'aggnd': 'agents.gnd',
+        'aidref': 'agents.idref',
+        'cidref': 'concepts.idref'
+    }
     for entity in entities:
         click.secho(
             f'Save {entity} CSV files to directory: {output_directory}',
@@ -404,12 +413,7 @@ def save_csv(entities, output_directory, verbose):
         if verbose:
             click.echo(f'  Save pidstore: {file_name}')
         bulk_save_pids(entity, file_name=file_name, verbose=False)
-        if entity == 'mef':
-            file_name = os.path.join(output_directory, f'{entity}_id.csv')
-            if verbose:
-                click.echo(f'  Save ID: {file_name}')
-            bulk_save_ids(entity, file_name=file_name, verbose=False)
-        if last_run := oai_get_last_run(entity):
+        if last_run := oai_get_last_run(oai_names.get(entity)):
             file_name = os.path.join(
                 output_directory,
                 f'{entity}_last_run.txt'
@@ -418,6 +422,11 @@ def save_csv(entities, output_directory, verbose):
                 click.echo(f'  Save last run: {file_name}')
             with open(file_name, 'w') as last_run_file:
                 last_run_file.write(f'{last_run}')
+    if entity in ['mef', 'comef']:
+        file_name = os.path.join(output_directory, 'mef_id.csv')
+        if verbose:
+            click.echo(f'  Save ID: {file_name}')
+        bulk_save_ids(entity, file_name=file_name, verbose=False)
 
 
 @fixtures.command()

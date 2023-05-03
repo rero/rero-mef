@@ -19,6 +19,7 @@
 
 import os
 
+from rero_mef.api import Action
 from rero_mef.concepts import ConceptIdrefRecord, ConceptMefRecord, \
     ConceptReroRecord
 from rero_mef.utils import export_json_records, number_records_in_file
@@ -26,18 +27,17 @@ from rero_mef.utils import export_json_records, number_records_in_file
 SCHEMA_URL = 'https://mef.rero.ch/schemas/concepts_mef'
 
 
-def test_create_concept_record(
-        app, concept_rero_data,
-        concept_idref_data, tmpdir):
+def test_create_concept_record(app, concept_rero_data, concept_idref_data,
+                               tmpdir):
     """Test create concept record with VIAF links."""
     idref_record, action = ConceptIdrefRecord.create_or_update(
         data=concept_idref_data, dbcommit=True, reindex=True)
-    assert action.name == 'CREATE'
+    assert action == Action.CREATE
     assert idref_record['pid'] == '050548115'
 
     m_record, m_action = idref_record.create_or_update_mef(
         dbcommit=True, reindex=True)
-    assert m_action.name == 'CREATE'
+    assert action == Action.CREATE
     assert m_record == {
         '$schema': f'{SCHEMA_URL}/mef-concept-v0.0.1.json',
         'idref': {'$ref': 'https://mef.rero.ch/api/concepts/idref/050548115'},
@@ -47,11 +47,11 @@ def test_create_concept_record(
 
     rero_record, action = ConceptReroRecord.create_or_update(
         data=concept_rero_data, dbcommit=True, reindex=True)
-    assert action.name == 'CREATE'
+    assert action == Action.CREATE
     assert rero_record['pid'] == 'A021001006'
     m_record, m_action = rero_record.create_or_update_mef(
         dbcommit=True, reindex=True)
-    assert m_action.name == 'CREATE'
+    assert m_action == Action.CREATE
     assert m_record == {
         '$schema': f'{SCHEMA_URL}/mef-concept-v0.0.1.json',
         'rero': {'$ref': 'https://mef.rero.ch/api/concepts/rero/A021001006'},
@@ -82,21 +82,21 @@ def test_create_concept_record(
     # Test update concept record.
     returned_record, action = ConceptReroRecord.create_or_update(
         data=concept_rero_data, dbcommit=True, reindex=True)
-    assert action.name == 'UPDATE'
+    assert action == Action.UPDATE
     assert returned_record['pid'] == 'A021001006'
 
     returned_record, action = ConceptIdrefRecord.create_or_update(
         data=concept_idref_data, dbcommit=True, reindex=True)
-    assert action.name == 'UPDATE'
+    assert action == Action.UPDATE
     assert returned_record['pid'] == '050548115'
 
     # Test update MD5 concept record MD5 tewst.
     returned_record, action = ConceptReroRecord.create_or_update(
         data=concept_rero_data, dbcommit=True, reindex=True, test_md5=True)
-    assert action.name == 'UPTODATE'
+    assert action == Action.UPTODATE
     assert returned_record['pid'] == 'A021001006'
 
     returned_record, action = ConceptIdrefRecord.create_or_update(
         data=concept_idref_data, dbcommit=True, reindex=True, test_md5=True)
-    assert action.name == 'UPTODATE'
+    assert action == Action.UPTODATE
     assert returned_record['pid'] == '050548115'

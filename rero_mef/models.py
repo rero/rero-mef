@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2023 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -20,10 +20,17 @@
 from __future__ import absolute_import
 
 from invenio_db import db
-from invenio_records.models import RecordMetadataBase
+from invenio_pidstore.models import RecordIdentifier
 
 
-class AgentMefMetadata(db.Model, RecordMetadataBase):
-    """Represent a record metadata."""
+class MefIdentifier(RecordIdentifier):
+    """Sequence generator for MEF agent identifiers."""
 
-    __tablename__ = 'mef_metadata'
+    __tablename__ = 'mef_id'
+    __mapper_args__ = {'concrete': True}
+
+    recid = db.Column(
+        db.BigInteger().with_variant(db.Integer, 'sqlite'),
+        primary_key=True,
+        autoincrement=True,
+    )

@@ -71,7 +71,7 @@ class AgentMefRecord{
 class ConceptMefRecord{
     minter = mef_id_minter
     fetcher = mef_id_fetcher
-    provider = ConceptMefProvider
+    provider = MefProvider
     name = 'mef'
     model_cls = ConceptMefMetadata
     search = ConceptMefSearch

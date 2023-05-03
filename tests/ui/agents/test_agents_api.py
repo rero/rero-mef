@@ -205,8 +205,8 @@ def test_create_agent_record_with_viaf_links(
     _, action, mef_actions = viaf_record.delete(dbcommit=True, delindex=True)
     assert action == Action.DELETE
     assert mef_actions == [
-        'Mark as deleted MEF: 1',
-        'idref: 069774331 MEF: 3 create',
-        'gnd: 12391664X MEF: 4 create',
-        'rero: A023655346 MEF: 5 create',
+        'MEF: 1',
+        'idref: 069774331 MEF: 1 update',
+        'gnd: 12391664X MEF: 3 create',
+        'rero: A023655346 MEF: 4 create',
     ]

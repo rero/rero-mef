@@ -85,7 +85,7 @@ class ReroMefSerializer(JSONSerializer):
                 local_link(concept, concept_classe.name, rec)
 
         return super(ReroMefSerializer, self).serialize(
-             pid=pid, record=rec, links_factory=add_links, kwargs=kwargs)
+             pid=pid, record=rec, links_factory=add_links, **kwargs)
 
 
 json_v1 = ReroMefSerializer(RecordSchemaJSONV1)
