@@ -52,7 +52,7 @@ sqlalchemy_continuum = ">1.3.0"
 PyYAML = ">=5.3.1"
 psutil = "*"
 ijson = ">=2.5.1"
-pymarc = ">=3.1.10"
+pymarc = "<5.0.0"
 celery = ">5.0.0"
 psycopg2-binary = ">2.9.0"
 

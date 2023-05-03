@@ -399,15 +399,19 @@ class AgentViafRecord(ReroMefRecord):
             force=True, dbcommit=dbcommit, delindex=delindex)
         mef_actions = []
         for mef_record in mef_records:
-            # delete associated MEF record
-            mef_actions.append(f'Mark as deleted MEF: {mef_record.pid}')
-            for agent_record in agents_records:
+            mef_actions.append(f'MEF: {mef_record.pid}')
+            if len(agents_records):
+                mef_actions.append(
+                    f'{agents_records[0].name}: {agents_records[0].pid} '
+                    f'MEF: {mef_record.pid} {Action.UPDATE.value}'
+                )
+            for agent_record in agents_records[1:]:
                 mef_record.delete_ref(agent_record)
             mef_record.pop('viaf_pid', None)
-            mef_record.mark_as_deleted(dbcommit=True, reindex=True)
+            mef_record.update(data=mef_record, dbcommit=True, reindex=True)
         AgentMefRecord.flush_indexes()
         # recreate MEF records for agents
-        for agent_record in agents_records:
+        for agent_record in agents_records[1:]:
             mef_record, mef_action = agent_record.create_or_update_mef(
                 dbcommit=True, reindex=True)
             mef_actions.append(

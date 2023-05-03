@@ -32,11 +32,9 @@ from invenio_records_rest.facets import terms_filter
 from .agents import AgentViafRecord
 from .agents.gnd.models import AgentGndIdentifier
 from .agents.idref.models import AgentIdrefIdentifier
-from .agents.mef.models import AgentMefIdentifier
 from .agents.rero.models import AgentReroIdentifier
 from .agents.viaf.models import ViafIdentifier
 from .concepts.idref.models import ConceptIdrefIdentifier
-from .concepts.mef.models import ConceptMefIdentifier
 from .concepts.rero.models import ConceptReroIdentifier
 from .filter import exists_filter
 from .marctojson.do_gnd_agent import Transformation as AgentGndTransformation
@@ -47,6 +45,7 @@ from .marctojson.do_idref_concepts import \
 from .marctojson.do_rero_agent import Transformation as AgentReroTransformation
 from .marctojson.do_rero_concepts import \
     Transformation as ConceptReroTransformation
+from .models import MefIdentifier
 
 APP_THEME = ['bootstrap3']
 
@@ -203,12 +202,12 @@ TRANSFORMATION = {
 }
 
 IDENTIFIERS = {
-    'mef': AgentMefIdentifier,
+    'mef': MefIdentifier,
     'viaf': ViafIdentifier,
     'aggnd': AgentGndIdentifier,
     'aidref': AgentIdrefIdentifier,
     'agrero': AgentReroIdentifier,
-    'comef': ConceptMefIdentifier,
+    'comef': MefIdentifier,
     'corero': ConceptReroIdentifier,
     'coidref': ConceptIdrefIdentifier
 }

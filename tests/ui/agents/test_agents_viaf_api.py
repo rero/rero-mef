@@ -162,18 +162,17 @@ def test_create_mef_and_agents(app, agent_viaf_record, agent_gnd_record,
         break
 
     rec = AgentViafRecord.get_record_by_pid(agent_viaf_record.get('pid'))
-    result, action, mef_actions = rec.delete(dbcommit=True, delindex=True)
+    _, action, mef_actions = rec.delete(dbcommit=True, delindex=True)
     assert action == Action.DELETE
     mef_count = AgentMefRecord.count(with_deleted=True)
-    assert mef_actions[0].startswith('Mark as deleted MEF:')
-    as_deleted_pid = mef_actions[0].split(':')[1].strip()
+
+    first_pid = mef_actions[0].split(':')[1].strip()
     assert mef_actions[1].startswith('idref: 069774331 MEF:')
     assert mef_actions[2].startswith('gnd: 12391664X MEF:')
     assert mef_actions[3].startswith('rero: A023655346 MEF:')
 
-    mef_record = AgentMefRecord.get_record_by_pid(as_deleted_pid)
-    assert 'deleted' in mef_record
-    assert 'idref' not in mef_record
+    mef_record = AgentMefRecord.get_record_by_pid(first_pid)
+    assert 'idref' in mef_record
     assert 'gnd' not in mef_record
     assert 'rero' not in mef_record
     assert 'viaf_pid' not in mef_record
