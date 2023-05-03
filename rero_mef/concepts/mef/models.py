@@ -20,21 +20,7 @@
 from __future__ import absolute_import
 
 from invenio_db import db
-from invenio_pidstore.models import RecordIdentifier
 from invenio_records.models import RecordMetadataBase
-
-
-class ConceptMefIdentifier(RecordIdentifier):
-    """Sequence generator for MEF Authority identifiers."""
-
-    __tablename__ = 'concept_mef_id'
-    __mapper_args__ = {'concrete': True}
-
-    recid = db.Column(
-        db.BigInteger().with_variant(db.Integer, 'sqlite'),
-        primary_key=True,
-        autoincrement=True,
-    )
 
 
 class ConceptMefMetadata(db.Model, RecordMetadataBase):
