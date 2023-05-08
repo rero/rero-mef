@@ -31,7 +31,7 @@ def add_links(pid, record):
     links = {}
     # viaf_pid = record.get('viaf_pid')
     # if viaf_pid:
-    #     links['viaf'] = '{scheme}://{host}/api/agents/viaf/' \
+    #     links['viaf'] = '{scheme}://{host}/api/concepts/viaf/' \
     #             + str(viaf_pid)
     #     viaf_url = current_app.confg.get('RERO_MEF_VIAF_BASE_URL')
     #     links['viaf.org'] = '{viaf_url}/viaf/' + str(viaf_pid)
@@ -78,6 +78,8 @@ class ReroMefSerializer(JSONSerializer):
             if 'idref' in rec:
                 sources.append('idref')
             rec['sources'] = sources
+            if not rec.get('type'):
+                rec['type'] = 'bf:Topic'
 
         concept_classes = get_entity_classes()
         for concept, concept_classe in concept_classes.items():
@@ -85,7 +87,7 @@ class ReroMefSerializer(JSONSerializer):
                 local_link(concept, concept_classe.name, rec)
 
         return super(ReroMefSerializer, self).serialize(
-             pid=pid, record=rec, links_factory=add_links, kwargs=kwargs)
+             pid=pid, record=rec, links_factory=add_links, **kwargs)
 
 
 json_v1 = ReroMefSerializer(RecordSchemaJSONV1)

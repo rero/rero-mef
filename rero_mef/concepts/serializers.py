@@ -27,12 +27,12 @@ from .mef.api import ConceptMefRecord
 
 
 def add_links(pid, record):
-    """Add MEF link to agents."""
+    """Add MEF link to concepts."""
     links = {}
     for idx, mef_pid in enumerate(ConceptMefRecord.get_mef(
             record.pid, record.name, pid_only=True)):
         number = f'-{idx}' if idx else ''
-        links[f'mef{number}'] = '{scheme}://{host}/api/agents/mef/' \
+        links[f'mef{number}'] = '{scheme}://{host}/api/concepts/mef/' \
             + str(mef_pid)
 
     link_factory = default_links_factory_with_additional(links)
