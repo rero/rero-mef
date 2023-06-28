@@ -196,6 +196,10 @@ def create_viaf_files(
         click.echo('  Start ...')
     count = 0
     corresponding_data = {}
+    sources_used = [
+        source for source, data in AgentViafRecord.sources.items()
+        if data.get('record_class')
+    ]
     use = False
     with (
             open(
@@ -233,21 +237,21 @@ def create_viaf_files(
                 previous_viaf_pid = viaf_pid
             corresponding = fields[1].split('|')
             if len(corresponding) == 2:
-                corresponding_data.setdefault(
-                    corresponding[0], {'pid': corresponding[1]})
-                if corresponding[0] in AgentViafRecord.sources_used:
+                corresponding_data.setdefault(corresponding[0], {})
+                corresponding_data[corresponding[0]]['pid'] = corresponding[1]
+                if corresponding[0] in sources_used:
                     use = True
             corresponding = fields[1].split('@')
             if len(corresponding) == 2:
+                url = corresponding[1].replace('"', '%22')
                 if corresponding[0] == 'Wikipedia':
                     # multiple wikipedia
                     corresponding_data.setdefault(corresponding[0], {})
                     corresponding_data[corresponding[0]].setdefault('url', [])
-                    corresponding_data[corresponding[0]]['url'].append(
-                        corresponding[1])
-                else:
-                    corresponding_data.setdefault(
-                        corresponding[0], {'url': corresponding[1]})
+                    corresponding_data[corresponding[0]]['url'].append(url)
+                elif url.startswith('http'):
+                    corresponding_data.setdefault(corresponding[0], {})
+                    corresponding_data[corresponding[0]]['url'] = url
         # save the last record
         if use:
             write_viaf_json(

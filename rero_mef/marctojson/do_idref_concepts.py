@@ -44,7 +44,7 @@ class Transformation(object):
                         func = getattr(self, func)
                         func()
             else:
-                msg = f'008 not in [Td8, Tf8]: {field_008.data}'
+                msg = f'008 not in [Td8, Tf8]: {fields_008[0].data}'
                 self.json_dict = {'NO TRANSFORMATION': msg}
                 self.trans_idref_pid()
                 if self.logger and self.verbose:

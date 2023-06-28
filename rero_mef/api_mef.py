@@ -41,19 +41,19 @@ class EntityMefRecord(ReroMefRecord):
     mef_type = ''
 
     @classmethod
-    def get_mef(cls, entity_pid, entity_name, pid_only=False):
-        """Get MEF record by entity pid value.
+    def get_mef(cls, agent_pid, agent_name, pid_only=False):
+        """Get MEF record by agent pid value.
 
-        :param entity_pid: Entety pid.
-        :param entity_name: Name of entity (pid_type).
+        :param agent_pid: Agent pid.
+        :param agent_name: Name of agent (pid_type).
         :param pid_only: return pid only or the complete record.
         :returns: pid or record
         """
-        key = f'{entity_name}.pid'
-        if entity_name == 'viaf':
+        key = f'{agent_name}.pid'
+        if agent_name == 'viaf':
             key = 'viaf_pid'
         query = cls.search() \
-            .filter('term', **{key: entity_pid}) \
+            .filter('term', **{key: agent_pid}) \
             .params(preserve_order=True) \
             .sort({'_updated': {'order': 'desc'}})
         if pid_only:
@@ -63,7 +63,7 @@ class EntityMefRecord(ReroMefRecord):
                 cls.get_record(hit.meta.id) for hit in query.scan()]
         if len(mef_records) > 1:
             current_app.logger.error(
-                f'MULTIPLE MEF FOUND FOR: {entity_name} {entity_pid}'
+                f'MULTIPLE MEF FOUND FOR: {agent_name} {agent_pid}'
             )
         return mef_records
 
@@ -74,7 +74,7 @@ class EntityMefRecord(ReroMefRecord):
         :returns: Generator of MEF pids without agent links and without VIAF.
         """
         must_not = [Q('exists', field="viaf_pid")]
-        must_not.extend(Q('exists', field=entity) for entity in cls.entities)
+        must_not.extend(Q('exists', field=agent) for agent in cls.entities)
         query = cls.search().filter('bool', must_not=must_not)
         for hit in query.source('pid').scan():
             yield hit.pid
@@ -245,26 +245,26 @@ class EntityMefRecord(ReroMefRecord):
                 self.flush_indexes()
         return self, action
 
-    def get_entities_pids(self):
-        """Get entities pids."""
-        entities = []
-        entity_types = current_app.config.get(f'RERO_{self.mef_type}')
-        for entity_type in entity_types:
-            record_class = get_entity_class(entity_type)
+    def get_agents_pids(self):
+        """Get agents pids."""
+        agents = []
+        agent_types = current_app.config.get(f'RERO_{self.mef_type}', [])
+        for agent_type in agent_types:
+            record_class = get_entity_class(agent_type)
             name = record_class.name
             if name in self:
-                entities.append({
+                agents.append({
                     'record_class': record_class,
                     # Get pid from $ref URL
                     'pid': self.get(name).get('$ref').split('/')[-1]
                 })
-        return entities
+        return agents
 
-    def get_entities_records(self):
-        """Get entities records."""
-        entity_records = []
-        for entity in self.get_entities_pids():
-            record_class = entity['record_class']
-            if entity_record := record_class.get_record_by_pid(entity['pid']):
-                entity_records.append(entity_record)
-        return entity_records
+    def get_agents_records(self):
+        """Get agents records."""
+        agents_records = []
+        for agent in self.get_agents_pids():
+            record_class = agent['record_class']
+            if agent_record := record_class.get_record_by_pid(agent['pid']):
+                agents_records.append(agent_record)
+        return agents_records

@@ -51,18 +51,17 @@ def test_create_csv_viaf_mef(script_info, tmpdir):
             metadata_count += 1
         assert metadata_count == 859
         data = line.strip().split('\t')
-        id = data[2]
         # don't use the first two lines with dates.
         assert data[3:] == [
             '{"bne_pid": "XX871391", '
-            '"worldcat": '
-            '"http://www.worldcat.org/identities/lccn-n50022446", '
-            '"wiki": ["http://en.wikipedia.org/wiki/Guy_Stern", '
-            '"http://de.wikipedia.org/wiki/Guy_Stern", '
-            '"http://ar.wikipedia.org/wiki/'
-            '\\\\u0642\\\\u0627\\\\u064a_\\\\u0633\\\\u062a'
-            '\\\\u064a\\\\u0631\\\\u0646"], '
+            '"wiki": ['
+            '"https://ar.wikipedia.org/wiki/\\\\u0642\\\\u0627\\\\u064a'
+            '_\\\\u0633\\\\u062a\\\\u064a\\\\u0631\\\\u0646", '
+            '"https://de.wikipedia.org/wiki/Guy_Stern", '
+            '"https://en.wikipedia.org/wiki/Guy_Stern"'
+            '], '
             '"rero_pid": "A003863577", '
+            '"md5": "efbf1aaff7acc20e0a966432cfeeab12", '
             '"$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json", '
             '"pid": "108685760"}',
             '1',

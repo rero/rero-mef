@@ -35,10 +35,11 @@ def test_get_all_pids_without_agents_and_viaf(app):
 def test_get_multiple_missing_pids(app, agent_mef_data, agent_viaf_record):
     """Test get pids with multiple MEF."""
     m_record_1 = create_record(AgentMefRecord, agent_mef_data, delete_pid=True)
+    assert m_record_1['type'] == 'bf:Person'
     m_record_2 = create_record(AgentMefRecord, agent_mef_data, delete_pid=True)
+    assert m_record_2['type'] == 'bf:Person'
     pids, multiple_pids, missing_pids, none_pids = AgentMefRecord \
-        .get_multiple_missing_pids(
-            record_types=['aidref', 'aggnd', 'agrero'])
+        .get_multiple_missing_pids(record_types=['aidref', 'aggnd', 'agrero'])
     assert pids == {'aggnd': {}, 'agrero': {}, 'aidref': {}}
     assert multiple_pids == {
         'aggnd': {'12391664X': [m_record_2.pid, m_record_1.pid]},

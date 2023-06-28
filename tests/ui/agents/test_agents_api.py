@@ -101,12 +101,12 @@ def test_create_agent_record_with_viaf_links(
         agent_idref_data, agent_gnd_data, agent_rero_data]
 
     assert m_record == AgentMefRecord.get_mef(
-        entity_pid=idref_record.pid, entity_name=idref_record.name)[0]
+        agent_pid=idref_record.pid, agent_name=idref_record.name)[0]
     assert m_record.pid == AgentMefRecord.get_mef(
-        entity_pid=gnd_record.pid, entity_name=gnd_record.name,
+        agent_pid=gnd_record.pid, agent_name=gnd_record.name,
         pid_only=True)[0]
     mef_rec_resolved = AgentMefRecord.get_mef(
-        entity_pid=viaf_record.pid, entity_name=viaf_record.name)[0]
+        agent_pid=viaf_record.pid, agent_name=viaf_record.name)[0]
     assert m_record == mef_rec_resolved
 
     mef_rec_resolved = mef_rec_resolved.replace_refs()
@@ -168,6 +168,7 @@ def test_create_agent_record_with_viaf_links(
     rero_pid = viaf_record.pop('rero_pid')
     viaf_record = viaf_record.update(
         data=viaf_record, dbcommit=True, reindex=True)
+    viaf_record.create_mef_and_agents(dbcommit=True, reindex=True)
     assert viaf_record.get_agents_pids() == [
         {
             'pid': idref_record.pid,
@@ -178,8 +179,8 @@ def test_create_agent_record_with_viaf_links(
         }
     ]
     mef_record_rero = AgentMefRecord.get_mef(
-        entity_pid=rero_record.pid, entity_name=rero_record.name)[0]
-    assert mef_record_rero.get_entities_pids() == [{
+        agent_pid=rero_record.pid, agent_name=rero_record.name)[0]
+    assert mef_record_rero.get_agents_pids() == [{
         'pid': rero_record.pid,
         'record_class': AgentReroRecord
     }]
@@ -189,6 +190,7 @@ def test_create_agent_record_with_viaf_links(
     viaf_record['rero_pid'] = rero_pid
     viaf_record = viaf_record.update(
         data=viaf_record, dbcommit=True, reindex=True)
+    viaf_record.create_mef_and_agents(dbcommit=True, reindex=True)
     assert viaf_record.get_agents_pids() == [
         {
             'pid': idref_record.pid,
