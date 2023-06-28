@@ -543,7 +543,8 @@ def export_json_records(pids, pid_type, output_file_name, indent=2,
                 rec.pop('$schema', None)
                 for source in ('idref', 'gnd', 'rero'):
                     if source in rec:
-                        rec[source].pop('$schema', None)
+                        if isinstance(source, dict):
+                            rec[source].pop('$schema', None)
             outfile.write(rec)
         except Exception as err:
             click.echo(err)
@@ -1007,7 +1008,7 @@ def write_viaf_json(
     json_data = {}
     for source, value in corresponding_data.items():
         if source in AgentViafRecord.sources:
-            key = AgentViafRecord.sources[source]
+            key = AgentViafRecord.sources[source]['name']
             if pid := value.get('pid'):
                 json_data[f'{key}_pid'] = pid
                 if url := value.get('url'):
@@ -1015,11 +1016,10 @@ def write_viaf_json(
         elif source == 'Wikipedia':
             if pid := value.get('pid'):
                 json_data['wiki_pid'] = pid
-            if url := value.get('url'):
-                json_data['wiki'] = url
-        elif source == 'Identities':
-            json_data['worldcat'] = value.get('url')
+            if wiki_urls := value.get('url'):
+                json_data['wiki'] = sorted(wiki_urls)
 
+    json_data['md5'] = create_md5(json_data)
     add_schema(json_data, 'viaf')
     json_data['pid'] = viaf_pid
     # only save VIAF data with used pids

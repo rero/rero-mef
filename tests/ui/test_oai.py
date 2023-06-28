@@ -66,7 +66,7 @@ def test_oai_date(app, init_oai, capsys):
     assert date == oai_get_last_run('agents.gnd', verbose=True)
 
 
-@mock.patch('requests.get')
+@mock.patch('requests.Session.get')
 def test_oai_get_record(mock_get, app, init_oai,
                         aggnd_oai_139205527, aggnd_data_139205527,
                         capsys):

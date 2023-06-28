@@ -434,7 +434,7 @@ def save_csv(entities, output_directory, verbose):
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @with_appcontext
 def csv_to_json(csv_metadata_file, json_output_file, indent, verbose):
-    """Agencies record dump.
+    """Entities record dump.
 
     :param csv_metadata_file: CSV metadata file.
     :param json_output_file: JSON output file.
@@ -520,7 +520,8 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
     }
     compair_data = {}
     if sqlite_dict:
-        compair_data = SqliteDict(sqlite_dict, autocommit=True)
+        compair_data = SqliteDict(sqlite_dict, autocommit=True,
+                                  outer_stack=False)
     compair_data.clear()
     if csv_metadata_file_compair:
         length = number_records_in_file(csv_metadata_file_compair, 'csv')
@@ -565,6 +566,7 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
                             click.echo(
                                 f' new:\t{json.dumps(data, sort_keys=True)}')
                         if output:
+                            add_md5(data)
                             file_diff.write(data)
                     else:
                         counts['unchanged'] += 1
@@ -579,13 +581,14 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
                         click.echo(
                             f'NEW :\t{json.dumps(data, sort_keys=True)}')
                     if output:
+                        add_md5(data)
                         file_new.write(data)
-
     for pid, data in compair_data.items():
         counts['deleted'] += 1
         if verbose:
             click.echo(f'DEL :\t{json.dumps(data, sort_keys=True)}')
         if output:
+            add_md5(data)
             file_delete.write(data)
     file_new.close()
     file_diff.close()

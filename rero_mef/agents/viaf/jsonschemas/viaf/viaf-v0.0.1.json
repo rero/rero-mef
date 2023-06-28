@@ -132,13 +132,6 @@
         "minLength": 7
       }
     },
-    "worldcat": {
-      "title": "WorldCat contributor URL",
-      "type": "string",
-      "format": "uri",
-      "pattern": "^(https?)://.*$",
-      "minLength": 7
-    },
     "md5": {
       "title": "MD5",
       "type": "string",

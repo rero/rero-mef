@@ -47,7 +47,7 @@ class EntityMefRecord{
     viaf_cls = None
     search = None
     mef_type = ''
-    get_mef(cls, entity_pid, entity_name, pid_only=False)
+    get_mef(cls, agent_pid, agent_name, pid_only=False)
     get_all_pids_without_agents_and_viaf(cls)
     get_all_pids_without_viaf(cls)
     get_multiple_missing_pids(cls, record_types=None, verbose=False)

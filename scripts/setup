@@ -110,18 +110,18 @@ function oai_init () {
 function sample_load () {
     SCHEMA="http://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json"
     info_msg "Importing VIAF records:"
-    dojson -i ./data/viaf.json | invenio fixtures create-or-update viaf
+    dojson -i ./data/viaf.json | invenio fixtures create-or-update viaf -v
 
     for ENTITY in aggnd aidref agrero
     do
       info_msg "Importing ${ENTITY} records:"
-      dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY}
+      dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY} -v
     done
 
     for ENTITY in corero cidref
     do
       info_msg "Importing ${ENTITY} concept records:"
-      dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY}
+      dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY} -v
     done
 
     oai_init

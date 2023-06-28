@@ -45,7 +45,5 @@ def test_create_mef_with_viaf_links(app, agent_viaf_data, agent_gnd_data):
         .scan()
     result = next(query)
     assert result.sources == ['gnd']
-    from pprint import pprint
-    pprint(result.to_dict())
     assert result.gnd.pid == v_record['gnd_pid']
     assert result.viaf_pid == v_record.pid

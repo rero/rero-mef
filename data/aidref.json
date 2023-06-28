@@ -1183,13 +1183,14 @@
     ]
   },
   {
-    "md5": "8540c53340df209c9160b987463d1463",
+    "md5": "e497d8d54793473b663ea1a0750c6c58",
     "pid": "026868482",
     "type": "bf:Person",
     "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
+    "qualifier": "\u00e9conomiste",
     "identifier": "http://www.idref.fr/026868482",
     "identifiedBy": [
       {
@@ -1203,9 +1204,9 @@
       "value": "108076628"
     },
     "date_of_birth": "1942-10-06",
-    "preferred_name": "Fontaine, Jean-Marc",
+    "preferred_name": "Fontaine, Jean-Marc, \u00e9conomiste",
     "country_associated": "fr",
-    "authorized_access_point": "Fontaine, Jean-Marc, 1942-....",
+    "authorized_access_point": "Fontaine, Jean-Marc, 1942-...., \u00e9conomiste",
     "biographical_information": [
       "Ma\u00eetre de conf\u00e9rences en sciences \u00e9conomiques et directeur du Centre de recherche \u00e9conomique de l'IEDES, Universit\u00e9 Panth\u00e9on-Sorbonne, Paris I (en 1992)"
     ]
@@ -1242,7 +1243,7 @@
     ]
   },
   {
-    "md5": "cc5c110361fc10ffb088ff8b49fd6ba0",
+    "md5": "7bbba519a35e8ab7ac9957a2037c74f0",
     "pid": "026916134",
     "type": "bf:Person",
     "bf:Agent": "bf:Person",
@@ -1258,9 +1259,10 @@
       }
     ],
     "date_of_birth": "1934-05-28",
+    "date_of_death": "2023-05-23",
     "preferred_name": "Haudry, Jean",
     "country_associated": "fr",
-    "authorized_access_point": "Haudry, Jean, 1934-....",
+    "authorized_access_point": "Haudry, Jean, 1934-2023",
     "biographical_information": [
       "Directeur du Centre de linguistique appliqu\u00e9e de l'Universit\u00e9 de Lyon III en 1987. Directeur d'\u00e9tudes de grammaire compar\u00e9e des langues indo-europ\u00e9ennes \u00e0 la IVe section de l'\u00c9cole pratique des hautes \u00e9tudes en 1987"
     ]
@@ -11194,7 +11196,7 @@
     ]
   },
   {
-    "md5": "b77a7d2c9ae150e9b8017337cd660d5e",
+    "md5": "721dc0c8c3f0dc556495b6e58ea3338e",
     "pid": "071285571",
     "type": "bf:Person",
     "bf:Agent": "bf:Person",
@@ -11212,9 +11214,11 @@
     ],
     "date_of_birth": "19XX",
     "preferred_name": "Louis, Edouard, m\u00e9decin",
+    "country_associated": "be",
     "authorized_access_point": "Louis, Edouard, 19..-...., m\u00e9decin",
     "biographical_information": [
-      "Docteur en m\u00e9decine"
+      "Docteur en m\u00e9decine",
+      "Travaille au CHU de Li\u00e8ge (Belgique) en 2023"
     ]
   },
   {
@@ -29633,6 +29637,29 @@
     "authorized_access_point": "Zhou, Yiqun, 1971-...."
   },
   {
+    "md5": "06ca763dc1c4e307c466e22abd2c56e9",
+    "pid": "153776951",
+    "type": "bf:Person",
+    "bf:Agent": "bf:Person",
+    "language": [
+      "fre"
+    ],
+    "identifier": "http://www.idref.fr/153776951",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/153776951",
+        "source": "IDREF"
+      }
+    ],
+    "preferred_name": "Servant, Marcelle",
+    "country_associated": "xxc",
+    "authorized_access_point": "Servant, Marcelle",
+    "biographical_information": [
+      "Professeur au Cegep Ahunstic (Qu\u00e9bec, Canada) (en 1983)"
+    ]
+  },
+  {
     "md5": "c3d7b882b3ea029923f199d234e180b2",
     "pid": "153973145",
     "type": "bf:Person",
@@ -29657,7 +29684,7 @@
     ]
   },
   {
-    "md5": "67bae3eb67704b5bdf4ec596d5934b42",
+    "md5": "7d57ff0151ebd77cd5ba8b735925af4c",
     "pid": "15401916X",
     "type": "bf:Person",
     "bf:Agent": "bf:Person",
@@ -29675,7 +29702,7 @@
     "date_of_birth": "1944",
     "preferred_name": "Watkins, Peter Maitland",
     "country_associated": "xxk",
-    "authorized_access_point": "Watkins, Peter Maitland, 1944-",
+    "authorized_access_point": "Watkins, Peter Maitland, 1944-....",
     "biographical_information": [
       "Physicien, en poste \u00e0 l'Universit\u00e9 de Birmingham, en 1986"
     ]
@@ -32737,9 +32764,10 @@
     "authorized_access_point": "Centro Cultural Arte Contemporaneo (M\u00e9xico)"
   },
   {
-    "md5": "ee2808115bc98f15b868805d0d32ac75",
+    "md5": "2ec0c4b591b78f3fea7f7afed98ee53f",
     "pid": "167228862",
     "type": "bf:Person",
+    "deleted": "2023-07-08T10:23:44.366911+00:00",
     "bf:Agent": "bf:Person",
     "language": [
       "fre"
@@ -32752,11 +32780,13 @@
         "source": "IDREF"
       }
     ],
+    "date_of_birth": "19XX",
     "preferred_name": "Chaoui-Derieux, Doroth\u00e9e",
     "country_associated": "fr",
-    "authorized_access_point": "Chaoui-Derieux, Doroth\u00e9e",
+    "authorized_access_point": "Chaoui-Derieux, Doroth\u00e9e, 19..-....",
     "biographical_information": [
-      "Arch\u00e9ologue. Minist\u00e8re de la Culture, Service r\u00e9gional de l'arch\u00e9ologie (SRA)"
+      "Arch\u00e9ologue. Minist\u00e8re de la Culture, Service r\u00e9gional de l'arch\u00e9ologie (SRA)",
+      "Conservateur en chef du patrimoine au service r\u00e9gional de l'arch\u00e9ologie de la direction r\u00e9gionale des affaires culturelles d'\u00cele-de-France (en 2023)"
     ]
   },
   {
@@ -43844,13 +43874,14 @@
     "authorized_access_point": "Comparative Education Society in Europe. Conference (11 ; 1983 ; W\u00fcrzburg, Allemagne)"
   },
   {
-    "md5": "81d770d55c6de514aac7b62680a801d3",
+    "md5": "a9a4b95975dc5e213e255fd9432489a9",
     "pid": "223491071",
     "type": "bf:Person",
     "bf:Agent": "bf:Person",
     "language": [
       "fre"
     ],
+    "qualifier": "physicien",
     "identifier": "http://www.idref.fr/223491071",
     "identifiedBy": [
       {
@@ -43859,13 +43890,13 @@
         "source": "IDREF"
       }
     ],
-    "date_of_birth": "19XX",
-    "preferred_name": "Driole, Jean",
+    "date_of_birth": "1936-06-14",
+    "date_of_death": "2008-10-02",
+    "preferred_name": "Driole, Jean, physicien",
     "country_associated": "fr",
-    "authorized_access_point": "Driole, Jean, 19..-....",
+    "authorized_access_point": "Driole, Jean, 1936-2008, physicien",
     "biographical_information": [
-      "Auteur d'une th\u00e8se en sciences de l'ing\u00e9nieur",
-      "Directeur de th\u00e8se \u00e0 Grenoble INPG"
+      "Auteur d'une th\u00e8se de docteur-ing\u00e9nieur en [Sciences appliqu\u00e9es] (Grenoble, Facult\u00e9 des sciences, 1965). - Directeur de recherche au CNRS/Grenoble INPG (-1974-1994-). - Directeur de th\u00e8se \u00e0 Grenoble INPG"
     ]
   },
   {
@@ -44505,11 +44536,13 @@
     ]
   },
   {
-    "md5": "a980e9cbbed4972420bd99ca291e3ce4",
+    "md5": "89e250f7f077bc11b930e1738f6cfa18",
     "pid": "224875868",
     "type": "bf:Person",
     "bf:Agent": "bf:Person",
     "language": [
+      "ita",
+      "fre",
       "eng"
     ],
     "identifier": "http://www.idref.fr/224875868",
@@ -44522,11 +44555,11 @@
     ],
     "date_of_birth": "19XX",
     "preferred_name": "Bacci, Alberto",
-    "authorized_access_point": "Bacci, Alberto, 19..-....",
+    "country_associated": "it",
+    "authorized_access_point": "Bacci, Alberto",
     "biographical_information": [
-      "Directeur de th\u00e8se \u00e0 l'Universit\u00e9 Pierre et Marie Curie, Paris en 2017",
-      "Directeur de recherche \u00e0l' Universit\u00e9 de la Sorbonne - Institut du Cerveau et de la moelle \u00e9pini\u00e8re , Institut du Cerveau, H\u00f4pital Piti\u00e9-Salp\u00eatri\u00e8re (en 2022). Membre de jury d'une th\u00e8se de doctorat en Neurosciences en 2022",
-      "En poste : Istituto nazionale di fisica nucleare (INFN), Milan, Italie (en 2020)"
+      "Neuroscientifique. Directeur de recherche CNRS, responsable de l'\u00e9quipe Physiologie cellulaire des microcircuits corticaux, Institut du cerveau et de la mo\u00eblle \u00e9pini\u00e8re (ICM, UMR 7225 CNRS - U975 INSERM), Sorbonne universit\u00e9, Paris (en 2023)",
+      "Doctorat en pharmacologie exp\u00e9rimentale et th\u00e9rapeutique (Universit\u00e0 degli studi, Milan, Italie, 2000)"
     ]
   },
   {
@@ -60093,6 +60126,30 @@
     ]
   },
   {
+    "md5": "ac21ed163eeb967aa7b40749cabd6de7",
+    "pid": "260328065",
+    "type": "bf:Person",
+    "bf:Agent": "bf:Person",
+    "language": [
+      "hun"
+    ],
+    "identifier": "http://www.idref.fr/260328065",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/260328065",
+        "source": "IDREF"
+      }
+    ],
+    "date_of_birth": "1883",
+    "date_of_death": "1976",
+    "preferred_name": "Bihari, M\u00f3r",
+    "authorized_access_point": "Bihari, M\u00f3r, 1883-1976",
+    "biographical_information": [
+      "Instituteur hongrois, membre influent du Syndicat des enseignants. Un des responsables de la politique \u00e9ducative de la R\u00e9publique des Conseils (en 1919)."
+    ]
+  },
+  {
     "md5": "ea8b2f5ecc7bf00f68ea0351a77de5cf",
     "pid": "26040862X",
     "type": "bf:Person",
@@ -62039,6 +62096,218 @@
     "authorized_access_point": "Wiedmer, Fabienne, 1996-....",
     "biographical_information": [
       "Titulaire d'un master en lettres de l'Universit\u00e9 de Fribourg, Suisse (p\u00e9dagogie sp\u00e9cialis\u00e9e)"
+    ]
+  },
+  {
+    "md5": "90d30d594d2fe08662b30e527da14e92",
+    "pid": "263908038",
+    "type": "bf:Person",
+    "bf:Agent": "bf:Person",
+    "identifier": "http://www.idref.fr/263908038",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/263908038",
+        "source": "IDREF"
+      }
+    ],
+    "date_of_birth": "1992",
+    "preferred_name": "Charpentier, Bryan",
+    "authorized_access_point": "Charpentier, Bryan, 1992-....",
+    "biographical_information": [
+      "Titulaire d\u2019une th\u00e8se d\u2019exercice de m\u00e9decine soutenue \u00e0 l\u2019universit\u00e9 Paris-Saclay en 2021"
+    ]
+  },
+  {
+    "md5": "f02bb5907e34d34fa9da59c45d933ddc",
+    "pid": "26428058X",
+    "type": "bf:Person",
+    "bf:Agent": "bf:Person",
+    "language": [
+      "fre"
+    ],
+    "identifier": "http://www.idref.fr/26428058X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/26428058X",
+        "source": "IDREF"
+      }
+    ],
+    "date_of_birth": "1986-05-03",
+    "preferred_name": "Pratico, Valentina",
+    "country_associated": "it",
+    "authorized_access_point": "Pratico, Valentina, 1986-....",
+    "biographical_information": [
+      "Auteur d'une th\u00e8se en Droit priv\u00e9 \u00e0 Aix-Marseille en 2022"
+    ]
+  },
+  {
+    "md5": "c5764b750e037f76aa79e57d73227396",
+    "pid": "264703227",
+    "type": "bf:Person",
+    "bf:Agent": "bf:Person",
+    "language": [
+      "fre"
+    ],
+    "identifier": "http://www.idref.fr/264703227",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/264703227",
+        "source": "IDREF"
+      }
+    ],
+    "date_of_birth": "1886-01-02",
+    "preferred_name": "Blazy, Joseph-C\u00e9lestin",
+    "country_associated": "fr",
+    "authorized_access_point": "Blazy, Joseph-C\u00e9lestin, 1886-....",
+    "biographical_information": [
+      "Auteur d'une Th\u00e8se d'exercice en M\u00e9decine \u00e0 l\u2019Universit\u00e9 de Bordeaux en 1910"
+    ]
+  },
+  {
+    "md5": "bc2f365efac7be850c458eae88622e15",
+    "pid": "264982959",
+    "type": "bf:Person",
+    "bf:Agent": "bf:Person",
+    "language": [
+      "eng"
+    ],
+    "identifier": "http://www.idref.fr/264982959",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/264982959",
+        "source": "IDREF"
+      }
+    ],
+    "preferred_name": "Heard, Wendy",
+    "country_associated": "xxu",
+    "authorized_access_point": "Heard, Wendy",
+    "biographical_information": [
+      "Ecrivaine de thrillers"
+    ]
+  },
+  {
+    "md5": "6542ff2d3868cca3aa83cc5ccf6d02f9",
+    "pid": "265219493",
+    "type": "bf:Person",
+    "bf:Agent": "bf:Person",
+    "language": [
+      "fre"
+    ],
+    "identifier": "http://www.idref.fr/265219493",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/265219493",
+        "source": "IDREF"
+      }
+    ],
+    "variant_name": [
+      "Wilde, Catherine Lhomme de"
+    ],
+    "preferred_name": "Lhomme de Wilde, Catherine",
+    "country_associated": "fr",
+    "variant_access_point": [
+      "Wilde, Catherine Lhomme de"
+    ],
+    "authorized_access_point": "Lhomme de Wilde, Catherine",
+    "biographical_information": [
+      "Auteur d'une th\u00e8se en pharmacie"
+    ]
+  },
+  {
+    "md5": "12e8bd75ff198d71a84f49794953d3b9",
+    "pid": "26525969X",
+    "type": "bf:Person",
+    "bf:Agent": "bf:Person",
+    "language": [
+      "fre"
+    ],
+    "identifier": "http://www.idref.fr/26525969X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/26525969X",
+        "source": "IDREF"
+      }
+    ],
+    "preferred_name": "Rivoallan, C\u00e9line",
+    "country_associated": "fr",
+    "authorized_access_point": "Rivoallan, C\u00e9line",
+    "biographical_information": [
+      "M\u00e9moire de DESS Urbanisme, Habitat, Am\u00e9nagement sous la direction de Guillaume Lacquement, soutenu \u00e0 Perpignan, 2000"
+    ]
+  },
+  {
+    "md5": "ac2610513a6041aafc179c2ca5e0ef51",
+    "pid": "26528774X",
+    "type": "bf:Person",
+    "bf:Agent": "bf:Person",
+    "language": [
+      "fre"
+    ],
+    "identifier": "http://www.idref.fr/26528774X",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/26528774X",
+        "source": "IDREF"
+      }
+    ],
+    "date_of_birth": "1942-11-13",
+    "preferred_name": "Truffet, G\u00e9rard",
+    "authorized_access_point": "Truffet, G\u00e9rard",
+    "biographical_information": [
+      "M\u00e9decin (Paris 1970)"
+    ]
+  },
+  {
+    "md5": "33c479fed70b501e8bc75be1c88cfb14",
+    "pid": "265836905",
+    "type": "bf:Person",
+    "bf:Agent": "bf:Person",
+    "language": [
+      "eng"
+    ],
+    "identifier": "http://www.idref.fr/265836905",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/265836905",
+        "source": "IDREF"
+      }
+    ],
+    "preferred_name": "Frager, Robert",
+    "country_associated": "xxu",
+    "authorized_access_point": "Frager, Robert",
+    "biographical_information": [
+      "En poste \u00e0 California Institute of Interpersonal Psychology en 1976"
+    ]
+  },
+  {
+    "md5": "025e15272fbb3cddf3717bdabd9c4cd8",
+    "pid": "267373414",
+    "type": "bf:Person",
+    "bf:Agent": "bf:Person",
+    "language": [
+      "cze"
+    ],
+    "identifier": "http://www.idref.fr/267373414",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/267373414",
+        "source": "IDREF"
+      }
+    ],
+    "date_of_birth": "1978",
+    "preferred_name": "Jan\u0161ov\u00e1, Marie",
+    "authorized_access_point": "Jan\u0161ov\u00e1, Marie, 1978-....",
+    "biographical_information": [
+      "Juriste"
     ]
   }
 ]

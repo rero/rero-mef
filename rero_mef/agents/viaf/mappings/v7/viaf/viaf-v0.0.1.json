@@ -68,9 +68,6 @@
       "wiki": {
         "type": "keyword"
       },
-      "worldcat": {
-        "type": "keyword"
-      },
       "_created": {
         "type": "date"
       },

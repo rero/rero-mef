@@ -540,8 +540,7 @@ def agent_mef_data():
         "gnd": {"$ref": "https://mef.rero.ch/api/agents/gnd/12391664X"},
         "rero": {"$ref": "https://mef.rero.ch/api/agents/rero/A023655346"},
         "idref": {"$ref": "https://mef.rero.ch/api/agents/idref/069774331"},
-        "viaf_pid": "66739143",
-        "type": "bf:Person"
+        "viaf_pid": "66739143"
     }
 
 
@@ -1130,9 +1129,6 @@ def agent_viaf_online_response():
                     "sid": "DNB|969004222"
                 }
             }
-        },
-        "xLinks": {
-            "xLink": "https://www.worldcat.org/identities/viaf-124294761"
         }
     }
 
