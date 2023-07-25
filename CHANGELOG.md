@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.12.0](https://github.com/rero/rero-mef/tree/v0.12.0) (2023-07-25)
+
+[Full Changelog](https://github.com/rero/rero-mef/compare/v0.11.0...v0.12.0)
+
+**Enhancements:**
+* contributions concepts: type and identifiedBy [\#131](https://github.com/rero/rero-mef/pull/131) (by @rerowep)
+* concepts: unified pid [\#132](https://github.com/rero/rero-mef/pull/132) (by @rerowep)
+* VIAF: add sources [\#123](https://github.com/rero/rero-mef/pull/123) (by @rerowep)
+
+**Fixes:**
+* VIAF: fixes [\#136](https://github.com/rero/rero-mef/pull/136) (by @rerowep)
+* dependencies: fix security issues [\#130](https://github.com/rero/rero-mef/pull/130) (by @rerowep)
+* concepts: fix MEF links [\#133](https://github.com/rero/rero-mef/pull/133) (by @rerowep)
+
 ## [v0.11.0](https://github.com/rero/rero-mef/tree/v0.11.0) (2023-03-16)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.10.0...v0.11.0)
