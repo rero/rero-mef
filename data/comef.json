@@ -4,473 +4,473 @@
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A009955971"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7368",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A010077990"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7369",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001001"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7370",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001003"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7371",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001004"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7372",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001005"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7373",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001006"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7374",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001007"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7375",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001008"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7376",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001009"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7377",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001012"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7378",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001013"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7379",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001014"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7380",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001016"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7381",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001017"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7382",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001018"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7383",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001021"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7384",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001023"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7385",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001024"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7386",
     "rero": {
       "$ref": "https://mef.rero.ch/api/concepts/rero/A021001025"
     },
-    "type": "bf:Concept"
+    "type": "bf:Topic"
   },
   {
     "pid": "7387",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027224430"
     }
   },
   {
     "pid": "7388",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027227219"
     }
   },
   {
     "pid": "7389",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027235548"
     }
   },
   {
     "pid": "7390",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027236226"
     }
   },
   {
     "pid": "7391",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027243087"
     }
   },
   {
     "pid": "7392",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027246655"
     }
   },
   {
     "pid": "7393",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027256251"
     }
   },
   {
     "pid": "7394",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027287289"
     }
   },
   {
     "pid": "7395",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027294358"
     }
   },
   {
     "pid": "7396",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/02730440X"
     }
   },
   {
     "pid": "7397",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027328295"
     }
   },
   {
     "pid": "7398",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027354431"
     }
   },
   {
     "pid": "7399",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027366669"
     }
   },
   {
     "pid": "7400",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027389782"
     }
   },
   {
     "pid": "7401",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027430162"
     }
   },
   {
     "pid": "7402",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027488462"
     }
   },
   {
     "pid": "7403",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/02750610X"
     }
   },
   {
     "pid": "7404",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027510387"
     }
   },
   {
     "pid": "7405",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027599701"
     }
   },
   {
     "pid": "7406",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027652254"
     }
   },
   {
     "pid": "7407",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027661504"
     }
   },
   {
     "pid": "7408",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027675823"
     }
   },
   {
     "pid": "7409",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027688739"
     }
   },
   {
     "pid": "7410",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027699870"
     }
   },
   {
     "pid": "7411",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/02770940X"
     }
   },
   {
     "pid": "7412",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027741060"
     }
   },
   {
     "pid": "7413",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027741125"
     }
   },
   {
     "pid": "7414",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027765369"
     }
   },
   {
     "pid": "7415",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027785084"
     }
   },
   {
     "pid": "7416",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027805220"
     }
   },
   {
     "pid": "7417",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027809781"
     }
   },
   {
     "pid": "7418",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027811611"
     }
   },
   {
     "pid": "7419",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027825280"
     }
   },
   {
     "pid": "7420",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027832953"
     }
   },
   {
     "pid": "7421",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027838919"
     }
   },
   {
     "pid": "7422",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/02784532X"
     }
   },
   {
     "pid": "7423",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/027852547"
     }
   },
   {
     "pid": "7424",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/028004698"
     }
   },
   {
     "pid": "7425",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/028244494"
     }
   },
   {
     "pid": "7426",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/028283678"
     }
   },
   {
     "pid": "7427",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/028354559"
     }
   },
   {
     "pid": "7428",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/028359070"
     }
   },
   {
     "pid": "7429",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/028701755"
     }
   },
   {
     "pid": "7430",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/028910044"
     }
   },
   {
     "pid": "7431",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/028962389"
     }
   },
   {
     "pid": "7432",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/02897297X"
     }
   },
   {
     "pid": "7433",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/029241693"
     }
   },
   {
     "pid": "7434",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/029260892"
     },
@@ -478,175 +478,175 @@
   },
   {
     "pid": "7435",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/029560020"
     }
   },
   {
     "pid": "7436",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/029563321"
     }
   },
   {
     "pid": "7437",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/029910609"
     }
   },
   {
     "pid": "7438",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/030714451"
     }
   },
   {
     "pid": "7439",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/030763762"
     }
   },
   {
     "pid": "7440",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/030767806"
     }
   },
   {
     "pid": "7441",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/03116207X"
     }
   },
   {
     "pid": "7442",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/031474284"
     }
   },
   {
     "pid": "7443",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/031911056"
     }
   },
   {
     "pid": "7444",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/031992234"
     }
   },
   {
     "pid": "7445",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/03212743X"
     }
   },
   {
     "pid": "7446",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/032187130"
     }
   },
   {
     "pid": "7447",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/032563507"
     }
   },
   {
     "pid": "7448",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/032972938"
     }
   },
   {
     "pid": "7449",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/03388157X"
     }
   },
   {
     "pid": "7450",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/034160523"
     }
   },
   {
     "pid": "7451",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/034490906"
     }
   },
   {
     "pid": "7452",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/034680365"
     }
   },
   {
     "pid": "7453",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/035801123"
     }
   },
   {
     "pid": "7454",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/050203177"
     }
   },
   {
     "pid": "7455",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/050513478"
     }
   },
   {
     "pid": "7456",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/077061284"
     }
   },
   {
     "pid": "7457",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/080206913"
     }
   },
   {
     "pid": "7458",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/083620338"
     }
   },
   {
     "pid": "7459",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/083622519"
     },
@@ -654,728 +654,728 @@
   },
   {
     "pid": "7460",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/092468675"
     }
   },
   {
     "pid": "7461",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/113531923"
     }
   },
   {
     "pid": "7462",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/119256347"
     }
   },
   {
     "pid": "7463",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/130730173"
     }
   },
   {
     "pid": "7464",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/132184214"
     }
   },
   {
     "pid": "7465",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/146321944"
     }
   },
   {
     "pid": "7466",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/146774094"
     }
   },
   {
     "pid": "7467",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/16573762X"
     }
   },
   {
     "pid": "7468",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/16719416X"
     }
   },
   {
     "pid": "7469",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/172690250"
     }
   },
   {
     "pid": "7470",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/174131887"
     }
   },
   {
     "pid": "7471",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/18456381X"
     }
   },
   {
     "pid": "7472",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/245367888"
     }
   },
   {
     "pid": "7473",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/252252063"
     }
   },
   {
     "pid": "7474",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/25410875X"
     }
   },
   {
     "pid": "7475",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/255690444"
     }
   },
   {
     "pid": "7476",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/256524203"
     }
   },
   {
     "pid": "7477",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/258617527"
     }
   },
   {
     "pid": "7478",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/25906288X"
     }
   },
   {
     "pid": "7479",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/259596337"
     }
   },
   {
     "pid": "7480",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/259599174"
     }
   },
   {
     "pid": "7481",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/259943401"
     }
   },
   {
     "pid": "7482",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/259951293"
     }
   },
   {
     "pid": "7483",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/259974811"
     }
   },
   {
     "pid": "7484",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/259995118"
     }
   },
   {
     "pid": "7485",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/261107909"
     }
   },
   {
     "pid": "7486",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/261196715"
     }
   },
   {
     "pid": "7487",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/261901532"
     }
   },
   {
     "pid": "7488",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262111012"
     }
   },
   {
     "pid": "7489",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262111020"
     }
   },
   {
     "pid": "7490",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262111039"
     }
   },
   {
     "pid": "7491",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262111071"
     }
   },
   {
     "pid": "7492",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/26211108X"
     }
   },
   {
     "pid": "7493",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262111098"
     }
   },
   {
     "pid": "7494",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262125927"
     }
   },
   {
     "pid": "7495",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262413817"
     }
   },
   {
     "pid": "7496",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262414023"
     }
   },
   {
     "pid": "7497",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262414082"
     }
   },
   {
     "pid": "7498",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262414112"
     }
   },
   {
     "pid": "7499",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262668858"
     }
   },
   {
     "pid": "7500",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262669161"
     }
   },
   {
     "pid": "7501",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262669188"
     }
   },
   {
     "pid": "7502",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/26266920X"
     }
   },
   {
     "pid": "7503",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262669234"
     }
   },
   {
     "pid": "7504",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262669242"
     }
   },
   {
     "pid": "7505",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262669250"
     }
   },
   {
     "pid": "7506",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262805111"
     }
   },
   {
     "pid": "7507",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262915219"
     }
   },
   {
     "pid": "7508",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262928264"
     }
   },
   {
     "pid": "7509",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/26292837X"
     }
   },
   {
     "pid": "7510",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262928507"
     }
   },
   {
     "pid": "7511",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/262928701"
     }
   },
   {
     "pid": "7512",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/26307837X"
     }
   },
   {
     "pid": "7513",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263492680"
     }
   },
   {
     "pid": "7514",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263499944"
     }
   },
   {
     "pid": "7515",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263499979"
     }
   },
   {
     "pid": "7516",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263500047"
     }
   },
   {
     "pid": "7517",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263500071"
     }
   },
   {
     "pid": "7518",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263500187"
     }
   },
   {
     "pid": "7519",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263610918"
     }
   },
   {
     "pid": "7520",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714233"
     }
   },
   {
     "pid": "7521",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714241"
     }
   },
   {
     "pid": "7522",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/26371425X"
     }
   },
   {
     "pid": "7523",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714268"
     }
   },
   {
     "pid": "7524",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714276"
     }
   },
   {
     "pid": "7525",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714284"
     }
   },
   {
     "pid": "7526",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714292"
     }
   },
   {
     "pid": "7527",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714306"
     }
   },
   {
     "pid": "7528",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714314"
     }
   },
   {
     "pid": "7529",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714322"
     }
   },
   {
     "pid": "7530",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714330"
     }
   },
   {
     "pid": "7531",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714349"
     }
   },
   {
     "pid": "7532",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714357"
     }
   },
   {
     "pid": "7533",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714365"
     }
   },
   {
     "pid": "7534",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714373"
     }
   },
   {
     "pid": "7535",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/26371439X"
     }
   },
   {
     "pid": "7536",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714403"
     }
   },
   {
     "pid": "7537",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714411"
     }
   },
   {
     "pid": "7538",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/26371442X"
     }
   },
   {
     "pid": "7539",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714438"
     }
   },
   {
     "pid": "7540",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714446"
     }
   },
   {
     "pid": "7541",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714454"
     }
   },
   {
     "pid": "7542",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714462"
     }
   },
   {
     "pid": "7543",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714470"
     }
   },
   {
     "pid": "7544",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714489"
     }
   },
   {
     "pid": "7545",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714500"
     }
   },
   {
     "pid": "7546",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714519"
     }
   },
   {
     "pid": "7547",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714527"
     }
   },
   {
     "pid": "7548",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714535"
     }
   },
   {
     "pid": "7549",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714543"
     }
   },
   {
     "pid": "7550",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714551"
     }
   },
   {
     "pid": "7551",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/26371456X"
     }
   },
   {
     "pid": "7552",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714578"
     }
   },
   {
     "pid": "7553",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714594"
     }
   },
   {
     "pid": "7554",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714608"
     }
   },
   {
     "pid": "7555",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714616"
     }
   },
   {
     "pid": "7556",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714624"
     }
   },
   {
     "pid": "7557",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714632"
     }
   },
   {
     "pid": "7558",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714640"
     }
   },
   {
     "pid": "7559",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714659"
     }
   },
   {
     "pid": "7560",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714667"
     }
   },
   {
     "pid": "7561",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714691"
     }
   },
   {
     "pid": "7562",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714705"
     }
   },
   {
     "pid": "7563",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "idref": {
       "$ref": "https://mef.rero.ch/api/concepts/idref/263714713"
     }

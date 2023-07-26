@@ -36,7 +36,7 @@ RECORD_TYPES = {
     'b': 'bf:Organisation',
     'f': 'bf:Organisation',
     'g': 'bf:Place',
-    's': 'bf:Concept',
+    's': 'bf:Topic',
     'u': 'bf:Title'
 }
 

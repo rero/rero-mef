@@ -12,7 +12,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Langues ib\u00e9ro-romanes"
@@ -225,7 +225,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Ethnologie - France"
@@ -474,7 +474,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Asc\u00e8se"
@@ -585,7 +585,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Biolinguistique"
@@ -702,7 +702,7 @@
         "noteType": "seeReference"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Esth\u00e9tique"
@@ -822,7 +822,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Philosophie - 20e si\u00e8cle"
@@ -930,7 +930,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Philosophie hindoue"
@@ -1035,7 +1035,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "related": [
       {
         "authorized_access_point": "Mariage"
@@ -1119,7 +1119,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Contre-culture"
@@ -1201,7 +1201,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Discours (linguistique)"
@@ -1268,7 +1268,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Lecture - \u00c9tude et enseignement"
@@ -1364,7 +1364,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "M\u00e9taphysique"
@@ -1480,7 +1480,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Sectes juives"
@@ -1627,7 +1627,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Mer et civilisation"
@@ -1722,7 +1722,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Compr\u00e9hension"
@@ -1822,7 +1822,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "related": [
       {
         "authorized_access_point": "Incarnation (christianisme)"
@@ -1885,7 +1885,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Documentation technique"
@@ -1983,7 +1983,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Antiquit\u00e9s pr\u00e9historiques"
@@ -2079,7 +2079,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "M\u00e9dias audiovisuels"
@@ -2201,7 +2201,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Patronnage (couture)"
@@ -2272,7 +2272,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Philosophie de l'homme"
@@ -2367,7 +2367,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Dialectes franciques"
@@ -2442,7 +2442,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Commerce ext\u00e9rieur - Droit"
@@ -2540,7 +2540,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Litt\u00e9rature s\u00e9mitique"
@@ -2614,7 +2614,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Bijoux"
@@ -2688,7 +2688,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Droit administratif"
@@ -2785,7 +2785,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Hommes d'\u00c9tat"
@@ -2878,7 +2878,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Ruth\u00e8nes"
@@ -2957,7 +2957,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Expression"
@@ -3050,7 +3050,7 @@
         "noteType": "seeReference"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Ethnologie - \u00c9tats-Unis"
@@ -3379,7 +3379,7 @@
   {
     "md5": "39ce2702aabfb3ca8fd5dfbc45e76173",
     "pid": "027809781",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Litt\u00e9rature italienne"
@@ -3516,7 +3516,7 @@
   {
     "md5": "90c0269816c412f10baf9ae0f852f3cc",
     "pid": "027811611",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Litt\u00e9rature espagnole"
@@ -3684,7 +3684,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Droit constitutionnel"
@@ -3783,7 +3783,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Droit constitutionnel"
@@ -3876,7 +3876,7 @@
   {
     "md5": "84ad061696ada3773d5983a525d1f4fb",
     "pid": "027838919",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "D\u00e9mocratie directe"
@@ -3973,7 +3973,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Hindouisme - Doctrines"
@@ -4027,7 +4027,7 @@
   {
     "md5": "712086c0ca0edda77931c707a069f648",
     "pid": "027852547",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Litt\u00e9rature grecque"
@@ -4100,7 +4100,7 @@
   {
     "md5": "7a45aa2c0450ea6b13c51940ad8f8852",
     "pid": "028004698",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "\u00c9lectronique num\u00e9rique"
@@ -4176,7 +4176,7 @@
   {
     "md5": "d402082b73af6f9a9eea06aeb87832ac",
     "pid": "028244494",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Ethnologie - [Localisations g\u00e9ographiques]"
@@ -4260,7 +4260,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Proc\u00e9dure parlementaire"
@@ -4322,7 +4322,7 @@
   {
     "md5": "cba12d361f04e4bcc396df13d6f43ed1",
     "pid": "028354559",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Litt\u00e9rature espagnole"
@@ -4401,7 +4401,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Litt\u00e9rature luxembourgeoise"
@@ -4461,7 +4461,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Ethnologie - Syrie"
@@ -4535,7 +4535,7 @@
   {
     "md5": "e7cd2827c6ee1c3bc11619acaf75b4b5",
     "pid": "028910044",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Ethnologie - [Localisations g\u00e9ographiques]"
@@ -4619,7 +4619,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Surdit\u00e9"
@@ -4679,7 +4679,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Civilisation - Espagne - 20e si\u00e8cle"
@@ -4767,7 +4767,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Civilisation - \u00c9gypte - Jusqu'\u00e0 332 av. J.-C."
@@ -4864,7 +4864,7 @@
         "noteType": "dataNotFound"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "deleted": "2022-08-25T10:47:31.610056+00:00",
     "bnf_type": "sujet Rameau",
     "identifiedBy": [
@@ -4896,7 +4896,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "related": [
       {
         "authorized_access_point": "Hommes politiques"
@@ -4957,7 +4957,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Sciences cognitives"
@@ -5095,7 +5095,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Ethnologie - Pologne"
@@ -5204,7 +5204,7 @@
         "noteType": "seeReference"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "related": [
       {
         "authorized_access_point": "Alto (instrument de musique)"
@@ -5292,7 +5292,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Boissons alcoolis\u00e9es"
@@ -5380,7 +5380,7 @@
   {
     "md5": "3e4c453e342b554d56141812fc664b4a",
     "pid": "030767806",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Ethnologie - [Localisations g\u00e9ographiques]"
@@ -5458,7 +5458,7 @@
   {
     "md5": "5140b59b47903f54bf59fad4adffb1a4",
     "pid": "03116207X",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Femmes enceintes - Examens m\u00e9dicaux"
@@ -5529,7 +5529,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Langues - \u00c9tude et enseignement"
@@ -5639,7 +5639,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Cognition"
@@ -5731,7 +5731,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "bnf_type": "genre/forme Rameau",
     "narrower": [
       {
@@ -5809,7 +5809,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Trios ([distributions instrumentales])"
@@ -5874,7 +5874,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Idiotismes"
@@ -5931,7 +5931,7 @@
   {
     "md5": "296029d520604b062d5edd4a4535d98b",
     "pid": "032563507",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Litt\u00e9rature n\u00e9erlandaise"
@@ -6030,7 +6030,7 @@
   {
     "md5": "eacb87b31c13e2861e0e10ec4560861b",
     "pid": "032972938",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Femmes enceintes - Examens m\u00e9dicaux"
@@ -6088,7 +6088,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Entretiens en \u00e9ducation"
@@ -6163,7 +6163,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Conscience"
@@ -6254,7 +6254,7 @@
   {
     "md5": "af249f0d0f3fc12061a7ed3129c51dff",
     "pid": "034490906",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Litt\u00e9rature flamande"
@@ -6330,7 +6330,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Sectes chr\u00e9tiennes"
@@ -6416,7 +6416,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Psych\u00e9d\u00e9lisme"
@@ -6493,7 +6493,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Ethnologie - Ghana"
@@ -6579,7 +6579,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Instruments de musique \u00e9lectroniques"
@@ -6650,7 +6650,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Art - 1970-...."
@@ -6723,7 +6723,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Art\u00e8re iliaque interne"
@@ -6777,7 +6777,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "related": [
       {
         "authorized_access_point": "Droit d'amendement (droit constitutionnel)"
@@ -6819,7 +6819,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "deleted": "2022-08-25T10:47:31.616254+00:00",
     "bnf_type": "sujet Rameau",
     "identifiedBy": [
@@ -6858,7 +6858,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Algues"
@@ -6923,7 +6923,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Sc\u00e9narios"
@@ -6986,7 +6986,7 @@
   {
     "md5": "858b665016ea58f792e9f2df21a84b00",
     "pid": "119256347",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Roman arabe"
@@ -7061,7 +7061,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Droit - Informatique"
@@ -7162,7 +7162,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Boucles (musique)"
@@ -7244,7 +7244,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Techno (musique)"
@@ -7292,7 +7292,7 @@
   {
     "md5": "2b814e00ff3060eab69c52bf8a22f67c",
     "pid": "146774094",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Po\u00e9sie italienne"
@@ -7377,7 +7377,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Bouddhisme - Doctrines"
@@ -7447,7 +7447,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Trait\u00e9s"
@@ -7501,7 +7501,7 @@
   {
     "md5": "282dbdec95fd23bff9ce97ad6be5b863",
     "pid": "172690250",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Vie intellectuelle - Espagne"
@@ -7612,7 +7612,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Instruments de musique - Afrique occidentale"
@@ -7671,7 +7671,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Engins de terrassement"
@@ -7753,7 +7753,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Manifestations - Alg\u00e9rie"
@@ -7824,7 +7824,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Modernisme (mouvement litt\u00e9raire portugais)"
@@ -7874,7 +7874,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "R\u00e9formisme islamique"
@@ -7925,7 +7925,7 @@
   {
     "md5": "dbc9e475ce39da077727bccef28710f0",
     "pid": "255690444",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "S\u00e9r\u00e9nades ([distributions instrumentales])"
@@ -7969,7 +7969,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Psycholinguistique"
@@ -8041,7 +8041,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Psychologie scolaire"
@@ -8117,7 +8117,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "\u00c9nonciation (linguistique)"
@@ -8176,7 +8176,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Chirurgie"
@@ -8234,7 +8234,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Banques de tissus"
@@ -8321,7 +8321,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Corps (philosophie)"
@@ -8372,7 +8372,7 @@
   {
     "md5": "689c389795afa13d7084e95a8a70710b",
     "pid": "259951293",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "R\u00e9fugi\u00e9s syriens"
@@ -8441,7 +8441,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Tumeurs"
@@ -8503,7 +8503,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Diagnostic biologique"
@@ -8549,7 +8549,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Drones"
@@ -8605,7 +8605,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Prix et r\u00e9compenses"
@@ -8650,7 +8650,7 @@
   {
     "md5": "e8ce30054c9b6965a6e769806d6a87d0",
     "pid": "261901532",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Guerre mondiale (1939-1945) - Mouvements de r\u00e9sistance"
@@ -8700,7 +8700,7 @@
   {
     "md5": "0d5832dfc53ce534e9470ec23f305575",
     "pid": "262111012",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Po\u00e9sie italienne"
@@ -8747,7 +8747,7 @@
   {
     "md5": "420cc8b50aa33b8ecef953a606420d7e",
     "pid": "262111020",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Nouvelles espagnoles"
@@ -8781,7 +8781,7 @@
   {
     "md5": "92652b18f9d64a29bc88fb62366b49cd",
     "pid": "262111039",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "bnf_type": "genre/forme Rameau",
     "identifiedBy": [
       {
@@ -8807,7 +8807,7 @@
   {
     "md5": "ab33ca0abcb419f407d8b311d57b414a",
     "pid": "262111071",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "bnf_type": "genre/forme Rameau",
     "closeMatch": [
       {
@@ -8848,7 +8848,7 @@
   {
     "md5": "2ee7c87fe6cbbde239218bc808251d8e",
     "pid": "26211108X",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "bnf_type": "genre/forme Rameau",
     "identifiedBy": [
       {
@@ -8890,7 +8890,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Cartes"
@@ -8935,7 +8935,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "F\u00eates religieuses - Hindouisme"
@@ -9001,7 +9001,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "bnf_type": "sujet Rameau",
     "identifiedBy": [
       {
@@ -9045,7 +9045,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Confr\u00e9ries musulmanes"
@@ -9112,7 +9112,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Juda\u00efsme - Rites et c\u00e9r\u00e9monies"
@@ -9173,7 +9173,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "bnf_type": "sujet Rameau",
     "closeMatch": [
       {
@@ -9240,7 +9240,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Mystique - Islam"
@@ -9314,7 +9314,7 @@
   {
     "md5": "9802734ef150d560c8df4c1e4fde2f82",
     "pid": "262669161",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Trios ([distributions instrumentales])"
@@ -9345,7 +9345,7 @@
   {
     "md5": "c96ab31be43dcb679a5aec85b52814eb",
     "pid": "262669188",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Quintettes \u00e0 vent ([distributions instrumentales])"
@@ -9376,7 +9376,7 @@
   {
     "md5": "7f15492eb00974d54598f909a3d89ef3",
     "pid": "26266920X",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Quatuors ([distributions instrumentales])"
@@ -9407,7 +9407,7 @@
   {
     "md5": "75d701b2358631e3a52b5acbe713741d",
     "pid": "262669234",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Antiquit\u00e9s lydiennes"
@@ -9459,7 +9459,7 @@
   {
     "md5": "1ecf18a995c8456d4c95e3a79d200a30",
     "pid": "262669242",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Architecture antique"
@@ -9516,7 +9516,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Administration locale - Personnel"
@@ -9607,7 +9607,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "M\u00e9tiers de la mer"
@@ -9668,7 +9668,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Technique immunoenzymatique"
@@ -9724,7 +9724,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Identit\u00e9 sexuelle"
@@ -9777,7 +9777,7 @@
   {
     "md5": "07bffa7f734e6748929e6d32bfe2e0ac",
     "pid": "26292837X",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Bagatelles ([distributions instrumentales])"
@@ -9819,7 +9819,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Adolescentes"
@@ -9887,7 +9887,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Alfa Romeo (automobiles)"
@@ -9945,7 +9945,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "related": [
       {
         "authorized_access_point": "G\u00e9orgie - Histoire"
@@ -9986,7 +9986,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Danse - \u00c9tude et enseignement"
@@ -10038,7 +10038,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "bnf_type": "genre/forme Rameau",
     "identifiedBy": [
       {
@@ -10074,7 +10074,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "H\u00f4pitaux - Personnel"
@@ -10161,7 +10161,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Fran\u00e7ais"
@@ -10214,7 +10214,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "related": [
       {
         "authorized_access_point": "Slov\u00e9nie - Histoire"
@@ -10245,7 +10245,7 @@
   {
     "md5": "bd0bb74a707749332553783049e67423",
     "pid": "263500187",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Villes disparues, en ruine, etc. - [Localisations g\u00e9ographiques]"
@@ -10280,7 +10280,7 @@
   {
     "md5": "18745dc29b1a80363545a87548cb0bd6",
     "pid": "263610918",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Roman historique arabe"
@@ -10331,7 +10331,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "bnf_type": "genre/forme Rameau",
     "narrower": [
       {
@@ -10377,7 +10377,7 @@
   {
     "md5": "e6e1ebb774dbe80df5747cdab6c66ad2",
     "pid": "263714241",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Saxophone et orchestre"
@@ -10423,7 +10423,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Ghan\u00e9ens"
@@ -10492,7 +10492,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Syriens"
@@ -10546,7 +10546,7 @@
   {
     "md5": "2b432aa65a32991a9abfe26306ef0f68",
     "pid": "263714276",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Po\u00e9sie n\u00e9erlandaise"
@@ -10593,7 +10593,7 @@
   {
     "md5": "450f9e247660a2fa4d9654573c4bc39c",
     "pid": "263714284",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Po\u00e9sie flamande"
@@ -10638,7 +10638,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "V\u00e9hicules"
@@ -10696,7 +10696,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Psychologie cognitive"
@@ -10777,7 +10777,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Erreurs judiciaires - France"
@@ -10839,7 +10839,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Anglais (langue) - Examens"
@@ -10891,7 +10891,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Sextuors ([distributions instrumentales])"
@@ -10922,7 +10922,7 @@
   {
     "md5": "255da6197eb6ce58ab10024cdc75ca57",
     "pid": "263714349",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Saxophone et ensemble \u00e0 cordes"
@@ -10968,7 +10968,7 @@
   {
     "md5": "3886e2ec017fad8fdc8e1615a0616da0",
     "pid": "263714357",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Arabesques ([distributions instrumentales])"
@@ -11011,7 +11011,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Automobiles - Pi\u00e8ces"
@@ -11057,7 +11057,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "M\u00e9thodes agiles (informatique)"
@@ -11106,7 +11106,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "H\u00e9licopt\u00e8res militaires - Europe"
@@ -11167,7 +11167,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Breguet (avions)"
@@ -11217,7 +11217,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Ergoth\u00e9rapie"
@@ -11277,7 +11277,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Th\u00e9rapie comportementale"
@@ -11340,7 +11340,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "V\u00eatements de sport"
@@ -11396,7 +11396,7 @@
   {
     "md5": "ed0d58274785330118b71f8ee54516d4",
     "pid": "263714446",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Civilisation - Lettonie"
@@ -11448,7 +11448,7 @@
   {
     "md5": "8c7d9bc0a937f93e4846ceab5309623c",
     "pid": "263714454",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Cuisine balte"
@@ -11518,7 +11518,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Acquisition du langage"
@@ -11577,7 +11577,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Informatique"
@@ -11630,7 +11630,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Marques de commerce"
@@ -11694,7 +11694,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Stratigraphie"
@@ -11744,7 +11744,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Inondations - Ma\u00eetrise"
@@ -11794,7 +11794,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "\u00c9cologie humaine"
@@ -11843,7 +11843,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Formation en alternance"
@@ -11878,7 +11878,7 @@
   {
     "md5": "36c36ab1e45ef066341b7b488a174e50",
     "pid": "263714543",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "related": [
       {
         "authorized_access_point": "Luxembourgeois (langue)"
@@ -11929,7 +11929,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Son - Enregistrement et reproduction -- Techniques num\u00e9riques"
@@ -11986,7 +11986,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Vin"
@@ -12033,7 +12033,7 @@
         "noteType": "seeReference"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Erreurs judiciaires - [Localisations g\u00e9ographiques]"
@@ -12101,7 +12101,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Espagnol (langue)"
@@ -12159,7 +12159,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Mouvements litt\u00e9raires - Espagne"
@@ -12208,7 +12208,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Avions de chasse - \u00c9tats-Unis"
@@ -12258,7 +12258,7 @@
   {
     "md5": "b70772aea2679eaf1b693d814941040e",
     "pid": "263714624",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Po\u00e9sie samaritaine"
@@ -12327,7 +12327,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "\u00c9tats modifi\u00e9s de conscience"
@@ -12411,7 +12411,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "D\u00e9mographie"
@@ -12478,7 +12478,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Yoga"
@@ -12564,7 +12564,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Campagnes \u00e9lectorales"
@@ -12607,7 +12607,7 @@
   {
     "md5": "19607005a4a0ac2bbdc498bb3222d5f9",
     "pid": "263714691",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Antiquit\u00e9s \u00e9gyptiennes"
@@ -12672,7 +12672,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Je\u00fbne"
@@ -12741,7 +12741,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Bijoux pr\u00e9historiques"

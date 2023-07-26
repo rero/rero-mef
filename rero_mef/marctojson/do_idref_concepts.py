@@ -68,7 +68,7 @@ class Transformation(object):
             self.logger.info('Call Function', 'trans_idref_pid')
         if field_001 := self.marc.get_fields('001'):
             self.json_dict['pid'] = field_001[0].data
-            self.json_dict['type'] = 'bf:Concept'
+            self.json_dict['type'] = 'bf:Topic'
 
     def trans_idref_bnf_type(self):
         """Transformation bnf_type from field 008."""
