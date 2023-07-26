@@ -42,7 +42,7 @@ def test_rero_identifier():
     trans.trans_rero_identifier()
     assert trans.json == {
         'pid': 'A021029523',
-        'type': 'bf:Concept',
+        'type': 'bf:Topic',
         'identifiedBy': [
             {
                 'type': 'bf:Local',

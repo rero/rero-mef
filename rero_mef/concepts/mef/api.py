@@ -72,7 +72,7 @@ class ConceptMefRecord(EntityMefRecord):
     def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
                reindex=False, md5=True, **kwargs):
         """Create a new agent record."""
-        data['type'] = 'bf:Concept'
+        data['type'] = 'bf:Topic'
         return super().create(
             data=data,
             id_=id_,

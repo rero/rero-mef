@@ -32,7 +32,7 @@ def test_idref_pid():
     trans.trans_idref_pid()
     assert trans.json == {
         'pid': '249594463',
-        'type': 'bf:Concept'
+        'type': 'bf:Topic'
     }
 
 

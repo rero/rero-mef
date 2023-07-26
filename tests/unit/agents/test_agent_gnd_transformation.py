@@ -42,7 +42,7 @@ def test_no_person_or_organisation():
     data = Transformation(marc=records[0], logger=None,
                           verbose=False, transform=True)
     assert data.json_dict == {
-        'NO TRANSFORMATION': 'Not a person or organisation: bf:Concept'}
+        'NO TRANSFORMATION': 'Not a person or organisation: bf:Topic'}
 
 
 def test_no_100_110_111():

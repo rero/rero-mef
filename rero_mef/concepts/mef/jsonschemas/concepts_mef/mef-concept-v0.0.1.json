@@ -24,7 +24,7 @@
       "title": "Type",
       "type": "string",
       "enum": [
-        "bf:Concept"
+        "bf:Topic"
       ]
     },
     "rero": {

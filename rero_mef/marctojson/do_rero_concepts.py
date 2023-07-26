@@ -60,7 +60,7 @@ class Transformation(object):
         field_035 = self.marc.get_fields('035')
         if field_035 and field_035[0].get('a'):
             self.json_dict['pid'] = field_035[0]['a']
-            self.json_dict['type'] = 'bf:Concept'
+            self.json_dict['type'] = 'bf:Topic'
             identifiers.append({
                 'type': 'bf:Local',
                 'source': 'RERO',

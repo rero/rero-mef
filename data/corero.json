@@ -16,7 +16,7 @@
         "noteType": "REROtreatment"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "identifiedBy": [
       {
         "type": "bf:Local",
@@ -60,7 +60,7 @@
         "noteType": "REROtreatment"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "identifiedBy": [
       {
         "type": "bf:Local",
@@ -100,7 +100,7 @@
         "noteType": "REROtreatment"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Tronc (anatomie)"
@@ -192,7 +192,7 @@
         "noteType": "REROtreatment"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Alimentations (\u00e9lectricit\u00e9)"
@@ -277,7 +277,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Philosophie du langage"
@@ -359,7 +359,7 @@
         "noteType": "REROtreatment"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "closeMatch": [
       {
         "source": "LCSH",
@@ -419,7 +419,7 @@
         "noteType": "dataNotFound"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Enseignement primaire"
@@ -471,7 +471,7 @@
         "noteType": "seeAlsoReference"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Acteurs"
@@ -548,7 +548,7 @@
         "noteType": "REROtreatment"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Liants"
@@ -641,7 +641,7 @@
         "noteType": "REROtreatment"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "closeMatch": [
       {
         "source": "RVMLaval",
@@ -720,7 +720,7 @@
         "noteType": "REROtreatment"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Dynamique"
@@ -842,7 +842,7 @@
   {
     "md5": "3758dfe5fae5d0c040079837bcb7bc58",
     "pid": "A021001013",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Pression acoustique"
@@ -915,7 +915,7 @@
   {
     "md5": "236c3365b024f8d3a214c9382aa3f320",
     "pid": "A021001014",
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "related": [
       {
         "authorized_access_point": "A\u00e9rothermodynamique"
@@ -977,7 +977,7 @@
         "noteType": "REROtreatment"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "V\u00e9hicules automobiles"
@@ -1050,7 +1050,7 @@
         "noteType": "REROtreatment"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Viande"
@@ -1114,7 +1114,7 @@
         "noteType": "REROtreatment"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Caract\u00e8re"
@@ -1203,7 +1203,7 @@
         "noteType": "REROtreatment"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "related": [
       {
         "authorized_access_point": "Agriculture durable"
@@ -1282,7 +1282,7 @@
         "noteType": "dataSource"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "Avions de transport \u00e0 r\u00e9action"
@@ -1368,7 +1368,7 @@
         "noteType": "REROtreatment"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "broader": [
       {
         "authorized_access_point": "\u00c9sot\u00e9risme"
@@ -1442,7 +1442,7 @@
         "noteType": "REROtreatment"
       }
     ],
-    "type": "bf:Concept",
+    "type": "bf:Topic",
     "related": [
       {
         "authorized_access_point": "Noms g\u00e9ographiques al\u00e9maniques"

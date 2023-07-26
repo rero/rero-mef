@@ -61,7 +61,7 @@ def concept_rero_data():
             "Disciplines d'éveil",
             "Éveil, Activités d'"
         ],
-        "type": "bf:Concept"
+        "type": "bf:Topic"
     }
 
 
@@ -117,7 +117,7 @@ def concept_idref_data():
             "XXXXX",
             "Dialectes franco-provençaux"
         ],
-        "type": "bf:Concept"
+        "type": "bf:Topic"
     }
 
 
@@ -237,7 +237,7 @@ def concept_idref_redirect_data():
             "Franco-provençal (langue) - Dialectes",
             "Francoprovençal (langue) - Dialectes"
         ],
-        "type": "bf:Concept"
+        "type": "bf:Topic"
     }
 
 
@@ -250,7 +250,7 @@ def concept_mef_rero_data():
         "rero": {
             "$ref": "https://mef.rero.ch/api/concepts/rero/A021001006"
         },
-        "type": "bf:Concept"
+        "type": "bf:Topic"
     }
 
 
@@ -264,7 +264,7 @@ def concept_mef_idref_data():
         "idref": {
             "$ref": "https://mef.rero.ch/api/concepts/idref/050548115"
         },
-        "type": "bf:Concept"
+        "type": "bf:Topic"
     }
 
 
@@ -277,5 +277,5 @@ def concept_mef_idref_redirect_data():
         "idref": {
             "$ref": "https://mef.rero.ch/api/concepts/idref/027276694"
         },
-        "type": "bf:Concept"
+        "type": "bf:Topic"
     }
