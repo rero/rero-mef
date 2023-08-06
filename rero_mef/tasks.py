@@ -63,7 +63,7 @@ def create_or_update(idx, record, entity, dbcommit=True, reindex=True,
     mef_record = None
     if entity in entities and \
             agent_action in (Action.CREATE, Action.UPDATE, Action.REPLACE):
-        mef_record, mef_action = record.create_or_update_mef(
+        mef_record, mef_actions = record.create_or_update_mef(
             dbcommit=dbcommit, reindex=reindex)
     rec_id = record.get('pid')
     id_type = 'pid:'
@@ -76,9 +76,10 @@ def create_or_update(idx, record, entity, dbcommit=True, reindex=True,
             f'{agent_action.name}'
         )
         if mef_record:
-            msg = f'{msg} | mef: {mef_record.pid} {mef_action.name}'
+            for mef_pid, mef_action in mef_actions.items():
+                msg = f'{msg} | mef: {mef_pid} {mef_action.name}'
         click.echo(msg)
-    return id_type, str(rec_id), str(agent_action)
+    return id_type, str(rec_id), agent_action
 
 
 @shared_task

@@ -145,7 +145,7 @@ class AgentMefRecord(EntityMefRecord):
         :param sources: Add sources information to record
         :returns: record
         """
-        replace_refs_data = deepcopy(self).replace_refs()
+        replace_refs_data = AgentMefRecord(deepcopy(self).replace_refs())
         data = replace_refs_data if resolve else deepcopy(self)
         my_sources = []
         for agent in self.entities:

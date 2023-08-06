@@ -51,10 +51,12 @@ class Action(Enum):
     UPTODATE = 'uptodate'
     DISCARD = 'discard'
     DELETE = 'delete'
-    ALREADYDELETED = 'already deleted'
-    DELETEAGENT = 'delete agent'
-    VALIDATIONERROR = 'validation error'
+    ALREADY_DELETED = 'already deleted'
+    DELETE_AGENT = 'delete agent'
+    VALIDATION_ERROR = 'validation error'
     ERROR = 'error'
+    NOT_ONLINE = 'not online'
+    NOT_FOUND = 'not found'
 
 
 class ReroMefRecordError:
@@ -190,7 +192,7 @@ class ReroMefRecord(Record):
             self.flush_indexes()
         return result
 
-    def update(self, data, dbcommit=False, reindex=False):
+    def update(self, data, commit=False, dbcommit=False, reindex=False):
         """Update data for record.
 
         :param data: a dict data to update the record.
@@ -202,7 +204,8 @@ class ReroMefRecord(Record):
         if self.get('md5'):
             data = add_md5(data)
         super().update(data)
-        super().commit()
+        if commit or dbcommit:
+            self.commit()
         if dbcommit:
             self.dbcommit(reindex)
         return self
@@ -224,7 +227,7 @@ class ReroMefRecord(Record):
             data=data, dbcommit=dbcommit, reindex=reindex)
         return return_record, Action.UPDATE
 
-    def replace(self, data, dbcommit=False, reindex=False):
+    def replace(self, data, commit=False, dbcommit=False, reindex=False):
         """Replace data in record."""
         new_data = deepcopy(data)
         pid = new_data.get('pid')
@@ -233,7 +236,12 @@ class ReroMefRecord(Record):
         if self.get('md5'):
             new_data = add_md5(new_data)
         self.clear()
-        self = self.update(new_data, dbcommit=dbcommit, reindex=reindex)
+        self = self.update(
+            data=new_data,
+            commit=commit,
+            dbcommit=dbcommit,
+            reindex=reindex
+        )
         return self
 
     def dbcommit(self, reindex=False, forceindex=False):

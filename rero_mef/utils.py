@@ -289,35 +289,42 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                                     test_md5=test_md5
                                 )
                                 count += 1
-                                action_count.setdefault(action.name, 0)
-                                action_count[action.name] += 1
+                                action_count.setdefault(action, 0)
+                                action_count[action] += 1
+                                m_actions = {}
                                 if action in [
                                     Action.CREATE,
                                     Action.UPDATE,
                                     Action.REPLACE
                                 ]:
-                                    m_record, m_action = \
+                                    m_record, m_actions = \
                                         record.create_or_update_mef(
                                             dbcommit=True, reindex=True)
+                                    for m_action in m_actions.values():
+                                        mef_action_count.setdefault(
+                                            m_action, 0)
+                                        mef_action_count[m_action] += 1
+
                                 else:
                                     m_action = Action.UPTODATE
-                                    m_record = None
-                                mef_action_count.setdefault(m_action.name, 0)
-                                mef_action_count[m_action.name] += 1
+                                    m_record = {}
+                                    mef_action_count.setdefault(
+                                        m_action, 0)
+                                    mef_action_count[m_action] += 1
 
                                 if verbose:
                                     msg = (
                                         f'OAI {name} spec({spec}): {pid}'
-                                        f' updated: {updated} {action.name}'
+                                        f' updated: {updated} {action.value}'
                                     )
-                                    if m_record:
+                                    for mef_pid, m_action in m_actions.items():
                                         msg = (
-                                            f'{msg} | mef: {m_record.pid} '
-                                            f'{m_action.name}'
+                                            f'{msg} | mef: {mef_pid} '
+                                            f'{m_action.value}'
                                         )
-                                        if viaf_pid := m_record.get(
-                                                'viaf_pid'):
-                                            msg = f'{msg} | viaf: {viaf_pid}'
+                                    if viaf_pid := m_record.get(
+                                            'viaf_pid'):
+                                        msg = f'{msg} | viaf: {viaf_pid}'
                                     click.echo(msg)
                         elif verbose:
                             click.echo(

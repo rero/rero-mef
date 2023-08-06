@@ -25,7 +25,7 @@ import mock
 from sickle.response import OAIResponse
 from utils import mock_response
 
-from rero_mef.agents import AgentGndRecord
+from rero_mef.agents import Action, AgentGndRecord
 from rero_mef.agents.gnd.tasks import process_records_from_dates, \
     save_records_from_dates
 from rero_mef.utils import add_oai_source, oai_get_last_run, oai_set_last_run
@@ -151,8 +151,8 @@ def test_oai_process_records_from_dates(mock_sickle, app, init_oai,
         debug=True
     )
     assert count == 1
-    assert action_count == {'CREATE': 1}
-    assert mef_action_count == {'CREATE': 1}
+    assert action_count == {Action.CREATE: 1}
+    assert mef_action_count == {Action.CREATE: 1}
     assert last_run == oai_get_last_run('agents.gnd')
 
     mock_sickle.side_effect = MultipleResponses(
@@ -167,6 +167,6 @@ def test_oai_process_records_from_dates(mock_sickle, app, init_oai,
         debug=True
     )
     assert count == 1
-    assert action_count == {'UPTODATE': 1}
-    assert mef_action_count == {'UPTODATE': 1}
+    assert action_count == {Action.UPTODATE: 1}
+    assert mef_action_count == {Action.UPTODATE: 1}
     assert last_run != oai_get_last_run('agents.gnd')

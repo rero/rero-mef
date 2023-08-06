@@ -17,9 +17,8 @@
 
 """Test agents api."""
 
-from rero_mef.agents.gnd.api import AgentGndRecord
-from rero_mef.agents.idref.api import AgentIdrefRecord
-from rero_mef.agents.rero.api import AgentReroRecord
+from rero_mef.agents import Action, AgentGndRecord, AgentIdrefRecord, \
+    AgentReroRecord
 
 
 def test_create_agent_record_no_viaf_links(
@@ -27,12 +26,12 @@ def test_create_agent_record_no_viaf_links(
     """Test create agent record without VIAF links."""
     gnd_record, action = AgentGndRecord.create_or_update(
             data=agent_gnd_data, dbcommit=True, reindex=True)
-    assert action.name == 'CREATE'
+    assert action == Action.CREATE
     assert gnd_record['pid'] == '12391664X'
 
-    m_record, m_action = gnd_record.create_or_update_mef(
+    m_record, m_actions = gnd_record.create_or_update_mef(
         dbcommit=True, reindex=True)
-    assert m_action.name == 'CREATE'
+    assert m_actions == {m_record.pid: Action.CREATE}
     assert m_record == {
         '$schema':
             'https://mef.rero.ch/schemas/mef/mef-v0.0.1.json',
@@ -43,12 +42,12 @@ def test_create_agent_record_no_viaf_links(
 
     rero_record, action = AgentReroRecord.create_or_update(
         data=agent_rero_data, dbcommit=True, reindex=True)
-    assert action.name == 'CREATE'
+    assert action == Action.CREATE
     assert rero_record['pid'] == 'A023655346'
 
-    m_record, m_action = rero_record.create_or_update_mef(
+    m_record, m_actions = rero_record.create_or_update_mef(
         dbcommit=True, reindex=True)
-    assert m_action.name == 'CREATE'
+    assert m_actions == {m_record.pid: Action.CREATE}
     assert m_record == {
         '$schema':
             'https://mef.rero.ch/schemas/mef/mef-v0.0.1.json',
@@ -59,12 +58,12 @@ def test_create_agent_record_no_viaf_links(
 
     idref_record, action = AgentIdrefRecord.create_or_update(
         data=agent_idref_data, dbcommit=True, reindex=True)
-    assert action.name == 'CREATE'
+    assert action == Action.CREATE
     assert idref_record['pid'] == '069774331'
 
-    m_record, m_action = idref_record.create_or_update_mef(
+    m_record, m_actions = idref_record.create_or_update_mef(
         dbcommit=True, reindex=True)
-    assert m_action.name == 'CREATE'
+    assert m_actions == {m_record.pid: Action.CREATE}
     assert m_record == {
         '$schema':
             'https://mef.rero.ch/schemas/mef/mef-v0.0.1.json',

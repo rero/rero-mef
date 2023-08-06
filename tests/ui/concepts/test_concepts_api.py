@@ -35,9 +35,9 @@ def test_create_concept_record(app, concept_rero_data, concept_idref_data,
     assert action == Action.CREATE
     assert idref_record['pid'] == '050548115'
 
-    m_record, m_action = idref_record.create_or_update_mef(
+    m_record, m_actions = idref_record.create_or_update_mef(
         dbcommit=True, reindex=True)
-    assert action == Action.CREATE
+    assert m_actions == {m_record.pid: Action.CREATE}
     assert m_record == {
         '$schema': f'{SCHEMA_URL}/mef-concept-v0.0.1.json',
         'idref': {'$ref': 'https://mef.rero.ch/api/concepts/idref/050548115'},
@@ -50,9 +50,9 @@ def test_create_concept_record(app, concept_rero_data, concept_idref_data,
         data=concept_rero_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert rero_record['pid'] == 'A021001006'
-    m_record, m_action = rero_record.create_or_update_mef(
+    m_record, m_actions = rero_record.create_or_update_mef(
         dbcommit=True, reindex=True)
-    assert m_action == Action.CREATE
+    assert m_actions == {m_record.pid: Action.CREATE}
     assert m_record == {
         '$schema': f'{SCHEMA_URL}/mef-concept-v0.0.1.json',
         'rero': {'$ref': 'https://mef.rero.ch/api/concepts/rero/A021001006'},

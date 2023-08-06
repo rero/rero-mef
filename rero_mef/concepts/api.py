@@ -90,7 +90,7 @@ class ConceptRecord(ReroMefRecord):
             )
         if reindex:
             ConceptMefRecord.flush_indexes()
-        return mef_record, mef_action
+        return mef_record, {mef_record.pid: mef_action}
 
     @classmethod
     def get_online_record(cls, id, debug=False):
