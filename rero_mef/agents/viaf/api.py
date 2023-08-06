@@ -672,17 +672,17 @@ class AgentViafRecord(ReroMefRecord):
 
 
 class AgentViafIndexer(ReroIndexer):
-    """ViafIndexer."""
+    """Agent VIAF indexer."""
 
-    record_class = AgentViafRecord
+    record_cls = AgentViafRecord
 
     def bulk_index(self, record_id_iterator):
         """Bulk index records.
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        self._bulk_op(
+        super().bulk_index(
             record_id_iterator,
-            op_type='index',
-            index=AgentViafSearch.Meta.index
+            index=AgentViafSearch.Meta.index,
+            doc_type='viaf'
         )

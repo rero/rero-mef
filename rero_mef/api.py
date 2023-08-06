@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 """API for manipulating records."""
-
 from copy import deepcopy
 from datetime import datetime, timezone
 from enum import Enum
@@ -37,6 +36,8 @@ from kombu.compat import Consumer
 from sqlalchemy import func, text
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm.exc import NoResultFound
+
+from rero_mef.utils import get_entity_class
 
 from .utils import add_md5, add_schema
 
@@ -464,12 +465,17 @@ class ReroMefRecord(Record):
 class ReroIndexer(RecordIndexer):
     """Indexing class for mef."""
 
-    def bulk_index(self, record_id_iterator, index=None):
+    def bulk_index(self, record_id_iterator, index=None, doc_type=None):
         """Bulk index records.
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        self._bulk_op(record_id_iterator, op_type='index', index=index)
+        self._bulk_op(
+            record_id_iterator,
+            op_type='index',
+            index=index,
+            doc_type=doc_type
+        )
 
     def process_bulk_queue(self, search_bulk_kwargs=None, stats_only=True):
         """Process bulk indexing queue.
@@ -532,7 +538,10 @@ class ReroIndexer(RecordIndexer):
         :param payload: Decoded message body.
         :returns: Dictionary defining the search engine bulk 'index' action.
         """
-        record = self.record_cls.get_record(payload["id"])
+        if doc_type := payload.get('doc_type'):
+            record = get_entity_class(doc_type).get_record(payload["id"])
+        else:
+            record = self.record_cls.get_record(payload["id"])
         index = self.record_to_index(record)
 
         arguments = {}
@@ -550,3 +559,25 @@ class ReroIndexer(RecordIndexer):
         action.update(arguments)
 
         return action
+
+    def _bulk_op(self, record_id_iterator, op_type, index=None, doc_type=None):
+        """Index record in the search engine asynchronously.
+
+        :param record_id_iterator: Iterator that yields record UUIDs.
+        :param op_type: Indexing operation (one of ``index``, ``create``,
+            ``delete`` or ``update``).
+        :param index: The search engine index. (Default: ``None``)
+        """
+        with self.create_producer() as producer:
+            for rec in record_id_iterator:
+                data = dict(
+                    id=str(rec),
+                    op=op_type,
+                    index=index,
+                    doc_type=doc_type
+                )
+                producer.publish(
+                    data,
+                    declare=[self.mq_queue],
+                    **self.mq_publish_kwargs,
+                )

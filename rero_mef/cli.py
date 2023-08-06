@@ -946,13 +946,13 @@ def reindex(pid_type, no_info):
     :param pid_type: Pid type Could be multiples pid types.
     :param no-info: No `runindex` information displayed after execution.
     """
-    for type in pid_type:
+    for p_type in pid_type:
         click.secho(
-            f'Sending {type} to indexing queue ...',
+            f'Sending {p_type} to indexing queue ...',
             fg='green'
         )
-        entity_class = get_entity_class(type)
-        entity_indexer = get_entity_indexer_class(type)
+        entity_class = get_entity_class(p_type)
+        entity_indexer = get_entity_indexer_class(p_type)
         entity_indexer().bulk_index(entity_class.get_all_ids())
     if no_info:
         click.secho(

@@ -65,7 +65,7 @@ class AgentGndRecord(AgentRecord):
 
 
 class AgentGndIndexer(AgentIndexer):
-    """GndIndexer."""
+    """Agent GND indexer."""
 
     record_cls = AgentGndRecord
 
@@ -74,8 +74,8 @@ class AgentGndIndexer(AgentIndexer):
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        self._bulk_op(
+        super().bulk_index(
             record_id_iterator,
-            op_type='index',
-            index=AgentGndSearch.Meta.index
+            index=AgentGndSearch.Meta.index,
+            doc_type='aggnd'
         )

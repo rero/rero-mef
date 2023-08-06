@@ -676,15 +676,15 @@ def db_copy_to(filehandle, table, columns):
 
 def bulk_index(entity, uuids, verbose=False):
     """Bulk index records."""
-    if verbose:
-        click.echo(f' add to index: {len(uuids)}')
     retry = True
     minutes = 1
-    search_class = get_entity_search_class(entity)
-    from .api import ReroIndexer
+    indexer_class = get_entity_indexer_class(entity)()
     while retry:
         try:
-            ReroIndexer().bulk_index(uuids, index=search_class().Meta.index)
+            indexer_class.bulk_index(uuids)
+            res = indexer_class.process_bulk_queue()
+            if verbose:
+                click.echo(f' bulk indexed: {entity} {res}')
             retry = False
         except Exception as exc:
             msg = f'Bulk Index Error: retry in {minutes} min {exc}'

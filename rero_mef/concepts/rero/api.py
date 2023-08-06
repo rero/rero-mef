@@ -54,7 +54,7 @@ class ConceptReroRecord(ConceptRecord):
 
 
 class ConceptReroIndexer(ConceptIndexer):
-    """ConceptsIndexer."""
+    """Concept RERO indexer."""
 
     record_cls = ConceptReroRecord
 
@@ -63,8 +63,8 @@ class ConceptReroIndexer(ConceptIndexer):
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        self._bulk_op(
+        super().bulk_index(
             record_id_iterator,
-            op_type='index',
-            index=ConceptReroSearch.Meta.index
+            index=ConceptReroSearch.Meta.index,
+            doc_type='corero'
         )
