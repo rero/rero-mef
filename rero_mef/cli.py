@@ -780,8 +780,16 @@ def harvestname(name, from_date, until_date, arguments, quiet, enqueue,
                 viaf_online=viaf_online,
                 **arguments
             )
+            actions = ', '.join([
+                f'{action.value}={count}' for action, count
+                in action_count.items()
+            ])
+            mef_actions = ', '.join([
+                f'{action.value}={count}' for action, count
+                in mef_action_count.items()
+            ])
             click.echo(
-                f'Count: {count} agent: {action_count} mef: {mef_action_count}'
+                f'Count: {count} agent: {actions} mef: {mef_actions}'
             )
 
 

@@ -204,7 +204,7 @@ class AgentViafRecord(ReroMefRecord):
             :param online: Try to get following agent types online.
             :return: Agent record and performed action.
             """
-            action = 'NOTONLINE'
+            action = Action.NOT_ONLINE
             agent_record = None
             if agent_class.provider.pid_type in online:
                 data, msg = agent_class.get_online_record(id=pid)
@@ -213,185 +213,104 @@ class AgentViafRecord(ReroMefRecord):
                 if data and not data.get('NO TRANSFORMATION'):
                     agent_record, action = agent_class.create_or_update(
                         data=data, dbcommit=dbcommit, reindex=reindex)
-                    action = action.name
             else:
                 agent_record = agent_class.get_record_by_pid(pid)
             return agent_record, action
 
-        def set_actions(actions, pid, source_name, action,
-                        mef_pid=None, mef_action=None):
+        def set_actions(actions, pid, source_name, action, mef_actions=None):
             """Set actions.
 
             :param actions: Actions dictionary to change
             :param pid: Pid to add.
             :param source_name: Source name to add
             :param action: Action to add.
-            :param mef_pid: MEF pid to add (optional).
-            :param mef_action: MEF action to add (optional).
+            :param mef_actions: MEF actions to add (optional).
             :return: actions
             """
             actions.setdefault(pid, {
                 'source': source_name,
                 'action': action
             })
-            if mef_pid:
-                mef_actions = actions.get(pid, {}).get('MEF', {})
-                mef_actions[mef_pid] = mef_action
+            if mef_actions:
                 actions[pid]['MEF'] = mef_actions
             return actions
 
         actions = {}
         online = online or []
-        # Get all VIAF agents pids
-        agent_viaf_pids = {
-            data['record_class'].name: {
-                'pid': data['pid'],
-                'record_class': data['record_class']
-            }
-            for data in self.get_agents_pids()
-        }
-        agent_mef_pids = {}
-        mef_record = None
-
-        try:
-            if mef_records := AgentMefRecord.get_mef(
-                agent_pid=self.pid, agent_name=self.name
-            ):
-                # Get all MEF agents pids
-                mef_record = mef_records[0]
-                agent_mef_pids = {
-                    data['record_class'].name: {
-                        'pid': data['pid'],
-                        'record_class': data['record_class']
-                    }
-                    for data in mef_record.get_agents_pids()
-                }
-                # clean VIAF MEF pids not changed
-                for source_name in self.sources_used:
-                    agent_viaf_pid = agent_viaf_pids.get(
-                        source_name, {}).get('pid')
-                    agent_mef_pid = agent_mef_pids.get(
-                        source_name, {}).get('pid')
-                    if agent_viaf_pid and agent_viaf_pid == agent_mef_pid:
-                        agent_class = agent_viaf_pids[
-                            source_name]['record_class']
-                        _, action = update_online(
-                            agent_class=agent_class,
-                            pid=agent_viaf_pid,
-                            online=online
-                        )
-                        actions = set_actions(
-                            actions=actions,
-                            pid=agent_viaf_pid,
-                            source_name=source_name,
-                            action=action,
-                            mef_pid=mef_record.pid,
-                            mef_action=Action.UPTODATE.name
-                        )
-                        agent_viaf_pids.pop(source_name, None)
-                        agent_mef_pids.pop(source_name, None)
-            # Update deleted
-            deleted_records = []
-            for source_name, info in agent_mef_pids.items():
-                deleted_records.append(
-                    info['record_class'].get_record_by_pid(info['pid'])
-                )
-                if mef_record:
-                    mef_record.pop(source_name, None)
+        viaf_agents_data = self.get_agents_pids()
+        viaf_agents_pids = [data['pid'] for data in viaf_agents_data]
+        # Delete old agent entries from MEF records
+        old_agents = {}
+        for mef_record in AgentMefRecord.get_mef(self.pid, self.name):
+            changed = False
+            for agent in mef_record.get_agents_records():
+                if agent.pid not in viaf_agents_pids:
+                    mef_record.pop(agent.name)
+                    old_agents[agent.pid] = agent
                     actions = set_actions(
                         actions=actions,
-                        pid=info['pid'],
-                        source_name=source_name,
-                        action=Action.DISCARD.name,
-                        mef_pid=mef_record.pid,
-                        mef_action=Action.DELETE.name
+                        pid=agent.pid,
+                        source_name=agent.name,
+                        action=Action.DISCARD,
+                        mef_actions={mef_record.pid: Action.DELETE}
                     )
-            if agent_mef_pids:
+                    changed = True
+            if changed:
                 mef_record.update(
                     data=mef_record,
                     dbcommit=dbcommit,
                     reindex=reindex
                 )
-                if reindex:
-                    mef_record.flush_indexes()
-            # Update changed
-            old_mef_records = {}
-            for source_name, info in agent_viaf_pids.items():
-                # Get old MEF records.
-                for old_mef_record in AgentMefRecord.get_mef(
-                    agent_pid=info['pid'], agent_name=source_name
-                ):
-                    if old_mef_record.get('viaf_pid') != self.pid:
-                        old_mef_records.setdefault(
-                            old_mef_record.pid, []).append(source_name)
-                agent_record = None
-                agent_class = info['record_class']
-                pid = info['pid']
-                agent_record, action = update_online(
-                    agent_class=agent_class,
-                    pid=pid,
-                    online=online
+        # Recreate MEF records
+        for data in viaf_agents_data:
+            agent_record, action = update_online(
+                agent_class=data['record_class'],
+                pid=data['pid'],
+                online=online
+            )
+            if agent_record:
+                _, mef_actions = agent_record.create_or_update_mef(
+                    dbcommit=dbcommit,
+                    reindex=reindex,
+                    viaf_record=self
                 )
-                if agent_record:
-                    mef_record, mef_action = agent_record.create_or_update_mef(
-                        dbcommit=dbcommit, reindex=reindex)
-                    actions = set_actions(
-                        actions=actions,
-                        pid=pid,
-                        source_name=source_name,
-                        action=action,
-                        mef_pid=mef_record.pid,
-                        mef_action=mef_action.name
-                    )
-                else:
-                    actions = set_actions(
-                        actions=actions,
-                        pid=pid,
-                        source_name=source_name,
-                        action='NOT FOUND',
-                    )
-            for deleted_record in deleted_records:
-                mef_record, mef_action = deleted_record.create_or_update_mef(
-                    dbcommit=dbcommit, reindex=reindex)
                 actions = set_actions(
                     actions=actions,
-                    pid=deleted_record.pid,
-                    source_name=deleted_record.name,
-                    action=Action.DELETE.name,
-                    mef_pid=mef_record.pid,
-                    mef_action=mef_action.name
+                    pid=agent_record.pid,
+                    source_name=agent_record.name,
+                    action=action,
+                    mef_actions=mef_actions
                 )
-            for old_mef_record_pid, sources in old_mef_records.items():
-                old_mef_record = AgentMefRecord.get_record_by_pid(
-                    old_mef_record_pid)
-                for source in sources:
-                    old_mef_record.pop(source, None)
-                old_mef_record.update(
-                    data=old_mef_record,
-                    dbcommit=dbcommit,
-                    reindex=reindex
+            else:
+                mef_records = AgentMefRecord.get_mef(
+                    data['pid'], data['record_class'])
+                mef_actions = {}
+                for mef_record in mef_records:
+                    mef_record.update(
+                        data=mef_record,
+                        dbcommit=dbcommit,
+                        reindex=reindex
+                    )
+                    mef_actions[mef_record.pid] = Action.DISCARD
+                actions = set_actions(
+                    actions=actions,
+                    pid=data['pid'],
+                    source_name=data['source'],
+                    action=Action.NOT_FOUND,
+                    mef_actions=mef_actions
                 )
-            if verbose:
-                msgs = [
-                    f'{value["source"]}: {key} '
-                    f'{value["action"]} MEF: {value.get("MEF")}'
-                    for key, value in actions.items()
-                ]
-                click.echo(
-                    '  Create MEF from VIAF pid: '
-                    f'{self.pid:<25} '
-                    f'| {"; ".join(msgs)}'
-                )
-            if reindex:
-                AgentMefRecord.flush_indexes()
-        except Exception as err:
-            current_app.logger.error(
-                f'{self.pid:<25} '
-                f'| {err}',
-                exc_info=True,
-                stack_info=True
+        # Create Mef records for old agents
+        if reindex:
+            AgentMefRecord.flush_indexes()
+        for agent_pid, agent in old_agents.items():
+            mef_record, mef_actions = agent.create_or_update_mef(
+                dbcommit=dbcommit,
+                reindex=reindex
             )
-            raise
+            actions.setdefault(agent_pid, {})
+            actions[agent_pid].setdefault('MEF', {})
+            for pid, action in mef_actions.items():
+                actions[agent_pid]['MEF'][pid] = action
         return actions
 
     def reindex(self, forceindex=False):
@@ -515,7 +434,8 @@ class AgentViafRecord(ReroMefRecord):
         ]
         if len(viaf_records) > 1:
             current_app.logger.error(
-                f'MULTIPLE VIAF FOUND FOR: {agent.name} {agent.pid}'
+                f'MULTIPLE VIAF FOUND FOR: {agent.name} {agent.pid} | '
+                f'viaf: {", ".join([viaf.pid for viaf in viaf_records])}'
             )
         return viaf_records
 
@@ -548,27 +468,35 @@ class AgentViafRecord(ReroMefRecord):
         # delete VIAF record
         result = super().delete(
             force=True, dbcommit=dbcommit, delindex=delindex)
-        mef_actions = []
+
+        # Clean MEF records
+        mef_actions = {}
+        old_agent_records = {}
         for mef_record in mef_records:
-            mef_actions.append(f'MEF: {mef_record.pid}')
-            if len(agents_records):
-                mef_actions.append(
-                    f'{agents_records[0].name}: {agents_records[0].pid} '
-                    f'MEF: {mef_record.pid} {Action.UPDATE.value}'
-                )
-            for agent_record in agents_records[1:]:
-                mef_record.delete_ref(agent_record)
-            mef_record.pop('viaf_pid', None)
+            mef_actions[mef_record.pid] = {}
+            mef_agents_records = mef_record.get_agents_records()
+            if len(mef_agents_records):
+                mef_actions[mef_record.pid][mef_agents_records[0].name] = {
+                    mef_agents_records[0].pid: Action.UPDATE}
+            for mef_agent_record in mef_agents_records[1:]:
+                if mef_agent_record in agents_records:
+                    mef_record.pop(mef_agent_record.name)
+                    mef_actions[mef_record.pid][mef_agent_record.name] = {
+                        mef_agent_record.pid: Action.DELETE}
+                    old_agent_records[mef_agent_record.pid] = mef_agent_record
+            viaf_pid = mef_record.pop('viaf_pid', None)
+            mef_actions[mef_record.pid]['viaf'] = {
+                    viaf_pid: Action.DELETE}
             mef_record.update(data=mef_record, dbcommit=True, reindex=True)
-        AgentMefRecord.flush_indexes()
+            AgentMefRecord.flush_indexes()
         # recreate MEF records for agents
-        for agent_record in agents_records[1:]:
-            mef_record, mef_action = agent_record.create_or_update_mef(
-                dbcommit=True, reindex=True)
-            mef_actions.append(
-                f'{agent_record.name}: {agent_record.pid} '
-                f'MEF: {mef_record.pid} {mef_action.value}'
+        for agent_record in old_agent_records.values():
+            mef, test = agent_record.create_or_update_mef(
+                dbcommit=True,
+                reindex=True
             )
+            mef_actions[mef.pid] = {agent_record.name: {
+                agent_record.pid: Action.CREATE}}
         AgentMefRecord.flush_indexes()
         return result, Action.DELETE, mef_actions
 
@@ -578,6 +506,7 @@ class AgentViafRecord(ReroMefRecord):
         for source, record_class in self.sources_used.items():
             if source_pid := self.get(f'{source}_pid'):
                 agents.append({
+                    'source': source,
                     'record_class': record_class,
                     'pid': source_pid
                 })

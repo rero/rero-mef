@@ -62,8 +62,11 @@ class EntityMefRecord(ReroMefRecord):
             mef_records = [
                 cls.get_record(hit.meta.id) for hit in query.scan()]
         if len(mef_records) > 1:
+            mef_pids = mef_records if pid_only else [
+                mef.pid for mef in mef_records]
             current_app.logger.error(
-                f'MULTIPLE MEF FOUND FOR: {agent_name} {agent_pid}'
+                f'MULTIPLE MEF FOUND FOR: {agent_name} {agent_pid} | '
+                f'mef: {", ".join(mef_pids)}'
             )
         return mef_records
 
@@ -238,8 +241,8 @@ class EntityMefRecord(ReroMefRecord):
         :returns: Modified record and executed action.
         """
         action = Action.DISCARD
-        if self.pop(record.name, None):
-            action = Action.UPDATE
+        if self.pop(record.name):
+            action = Action.DELETE
             self.replace(data=self, dbcommit=dbcommit, reindex=reindex)
             if reindex:
                 self.flush_indexes()

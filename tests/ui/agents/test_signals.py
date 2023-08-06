@@ -17,14 +17,15 @@
 
 """Test signals."""
 
-from rero_mef.agents import AgentGndRecord, AgentMefSearch, AgentViafRecord
+from rero_mef.agents import Action, AgentGndRecord, AgentMefSearch, \
+    AgentViafRecord
 
 
 def test_create_mef_with_viaf_links(app, agent_viaf_data, agent_gnd_data):
     """Test create MEF record from agent with VIAF links."""
     v_record, action = AgentViafRecord.create_or_update(
         data=agent_viaf_data, dbcommit=True, reindex=True)
-    assert action.name == 'CREATE'
+    assert action == Action.CREATE
     assert v_record['pid'] == '66739143'
     assert v_record['gnd_pid'] == '12391664X'
     assert v_record['rero_pid'] == 'A023655346'
@@ -32,12 +33,12 @@ def test_create_mef_with_viaf_links(app, agent_viaf_data, agent_gnd_data):
 
     record, action = AgentGndRecord.create_or_update(
         data=agent_gnd_data, dbcommit=True, reindex=True)
-    assert action.name == 'CREATE'
+    assert action == Action.CREATE
     assert record['pid'] == '12391664X'
 
-    m_record, m_action = record.create_or_update_mef(
+    m_record, m_actions = record.create_or_update_mef(
         dbcommit=True, reindex=True)
-    assert m_action.name == 'CREATE'
+    assert m_actions == {'1': Action.CREATE}
     assert '$ref' in m_record['gnd']
 
     query = AgentMefSearch() \

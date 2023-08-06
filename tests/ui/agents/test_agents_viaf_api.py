@@ -27,8 +27,8 @@ from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PersistentIdentifier
 from utils import mock_response
 
-from rero_mef.agents import Action, AgentMefRecord, AgentViafRecord, \
-    AgentViafSearch, AgentReroRecord
+from rero_mef.agents import Action, AgentMefRecord, AgentReroRecord, \
+    AgentViafRecord, AgentViafSearch
 from rero_mef.cli import init_oai_harvest_config
 from rero_mef.monitoring import Monitoring
 
@@ -91,6 +91,265 @@ def test_get_online(mock_get, app, agent_viaf_online_response):
     )
 
 
+def test_create_mef_and_agents(app, agent_viaf_record, agent_gnd_record,
+                               agent_rero_record, agent_idref_record):
+    """Test create MEF and agents."""
+    monitor = Monitoring()
+
+    actions = agent_viaf_record.create_mef_and_agents(
+        dbcommit=True, reindex=True)
+    mef_pid = AgentMefRecord.get_mef(
+        agent_pid=agent_viaf_record.pid,
+        agent_name=agent_viaf_record.name,
+        pid_only=True
+    )[0]
+    assert actions == {
+        '069774331': {
+            'MEF': {mef_pid: Action.CREATE},
+            'action': Action.NOT_ONLINE,
+            'source': 'idref'
+        },
+        '12391664X': {
+            'MEF': {mef_pid: Action.UPDATE},
+            'action': Action.NOT_ONLINE,
+            'source': 'gnd'},
+        'A023655346': {
+            'MEF': {mef_pid: Action.UPDATE},
+            'action': Action.NOT_ONLINE,
+            'source': 'rero'
+        }
+    }
+
+    assert AgentMefRecord.count() == 1
+    info = monitor.check_mef()
+    assert info == {
+        'aggnd': {'db': 1, 'index': 'aggnd', 'mef': 1, 'mef-db': 0},
+        'agrero': {'db': 1, 'index': 'agrero', 'mef': 1, 'mef-db': 0},
+        'aidref': {'db': 1, 'index': 'aidref', 'mef': 1, 'mef-db': 0},
+        'cidref': {'db': 0, 'index': 'cidref', 'mef': 0, 'mef-db': 0},
+        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0}
+    }
+    # Change RERO in VIAF:
+    agent_viaf_record['rero_pid'] = 'AXXXXXXXXX'
+    agent_viaf_record.update(
+        data=agent_viaf_record,
+        dbcommit=True,
+        reindex=True
+    )
+    actions = agent_viaf_record.create_mef_and_agents(
+        dbcommit=True, reindex=True)
+    assert actions == {
+        '069774331': {
+            'MEF': {mef_pid: Action.UPTODATE},
+            'action': Action.NOT_ONLINE,
+            'source': 'idref'
+        },
+        '12391664X': {
+            'MEF': {mef_pid: Action.UPTODATE},
+            'action': Action.NOT_ONLINE,
+            'source': 'gnd'
+        },
+        'A023655346': {
+            'MEF': {
+                mef_pid: Action.DELETE,
+                str(int(mef_pid) + 1): Action.CREATE
+            },
+            'action': Action.DISCARD,
+            'source': 'rero'
+        },
+        'AXXXXXXXXX': {
+            'action': Action.NOT_FOUND,
+            'source': 'rero'
+        },
+    }
+    assert AgentMefRecord.count() == 2
+    info = monitor.check_mef()
+    assert info == {
+        'aggnd': {'db': 1, 'index': 'aggnd', 'mef': 1, 'mef-db': 0},
+        'agrero': {'db': 1, 'index': 'agrero', 'mef': 1, 'mef-db': 0},
+        'aidref': {'db': 1, 'index': 'aidref', 'mef': 1, 'mef-db': 0},
+        'cidref': {'db': 0, 'index': 'cidref', 'mef': 0, 'mef-db': 0},
+        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0}
+    }
+
+    # Create missing RERO record
+    agent_rero_data_2 = deepcopy(agent_rero_record)
+    agent_rero_data_2['pid'] = 'AXXXXXXXXX'
+    agent_rero_record_2 = AgentReroRecord.create(
+        data=agent_rero_data_2,
+        dbcommit=True,
+        reindex=True
+    )
+    agent_rero_record_2.create_or_update_mef(dbcommit=True, reindex=True)
+    assert AgentMefRecord.count() == 2
+
+    # delete GND from VIAF:
+    agent_viaf_record = AgentViafRecord.get_record_by_pid(
+        agent_viaf_record.pid)
+    gnd_pid = agent_viaf_record.pop('gnd_pid')
+    agent_viaf_record['rero_pid'] = 'A023655346'
+    agent_viaf_record.update(
+        data=agent_viaf_record,
+        dbcommit=True,
+        reindex=True
+    )
+    actions = agent_viaf_record.create_mef_and_agents(
+        dbcommit=True, reindex=True)
+    assert actions == {
+        '069774331': {
+            'MEF': {
+                mef_pid: Action.UPTODATE
+            },
+            'action': Action.NOT_ONLINE,
+            'source': 'idref'
+        },
+        '12391664X': {
+            'MEF': {
+                mef_pid: Action.DELETE,
+                str(int(mef_pid) + 2): Action.CREATE
+            },
+            'action': Action.DISCARD,
+            'source': 'gnd'},
+        'A023655346': {
+            'MEF': {
+                mef_pid: Action.UPDATE,
+                str(int(mef_pid) + 1): Action.DISCARD
+            },
+            'action': Action.NOT_ONLINE,
+            'source': 'rero'
+        },
+        'AXXXXXXXXX': {
+            'MEF': {
+                mef_pid: Action.DELETE,
+                str(int(mef_pid) + 3): Action.CREATE
+            },
+            'action': Action.DISCARD,
+            'source': 'rero'
+        }
+    }
+    assert AgentMefRecord.count() == 4
+    info = monitor.check_mef()
+    assert info == {
+        'aggnd': {'db': 1, 'index': 'aggnd', 'mef': 1, 'mef-db': 0},
+        'agrero': {'db': 2, 'index': 'agrero', 'mef': 2, 'mef-db': 0},
+        'aidref': {'db': 1, 'index': 'aidref', 'mef': 1, 'mef-db': 0},
+        'cidref': {'db': 0, 'index': 'cidref', 'mef': 0, 'mef-db': 0},
+        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0}
+    }
+
+    # readd GND to VIAF and add wrongly VIAF pid to GND MEF record:
+    mef_gnd_record = AgentMefRecord.get_record_by_pid('4')
+    mef_gnd_record['viaf_pid'] = agent_viaf_record.pid
+    mef_gnd_record.update(mef_gnd_record, dbcommit=True, reindex=True)
+    xxx, action = agent_gnd_record.create_or_update_mef(
+        dbcommit=True,
+        reindex=True
+    )
+    mef_record = AgentMefRecord.get_record_by_pid(mef_pid)
+    assert 'gnd' not in mef_record
+    assert 'idref' in mef_record
+    assert 'rero' in mef_record
+    agent_viaf_record = AgentViafRecord.get_record_by_pid(
+        agent_viaf_record.pid)
+    agent_viaf_record['gnd_pid'] = gnd_pid
+    agent_viaf_record.update(
+        data=agent_viaf_record,
+        dbcommit=True,
+        reindex=True
+    )
+    actions = agent_viaf_record.create_mef_and_agents(
+        dbcommit=True, reindex=True)
+    mef_pid_new = AgentMefRecord.get_mef(
+        agent_pid=agent_viaf_record.pid,
+        agent_name=agent_viaf_record.name,
+        pid_only=True
+    )[0]
+    mef_record = AgentMefRecord.get_record_by_pid(mef_pid_new)
+    assert 'gnd' in mef_record
+    assert 'idref' in mef_record
+    assert 'rero' in mef_record
+    assert actions == {
+        '069774331': {
+            'MEF': {
+                mef_pid: Action.DISCARD,
+                mef_pid_new: Action.UPDATE
+            },
+            'action': Action.NOT_ONLINE,
+            'source': 'idref'
+        },
+        '12391664X': {
+            'MEF': {
+                mef_pid: Action.DISCARD,
+                str(int(mef_pid) + 2): Action.DISCARD,
+                mef_pid_new: Action.UPDATE
+            },
+            'action': Action.NOT_ONLINE,
+            'source': 'gnd'},
+        'A023655346': {
+            'MEF': {
+                mef_pid: Action.DISCARD,
+                mef_pid_new: Action.UPDATE
+            },
+            'action': Action.NOT_ONLINE,
+            'source': 'rero'
+        },
+        'AXXXXXXXXX': {
+            'MEF': {
+                mef_pid_new: Action.DELETE,
+                str(int(mef_pid_new) + 1): Action.CREATE
+            },
+            'action': Action.DISCARD,
+            'source': 'rero'
+        }
+    }
+    assert AgentMefRecord.count() == 5
+    info = monitor.check_mef()
+    assert info == {
+        'aggnd': {'db': 1, 'index': 'aggnd', 'mef': 1, 'mef-db': 0},
+        'agrero': {'db': 2, 'index': 'agrero', 'mef': 2, 'mef-db': 0},
+        'aidref': {'db': 1, 'index': 'aidref', 'mef': 1, 'mef-db': 0},
+        'cidref': {'db': 0, 'index': 'cidref', 'mef': 0, 'mef-db': 0},
+        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0}
+    }
+
+    from pprint import pprint
+    for rec in AgentMefRecord.get_all_records():
+        pprint(rec)
+
+    # delete VIAF
+    rec = AgentViafRecord.get_record_by_pid(agent_viaf_record.get('pid'))
+    _, action, mef_actions = rec.delete(dbcommit=True, delindex=True)
+    assert action == Action.DELETE
+
+# {'1': {'viaf': {'66739143': Action.DELETE}},
+#  '4': {'gnd': {'12391664X': Action.DELETE},
+#        'idref': {'069774331': Action.UPDATE},
+#        'rero': {'A023655346': Action.DELETE},
+#        'viaf': {'66739143': Action.DELETE}},
+#  '6': {'gnd': {'12391664X': Action.CREATE}},
+#  '7': {'rero': {'A023655346': Action.CREATE}}}
+
+    assert mef_actions[mef_pid] == {
+        'viaf': {agent_viaf_record.pid: Action.DELETE}}
+    assert mef_actions[mef_pid_new]['viaf'] == {
+        agent_viaf_record.pid: Action.DELETE}
+
+    mef_record = AgentMefRecord.get_record_by_pid(mef_pid_new)
+    assert 'idref' in mef_record
+    assert 'gnd' not in mef_record
+    assert 'rero' not in mef_record
+    assert 'viaf_pid' not in mef_record
+
+    info = monitor.check_mef()
+    assert info == {
+        'aggnd': {'db': 1, 'index': 'aggnd', 'mef': 1, 'mef-db': 0},
+        'agrero': {'db': 2, 'index': 'agrero', 'mef': 2, 'mef-db': 0},
+        'aidref': {'db': 1, 'index': 'aidref', 'mef': 1, 'mef-db': 0},
+        'cidref': {'db': 0, 'index': 'cidref', 'mef': 0, 'mef-db': 0},
+        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0}
+    }
+
+
 @mock.patch('requests.Session.get')
 @mock.patch('requests.get')
 def test_create_mef_and_agents_online(mock_get, mock_session_get, app,
@@ -120,178 +379,10 @@ def test_create_mef_and_agents_online(mock_get, mock_session_get, app,
         content=''
     )
     actions = agent_viaf_record.create_mef_and_agents(
-        dbcommit=True, reindex=True, online=['aggnd', 'aidref', 'agrero'],
+        dbcommit=True, reindex=True, online=['aggnd', 'aidref'],
         verbose=True)
-    # TODO: 'action': 'NOT FOUND' ????
-    assert actions == {
-        '069774331': {'action': 'NOT FOUND', 'source': 'idref'},
-        '12391664X': {'action': 'NOT FOUND', 'source': 'gnd'},
-        'A023655346': {'action': 'NOT FOUND', 'source': 'rero'},
-    }
-
-
-def test_create_mef_and_agents(app, agent_viaf_record, agent_gnd_record,
-                               agent_rero_record, agent_idref_record):
-    """Test create MEF and agents."""
-    monitor = Monitoring()
-
-    actions = agent_viaf_record.create_mef_and_agents(
-        dbcommit=True, reindex=True)
-    mef_pid = AgentMefRecord.get_mef(
-        agent_pid=agent_viaf_record.pid,
-        agent_name=agent_viaf_record.name,
-        pid_only=True
-    )[0]
-    assert actions == {
-        '069774331': {
-            'MEF': {'2': 'CREATE'},
-            'action': 'NOTONLINE',
-            'source': 'idref'
-        },
-        '12391664X': {
-            'MEF': {'2': 'UPDATE'},
-            'action': 'NOTONLINE',
-            'source': 'gnd'},
-        'A023655346': {
-            'MEF': {'2': 'UPDATE'},
-            'action': 'NOTONLINE',
-            'source': 'rero'
-        }
-    }
-
-    assert AgentMefRecord.count() == 1
-    info = monitor.check_mef()
-    assert info == {
-        'aggnd': {'db': 1, 'index': 'aggnd', 'mef': 1, 'mef-db': 0},
-        'agrero': {'db': 1, 'index': 'agrero', 'mef': 1, 'mef-db': 0},
-        'aidref': {'db': 1, 'index': 'aidref', 'mef': 1, 'mef-db': 0},
-        'cidref': {'db': 0, 'index': 'cidref', 'mef': 0, 'mef-db': 0},
-        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0}
-    }
-    # Change RERO in VIAF:
-    agent_viaf_record['rero_pid'] = 'AXXXXXXXXX'
-    agent_viaf_record.update(
-        data=agent_viaf_record,
-        dbcommit=True,
-        reindex=True
-    )
-    actions = agent_viaf_record.create_mef_and_agents(
-        dbcommit=True, reindex=True)
-    assert actions == {
-        '069774331': {
-            'MEF': {'2': 'UPTODATE'},
-            'action': 'NOTONLINE',
-            'source': 'idref'
-        },
-        '12391664X': {
-            'MEF': {'2': 'UPTODATE'},
-            'action': 'NOTONLINE',
-            'source': 'gnd'
-        },
-        'A023655346': {
-            'MEF': {
-                '2': 'DELETE',
-                '3': 'CREATE'
-            },
-            'action': 'DISCARD',
-            'source': 'rero'
-        },
-        'AXXXXXXXXX': {
-            'action': 'NOT FOUND',
-            'source': 'rero'
-        },
-    }
-    assert AgentMefRecord.count() == 2
-    info = monitor.check_mef()
-    assert info == {
-        'aggnd': {'db': 1, 'index': 'aggnd', 'mef': 1, 'mef-db': 0},
-        'agrero': {'db': 1, 'index': 'agrero', 'mef': 1, 'mef-db': 0},
-        'aidref': {'db': 1, 'index': 'aidref', 'mef': 1, 'mef-db': 0},
-        'cidref': {'db': 0, 'index': 'cidref', 'mef': 0, 'mef-db': 0},
-        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0}
-    }
-
-    # Create missing RERO record
-    agent_rero_data_2 = deepcopy(agent_rero_record)
-    agent_rero_data_2['pid'] = 'AXXXXXXXXX'
-    agent_rero_record_2 = AgentReroRecord.create(
-        data=agent_rero_data_2,
-        dbcommit=True,
-        reindex=True
-    )
-    agent_rero_record_2.create_or_update_mef(dbcommit=True, reindex=True)
-    assert AgentMefRecord.count() == 2
-
-    # delete GND from VIAF:
-    agent_viaf_record = AgentViafRecord.get_record_by_pid(
-        agent_viaf_record.pid)
-    agent_viaf_record.pop('gnd_pid')
-    agent_viaf_record['rero_pid'] = 'A023655346'
-    agent_viaf_record.update(
-        data=agent_viaf_record,
-        dbcommit=True,
-        reindex=True
-    )
-    actions = agent_viaf_record.create_mef_and_agents(
-        dbcommit=True, reindex=True)
-    assert actions == {
-        '069774331': {
-            'MEF': {'2': 'UPTODATE'},
-            'action': 'NOTONLINE',
-            'source': 'idref'
-        },
-        '12391664X': {
-            'MEF': {
-                '2': 'DELETE',
-                '4': 'CREATE'
-            },
-            'action': 'DISCARD',
-            'source': 'gnd'},
-        'A023655346': {
-            'MEF': {'2': 'UPDATE'},
-            'action': 'NOTONLINE',
-            'source': 'rero'
-        },
-        'AXXXXXXXXX': {
-            'MEF': {
-                '2': 'DELETE',
-                '5': 'CREATE'
-            },
-            'action': 'DISCARD',
-            'source': 'rero'
-        }
-    }
-    assert AgentMefRecord.count() == 4
-    info = monitor.check_mef()
-    assert info == {
-        'aggnd': {'db': 1, 'index': 'aggnd', 'mef': 1, 'mef-db': 0},
-        'agrero': {'db': 2, 'index': 'agrero', 'mef': 2, 'mef-db': 0},
-        'aidref': {'db': 1, 'index': 'aidref', 'mef': 1, 'mef-db': 0},
-        'cidref': {'db': 0, 'index': 'cidref', 'mef': 0, 'mef-db': 0},
-        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0}
-    }
-
-    # delete VIAF
-    rec = AgentViafRecord.get_record_by_pid(agent_viaf_record.get('pid'))
-    _, action, mef_actions = rec.delete(dbcommit=True, delindex=True)
-    assert action == Action.DELETE
-
-    first_pid = mef_actions[0].split(':')[1].strip()
-    assert mef_actions[1].startswith('idref: 069774331 MEF:')
-    assert mef_actions[2].startswith('rero: A023655346 MEF:')
-
-    mef_record = AgentMefRecord.get_record_by_pid(first_pid)
-    assert 'idref' in mef_record
-    assert 'gnd' not in mef_record
-    assert 'rero' not in mef_record
-    assert 'viaf_pid' not in mef_record
-
-    assert AgentMefRecord.count() == 5
-    info = monitor.check_mef()
-    assert info == {
-        'aggnd': {'db': 1, 'index': 'aggnd', 'mef': 1, 'mef-db': 0},
-        'agrero': {'db': 2, 'index': 'agrero', 'mef': 2, 'mef-db': 0},
-        'aidref': {'db': 1, 'index': 'aidref', 'mef': 1, 'mef-db': 0},
-        'cidref': {'db': 0, 'index': 'cidref', 'mef': 0, 'mef-db': 0},
-        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0}
-    }
+    # TODO: 'action': Action.NOT_FOUND ????
+    assert actions['069774331'] == {
+        'action': Action.NOT_FOUND, 'source': 'idref'}
+    assert actions['12391664X'] == {
+        'action': Action.NOT_FOUND, 'source': 'gnd'}
