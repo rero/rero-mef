@@ -202,17 +202,17 @@ class AgentMefRecord(EntityMefRecord):
 
 
 class AgentMefIndexer(ReroIndexer):
-    """AgentMefIndexer."""
+    """Agent MEF indexer."""
 
-    record_class = AgentMefRecord
+    record_cls = AgentMefRecord
 
     def bulk_index(self, record_id_iterator):
         """Bulk index records.
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        self._bulk_op(
+        super().bulk_index(
             record_id_iterator,
-            op_type='index',
-            index=AgentMefSearch.Meta.index
+            index=AgentMefSearch.Meta.index,
+            doc_type='mef'
         )

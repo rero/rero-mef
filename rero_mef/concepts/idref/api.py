@@ -54,7 +54,7 @@ class ConceptIdrefRecord(ConceptRecord):
 
 
 class ConceptIdrefIndexer(ConceptIndexer):
-    """ConceptsIndexer."""
+    """Concept IDREF indexer."""
 
     record_cls = ConceptIdrefRecord
 
@@ -63,8 +63,8 @@ class ConceptIdrefIndexer(ConceptIndexer):
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        self._bulk_op(
+        super().bulk_index(
             record_id_iterator,
-            op_type='index',
-            index=ConceptIdrefSearch.Meta.index
+            index=ConceptIdrefSearch.Meta.index,
+            doc_type='cidref'
         )

@@ -149,7 +149,7 @@ class ConceptMefRecord(EntityMefRecord):
 
 
 class ConceptMefIndexer(ReroIndexer):
-    """MefIndexer."""
+    """Concept MEF indexer."""
 
     record_cls = ConceptMefRecord
 
@@ -158,8 +158,8 @@ class ConceptMefIndexer(ReroIndexer):
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        self._bulk_op(
+        super().bulk_index(
             record_id_iterator,
-            op_type='index',
-            index=ConceptMefSearch.Meta.index
+            index=ConceptMefSearch.Meta.index,
+            doc_type='comef'
         )

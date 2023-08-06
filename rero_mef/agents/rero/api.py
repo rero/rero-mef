@@ -60,7 +60,7 @@ class AgentReroRecord(AgentRecord):
 
 
 class AgentReroIndexer(AgentIndexer):
-    """ReroIndexer."""
+    """Agent RERO indexer."""
 
     record_cls = AgentReroRecord
 
@@ -69,8 +69,8 @@ class AgentReroIndexer(AgentIndexer):
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        self._bulk_op(
+        super().bulk_index(
             record_id_iterator,
-            op_type='index',
-            index=AgentReroSearch.Meta.index
+            index=AgentReroSearch.Meta.index,
+            doc_type='agrero'
         )

@@ -60,7 +60,7 @@ class AgentIdrefRecord(AgentRecord):
 
 
 class AgentIdrefIndexer(AgentIndexer):
-    """IdrefIndexer."""
+    """Agent IDREF indexer."""
 
     record_cls = AgentIdrefRecord
 
@@ -69,8 +69,8 @@ class AgentIdrefIndexer(AgentIndexer):
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        self._bulk_op(
+        super().bulk_index(
             record_id_iterator,
-            op_type='index',
-            index=AgentIdrefSearch.Meta.index
+            index=AgentIdrefSearch.Meta.index,
+            doc_type='aidref'
         )
