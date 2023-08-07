@@ -27,6 +27,7 @@ import gc
 import hashlib
 import json
 import os
+import time
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from io import StringIO
@@ -55,13 +56,39 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from pymarc.marcxml import parse_xml_to_array
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-from sickle import Sickle, oaiexceptions
+from sickle import OAIResponse, Sickle, oaiexceptions
 from sickle.iterator import OAIItemIterator
 from sickle.oaiexceptions import NoRecordsMatch
 
 # Hours can not be retrieved by get_info_by_oai_name
 # TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 TIME_FORMAT = '%Y-%m-%d'
+
+
+class SickleWithRetries(Sickle):
+    """Sickle class for OAI harvesting."""
+
+    def harvest(self, **kwargs):  # pragma: no cover
+        """Make HTTP requests to the OAI server.
+
+        :param kwargs: OAI HTTP parameters.
+        :rtype: :class:`sickle.OAIResponse`
+        """
+        http_response = self._request(kwargs)
+        for _ in range(self.max_retries):
+            if self._is_error_code(http_response.status_code) \
+                    and http_response.status_code in self.retry_status_codes:
+                retry_after = self.get_retry_after(http_response)
+                current_app.logger.warning(
+                    f'HTTP {http_response.status_code}! '
+                    f'Retrying after {retry_after} seconds...'
+                )
+                time.sleep(retry_after)
+                http_response = self._request(kwargs)
+        http_response.raise_for_status()
+        if self.encoding:
+            http_response.encoding = self.encoding
+        return OAIResponse(http_response, params=kwargs)
 
 
 def add_oai_source(name, baseurl, metadataprefix='marc21',
@@ -332,7 +359,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                                 f'\n{records[0]}'
                             )
                     except Exception as err:
-                        msg = f'Creating {name} {idx}: {err}'
+                        msg = f'Creating {name} {idx}: {err} {record}'
                         if rec:
                             msg += f'\n{rec}'
                         current_app.logger.error(msg, exc_info=True,
@@ -568,12 +595,15 @@ def number_records_in_file(json_file, file_type):
     return count
 
 
-def progressbar(items, length=0, verbose=False):
+def progressbar(items, length=0, verbose=False, label=''):
     """Verbose progress bar."""
     if verbose:
+        label = f'{label} ({length})' if label else str(length)
         with click.progressbar(
-                    items, label=str(length), length=length
-                ) as progressbar_items:
+            items,
+            label=label,
+            length=length,
+        ) as progressbar_items:
             yield from progressbar_items
     else:
         yield from items
@@ -971,6 +1001,7 @@ def get_entity_classes(without_mef_viaf=True):
         endpoints.pop('mef', None)
         endpoints.pop('viaf', None)
         endpoints.pop('comef', None)
+        endpoints.pop('plmef', None)
     for entity in endpoints:
         if record_class := obj_or_import_string(
                 endpoints[entity].get('record_class')):
@@ -1187,6 +1218,8 @@ def get_mefs_endpoints():
     from rero_mef.agents.utils import get_agent_endpoints
     from rero_mef.concepts import ConceptMefRecord
     from rero_mef.concepts.utils import get_concept_endpoints
+    from rero_mef.places import PlaceMefRecord
+    from rero_mef.places.utils import get_places_endpoints
 
     mefs = [{
         'mef_class': AgentMefRecord,
@@ -1195,6 +1228,10 @@ def get_mefs_endpoints():
     mefs.append({
         'mef_class': ConceptMefRecord,
         'endpoints': get_concept_endpoints()
+    })
+    mefs.append({
+        'mef_class': PlaceMefRecord,
+        'endpoints': get_places_endpoints()
     })
     return mefs
 

@@ -98,13 +98,12 @@ function oai_init () {
     info_msg "OAI init"
     # init oaiharvester config from file
     invenio oaiharvester initconfig ./data/oaisources.yml
-    # we got the last GND files on 10 2020 from here:
     # https://data.dnb.de/GND/
-    invenio oaiharvester set-last-run -n agents.gnd -d 2023-05-01
-    # we got the last idref files on 10 2020 with:
+    invenio oaiharvester set-last-run -n agents.gnd -d 2023-08-01
     # invenio oaiharvester save idref.mrc -n idref -f 1990-01-01
-    invenio oaiharvester set-last-run -n agents.idref -d 2023-05-01
-    invenio oaiharvester set-last-run -n concepts.idref -d 2023-05-01
+    invenio oaiharvester set-last-run -n agents.idref -d 2023-08-01
+    invenio oaiharvester set-last-run -n concepts.idref -d 2023-08-01
+    invenio oaiharvester set-last-run -n places.idref -d 2023-08-01
 }
 
 function sample_load () {
@@ -124,6 +123,11 @@ function sample_load () {
       dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY} -v
     done
 
+    for ENTITY in pidref
+    do
+      info_msg "Importing ${ENTITY} place records:"
+      dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY} -v
+    done
     oai_init
 }
 
@@ -131,12 +135,13 @@ function deploy () {
     INPUT_DIR=$1
     info_msg "Start loading CSV records to database: ${INPUT_DIR}"
     # Load CSV files to db
-    for ENTITY in aggnd aidref agrero viaf corero cidref
+    for ENTITY in aggnd aidref agrero viaf corero cidref pidref
     do
         invenio fixtures load-csv ${ENTITY} ${INPUT_DIR}/${ENTITY}_pidstore.csv ${INPUT_DIR}/${ENTITY}_metadata.csv --verbose --reindex
     done
     invenio fixtures load-csv mef ${INPUT_DIR}/mef_pidstore.csv ${INPUT_DIR}/mef_metadata.csv --ids_file ${INPUT_DIR}/mef_id.csv --verbose --reindex
     invenio fixtures load-csv comef ${INPUT_DIR}/comef_pidstore.csv ${INPUT_DIR}/comef_metadata.csv --ids_file ${INPUT_DIR}/comef_id.csv --verbose --reindex
+    invenio fixtures load-csv plmef ${INPUT_DIR}/plmef_pidstore.csv ${INPUT_DIR}/plmef_metadata.csv --ids_file ${INPUT_DIR}/plmef_id.csv --verbose --reindex
     oai_init
     invenio utils runindex --raise-on-error --concurrency 8 --delayed
     invenio utils runindex --raise-on-error
@@ -148,7 +153,7 @@ function create_json () {
     OUTPUT_DIR=$2
     info_msg "Start creating json: ${INPUT_DIR} ${OUTPUT_DIR}"
     # Transform MARC files to json
-    for ENTITY in aggnd aidref agrero corero
+    for ENTITY in aggnd aidref agrero corero cidref pidref
     do
         invenio fixtures marc-to-json ${ENTITY} ${INPUT_DIR}/${ENTITY}.mrc ${OUTPUT_DIR}/${ENTITY}.json --error_file ${OUTPUT_DIR}/${ENTITY}_error.mrc &
     done
@@ -160,7 +165,7 @@ function create_csv () {
     OUTPUT_DIR=$1
     info_msg "Start creating csv: ${OUTPUT_DIR}"
     # Create CSV files from json
-    for ENTITY in aggnd aidref agrero corero
+    for ENTITY in aggnd aidref agrero corero cidref pidref
     do
         invenio fixtures create-csv ${ENTITY} ${OUTPUT_DIR}/${ENTITY}.json ${OUTPUT_DIR}
     done

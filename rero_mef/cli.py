@@ -381,7 +381,7 @@ def load_csv(entity, pidstore_file, metadata_file, ids_file, bulk_count,
 @click.argument('output_directory')
 @click.option('-e', '--entity', 'entities', multiple=True,
               default=['aggnd', 'aidref', 'agrero', 'mef', 'viaf',
-                       'cidref', 'corero', 'comef'])
+                       'cidref', 'corero', 'comef', 'pidref', 'plmef'])
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @with_appcontext
 def save_csv(entities, output_directory, verbose):
@@ -390,13 +390,14 @@ def save_csv(entities, output_directory, verbose):
     :param output_directory: Output directory.
     :param entities: entity to export.
         default=['aggnd', 'aidref', 'agrero', 'mef', 'viaf',
-                 'cidref', 'corero', 'comef'])
+                 'cidref', 'corero', 'comef', 'pidref', 'plmef'])
     :param verbose: Verbose.
     """
     oai_names = {
         'aggnd': 'agents.gnd',
         'aidref': 'agents.idref',
-        'cidref': 'concepts.idref'
+        'cidref': 'concepts.idref',
+        'pidref': 'places.idref'
     }
     for entity in entities:
         click.secho(
@@ -420,7 +421,7 @@ def save_csv(entities, output_directory, verbose):
                 click.echo(f'  Save last run: {file_name}')
             with open(file_name, 'w') as last_run_file:
                 last_run_file.write(f'{last_run}')
-    if entity in ['mef', 'comef']:
+    if entity in ['mef', 'comef', 'plmef']:
         file_name = os.path.join(output_directory, 'mef_id.csv')
         if verbose:
             click.echo(f'  Save ID: {file_name}')
@@ -448,13 +449,17 @@ def csv_to_json(csv_metadata_file, json_output_file, indent, verbose):
     with open(csv_metadata_file) as metadata_file:
         output_file = JsonWriter(json_output_file, indent=indent)
         length = number_records_in_file(csv_metadata_file, 'csv')
-        with click.progressbar(metadata_file, length=length,
-                               label=f'Transform: {length}') as metadata:
-            for count, metadata_line in enumerate(metadata, 1):
-                data = json.loads(metadata_line.split('\t')[3])
-                if verbose:
-                    click.echo(f'{count:<10}: {data["pid"]}\t{data}')
-                output_file.write(data)
+        progress_bar = progressbar(
+            items=metadata_file,
+            length=length,
+            label='Transform:',
+            verbose=verbose
+        )
+        for count, metadata_line in enumerate(progress_bar, 1):
+            data = json.loads(metadata_line.split('\t')[3])
+            if verbose:
+                click.echo(f'{count:<10}: {data["pid"]}\t{data}')
+            output_file.write(data)
 
 
 @fixtures.command()
@@ -527,21 +532,27 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
         length = number_records_in_file(csv_metadata_file_compair, 'csv')
         counts['compair'] = length
         with open(csv_metadata_file_compair, 'r', buffering=1) as meta_file:
-            label = f'Loading: {compair}'
-            with click.progressbar(meta_file, length=length,
-                                   label=label) as metadata:
-                for metadata_line in metadata:
-                    pid, data = get_pid_data(metadata_line)
-                    compair_data[pid] = data
+            progress_bar = progressbar(
+                items=meta_file,
+                length=length,
+                label=f'Loading: {compair}',
+                verbose=True
+            )
+            for metadata_line in progress_bar:
+                pid, data = get_pid_data(metadata_line)
+                compair_data[pid] = data
     elif entity:
         entity_class = get_entity_class(entity)
         length = entity_class.count()
         counts['compair'] = length
-        label = f'Loading: {compair}'
-        with click.progressbar(entity_class.get_all_ids(), length=length,
-                               label=label) as record_ids:
-            for id in record_ids:
-                record = entity_class.get_record(id)
+        progress_bar = progressbar(
+            items=entity_class.get_all_ids(),
+            length=length,
+            label=f'Loading entity: {compair}',
+            verbose=True
+        )
+        for id_ in progress_bar:
+            if record := entity_class.get_record(id_):
                 record.pop('md5', None)
                 compair_data[record.pid] = record
 
@@ -549,40 +560,43 @@ def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output,
     with open(csv_metadata_file, 'r', buffering=1) as metadata_file:
         length = number_records_in_file(csv_metadata_file, 'csv')
         counts['compair_to'] = length
-        label = f'Reading: {csv_metadata_file}'
-        with click.progressbar(metadata_file, length=length,
-                               label=label) as lines:
-            for metadata_line in lines:
-                pid, data = get_pid_data(metadata_line)
-                if existing_data := compair_data.pop(pid, None):
-                    if existing_data != data:
-                        counts['changed'] += 1
-                        if verbose:
-                            click.echo('DIFF: ')
-                            click.echo(
-                                ' old:\t'
-                                f'{json.dumps(existing_data, sort_keys=True)}'
-                            )
-                            click.echo(
-                                f' new:\t{json.dumps(data, sort_keys=True)}')
-                        if output:
-                            add_md5(data)
-                            file_diff.write(data)
-                    else:
-                        counts['unchanged'] += 1
-                        if verbose:
-                            click.echo('UNCHANGED: ')
-                            click.echo(
-                                f'{json.dumps(existing_data, sort_keys=True)}'
-                            )
-                else:
-                    counts['new'] += 1
+        progress_bar = progressbar(
+            items=metadata_file,
+            length=length,
+            label=f'Reading: {csv_metadata_file}',
+            verbose=True
+        )
+        for metadata_line in progress_bar:
+            pid, data = get_pid_data(metadata_line)
+            if existing_data := compair_data.pop(pid, None):
+                if existing_data != data:
+                    counts['changed'] += 1
                     if verbose:
+                        click.echo('DIFF: ')
                         click.echo(
-                            f'NEW :\t{json.dumps(data, sort_keys=True)}')
+                            ' old:\t'
+                            f'{json.dumps(existing_data, sort_keys=True)}'
+                        )
+                        click.echo(
+                            f' new:\t{json.dumps(data, sort_keys=True)}')
                     if output:
                         add_md5(data)
-                        file_new.write(data)
+                        file_diff.write(data)
+                else:
+                    counts['unchanged'] += 1
+                    if verbose:
+                        click.echo('UNCHANGED: ')
+                        click.echo(
+                            f'{json.dumps(existing_data, sort_keys=True)}'
+                        )
+            else:
+                counts['new'] += 1
+                if verbose:
+                    click.echo(
+                        f'NEW :\t{json.dumps(data, sort_keys=True)}')
+                if output:
+                    add_md5(data)
+                    file_new.write(data)
     for pid, data in compair_data.items():
         counts['deleted'] += 1
         if verbose:
@@ -844,7 +858,7 @@ def save(output_file_name, name, from_date, until_date, quiet, enqueue):
 @click.argument('output_path')
 @click.option('-t', '--pid-type', 'pid_type', multiple=True,
               default=['aggnd', 'aidref', 'agrero', 'mef', 'viaf',
-                       'cidref', 'corero', 'comef'])
+                       'cidref', 'corero', 'comef', 'pidref', 'plmef'])
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @click.option('-I', '--indent', 'indent', type=click.INT, default=2)
 @click.option('-s', '--schema', 'schema', is_flag=True, default=False)
@@ -975,11 +989,11 @@ def queue_count():
     task_count = 0
     reserved = inspector.reserved()
     if reserved:
-        for _, values in reserved.items():
+        for values in reserved.values():
             task_count += len(values)
     active = inspector.active()
     if active:
-        for _, values in active.items():
+        for values in active.values():
             task_count += len(values)
     return task_count
 
@@ -1052,15 +1066,15 @@ def manual_confirm_user(user):
     if user_obj is None:
         raise click.UsageError('ERROR: User not found.')
     if confirm_user(user_obj):
-        click.secho('User "%s" has been confirmed.' % user, fg='green')
+        click.secho(f'User "{user}" has been confirmed.', fg='green')
     else:
-        click.secho('User "%s" was already confirmed.' % user, fg='yellow')
+        click.secho(f'User "{user}" was already confirmed.', fg='yellow')
 
 
 @utils.command()
 @click.option('-e', '--entity', 'entities', multiple=True,
               default=['aggnd', 'aidref', 'agrero', 'mef', 'viaf',
-                       'cidref', 'corero', 'comef'])
+                       'cidref', 'corero', 'comef', 'pidref', 'plmef'])
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 @with_appcontext
 def reindex_missing(entities, verbose):
@@ -1088,7 +1102,7 @@ def reindex_missing(entities, verbose):
             progress_bar = progressbar(
                 items=pids_db,
                 length=len(pids_db),
-                verbose=verbose
+                verbose=True
             )
             for pid in progress_bar:
                 if rec := entity.get_record_by_pid(pid):

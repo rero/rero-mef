@@ -30,10 +30,8 @@ def test_view_agents_mef(client, agent_mef_record, agent_gnd_record,
                          agent_rero_record, agent_idref_record):
     """Test redirect MEF."""
     pid = agent_mef_record.get('pid')
-    url = url_for('api_blueprint.agent_mef_redirect_list')
+    url = url_for('invenio_records_rest.mef_list')
     res = client.get(url)
-    assert res.status_code == 308
-    res = client.get(url, follow_redirects=True)
     assert res.status_code == 200
     json_data = json.loads(res.get_data(as_text=True))
     assert json_data['hits']['total'] == 1
@@ -57,16 +55,14 @@ def test_view_agents_mef(client, agent_mef_record, agent_gnd_record,
         'deleted': {'doc_count': 0},
         'deleted_entities': {'doc_count': 0},
     }
-    url = url_for('api_blueprint.agent_mef_redirect_item', pid=pid)
+    url = url_for('invenio_records_rest.mef_item', pid_value=pid)
     res = client.get(url)
-    assert res.status_code == 308
-    res = client.get(url, follow_redirects=True)
     assert res.status_code == 200
     data = json.loads(res.get_data(as_text=True))
     assert data.get('id') == pid
     assert data.get('metadata', {}).get('pid') == pid
 
-    url = url_for('api_blueprint.agent_mef_redirect_item', pid='WRONG')
+    url = url_for('invenio_records_rest.mef_item', pid_value='WRONG')
     res = client.get(url, follow_redirects=True)
     assert res.status_code == 404
     assert json.loads(res.get_data(as_text=True)) == {

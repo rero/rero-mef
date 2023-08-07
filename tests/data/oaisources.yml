@@ -24,3 +24,9 @@ concepts.idref:
     metadataprefix: marc-xml
     comment: 'idref'
     setspecs: 'j l'
+places.idref:
+    # http://documentation.abes.fr/aideidrefoai/index.html
+    baseurl: https://www.idref.fr/OAI/oai.jsp
+    metadataprefix: marc-xml
+    comment: 'idref'
+    setspecs: 'c'

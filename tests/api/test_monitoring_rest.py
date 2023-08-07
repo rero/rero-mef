@@ -41,7 +41,9 @@ def test_monitoring_es_db_counts(client):
             'comef': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'concepts_mef'},
             'corero': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'concepts_rero'},
             'mef': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'mef'},
-            'viaf': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'viaf'}
+            'viaf': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'viaf'},
+            'pidref': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'places_idref'},
+            'plmef': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'places_mef'}
         }
     }
 

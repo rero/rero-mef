@@ -37,6 +37,8 @@ def test_monitoring(app, agent_idref_data, script_info):
         '      0   comef          0               concepts_mef          0',
         '      0  corero          0              concepts_rero          0',
         '      0     mef          0                        mef          0',
+        '      0  pidref          0               places_idref          0',
+        '      0   plmef          0                 places_mef          0',
         '      0    viaf          0                       viaf          0'
     ]
     mon = Monitoring(time_delta=0)
@@ -64,6 +66,8 @@ def test_monitoring(app, agent_idref_data, script_info):
         'comef': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'concepts_mef'},
         'corero': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'concepts_rero'},
         'mef': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'mef'},
+        'pidref': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'places_idref'},
+        'plmef': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'places_mef'},
         'viaf': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'viaf'}
     }
     assert mon.__str__().split('\n') == cli_output + ['']

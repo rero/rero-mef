@@ -52,6 +52,15 @@ class ConceptIdrefRecord(ConceptRecord):
     model_cls = ConceptIdrefMetadata
     search = ConceptIdrefSearch
 
+    @classmethod
+    def get_online_record(cls, id, debug=False):
+        """Get online Record.
+
+        Has to be overloaded in agent class.
+        """
+        from .tasks import idref_get_record
+        return idref_get_record(id=id, debug=debug)
+
 
 class ConceptIdrefIndexer(ConceptIndexer):
     """Concept IDREF indexer."""

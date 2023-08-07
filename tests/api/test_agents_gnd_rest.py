@@ -28,10 +28,8 @@ from rero_mef.agents import Action, AgentGndRecord
 def test_view_agents_gnd(client, agent_gnd_record):
     """Test redirect GND."""
     pid = agent_gnd_record.get('pid')
-    url = url_for('api_blueprint.agent_gnd_redirect_list')
+    url = url_for('invenio_records_rest.aggnd_list')
     res = client.get(url)
-    assert res.status_code == 308
-    res = client.get(url, follow_redirects=True)
     assert res.status_code == 200
     assert json.loads(res.get_data(as_text=True))['aggregations'] == {
         'type': {
@@ -42,16 +40,14 @@ def test_view_agents_gnd(client, agent_gnd_record):
         'deleted': {'doc_count': 0}
     }
 
-    url = url_for('api_blueprint.agent_gnd_redirect_item', pid=pid)
-    res = client.get(url)
-    assert res.status_code == 308
+    url = url_for('invenio_records_rest.aggnd_item', pid_value=pid)
     res = client.get(url, follow_redirects=True)
     assert res.status_code == 200
     data = json.loads(res.get_data(as_text=True))
     assert data.get('id') == pid
     assert data.get('metadata', {}).get('pid') == pid
 
-    url = url_for('api_blueprint.agent_gnd_redirect_item', pid='WRONG')
+    url = url_for('invenio_records_rest.aggnd_item', pid_value='WRONG')
     res = client.get(url, follow_redirects=True)
     assert res.status_code == 404
     assert json.loads(res.get_data(as_text=True)) == {

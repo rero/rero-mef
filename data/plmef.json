@@ -1,0 +1,464 @@
+[
+  {
+    "pid": "7720",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/027227812"
+    }
+  },
+  {
+    "pid": "7721",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271337214"
+    }
+  },
+  {
+    "pid": "7722",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271327383"
+    }
+  },
+  {
+    "pid": "7723",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271328762"
+    }
+  },
+  {
+    "pid": "7724",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271329017"
+    }
+  },
+  {
+    "pid": "7725",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271329335"
+    }
+  },
+  {
+    "pid": "7726",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271329696"
+    }
+  },
+  {
+    "pid": "7727",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271329734"
+    }
+  },
+  {
+    "pid": "7728",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271329831"
+    }
+  },
+  {
+    "pid": "7729",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271329912"
+    }
+  },
+  {
+    "pid": "7730",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271329998"
+    }
+  },
+  {
+    "pid": "7731",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271330031"
+    }
+  },
+  {
+    "pid": "7732",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271330163"
+    }
+  },
+  {
+    "pid": "7733",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271331658"
+    }
+  },
+  {
+    "pid": "7734",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271331712"
+    }
+  },
+  {
+    "pid": "7735",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/27133181X"
+    }
+  },
+  {
+    "pid": "7736",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271332352"
+    }
+  },
+  {
+    "pid": "7737",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271332778"
+    }
+  },
+  {
+    "pid": "7738",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271332824"
+    }
+  },
+  {
+    "pid": "7739",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271333081"
+    }
+  },
+  {
+    "pid": "7740",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271333197"
+    }
+  },
+  {
+    "pid": "7741",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271333243"
+    }
+  },
+  {
+    "pid": "7742",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/027250504"
+    }
+  },
+  {
+    "pid": "7743",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/263259935"
+    }
+  },
+  {
+    "pid": "7744",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271321628"
+    }
+  },
+  {
+    "pid": "7745",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271323337"
+    }
+  },
+  {
+    "pid": "7746",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271323353"
+    }
+  },
+  {
+    "pid": "7747",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271323426"
+    }
+  },
+  {
+    "pid": "7748",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271323485"
+    }
+  },
+  {
+    "pid": "7749",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271323515"
+    }
+  },
+  {
+    "pid": "7750",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271323523"
+    }
+  },
+  {
+    "pid": "7751",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271323566"
+    }
+  },
+  {
+    "pid": "7752",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271323590"
+    }
+  },
+  {
+    "pid": "7753",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271323663"
+    }
+  },
+  {
+    "pid": "7754",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/27132368X"
+    }
+  },
+  {
+    "pid": "7755",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271323698"
+    }
+  },
+  {
+    "pid": "7756",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271323728"
+    }
+  },
+  {
+    "pid": "7757",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271323752"
+    }
+  },
+  {
+    "pid": "7758",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271323957"
+    }
+  },
+  {
+    "pid": "7759",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271323973"
+    }
+  },
+  {
+    "pid": "7760",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271324015"
+    }
+  },
+  {
+    "pid": "7761",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271324031"
+    }
+  },
+  {
+    "pid": "7762",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271324058"
+    }
+  },
+  {
+    "pid": "7763",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271324074"
+    }
+  },
+  {
+    "pid": "7764",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271324562"
+    }
+  },
+  {
+    "pid": "7765",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326441"
+    }
+  },
+  {
+    "pid": "7766",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326476"
+    }
+  },
+  {
+    "pid": "7767",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326484"
+    }
+  },
+  {
+    "pid": "7768",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326506"
+    }
+  },
+  {
+    "pid": "7769",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326514"
+    }
+  },
+  {
+    "pid": "7770",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326522"
+    }
+  },
+  {
+    "pid": "7771",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326530"
+    }
+  },
+  {
+    "pid": "7772",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326557"
+    }
+  },
+  {
+    "pid": "7773",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326603"
+    }
+  },
+  {
+    "pid": "7774",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326670"
+    }
+  },
+  {
+    "pid": "7775",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326700"
+    }
+  },
+  {
+    "pid": "7776",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326727"
+    }
+  },
+  {
+    "pid": "7777",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326751"
+    }
+  },
+  {
+    "pid": "7778",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/27132676X"
+    }
+  },
+  {
+    "pid": "7779",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326778"
+    }
+  },
+  {
+    "pid": "7780",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326786"
+    }
+  },
+  {
+    "pid": "7781",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326794"
+    }
+  },
+  {
+    "pid": "7782",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326808"
+    }
+  },
+  {
+    "pid": "7783",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326824"
+    }
+  },
+  {
+    "pid": "7784",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326832"
+    }
+  },
+  {
+    "pid": "7785",
+    "type": "bf:Place",
+    "idref": {
+      "$ref": "https://mef.rero.ch/api/places/idref/271326840"
+    }
+  }
+]

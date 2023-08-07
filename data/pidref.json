@@ -1,0 +1,1958 @@
+[
+  {
+    "md5": "b5ec02204d01ac2897dc3044c9406f8f",
+    "pid": "027227812",
+    "note": [
+      {
+        "label": [
+          "Atlas universalis. GDEL"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/027227812",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11931552b",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Dantzig (Pologne)",
+      "Gedania",
+      "Gedani",
+      "Danzig (Pologne)"
+    ],
+    "authorized_access_point": "Gda\u0144sk (Pologne)"
+  },
+  {
+    "md5": "c0ace3f9408f195aa3ceb8c5d0d180bc",
+    "pid": "027250504",
+    "note": [
+      {
+        "label": [
+          "Dict. communes, 1984 - Saint-Sauveur, \u00e9galement appel\u00e9e Saint-Sauveur-de-Givre-en-Mai, est une ancienne commune fran\u00e7aise situ\u00e9e dans le d\u00e9partement des Deux-S\u00e8vres et la r\u00e9gion Poitou-Charentes. Elle est associ\u00e9e \u00e0 la commune de Bressuire depuis 1973."
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/027250504",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11854138n",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Saint-Sauveur-de-Givre-en-Mai"
+    ],
+    "authorized_access_point": "Bressuire (Deux-S\u00e8vres)"
+  },
+  {
+    "md5": "0c834e3106967e9a84fbe5ba0e59e3c9",
+    "pid": "263259935",
+    "note": [
+      {
+        "label": [
+          "Bettmeralp : das Wimmelbuch / Gabriel Giger, 2022",
+          "https://hls-dhs-dss.ch/fr/articles/050027/2016-10-27/"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/263259935",
+        "source": "IDREF"
+      }
+    ],
+    "authorized_access_point": "Bettmeralp (Suisse)"
+  },
+  {
+    "md5": "c0b78a6facbce91ddba7bedfe156ccca",
+    "pid": "271321628",
+    "note": [
+      {
+        "label": [
+          "Sowjetischer Pavillon : Substanz oder Erscheinung / Peter Zirkel (Hg.) ; [mit Fotografien von] Till Schuster, M Books, 2021",
+          "https://peterzirkel.de/sowjetischer-pavillon/, 2023-08-02"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "Construit en 1924 comme hall d'exposition par les architectes Oskar Pusch et Carl Kr\u00e4mer. Le b\u00e2timent a servi de pavillon d'exposition pour l'URSS. Depuis le d\u00e9but des ann\u00e9es 1990, il est utilis\u00e9 comme archives municipales"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271321628",
+        "source": "IDREF"
+      }
+    ],
+    "variant_access_point": [
+      "Sowjetischer Pavillon (Leipzig, Allemagne)",
+      "Achilleion (Leipzig, Allemagne)",
+      "Pavillon sovi\u00e9tique (Leipzig, Allemagne)"
+    ],
+    "authorized_access_point": "Leipzig (Allemagne)"
+  },
+  {
+    "md5": "fb4b44bbfa5c9600c4cca5ed11b72bb0",
+    "pid": "271323337",
+    "note": [
+      {
+        "label": [
+          "Atlas universel / \"Le Monde\", S\u00e9lection du \"Reader's digest\", 1993",
+          "Ville de Sierre - http://www.sierre.ch (2014-09-12)"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "Ville du canton du Valais, district de Sierre"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "closeMatch": [
+      {
+        "source": "LCA",
+        "identifiedBy": {
+          "type": "uri",
+          "value": "http://id.loc.gov/authorities/names/n85344685",
+          "source": "LCA"
+        },
+        "authorized_access_point": "Sierre (Switzerland)"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271323337",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb169098180",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "914"
+      }
+    ],
+    "variant_access_point": [
+      "Siders (Suisse)"
+    ],
+    "authorized_access_point": "Sierre (Suisse)"
+  },
+  {
+    "md5": "90c31e33485c8af3a47b2f88f11d214a",
+    "pid": "271323353",
+    "note": [
+      {
+        "label": [
+          "Site officiel de la commune - http://www.kippel.ch (2010-07-16)"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271323353",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15189407c",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Kypil (Valais, Suisse)"
+    ],
+    "authorized_access_point": "Kippel (Valais, Suisse)"
+  },
+  {
+    "md5": "528fe09670e33aa44d7d5d95eb48653d",
+    "pid": "271323426",
+    "note": [
+      {
+        "label": [
+          "Wikip\u00e9dia - http://fr.wikipedia.org (2014-04-24)",
+          "Guides bleus : Suisse, 1991",
+          "Dict. historique de la Suisse - http://www.hls-dhs-dss.ch (2014-04-24)"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "Ancienne commune du Valais, qui a fusionn\u00e9 le 1er janvier 2009 avec les 5 autres communes du val d'Anniviers pour former la commune d'Anniviers"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "closeMatch": [
+      {
+        "source": "LCA",
+        "identifiedBy": {
+          "type": "uri",
+          "value": "http://id.loc.gov/authorities/names/n83221461",
+          "source": "LCA"
+        },
+        "authorized_access_point": "Grimentz (Switzerland)"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271323426",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb12068132h",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "914"
+      }
+    ],
+    "variant_access_point": [
+      "Anniviers (Suisse)"
+    ],
+    "authorized_access_point": "Grimentz (Suisse)"
+  },
+  {
+    "md5": "e6de4217e2eb56fe8a5e953e2e1c6b4b",
+    "pid": "271323485",
+    "note": [
+      {
+        "label": [
+          "GDEL"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271323485",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb12131962h",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Collombey-Muraz (Suisse)"
+  },
+  {
+    "md5": "b89c4ab82a38667ca62f5259e805ffe7",
+    "pid": "271323515",
+    "note": [
+      {
+        "label": [
+          "Wikip\u00e9dia - http://fr.wikipedia.org (2015-04-30)",
+          "Dict. historique de la Suisse (art. : Port-Valais) - http://www.hls-dhs-dss.ch (2015-05-18)"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "Localit\u00e9 de la commune de Port-Valais dans le canton du Valais, situ\u00e9e au sud du lac L\u00e9man et proche de la fronti\u00e8re fran\u00e7aise"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "closeMatch": [
+      {
+        "source": "LCA",
+        "identifiedBy": {
+          "type": "uri",
+          "value": "http://id.loc.gov/authorities/names/n83224886",
+          "source": "LCA"
+        },
+        "authorized_access_point": "Bouveret (Switzerland)"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271323515",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb169627006",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "914"
+      }
+    ],
+    "variant_access_point": [
+      "Bouveret, Le (Suisse)",
+      "Bouveret (Suisse)",
+      "Port-Valais (Suisse)"
+    ],
+    "authorized_access_point": "Le Bouveret (Suisse)"
+  },
+  {
+    "md5": "8c7e59deb2c8d41a5e8252a60a75da50",
+    "pid": "271323523",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271323523",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb17010914h",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Val d'Illiez (Valais, Suisse ; vall\u00e9e)"
+    ],
+    "authorized_access_point": "Illiez, Val d' (Valais, Suisse ; vall\u00e9e)"
+  },
+  {
+    "md5": "2db810daa89f34f9a8a89efbfc700021",
+    "pid": "271323566",
+    "note": [
+      {
+        "label": [
+          "Wikip\u00e9dia : Pays des Trois-Lacs - https://fr.wikipedia.org (2016-01-15)",
+          "Wikipedia : Drei-Seen-Land - https://de.wikipedia.org (2016-01-15)",
+          "Drei-Seen-Land / Pays des Trois-Lacs - http://www.bielersee.ch (2016-01-15)",
+          "Jura & Trois-Lacs - http://www.paysdestroislacs.ch (2016-01-15)"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "R\u00e9gion (notamment viticole) du nord-ouest de la Suisse, autour des trois lacs de Bienne, Morat et Neuch\u00e2tel (ainsi qu'une partie du bassin moyen de l'Aar), recouvrant pour partie 3 cantons de la Suisse romande (Fribourg, Neuch\u00e2tel, Vaud) et 1 de la Suisse al\u00e9manique (Berne)"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271323566",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb170172206",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "914"
+      }
+    ],
+    "variant_access_point": [
+      "Drei-Seen-Land (Suisse)",
+      "Pays des Trois-Lacs (Suisse)",
+      "R\u00e9gion des Trois-Lacs (Suisse)",
+      "Trois-Lacs (Suisse ; r\u00e9gion)"
+    ],
+    "authorized_access_point": "Trois-Lacs, Pays des (Suisse)"
+  },
+  {
+    "md5": "97357edd1b8070012badecc011016bbd",
+    "pid": "271323590",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271323590",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb152399861",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "B\u00e2le-Ville (Suisse)",
+      "Basel-Stadt (Suisse)",
+      "Basilea Citta (Suisse)",
+      "Basilea",
+      "Basilia",
+      "Basilea Rauracorum",
+      "Colonia Munatiana",
+      "Athenae Rauracae",
+      "Bazela",
+      "Baesula",
+      "Basula",
+      "Baille",
+      "Baalle",
+      "Basle"
+    ],
+    "authorized_access_point": "B\u00e2le (B\u00e2le-Ville, Suisse)"
+  },
+  {
+    "md5": "10c57f8501c022e40c13a450cb672948",
+    "pid": "271323663",
+    "note": [
+      {
+        "label": [
+          "Geonames - http://www.geonames.org (2014-09-12)",
+          "Atlas universel / \"Le Monde\", S\u00e9lection du \"Reader's digest\", 1993"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "Commune du canton du Valais"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "closeMatch": [
+      {
+        "source": "LCA",
+        "identifiedBy": {
+          "type": "uri",
+          "value": "http://id.loc.gov/authorities/names/n83239447",
+          "source": "LCA"
+        },
+        "authorized_access_point": "Vouvry (Switzerland)"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271323663",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb16909821w",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "914"
+      }
+    ],
+    "authorized_access_point": "Vouvry (Suisse)"
+  },
+  {
+    "md5": "daf5485db2ea0beba624a685a79844b5",
+    "pid": "27132368X",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/27132368X",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb169778199",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Gr\u00e4chen (Valais, Suisse)"
+  },
+  {
+    "md5": "12f6462138838fa94cb7798495dba2f7",
+    "pid": "271323698",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271323698",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15301322r",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Saint Nicolas (Valais, Suisse)"
+  },
+  {
+    "md5": "2646327eb078c75fa4466625a6f24280",
+    "pid": "271323728",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271323728",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb170109286",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Troistorrents (Valais, Suisse)"
+  },
+  {
+    "md5": "ee42f3e7c54b5e6ae44747e3cc551352",
+    "pid": "271323752",
+    "note": [
+      {
+        "label": [
+          "Dictionnaire historique de la Suisse - http://www.hls-dhs-dss.ch/textes/f/F2757.php (2010-07-16)"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271323752",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15171340s",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Uffen der Blattun (Valais, Suisse)",
+      "Eisten (Valais, Suisse)",
+      "Ried (Valais, Suisse)",
+      "Weissenried (Valais, Suisse)",
+      "Fafleralp (Valais, Suisse)",
+      "K\u00fchmatt (Valais, Suisse)"
+    ],
+    "authorized_access_point": "Blatten (Valais, Suisse)"
+  },
+  {
+    "md5": "0b75ba28e5ecb83e276f6ac529886c46",
+    "pid": "271323957",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271323957",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb170137616",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Leysin (Vaud, Suisse)"
+  },
+  {
+    "md5": "1e2a3bc8ebc1159a505cf80551927955",
+    "pid": "271323973",
+    "note": [
+      {
+        "label": [
+          "L'atlas National geographic, 2007",
+          "Petit Robert des noms propres 2015 (art. : Morat [ville])",
+          "Grand Larousse universel (art. : Morat [ville])",
+          "Guides Voir : Suisse, 2006"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "Lac de Suisse romande (canton de Fribourg), proche de celui de Neuch\u00e2tel"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "closeMatch": [
+      {
+        "source": "LCSH",
+        "identifiedBy": {
+          "type": "uri",
+          "value": "http://id.loc.gov/authorities/subjects/sh85087214",
+          "source": "LCSH"
+        },
+        "authorized_access_point": "Morat, Lake of (Switzerland)"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271323973",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb170195106",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "914"
+      }
+    ],
+    "variant_access_point": [
+      "Murtensee (Suisse)"
+    ],
+    "authorized_access_point": "Morat, Lac de (Suisse)"
+  },
+  {
+    "md5": "2021cb4a2bf67d4b37d77322b097296d",
+    "pid": "271324015",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271324015",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb153071261",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Moutier (Berne, Suisse)"
+  },
+  {
+    "md5": "51a109a94d96fbdad1b01f4740998ccb",
+    "pid": "271324031",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271324031",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15170908q",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Bex (Vaud, Suisse)"
+  },
+  {
+    "md5": "259dcb7e8c9441dd436351a9d0f6602f",
+    "pid": "271324058",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271324058",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15292722s",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Hauderes, Les (Valais, Suisse)"
+    ],
+    "authorized_access_point": "Les Hauderes (Valais, Suisse)"
+  },
+  {
+    "md5": "f4e58ef90fee591b3056b8978661938c",
+    "pid": "271324074",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271324074",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15286338t",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Saas Grund (Valais, Suisse)"
+  },
+  {
+    "md5": "be627bc82578b05cb24254460bfc269a",
+    "pid": "271324562",
+    "note": [
+      {
+        "label": [
+          "L'apothicairerie de l'h\u00f4pital de Dax / Xavier Petitcol, 2023"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271324562",
+        "source": "IDREF"
+      }
+    ],
+    "authorized_access_point": "Dax (Landes)"
+  },
+  {
+    "md5": "d43e35c11f9a16ed068d502e3e090c93",
+    "pid": "271326441",
+    "note": [
+      {
+        "label": [
+          "Atlas universalis (Val di Gressoney)",
+          "Valle d'Aosta-Vall\u00e9e d'Aoste - http://www.regione.vda.it (2006-04-20)"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "Vall\u00e9e du nord-est du Val d'Aoste au pied du Mont Rose, drain\u00e9e par le Lys. Elle est habit\u00e9e depuis le 13e si\u00e8cle par des Valaisiens (Walser) germanophones"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "closeMatch": [
+      {
+        "source": "LCSH",
+        "identifiedBy": {
+          "type": "uri",
+          "value": "http://id.loc.gov/authorities/subjects/sh85057315",
+          "source": "LCSH"
+        },
+        "authorized_access_point": "Gressoney Valley (Italy)"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326441",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb12725205j",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "914"
+      }
+    ],
+    "variant_access_point": [
+      "Gressoney, Val di (Italie)",
+      "Gressoney, Valle di (Italie)",
+      "Gressoneytal (Italie)",
+      "Lys, Vall\u00e9e du (Italie)",
+      "Val de Gressoney (Italie)"
+    ],
+    "authorized_access_point": "Gressoney, Val de (Italie)"
+  },
+  {
+    "md5": "2f570620f8f7ce96a69e3a52d9f29e75",
+    "pid": "271326476",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326476",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15312266j",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Randa (Valais, Suisse)"
+  },
+  {
+    "md5": "038450104d2161ce3dff42a03912a8fe",
+    "pid": "271326484",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326484",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15288490p",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Engadin (Grisons, Suisse ; vall\u00e9e)",
+      "Caput Oeni"
+    ],
+    "authorized_access_point": "Engadine (Grisons, Suisse ; vall\u00e9e)"
+  },
+  {
+    "md5": "a2f78ce1651db1de4f9d2c2d1c60f3fd",
+    "pid": "271326506",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326506",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb152863395",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Saas Almagell (Valais, Suisse)"
+  },
+  {
+    "md5": "8b1fb2bc02b04bb0a4d7aa9f9f6b74b4",
+    "pid": "271326514",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326514",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb170155227",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Grand Combin (Valais, Suisse ; mont)"
+  },
+  {
+    "md5": "6cf76fe72d44f50fdd37bdb86488cd5e",
+    "pid": "271326522",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326522",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb170113472",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Trient (Valais, Suisse)"
+  },
+  {
+    "md5": "3e1fc12e6dfe9f39c2be05a512766caa",
+    "pid": "271326530",
+    "note": [
+      {
+        "label": [
+          "Dictionnaire historique de la Suisse - http://www.hls-dhs-dss.ch/index.php (2010-07-17)"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326530",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15285465r",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Binn (Wallis, Suisse)",
+      "Buen (Valais, Suisse)",
+      "Buyn (Valais, Suisse)",
+      "Bun (Valais, Suisse)",
+      "Schmidigehischere (Valais, Suisse)",
+      "Ze Binne (Valais, Suisse)",
+      "Wilere (Valais, Suisse)",
+      "Giesse (Valais, Suisse)",
+      "Heiligkreuz (Valais, Suisse)"
+    ],
+    "authorized_access_point": "Binn (Valais, Suisse)"
+  },
+  {
+    "md5": "17b03f7f2fc10ce546261142583e1bbd",
+    "pid": "271326557",
+    "note": [
+      {
+        "label": [
+          "GeoNames : glacier du Gi\u00e9tro - http://www.geonames.org (2020-06-17)",
+          "Wikip\u00e9dia : Glacier du Gi\u00e9tro - https://fr.wikipedia.org (2020-06-10)",
+          "Les risques naturels en montagnes / F. Naaim-Bouvet, D. Richard, 2015 (p. 220",
+          "Dict. historique de la Suisse (art. : Bagnes, Val de ; B\u00e2traz, La ; Glaciers ; Inondations ; Venetz, Ignace) - https://hls-dhs-dss.ch (2020-06-17)",
+          "Examen de l'apologie des travaux du glacier du Gi\u00e9troz / J.-J. Blanc, 1825",
+          "Glacier-Climat.com : glacier du Gi\u00e9tro/Gi\u00e9troz - https://www.glaciers-climat.com (2020-06-17)"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "Glacier du sud-ouest des Alpes valaisanes, descendant du Mont Blanc de Cheilon, \u00e0 hauteur du barrage de Mauvoisin. Souvent en mouvement, ses d\u00e9b\u00e2cles caus\u00e8rent des d\u00e9sagr\u00e9ments en aval, notamment en juin 1818, lorsque la digue du barrage c\u00e9da soudainement, provoquant une inondation importante du val de Bagnes en contrebas, causant la mort de 44 personnes. Il porte le nom d'un village de la commune de Finhaut"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326557",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb17873174h",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "name": "Sciences de la Terre",
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "550"
+      },
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "914"
+      }
+    ],
+    "variant_access_point": [
+      "Ghiacciaio del Gi\u00e9troz (Suisse)",
+      "Gi\u00e9tro, Glacier du (Suisse)",
+      "Gietrozgletscher (Suisse)",
+      "Glacier de Gi\u00e9tro (Suisse)",
+      "Glacier de Gi\u00e9troz (Suisse)",
+      "Glacier du Gi\u00e9tro (Suisse)",
+      "Glacier du Gi\u00e9troz (Suisse)"
+    ],
+    "authorized_access_point": "Gi\u00e9troz, Glacier de (Suisse)"
+  },
+  {
+    "md5": "8eeef5e50103b876b3641b2e3258678c",
+    "pid": "271326603",
+    "note": [
+      {
+        "label": [
+          "https://www.beaumontenveron.fr"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326603",
+        "source": "IDREF"
+      }
+    ],
+    "authorized_access_point": "Beaumont-en-V\u00e9ron"
+  },
+  {
+    "md5": "ae1ab489aa4d93bb05af2b76e6f435f7",
+    "pid": "271326670",
+    "note": [
+      {
+        "label": [
+          "https://www.saint-germain-sur-vienne.com/"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326670",
+        "source": "IDREF"
+      }
+    ],
+    "authorized_access_point": "Saint-Germain-sur-Vienne (Indre-et-Loire)"
+  },
+  {
+    "md5": "3008d11c7a98543768496691079e62e2",
+    "pid": "271326700",
+    "note": [
+      {
+        "label": [
+          "https://www.annuaire-mairie.fr/mairie-pommiers-30.html"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326700",
+        "source": "IDREF"
+      }
+    ],
+    "authorized_access_point": "Pommiers (Gard)"
+  },
+  {
+    "md5": "72a54d2b0573f85cc2a0ea5df023b5c0",
+    "pid": "271326727",
+    "note": [
+      {
+        "label": [
+          "https://www.annuaire-mairie.fr/mairie-couziers.html"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326727",
+        "source": "IDREF"
+      }
+    ],
+    "authorized_access_point": "Couziers (Indre-et-Loire)."
+  },
+  {
+    "md5": "32f0f99c66cb112b827bc1afef4ee28c",
+    "pid": "271326751",
+    "note": [
+      {
+        "label": [
+          "https://cizay-la-madeleine.fr"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326751",
+        "source": "IDREF"
+      }
+    ],
+    "authorized_access_point": "Cizay-la-Madeleine (Maine-et-Loire)"
+  },
+  {
+    "md5": "09929c4b42d8faeb7238f29ece031bfc",
+    "pid": "27132676X",
+    "note": [
+      {
+        "label": [
+          "Les Incas fondent un empire autour de Cuzco, en 1532 Pizzaro s'empare de Cuzco et fait ex\u00e9cuter Atahualpa"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/27132676X",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15366294s",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Incas, Empire des"
+    ],
+    "authorized_access_point": "P\u00e9rou, Empire Inca du (11..-1532)"
+  },
+  {
+    "md5": "953fb1d993f4a1543e446e656769b715",
+    "pid": "271326778",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326778",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb120482807",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Monthey (Suisse ; r\u00e9gion)"
+  },
+  {
+    "md5": "4612fb997297fa1b39941851ac704c6c",
+    "pid": "271326786",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326786",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15291163g",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Fionnay (Valais, Suisse)"
+  },
+  {
+    "md5": "1d2c333e6182f4926619966f42fde0df",
+    "pid": "271326794",
+    "note": [
+      {
+        "label": [
+          "Les sp\u00e9ciales de l'IGN / Europe : Suisse, 1994",
+          "Dict. historique de la Suisse - http://www.hls-dhs-dss.ch (2016-01-16)",
+          "Stadtgemeide Brig-Glis - http://www.brig-glis.ch (2016-01-11)"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "Village du Valais, dans le Haut-Valais sur le Rh\u00f4ne, juste avant Glis, (ancienne) commune \u00e0 laquelle il \u00e9tait attach\u00e9, aujourd'hui composante de la commune de Brigue-Glis"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "closeMatch": [
+      {
+        "source": "LCA",
+        "identifiedBy": {
+          "type": "uri",
+          "value": "http://id.loc.gov/authorities/names/nb2015012569",
+          "source": "LCA"
+        },
+        "authorized_access_point": "Gamsen (Switzerland)"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326794",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb170165930",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "914"
+      }
+    ],
+    "variant_access_point": [
+      "Brigue-Glis (Suisse)"
+    ],
+    "authorized_access_point": "Gamsen (Suisse)"
+  },
+  {
+    "md5": "f641e4e732da482d91d70722a46460ea",
+    "pid": "271326808",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326808",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb16981690w",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Martigny (Valais, Suisse). Ch\u00e2teau de la B\u00e2tiaz"
+  },
+  {
+    "md5": "60f765323a605bacb4a828eb8a76b9cd",
+    "pid": "271326824",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326824",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15331899b",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Issime (Val d'Aoste, Italie)"
+  },
+  {
+    "md5": "da2a7da38069a326ab6fb6e713c66fdc",
+    "pid": "271326832",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326832",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb17015586g",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Lac de Champex (Valais, Suisse)"
+    ],
+    "authorized_access_point": "Champex, Lac de (Valais, Suisse)"
+  },
+  {
+    "md5": "820b141d4c8478d915a1a7b2c1665341",
+    "pid": "271326840",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271326840",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb162621083",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Anatolie (Turquie ; r\u00e9gion)"
+  },
+  {
+    "md5": "79c0d48764d6ff3ef674e5fe8720205e",
+    "pid": "271327383",
+    "note": [
+      {
+        "label": [
+          "Le centre aquatique des Bertisettes / Atelier Po&Po, GCC, Opalia / [auteur Karine Dana], Archibooks + Sautereau \u00c9diteur, 2022"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271327383",
+        "source": "IDREF"
+      }
+    ],
+    "variant_access_point": [
+      "Centre aquatique des Bertisettes (Viroflay, France)",
+      "CAB (Viroflay, France)"
+    ],
+    "authorized_access_point": "Viroflay (France)"
+  },
+  {
+    "md5": "77c753c884702436190a883926ebde25",
+    "pid": "271328762",
+    "note": [
+      {
+        "label": [
+          "Dict. des communes, 2001"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "closeMatch": [
+      {
+        "source": "LCA",
+        "identifiedBy": {
+          "type": "uri",
+          "value": "http://id.loc.gov/authorities/names/no2011036870",
+          "source": "LCA"
+        },
+        "authorized_access_point": "Saint-Gingolph (France)"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271328762",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb162289872",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "912"
+      }
+    ],
+    "authorized_access_point": "Saint-Gingolph (Haute-Savoie, France)"
+  },
+  {
+    "md5": "142cae8fef9fb0e4ddf5f712ec3430d7",
+    "pid": "271329017",
+    "note": [
+      {
+        "label": [
+          "Quand la grotte Cosquer sort de l'eau : la Villa M\u00e9diterran\u00e9e en porte \u00e0 faux / Pierre Fiastre, \u00c9ditions de l'Aube, 2022"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "B\u00e2timent public construit par Stefano Boeri. Abrite le mus\u00e9e Cosquer M\u00e9diterran\u00e9e depuis 2022",
+          "Adresse : Esplanade du J4, Promenade Robert Laffont, 13002 Marseille"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271329017",
+        "source": "IDREF"
+      }
+    ],
+    "variant_access_point": [
+      "Villa M\u00e9diterran\u00e9e (Marseille, France)"
+    ],
+    "authorized_access_point": "Marseille (France)"
+  },
+  {
+    "md5": "5dbb2dd52a1de892e183643fb665e805",
+    "pid": "271329335",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271329335",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15331888p",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Ayas (Val d'Aoste, Italie)"
+  },
+  {
+    "md5": "9de54104659eda780aadee4349bfb736",
+    "pid": "271329696",
+    "type": "bf:Place",
+    "broader": [
+      {
+        "authorized_access_point": "Canaries, \u00celes (Espagne)"
+      }
+    ],
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271329696",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15292962k",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Teneriffe, \u00cele de (Canaries, Espagne)"
+    ],
+    "authorized_access_point": "Tenerife, \u00cele de (Canaries, Espagne)"
+  },
+  {
+    "md5": "e9114375c51210143aa41c2b6f0b8f41",
+    "pid": "271329734",
+    "note": [
+      {
+        "label": [
+          "Atlas Le Monde"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271329734",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11963639h",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Edinburgh (GB)"
+    ],
+    "authorized_access_point": "\u00c9dimbourg (GB)"
+  },
+  {
+    "md5": "4312e979f358970e942f8f3209f8c105",
+    "pid": "271329831",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271329831",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb152884911",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Basse-Engadine (Grisons, Suisse ; vall\u00e9e)"
+  },
+  {
+    "md5": "3277ed358eabd2292845e1ee6093e286",
+    "pid": "271329912",
+    "note": [
+      {
+        "label": [
+          "Atlas Le Monde"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271329912",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb121679559",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Alagna Valsesia (Italie)"
+  },
+  {
+    "md5": "25447334e143de92d877617d80b78b46",
+    "pid": "271329998",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "narrower": [
+      {
+        "authorized_access_point": "Tremezzina (Italie)"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271329998",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb120937181",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "914"
+      }
+    ],
+    "authorized_access_point": "C\u00f4me, Lac de (Italie ; r\u00e9gion)"
+  },
+  {
+    "md5": "de2d02ceffb7fdf00951b1f34db2dcfb",
+    "pid": "271330031",
+    "note": [
+      {
+        "label": [
+          "Wikipedia - http://de.wikipedia.org (2015-06-05)",
+          "Les sp\u00e9ciales de l'IGN / Europe : Suisse, 1994",
+          "Dict. historique de la Suisse - http://www.hls-dhs-dss.ch (2015-06-05)",
+          "Kaiseraugst - http://www.kaiseraugst.ch (2015-06-05)"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "Commune d'Argovie (district de Rheinfelden), \u00e0 la fronti\u00e8re germano-suisse sur le Rhin, face \u00e0 Augst (canton de B\u00e2le-Campagne). Elle est fond\u00e9e par l'arm\u00e9e romaine comme 'castrum' dans un secteur de la ville basse d'Augusta Raurica (vestiges). Apr\u00e8s avoir fait partie d'Augst (sous le premier nom d'Augst-im-Dorf, avant son appellation actuelle), elle s'en d\u00e9tache en 1442"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "closeMatch": [
+      {
+        "source": "LCA",
+        "identifiedBy": {
+          "type": "uri",
+          "value": "http://id.loc.gov/authorities/names/n85279520",
+          "source": "LCA"
+        },
+        "authorized_access_point": "Kaiseraugst (Switzerland)"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271330031",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb121618876",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "914"
+      }
+    ],
+    "variant_access_point": [
+      "Augst-im-Dorf (Suisse)",
+      "Augusta Raurica (Suisse ; ville ancienne)",
+      "Castrum Rauracense (Suisse ; ville ancienne)"
+    ],
+    "authorized_access_point": "Kaiseraugst (Suisse)"
+  },
+  {
+    "md5": "d448ddbf5885fd7d8d9e7cb350031c18",
+    "pid": "271330163",
+    "note": [
+      {
+        "label": [
+          "Port-Valais - http://www.port-valais.ch (2015-05-18)",
+          "Dict. historique de la Suisse - http://www.hls-dhs-dss.ch (2015-05-18)"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "Commune du canton du Valais, district de Monthey, comprenant les villages du Bouveret et des Evouettes"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271330163",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb16965305j",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "914"
+      }
+    ],
+    "authorized_access_point": "Port-Valais (Suisse)"
+  },
+  {
+    "md5": "d6b4979bc25ce4b11c55c651f3ff8027",
+    "pid": "271331658",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271331658",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb152915042",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Mauvoisin (Valais, Suisse)"
+  },
+  {
+    "md5": "a572340ecc2df763bc1452e09d648602",
+    "pid": "271331712",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271331712",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15218260r",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Trient, Glacier du (Valais, Suisse)",
+      "Trient, Plateau du (Valais, Suisse)"
+    ],
+    "authorized_access_point": "Trient, Glacier plateau du (Valais, Suisse)"
+  },
+  {
+    "md5": "698e19088dda25364160dadee9b9e871",
+    "pid": "27133181X",
+    "note": [
+      {
+        "label": [
+          "Dictionnaire historique de la Suisse - http://www.hls-dhs-dss.ch/index.php (2010-07-17)"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "broader": [
+      {
+        "authorized_access_point": "Alpes L\u00e9pontines, Massif des"
+      }
+    ],
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/27133181X",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15201346k",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Col de Nufenen (Valais / Tessin, Suisse)",
+      "Nufenenpass, Col de (Wallis / Tessin, Suisse)",
+      "Novena, passo della (Vallese / Ticino, Suisse ; Col)",
+      "Passo della Novena (Vallese / Ticino, Suisse ; Col)"
+    ],
+    "authorized_access_point": "Nufenen, Col de (Valais / Tessin, Suisse)"
+  },
+  {
+    "md5": "49efe810d008874b3f3005a2d72a231c",
+    "pid": "271332352",
+    "note": [
+      {
+        "label": [
+          "GeoNames - http://www.geonames.org (2018-10-10)",
+          "Wikipedia - https://de.wikipedia.org (2018-10-10)",
+          "Grand Larousse universel : Kleiner Walsertal",
+          "Cartes IGN / Pays, d\u00e9couverte du Monde : Autriche, 2016 : Kl. Walsertal",
+          "\u00d6sterreich Lex., 1966 : Kleines Walsertal"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "Vall\u00e9e des Alpes autrichiennes (Vorarlberg, district de Bregenz), contig\u00fce \u00e0 la Bavi\u00e8re (Allemagne). Elle englobe le territoire communal de Mittelberg et doit son nom aux Walser, peuple germanophone du Moyen \u00e2ge venu du Valais (Suisse)"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "closeMatch": [
+      {
+        "source": "LCSH",
+        "identifiedBy": {
+          "type": "uri",
+          "value": "http://id.loc.gov/authorities/subjects/sh92003686",
+          "source": "LCSH"
+        },
+        "authorized_access_point": "Kleinwalsertal (Austria)"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271332352",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb17764284z",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "914"
+      }
+    ],
+    "variant_access_point": [
+      "Kleiner Walsertal (Autriche)",
+      "Kleines Walsertal (Autriche)"
+    ],
+    "authorized_access_point": "Kleinwalsertal (Autriche)"
+  },
+  {
+    "md5": "31d31894cc19716f0ac3f512237ea5c0",
+    "pid": "271332778",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271332778",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15766361s",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Arpille, Mont de l' (Valais, Suisse)"
+  },
+  {
+    "md5": "6bed3d2cfbd6d16bd036f4eb819a0e84",
+    "pid": "271332824",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271332824",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb15288492c",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Haute-Engadine (Grisons, Suisse ; vall\u00e9e)"
+  },
+  {
+    "md5": "bd9f6814578cf76d4ebecf36172bedab",
+    "pid": "271333081",
+    "note": [
+      {
+        "label": [
+          "https://culture.gouv.fr/Espace-documentation/Repertoire-des-ressources-documentaires/Monuments-nationaux/Monastere-de-Saorge"
+        ],
+        "noteType": "dataSource"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271333081",
+        "source": "IDREF"
+      }
+    ],
+    "authorized_access_point": "Saorge (Alpes-Maritimes) -- Monast\u00e8re"
+  },
+  {
+    "md5": "108e51f237bc1cdeac314cb4fef20162",
+    "pid": "271333197",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271333197",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb170154986",
+        "source": "BNF"
+      }
+    ],
+    "authorized_access_point": "Orsieres (Valais, Suisse). Praz-de-Fort"
+  },
+  {
+    "md5": "fd94496f6f297bdbcf95da48e06a5d70",
+    "pid": "271333243",
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271333243",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb152817737",
+        "source": "BNF"
+      }
+    ],
+    "variant_access_point": [
+      "Urserental, Vall\u00e9e (Uri, Suisse ; Vall\u00e9e)",
+      "Ursernthal, Vall\u00e9e (Uri, Suisse ; Vall\u00e9e)"
+    ],
+    "authorized_access_point": "Urseren, Vall\u00e9e d' (Uri, Suisse)"
+  },
+  {
+    "md5": "cf6b32604ac5a558fc78a95726b0b060",
+    "pid": "271337214",
+    "note": [
+      {
+        "label": [
+          "Bridge Orange : Issy-les-Moulineaux : VIGUIER architecture urbanisme paysage / texte de Christine Desmoulins, Archibooks + Sautereau \u00c9diteur, 2023",
+          "https://www.archistorm.com/realisation-bridge-orange-viguier/, 2023-08-04"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "Si\u00e8ge social de l'entreprise Orange construit en 2021 par l'agence \"Viguier architecture urbanisme paysage\""
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Place",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/271337214",
+        "source": "IDREF"
+      }
+    ],
+    "variant_access_point": [
+      "Bridge Orange (Issy-les-Moulineaux, France)",
+      "Si\u00e8ge social Orange (Issy-les-Moulineaux, France)"
+    ],
+    "authorized_access_point": "Issy-les-Moulineaux (France)"
+  }
+]

@@ -42,10 +42,13 @@ from .marctojson.do_idref_agent import \
     Transformation as AgentIdrefTransformation
 from .marctojson.do_idref_concepts import \
     Transformation as ConceptIdrefTransformation
+from .marctojson.do_idref_places import \
+    Transformation as PlaceIdrefTransformation
 from .marctojson.do_rero_agent import Transformation as AgentReroTransformation
 from .marctojson.do_rero_concepts import \
     Transformation as ConceptReroTransformation
 from .models import MefIdentifier
+from .places.idref.models import PlaceIdrefIdentifier
 
 APP_THEME = ['bootstrap3']
 
@@ -202,7 +205,8 @@ TRANSFORMATION = {
     'aidref': AgentIdrefTransformation,
     'agrero': AgentReroTransformation,
     'corero': ConceptReroTransformation,
-    'cidref': ConceptIdrefTransformation
+    'cidref': ConceptIdrefTransformation,
+    'pidref': PlaceIdrefTransformation
 }
 
 IDENTIFIERS = {
@@ -213,7 +217,8 @@ IDENTIFIERS = {
     'agrero': AgentReroIdentifier,
     'comef': MefIdentifier,
     'corero': ConceptReroIdentifier,
-    'coidref': ConceptIdrefIdentifier
+    'cidref': ConceptIdrefIdentifier,
+    'pidref': PlaceIdrefIdentifier
 }
 
 RERO_MEF_APP_BASE_URL = 'https://mef.rero.ch'
@@ -427,6 +432,56 @@ RECORDS_REST_ENDPOINTS = dict(
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers=dict(),
+    ),
+    plmef=dict(
+        pid_type='plmef',
+        pid_minter='place_mef_id',
+        pid_fetcher='place_mef_id',
+        search_class="rero_mef.places.mef.api:PlaceMefSearch",
+        indexer_class="rero_mef.places.mef.api:PlaceMefIndexer",
+        record_class="rero_mef.places.mef.api:PlaceMefRecord",
+        search_index='places_mef',
+        record_serializers={
+            'application/json': ('rero_mef.places.mef.serializers'
+                                 ':json_place_mef_response'),
+        },
+        search_serializers={
+            'application/json': ('rero_mef.places.mef.serializers'
+                                 ':json_place_mef_search'),
+        },
+        search_factory_imp='rero_mef.query:and_search_factory',
+        list_route='/places/mef/',
+        item_route=('/places/mef/<pid(plmef, record_class='
+                    '"rero_mef.places.mef.api:PlaceMefRecord")'
+                    ':pid_value>'),
+        default_media_type='application/json',
+        max_result_window=MAX_RESULT_WINDOW,
+        error_handlers=dict(),
+    ),
+    pidref=dict(
+        pid_type='pidref',
+        pid_minter='place_idref_id',
+        pid_fetcher='place_idref_id',
+        search_class="rero_mef.places.idref.api:PlaceIdrefSearch",
+        indexer_class="rero_mef.places.idref.api:PlaceIdrefIndexer",
+        record_class="rero_mef.places.idref.api:PlaceIdrefRecord",
+        search_index='places_idref',
+        record_serializers={
+            'application/json': ('rero_mef.places.serializers'
+                                 ':json_place_response'),
+        },
+        search_serializers={
+            'application/json': ('rero_mef.places.serializers'
+                                 ':json_place_search'),
+        },
+        search_factory_imp='rero_mef.query:and_search_factory',
+        list_route='/places/idref/',
+        item_route=(
+            '/places/idref/<pid(pidref, record_class='
+            '"rero_mef.places.idref.api:PlaceIdrefRecord"):pid_value>'),
+        default_media_type='application/json',
+        max_result_window=MAX_RESULT_WINDOW,
+        error_handlers=dict(),
     )
 )
 
@@ -441,9 +496,15 @@ RERO_CONCEPTS = [
     'corero'
 ]
 
-RERO_ENTITIES = RERO_AGENTS + RERO_CONCEPTS
+RERO_PLACES = [
+    'pidref'
+]
+
+RERO_ENTITIES = RERO_AGENTS + RERO_CONCEPTS + RERO_PLACES
 
 RECORDS_JSON_SCHEMA = {
+    'plmef': '/places_mef/mef-place-v0.0.1.json',
+    'pidref': '/places_idref/idref-place-v0.0.1.json',
     'corero': '/concepts_rero/rero-concept-v0.0.1.json',
     'cidref': '/concepts_idref/idref-concept-v0.0.1.json',
     'comef': '/concepts_mef/mef-concept-v0.0.1.json',
@@ -573,6 +634,53 @@ RECORDS_REST_FACETS = dict(
         )
     ),
     concepts_idref=dict(
+        aggs=dict(
+            type=dict(
+                terms=dict(field='type', size=30)
+            ),
+            classification=dict(
+                terms=dict(field='classification.name', size=30)
+            ),
+            classificationPortion=dict(
+                terms=dict(
+                    field='classification.classificationPortion', size=30
+                )
+            ),
+            deleted=dict(
+                filter=dict(exists=dict(field="deleted"))
+            )
+        ),
+        filters=dict(
+            type=terms_filter('type'),
+            classification=terms_filter('classification.name'),
+            classificationPortion=terms_filter(
+                'classification.classificationPortion'
+            )
+        )
+    ),
+    places_mef=dict(
+        aggs=dict(
+            type=dict(
+                terms=dict(field='type', size=30)
+            ),
+            sources=dict(
+                terms=dict(field='sources', size=30)
+            ),
+            deleted=dict(
+                filter=dict(exists=dict(field="deleted"))
+            ),
+            deleted_entities=dict(
+                filter=dict(exists=dict(field="*.deleted"))
+            ),
+        ),
+        filters=dict(
+            type=terms_filter('type'),
+            sources=terms_filter('sources'),
+            deleted=exists_filter('deleted'),
+            deleted_entities=exists_filter('*.deleted')
+        )
+    ),
+    places_idref=dict(
         aggs=dict(
             type=dict(
                 terms=dict(field='type', size=30)

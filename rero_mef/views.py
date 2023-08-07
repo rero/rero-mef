@@ -17,11 +17,11 @@
 
 """Agent MEF views."""
 
-from flask import Blueprint, Response, jsonify, redirect, request, \
-    stream_with_context, url_for
+from flask import Blueprint, Response, jsonify, request, stream_with_context
 
 from .agents import AgentMefRecord
 from .concepts import ConceptMefRecord
+from .places import PlaceMefRecord
 
 api_blueprint = Blueprint(
     'api_blueprint',
@@ -30,34 +30,12 @@ api_blueprint = Blueprint(
 )
 
 
-@api_blueprint.route('/mef')
-@api_blueprint.route('/mef/')
-def agent_mef_redirect_list():
-    """Redirect list to new address."""
-    return redirect(
-        url_for('invenio_records_rest.mef_list', **request.args),
-        code=308
-    )
-
-
-@api_blueprint.route('/mef/<pid>')
-def agent_mef_redirect_item(pid):
-    """Redirect item to new address."""
-    return redirect(
-        url_for(
-            'invenio_records_rest.mef_item', pid_value=pid, **request.args),
-        code=308
-    )
-
-
-@api_blueprint.route('/mef/latest/<pid_type>:<pid>')
 @api_blueprint.route('/agents/mef/latest/<pid_type>:<pid>')
 def agent_mef_get_latest(pid_type, pid):
     """Get latest MEF for pid and type."""
     return jsonify(AgentMefRecord.get_latest(pid_type=pid_type, pid=pid))
 
 
-@api_blueprint.route('/mef/updated', methods=['POST'])
 @api_blueprint.route('/agents/mef/updated', methods=['POST'])
 def agent_mef_get_updated():
     """Get latest MEF for pid and type."""
@@ -65,86 +43,6 @@ def agent_mef_get_updated():
     generate = AgentMefRecord.get_updated(data)
     return Response(
         stream_with_context(generate), content_type='application/json'
-    )
-
-
-@api_blueprint.route('/gnd')
-@api_blueprint.route('/gnd/')
-def agent_gnd_redirect_list():
-    """Redirect list to new address."""
-    return redirect(
-        url_for('invenio_records_rest.aggnd_list', **request.args),
-        code=308
-    )
-
-
-@api_blueprint.route('/gnd/<pid>')
-def agent_gnd_redirect_item(pid):
-    """Redirect item to new address."""
-    return redirect(
-        url_for(
-            'invenio_records_rest.aggnd_item', pid_value=pid, **request.args),
-        code=308
-    )
-
-
-@api_blueprint.route('/idref')
-@api_blueprint.route('/idref/')
-def agent_idref_redirect_list():
-    """Redirect list to new address."""
-    return redirect(
-        url_for('invenio_records_rest.aidref_list', **request.args),
-        code=308
-    )
-
-
-@api_blueprint.route('/idref/<pid>')
-def agent_idref_redirect_item(pid):
-    """Redirect item to new address."""
-    return redirect(
-        url_for(
-            'invenio_records_rest.aidref_item', pid_value=pid, **request.args),
-        code=308
-    )
-
-
-@api_blueprint.route('/rero')
-@api_blueprint.route('/rero/')
-def agent_rero_redirect_list():
-    """Redirect list to new address."""
-    return redirect(
-        url_for('invenio_records_rest.agrero_list', **request.args),
-        code=308
-    )
-
-
-@api_blueprint.route('/rero/<pid>')
-def agent_rero_redirect_item(pid):
-    """Redirect item to new address."""
-    return redirect(
-        url_for(
-            'invenio_records_rest.agrero_item', pid_value=pid, **request.args),
-        code=308
-    )
-
-
-@api_blueprint.route('/viaf')
-@api_blueprint.route('/viaf/')
-def agent_viaf_redirect_list():
-    """Redirect list to new address."""
-    return redirect(
-        url_for('invenio_records_rest.viaf_list', **request.args),
-        code=308
-    )
-
-
-@api_blueprint.route('/viaf/<pid>')
-def agent_viaf_redirect_item(pid):
-    """Redirect item to new address."""
-    return redirect(
-        url_for(
-            'invenio_records_rest.viaf_item', pid_value=pid, **request.args),
-        code=308
     )
 
 
@@ -159,6 +57,22 @@ def concept_mef_get_updated():
     """Get latest MEF for pid and type."""
     data = request.get_json()
     generate = ConceptMefRecord.get_updated(data)
+    return Response(
+        stream_with_context(generate), content_type='application/json'
+    )
+
+
+@api_blueprint.route('/places/mef/latest/<pid_type>:<pid>')
+def place_mef_get_latest(pid_type, pid):
+    """Get latest MEF for pid and type."""
+    return jsonify(PlaceMefRecord.get_latest(pid_type=pid_type, pid=pid))
+
+
+@api_blueprint.route('/places/mef/updated', methods=['POST'])
+def place_mef_get_updated():
+    """Get latest MEF for pid and type."""
+    data = request.get_json()
+    generate = PlaceMefRecord.get_updated(data)
     return Response(
         stream_with_context(generate), content_type='application/json'
     )
