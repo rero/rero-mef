@@ -127,7 +127,8 @@ def test_create_mef_and_agents(app, agent_viaf_record, agent_gnd_record,
         'agrero': {'db': 1, 'index': 'agrero', 'mef': 1, 'mef-db': 0},
         'aidref': {'db': 1, 'index': 'aidref', 'mef': 1, 'mef-db': 0},
         'cidref': {'db': 0, 'index': 'cidref', 'mef': 0, 'mef-db': 0},
-        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0}
+        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0},
+        'pidref': {'db': 0, 'index': 'pidref', 'mef': 0, 'mef-db': 0}
     }
     # Change RERO in VIAF:
     agent_viaf_record['rero_pid'] = 'AXXXXXXXXX'
@@ -169,7 +170,8 @@ def test_create_mef_and_agents(app, agent_viaf_record, agent_gnd_record,
         'agrero': {'db': 1, 'index': 'agrero', 'mef': 1, 'mef-db': 0},
         'aidref': {'db': 1, 'index': 'aidref', 'mef': 1, 'mef-db': 0},
         'cidref': {'db': 0, 'index': 'cidref', 'mef': 0, 'mef-db': 0},
-        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0}
+        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0},
+        'pidref': {'db': 0, 'index': 'pidref', 'mef': 0, 'mef-db': 0}
     }
 
     # Create missing RERO record
@@ -234,7 +236,8 @@ def test_create_mef_and_agents(app, agent_viaf_record, agent_gnd_record,
         'agrero': {'db': 2, 'index': 'agrero', 'mef': 2, 'mef-db': 0},
         'aidref': {'db': 1, 'index': 'aidref', 'mef': 1, 'mef-db': 0},
         'cidref': {'db': 0, 'index': 'cidref', 'mef': 0, 'mef-db': 0},
-        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0}
+        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0},
+        'pidref': {'db': 0, 'index': 'pidref', 'mef': 0, 'mef-db': 0}
     }
 
     # readd GND to VIAF and add wrongly VIAF pid to GND MEF record:
@@ -309,7 +312,8 @@ def test_create_mef_and_agents(app, agent_viaf_record, agent_gnd_record,
         'agrero': {'db': 2, 'index': 'agrero', 'mef': 2, 'mef-db': 0},
         'aidref': {'db': 1, 'index': 'aidref', 'mef': 1, 'mef-db': 0},
         'cidref': {'db': 0, 'index': 'cidref', 'mef': 0, 'mef-db': 0},
-        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0}
+        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0},
+        'pidref': {'db': 0, 'index': 'pidref', 'mef': 0, 'mef-db': 0}
     }
 
     from pprint import pprint
@@ -346,7 +350,8 @@ def test_create_mef_and_agents(app, agent_viaf_record, agent_gnd_record,
         'agrero': {'db': 2, 'index': 'agrero', 'mef': 2, 'mef-db': 0},
         'aidref': {'db': 1, 'index': 'aidref', 'mef': 1, 'mef-db': 0},
         'cidref': {'db': 0, 'index': 'cidref', 'mef': 0, 'mef-db': 0},
-        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0}
+        'corero': {'db': 0, 'index': 'corero', 'mef': 0, 'mef-db': 0},
+        'pidref': {'db': 0, 'index': 'pidref', 'mef': 0, 'mef-db': 0}
     }
 
 
@@ -371,6 +376,8 @@ def test_create_mef_and_agents_online(mock_get, mock_session_get, app,
         'agents.idref https://www.idref.fr/OAI/oai.jsp Added',
         'Add OAIHarvestConfig: '
         'concepts.idref https://www.idref.fr/OAI/oai.jsp Added',
+        'Add OAIHarvestConfig: '
+        'places.idref https://www.idref.fr/OAI/oai.jsp Added'
     ]
     mock_get.return_value = mock_response(
         content=''

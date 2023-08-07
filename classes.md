@@ -81,6 +81,19 @@ class ConceptMefRecord{
     get_latest(cls, pid_type, pid)
 }
 
+class PlaceMefRecord{
+    minter = mef_id_minter
+    fetcher = mef_id_fetcher
+    provider = MefProvider
+    name = 'mef'
+    model_cls = PlaceMefMetadata
+    search = PlaceMefSearch
+    mef_type = 'PLACES'
+    entities = ['idref']
+    add_information(self, resolve=False, sources=False)
+    get_latest(cls, pid_type, pid)
+}
+
 class AgentViafRecord{
     minter = viaf_id_minter
     fetcher = viaf_id_fetcher
@@ -115,6 +128,15 @@ class ConceptRecord{
     reindex(self, forceindex=False)
 }
 
+class PlaceRecord{
+    name = None
+    create(cls, data, id_=None, delete_pid=False, dbcommit=False, reindex=True, md5=True, **kwargs)
+    delete(self, force=False, dbcommit=False, delindex=False)
+    create_or_update_mef(self, dbcommit=False, reindex=False)
+    get_online_record(cls, id, debug=False)
+    reindex(self, forceindex=False)
+}
+
 class ConceptIdrefRecord {
     minter = idref_id_minter
     fetcher = idref_id_fetcher
@@ -124,6 +146,7 @@ class ConceptIdrefRecord {
     pid_type = 'concept_idref_pid'
     model_cls = ConceptIdrefMetadata
     search = ConceptIdrefSearch
+    get_online_record(cls, id, debug=False)
 }
 
 class ConceptReroRecord {
@@ -135,6 +158,7 @@ class ConceptReroRecord {
     pid_type = 'concept_rero_pid'
     model_cls = ConceptReroMetadata
     search = ConceptReroSearch
+    get_online_record(cls, id, debug=False)
 }
 
 class AgentGndRecord{
@@ -173,9 +197,22 @@ class AgentReroRecord{
     get_online_record(cls, id, debug=False)
 }
 
+class PlaceIdrefRecord {
+    minter = idref_id_minter
+    fetcher = idref_id_fetcher
+    provider = PlaceIdrefProvider
+    name = 'idref'
+    viaf_source_code = 'RAMEAU'
+    pid_type = 'place_idref_pid'
+    model_cls = PlaceIdrefMetadata
+    search = PlaceIdrefSearch
+    get_online_record(cls, id, debug=False)
+}
+
 EntityMefRecord --|> ReroMefRecord
 ReroMefRecord --|> AgentMefRecord
 ReroMefRecord --|> ConceptMefRecord
+ReroMefRecord --|> PlaceMefRecord
 
 ReroMefRecord --|> AgentViafRecord
 
@@ -187,4 +224,7 @@ AgentRecord --|> AgentReroRecord
 ReroMefRecord --|> ConceptRecord
 ConceptRecord --|> ConceptIdrefRecord
 ConceptRecord --|> ConceptReroRecord
+
+ReroMefRecord --|> PlaceRecord
+PlaceRecord --|> PlaceIdrefRecord
 ```

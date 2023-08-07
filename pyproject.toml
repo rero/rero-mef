@@ -27,7 +27,6 @@ marshmallow = ">=3.0.0,<4.0.0"
 uwsgi = ">=2.0"
 uwsgi-tools = ">=1.1.1"
 uwsgitop = ">=0.11"
-
 ## Third party inven## Third party invenio modules used by RERO EBOOKS
 invenio-oaiharvester = { git = "https://github.com/inveniosoftware/invenio-oaiharvester.git", tag = "v1.0.0a4" }
 invenio-search = {version = ">=2.1.0,<3.0.0", extras = ["elasticsearch7"]}
@@ -131,6 +130,9 @@ agents_rero = "rero_mef.agents.rero.models"
 concepts_mef = "rero_mef.concepts.mef.models"
 concepts_rero = "rero_mef.concepts.rero.models"
 concepts_idref = "rero_mef.concepts.idref.models"
+places_mef = "rero_mef.places.mef.models"
+placets_idref = "rero_mef.places.idref.models"
+
 
 [tool.poetry.plugins."invenio_pidstore.minters"]
 mef_id = "rero_mef.agents.mef.minters:mef_id_minter"
@@ -141,6 +143,8 @@ agent_rero_id = "rero_mef.agents.rero.minters:rero_id_minter"
 concept_mef_id = "rero_mef.concepts.mef.minters:mef_id_minter"
 concept_rero_id = "rero_mef.concepts.rero.minters:rero_id_minter"
 concept_idref_id = "rero_mef.concepts.idref.minters:idref_id_minter"
+place_mef_id = "rero_mef.places.mef.minters:mef_id_minter"
+place_idref_id = "rero_mef.places.idref.minters:idref_id_minter"
 
 [tool.poetry.plugins."invenio_pidstore.fetchers"]
 mef_id = "rero_mef.agents.mef.fetchers:mef_id_fetcher"
@@ -151,6 +155,8 @@ agent_rero_id = "rero_mef.agents.rero.fetchers:rero_id_fetcher"
 concept_mef_id = "rero_mef.concepts.mef.fetchers:mef_id_fetcher"
 concept_rero_id = "rero_mef.concepts.rero.fetchers:rero_id_fetcher"
 concept_idref_id = "rero_mef.concepts.idref.fetchers:idref_id_fetcher"
+place_mef_id = "rero_mef.places.mef.fetchers:mef_id_fetcher"
+place_idref_id = "rero_mef.places.idref.fetchers:idref_id_fetcher"
 
 [tool.poetry.plugins."invenio_jsonschemas.schemas"]
 common = "rero_mef.jsonschemas"
@@ -162,6 +168,8 @@ agents_rero = "rero_mef.agents.rero.jsonschemas"
 cocepts_mef = "rero_mef.concepts.mef.jsonschemas"
 cocepts_rero = "rero_mef.concepts.rero.jsonschemas"
 cocepts_idref = "rero_mef.concepts.idref.jsonschemas"
+places_mef = "rero_mef.places.mef.jsonschemas"
+places_idref = "rero_mef.places.idref.jsonschemas"
 
 [tool.poetry.plugins."invenio_search.mappings"]
 mef = "rero_mef.agents.mef.mappings"
@@ -172,6 +180,8 @@ agents_rero = "rero_mef.agents.rero.mappings"
 concepts_mef = "rero_mef.concepts.mef.mappings"
 concepts_rero = "rero_mef.concepts.rero.mappings"
 concepts_idref = "rero_mef.concepts.idref.mappings"
+places_mef = "rero_mef.places.mef.mappings"
+places_idref = "rero_mef.places.idref.mappings"
 
 [tool.poetry.plugins."invenio_records.jsonresolver"]
 mef = "rero_mef.agents.mef.jsonresolvers.mef_resolver"
@@ -182,6 +192,8 @@ agents_rero = "rero_mef.agents.rero.jsonresolvers.rero_resolver"
 concepts_mef = "rero_mef.concepts.mef.jsonresolvers.mef_resolver"
 concepts_rero = "rero_mef.concepts.rero.jsonresolvers.rero_resolver"
 concepts_idref = "rero_mef.concepts.idref.jsonresolvers.idref_resolver"
+places_mef = "rero_mef.places.mef.jsonresolvers.mef_resolver"
+places_idref = "rero_mef.places.idref.jsonresolvers.idref_resolver"
 
 [tool.poetry.plugins."invenio_base.api_blueprints"]
 api_rero_mef = "rero_mef.theme.views:api_blueprint"

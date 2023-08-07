@@ -111,7 +111,7 @@ class AgentMefRecord(EntityMefRecord):
                 ref_split = agent['$ref'].split('/')
                 ref_type = ref_split[-2]
                 ref_pid = ref_split[-1]
-                for _, entity_class in entity_classes.items():
+                for entity_class in entity_classes.values():
                     if entity_class.name == ref_type:
                         if entity_rec := entity_class.get_record_by_pid(
                             ref_pid

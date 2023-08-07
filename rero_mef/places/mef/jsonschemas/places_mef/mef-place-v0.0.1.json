@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Schema for MEF places",
+  "type": "object",
+  "required": [
+    "$schema",
+    "pid",
+    "type"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "title": "Schema",
+      "description": "Schema for MEF place record.",
+      "type": "string",
+      "minLength": 7
+    },
+    "pid": {
+      "title": "Mef place ID",
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "title": "Type",
+      "type": "string",
+      "enum": [
+        "bf:Place"
+      ]
+    },
+    "idref": {
+      "title": "IdRef place ID",
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "title": "ref",
+          "type": "string",
+          "pattern": "^https://mef.rero.ch/api/places/idref/.*?$"
+        }
+      }
+    },
+    "deleted": {
+      "title": "Deletion date",
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

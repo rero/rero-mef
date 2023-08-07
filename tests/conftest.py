@@ -25,6 +25,8 @@ pytest_plugins = (
     'fixtures.agents_records',
     'fixtures.concepts_data',
     'fixtures.concepts_records',
+    'fixtures.places_data',
+    'fixtures.places_records'
 )
 
 

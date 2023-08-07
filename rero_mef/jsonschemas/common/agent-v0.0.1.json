@@ -105,7 +105,8 @@
             ]
           },
           "value": {
-            "type": "string"
+            "type": "string",
+            "minLength": 2
           }
         }
       }
@@ -113,12 +114,14 @@
     "date_of_birth": {
       "title": "Date of birth",
       "description": "XXX (cf. RDA)",
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "date_of_death": {
       "title": "Date of death",
       "description": "XXX (cf. RDA)",
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "biographical_information": {
       "title": "Biographical information",
@@ -126,7 +129,8 @@
       "type": "array",
       "minItems": 1,
       "items": {
-        "type": "string"
+        "type": "string",
+        "minLength": 1
       }
     },
     "preferred_name": {
@@ -147,7 +151,8 @@
     },
     "numeration": {
       "title": "Numeration",
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "variant_name": {
       "title": "Variant name",
@@ -162,12 +167,14 @@
     "date_of_establishment": {
       "title": "Date of establishment",
       "description": "XXX (cf. RDA)",
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "date_of_termination": {
       "title": "Date of termination",
       "description": "XXX (cf. RDA)",
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "conference": {
       "title": "Conference",
@@ -180,7 +187,8 @@
       "type": "array",
       "minItems": 1,
       "items": {
-        "type": "string"
+        "type": "string",
+        "minLength": 1
       }
     },
     "parallel_access_point": {
@@ -189,7 +197,8 @@
       "type": "array",
       "minItems": 1,
       "items": {
-        "type": "string"
+        "type": "string",
+        "minLength": 1
       }
     },
     "country_associated": {
@@ -197,7 +206,8 @@
     },
     "deleted": {
       "title": "Deletion date",
-      "type": "string"
+      "type": "string",
+      "format": "date-time"
     },
     "relation_pid": {
       "title": "Relation pid",
@@ -205,7 +215,8 @@
       "properties": {
         "value": {
           "title": "Relation pid value",
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "type": {
           "title": "Relation pid type",

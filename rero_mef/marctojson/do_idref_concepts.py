@@ -137,8 +137,12 @@ class Transformation(object):
                 'Call Function', 'trans_idref_authorized_access_point')
         tag = '280' if self.marc.get_fields('280') else '250'
         subfields = {'a': ', ', 'x': ' - ', 'y': ' - ', 'z': ' - '}
-        if authorized_ap := build_string_from_field(self.marc[tag], subfields):
-            self.json_dict['authorized_access_point'] = authorized_ap
+        try:
+            if authorized_ap := build_string_from_field(
+                    self.marc[tag], subfields):
+                self.json_dict['authorized_access_point'] = authorized_ap
+        except Exception as err:
+            self.json_dict['authorized_access_point'] = f'TAG: {tag} NOT FOUND'
 
     def trans_idref_variant_access_point(self):
         """Transformation variant_access_point from field 450 480."""

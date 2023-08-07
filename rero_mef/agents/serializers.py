@@ -41,10 +41,11 @@ def add_links(pid, record):
             + str(mef_pid)
 
     with contextlib.suppress(Exception):
-        viaf_pid_name = record.viaf_pid_name
-        query = AgentViafSearch(). \
-            filter({'term': {viaf_pid_name: pid.pid_value}}). \
-            source('pid')
+        query = AgentViafSearch() \
+            .filter({'term': {record.viaf_pid_name: pid.pid_value}}) \
+            .params(preserve_order=True) \
+            .sort({'_updated': {'order': 'desc'}}) \
+            .source('pid')
         viaf_pid = next(query.scan()).pid
         links['viaf'] = '{scheme}://{host}/api/agents/viaf/' \
             + str(viaf_pid)
