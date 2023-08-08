@@ -50,6 +50,14 @@ def test_view_concepts_mef(client,
             }],
             'doc_count_error_upper_bound': 0,
             'sum_other_doc_count': 0
+        },
+        'type': {
+            'buckets': [{
+                'doc_count': 2,
+                'key': 'bf:Topic'
+            }],
+            'doc_count_error_upper_bound': 0,
+            'sum_other_doc_count': 0
         }
     }
     url = url_for('invenio_records_rest.comef_item', pid_value=pid)

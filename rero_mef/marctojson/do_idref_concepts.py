@@ -38,13 +38,17 @@ class Transformation(object):
     def _transform(self):
         """Call the transformation functions."""
         if fields_008 := self.marc.get_fields('008'):
-            if fields_008[0].data in ['Td8', 'Tf8']:
+            fields_008_data = fields_008[0].data
+            if fields_008_data in ['Td8', 'Tf8', 'Tz8']:
+                self.json_dict['type'] = 'bf:Topic'
+                if fields_008_data == 'Tz8':
+                    self.json_dict['type'] = 'bf:Temporal'
                 for func in dir(self):
                     if func.startswith('trans'):
                         func = getattr(self, func)
                         func()
             else:
-                msg = f'008 not in [Td8, Tf8]: {fields_008[0].data}'
+                msg = f'008 not in [Td8, Tf8, Tz8]: {fields_008_data}'
                 self.json_dict = {'NO TRANSFORMATION': msg}
                 self.trans_idref_pid()
                 if self.logger and self.verbose:
@@ -68,7 +72,6 @@ class Transformation(object):
             self.logger.info('Call Function', 'trans_idref_pid')
         if field_001 := self.marc.get_fields('001'):
             self.json_dict['pid'] = field_001[0].data
-            self.json_dict['type'] = 'bf:Topic'
 
     def trans_idref_bnf_type(self):
         """Transformation bnf_type from field 008."""

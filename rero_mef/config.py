@@ -457,7 +457,7 @@ RECORDS_JSON_SCHEMA = {
 RECORDS_REST_FACETS = dict(
     mef=dict(
         aggs=dict(
-            agent_type=dict(
+            type=dict(
                 terms=dict(field='type', size=30)
             ),
             sources=dict(
@@ -470,13 +470,13 @@ RECORDS_REST_FACETS = dict(
                 filter=dict(exists=dict(field="*.deleted"))
             ),
         ),
-        filters={
-            'agent_type': terms_filter('type'),
-            'agent_sources': terms_filter('sources'),
-            'deleted': exists_filter('deleted'),
-            'deleted_entities': exists_filter('*.deleted'),
-            'rero_double': terms_filter('rero.pid')
-        }
+        filters=dict(
+            type=terms_filter('type'),
+            sources=terms_filter('sources'),
+            deleted=exists_filter('deleted'),
+            deleted_entities=exists_filter('*.deleted'),
+            rero_double=terms_filter('rero.pid')
+        )
     ),
     viaf=dict(
         aggs=AgentViafRecord.aggregations(),
@@ -484,48 +484,51 @@ RECORDS_REST_FACETS = dict(
     ),
     agents_gnd=dict(
         aggs=dict(
-            agent_type=dict(
-                terms=dict(field='bf:Agent', size=30)
+            type=dict(
+                terms=dict(field='type', size=30)
             ),
             deleted=dict(
                 filter=dict(exists=dict(field="deleted"))
             )
         ),
-        filters={
-            'agent_type': terms_filter('bf:Agent'),
-            'deleted': exists_filter('deleted'),
-        },
+        filters=dict(
+            type=terms_filter('type'),
+            deleted=exists_filter('deleted'),
+        ),
     ),
     agents_idref=dict(
         aggs=dict(
-            agent_type=dict(
-                terms=dict(field='bf:Agent', size=30)
+            type=dict(
+                terms=dict(field='type', size=30)
             ),
             deleted=dict(
                 filter=dict(exists=dict(field="deleted"))
             )
         ),
-        filters={
-            'agent_type': terms_filter('bf:Agent'),
-            'deleted': exists_filter('deleted'),
-        }
+        filters=dict(
+            type=terms_filter('type'),
+            deleted=exists_filter('deleted'),
+        )
     ),
     agents_rero=dict(
         aggs=dict(
-            agent_type=dict(
-                terms=dict(field='bf:Agent', size=30)
+            type=dict(
+                terms=dict(field='type', size=30)
             ),
             deleted=dict(
                 filter=dict(exists=dict(field="deleted"))
             )
         ),
-        filters={
-            'agent_type': terms_filter('bf:Agent'),
-            'deleted': exists_filter('deleted'),
-        }
+        filters=dict(
+            type=terms_filter('type'),
+            deleted=exists_filter('deleted'),
+        )
     ),
     concepts_mef=dict(
         aggs=dict(
+            type=dict(
+                terms=dict(field='type', size=30)
+            ),
             sources=dict(
                 terms=dict(field='sources', size=30)
             ),
@@ -536,16 +539,19 @@ RECORDS_REST_FACETS = dict(
                 filter=dict(exists=dict(field="*.deleted"))
             ),
         ),
-        filters={
-            'agent_type': terms_filter('type'),
-            'agent_sources': terms_filter('sources'),
-            'deleted': exists_filter('deleted'),
-            'deleted_entities': exists_filter('*.deleted'),
-            'rero_double': terms_filter('rero.pid')
-        }
+        filters=dict(
+            type=terms_filter('type'),
+            sources=terms_filter('sources'),
+            deleted=exists_filter('deleted'),
+            deleted_entities=exists_filter('*.deleted'),
+            rero_double=terms_filter('rero.pid')
+        )
     ),
     concepts_rero=dict(
         aggs=dict(
+            type=dict(
+                terms=dict(field='type', size=30)
+            ),
             classification=dict(
                 terms=dict(field='classification.name', size=30)
             ),
@@ -558,15 +564,19 @@ RECORDS_REST_FACETS = dict(
                 filter=dict(exists=dict(field="deleted"))
             )
         ),
-        filters={
-            'classification': terms_filter('classification.name'),
-            'classificationPortion': terms_filter(
+        filters=dict(
+            type=terms_filter('type'),
+            classification=terms_filter('classification.name'),
+            classificationPortion=terms_filter(
                 'classification.classificationPortion'
             )
-        }
+        )
     ),
     concepts_idref=dict(
         aggs=dict(
+            type=dict(
+                terms=dict(field='type', size=30)
+            ),
             classification=dict(
                 terms=dict(field='classification.name', size=30)
             ),
@@ -579,12 +589,13 @@ RECORDS_REST_FACETS = dict(
                 filter=dict(exists=dict(field="deleted"))
             )
         ),
-        filters={
-            'classification': terms_filter('classification.name'),
-            'classificationPortion': terms_filter(
+        filters=dict(
+            type=terms_filter('type'),
+            classification=terms_filter('classification.name'),
+            classificationPortion=terms_filter(
                 'classification.classificationPortion'
             )
-        }
+        )
     )
 
 )
