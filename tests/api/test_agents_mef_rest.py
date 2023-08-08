@@ -38,7 +38,7 @@ def test_view_agents_mef(client, agent_mef_record, agent_gnd_record,
     json_data = json.loads(res.get_data(as_text=True))
     assert json_data['hits']['total'] == 1
     assert json_data['aggregations'] == {
-        'agent_type': {
+        'type': {
             'buckets': [
                 {'doc_count': 1, 'key': 'bf:Person'}
             ],

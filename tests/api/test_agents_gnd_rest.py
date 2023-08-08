@@ -34,7 +34,7 @@ def test_view_agents_gnd(client, agent_gnd_record):
     res = client.get(url, follow_redirects=True)
     assert res.status_code == 200
     assert json.loads(res.get_data(as_text=True))['aggregations'] == {
-        'agent_type': {
+        'type': {
             'buckets': [{'doc_count': 1, 'key': 'bf:Person'}],
             'doc_count_error_upper_bound': 0,
             'sum_other_doc_count': 0

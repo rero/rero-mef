@@ -31,8 +31,7 @@ def test_idref_pid():
     trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
     trans.trans_idref_pid()
     assert trans.json == {
-        'pid': '249594463',
-        'type': 'bf:Topic'
+        'pid': '249594463'
     }
 
 

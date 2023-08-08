@@ -24,7 +24,8 @@
       "title": "Type",
       "type": "string",
       "enum": [
-        "bf:Topic"
+        "bf:Topic",
+        "bf:Temporal"
       ]
     },
     "rero": {

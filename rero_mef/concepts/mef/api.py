@@ -26,6 +26,7 @@ from .fetchers import mef_id_fetcher
 from .minters import mef_id_minter
 from .models import ConceptMefMetadata
 from .providers import ConceptMefProvider
+from ..utils import get_concept_classes
 from ...api import ReroIndexer
 from ...api_mef import EntityMefRecord
 
@@ -73,6 +74,19 @@ class ConceptMefRecord(EntityMefRecord):
                reindex=False, md5=True, **kwargs):
         """Create a new agent record."""
         data['type'] = 'bf:Topic'
+        concept_classes = get_concept_classes()
+        for concept in cls.entities:
+            if concept := data.get(concept):
+                ref_split = concept['$ref'].split('/')
+                ref_type = ref_split[-2]
+                ref_pid = ref_split[-1]
+                for _, concept_class in concept_classes.items():
+                    if concept_class.name == ref_type:
+                        if concept_rec := concept_class.get_record_by_pid(
+                            ref_pid
+                        ):
+                            data['type'] = concept_rec['type']
+                            break
         return super().create(
             data=data,
             id_=id_,
