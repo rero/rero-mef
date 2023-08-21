@@ -34,17 +34,29 @@ footer {
     margin-top: 40px;
 }
 
+.service-container {
+    display: flex;
+    flex-direction: row;
+}
 
-.service {
+.service-container .service {
     background-color: #204b73;
+    height: 60px;
+    width: 200px;
     padding: 5px 20px;
     margin-top: 4px;
     margin-right: 6px;
     border-radius: 5px;
-    display: inline-block;
+    text-align: center;
 }
 
-.service img {
-    height: 44px;
-    margin: 4px;
+.service-container .service img {
+    max-height: 50px;
+    margin: auto;
+    display: block;
+}
+
+.service-container .service .img-sonar {
+    height: 80%;
+    margin-top: 0.4em;
 }
