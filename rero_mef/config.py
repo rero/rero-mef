@@ -49,6 +49,10 @@ from .models import MefIdentifier
 
 APP_THEME = ['bootstrap3']
 
+# RERO Services
+RERO_SERVICE_ILS = 'https://bib.rero.ch'
+RERO_SERVICE_SONAR = 'https://sonar.rero.ch'
+
 # Rate limiting
 # =============
 #: Storage for ratelimiter.

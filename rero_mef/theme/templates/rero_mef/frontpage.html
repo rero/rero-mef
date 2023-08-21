@@ -25,21 +25,18 @@
       </p>
 
       <h3 class="margin-top-extra-large">Other RERO products</h3>
-      <a href="https://ils.test.rero.ch" target="_blank">
-        <div class="service">
-          <img src="{{ url_for('static', filename='images/logo_rero_ils.png')}}" alt="RERO ILS" />
-        </div>
-      </a>
-      <a href="https://explore.rero.ch" target="_blank">
-        <div class="service">
-          <img src="{{ url_for('static', filename='images/logo_explore.png')}}" alt="RERO Explore" />
-        </div>
-      </a>
-      <a href="https://doc.rero.ch" target="_blank">
-        <div class="service">
-          <img src="{{ url_for('static', filename='images/logo_rerodoc.png')}}" alt="RERO Doc" />
-        </div>
-      </a>
+      <div class="service-container">
+        <a href="{{ config.RERO_SERVICE_ILS }}" target="_blank">
+          <div class="service">
+            <img src="{{ url_for('static', filename='images/logo_rero_plus.svg')}}" alt="RERO BIB" />
+          </div>
+        </a>
+        <a href="{{ config.RERO_SERVICE_SONAR }}" target="_blank">
+          <div class="service">
+            <img class="img-sonar" src="{{ url_for('static', filename='images/logo_sonar.svg')}}" alt="RERO SONAR" />
+          </div>
+        </a>
+      </div>
     </div>
     <div class="col-md-4">
       <h4 class="margin-top-remove">Links</h4>
