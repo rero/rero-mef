@@ -1,5 +1,22 @@
 # Changelog
 
+## [v0.14.0](https://github.com/rero/rero-mef/tree/v0.14.0) (2023-09-06)
+
+[Full Changelog](https://github.com/rero/rero-mef/compare/v0.12.0...v0.14.0)
+
+**New features:**
+* places: new resource bf:Place [\#145](https://github.com/rero/rero-mef/pull/145) (by @rerowep)
+* concepts: Add bf:Temporal [\#140](https://github.com/rero/rero-mef/pull/140) (by @rerowep)
+
+**Enhancements:**
+* chore: update services on home page [\#144](https://github.com/rero/rero-mef/pull/144) (by @Garfield-fr)
+
+**Fixes:**
+* fix: logo on header [\#146](https://github.com/rero/rero-mef/pull/146) (by @Garfield-fr)
+* viaf: fix update [\#143](https://github.com/rero/rero-mef/pull/143) (by @rerowep)
+* indexer: fix bulk indexing [\#139](https://github.com/rero/rero-mef/pull/139) (by @rerowep)
+* concept: change bf:Concept to bf:Topic [\#138](https://github.com/rero/rero-mef/pull/138) (by @rerowep)
+
 ## [v0.12.0](https://github.com/rero/rero-mef/tree/v0.12.0) (2023-07-25)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.11.0...v0.12.0)
