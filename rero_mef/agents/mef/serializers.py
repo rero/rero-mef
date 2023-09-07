@@ -65,6 +65,7 @@ class ReroMefSerializer(JSONSerializer):
         :param links_factory: Factory function for record links.
         """
         rec = record
+        print('---->', request.args)
         if request:
             rec = rec.add_information(
                 resolve=request.args.get(
