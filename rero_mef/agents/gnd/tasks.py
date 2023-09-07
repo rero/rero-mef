@@ -90,7 +90,7 @@ def save_records_from_dates(file_name, from_date=None, until_date=None,
 
 
 @shared_task
-def gnd_get_record(id, debug=False):
+def gnd_get_record(id_, debug=False):
     """Get a record from GND SRU repo.
 
     GND documentation:
@@ -99,16 +99,21 @@ def gnd_get_record(id, debug=False):
     &operation=searchRetrieve&query=idn%3D007355440&recordSchema=MARC21-xml
     """
     url = current_app.config.get(
-        'RERO_MEF_AGENTS_GND_GET_RECORD').replace('{id}', id)
+        'RERO_MEF_AGENTS_GND_GET_RECORD').replace('{id}', id_)
     trans_record = None
-    msg = f'SRU-agents.gnd  get: {id:<15} {url}'
+    msg = f'SRU-agents.gnd  get: {id_:<15} {url}'
     try:
         response = requests_retry_session().get(url)
         status_code = response.status_code
         if status_code == requests.codes.ok:
             if records := parse_xml_to_array(BytesIO(response.content)):
                 trans_record = Transformation(records[0]).json
-                msg = f'{msg} | OK'
+                pid = trans_record.get('pid')
+                if id_ != trans_record.get('pid'):
+                    msg = f'{msg} | PID changed: {id_} -> {pid}'
+                    trans_record = None
+                else:
+                    msg = f'{msg} | OK'
             else:
                 msg = f'{msg} | No record'
         else:

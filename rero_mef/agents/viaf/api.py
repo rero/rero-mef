@@ -207,7 +207,7 @@ class AgentViafRecord(ReroMefRecord):
             action = Action.NOT_ONLINE
             agent_record = None
             if agent_class.provider.pid_type in online:
-                data, msg = agent_class.get_online_record(id=pid)
+                data, msg = agent_class.get_online_record(id_=pid)
                 if online_verbose:
                     click.echo(msg)
                 if data and not data.get('NO TRANSFORMATION'):

@@ -43,7 +43,7 @@ def test_view_agents_mef(client, agent_mef_record, agent_gnd_record,
             'doc_count_error_upper_bound': 0,
             'sum_other_doc_count': 0
         },
-        'sources': {
+        'source': {
             'buckets': [
                 {'doc_count': 1, 'key': 'gnd'},
                 {'doc_count': 1, 'key': 'idref'},

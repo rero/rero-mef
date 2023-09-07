@@ -521,7 +521,7 @@ RECORDS_REST_FACETS = dict(
             type=dict(
                 terms=dict(field='type', size=30)
             ),
-            sources=dict(
+            source=dict(
                 terms=dict(field='sources', size=30)
             ),
             deleted=dict(
@@ -533,7 +533,7 @@ RECORDS_REST_FACETS = dict(
         ),
         filters=dict(
             type=terms_filter('type'),
-            sources=terms_filter('sources'),
+            source=terms_filter('sources'),
             deleted=exists_filter('deleted'),
             deleted_entities=exists_filter('*.deleted'),
             rero_double=terms_filter('rero.pid')
@@ -590,7 +590,7 @@ RECORDS_REST_FACETS = dict(
             type=dict(
                 terms=dict(field='type', size=30)
             ),
-            sources=dict(
+            source=dict(
                 terms=dict(field='sources', size=30)
             ),
             deleted=dict(
@@ -602,7 +602,7 @@ RECORDS_REST_FACETS = dict(
         ),
         filters=dict(
             type=terms_filter('type'),
-            sources=terms_filter('sources'),
+            source=terms_filter('sources'),
             deleted=exists_filter('deleted'),
             deleted_entities=exists_filter('*.deleted'),
             rero_double=terms_filter('rero.pid')
@@ -663,7 +663,7 @@ RECORDS_REST_FACETS = dict(
             type=dict(
                 terms=dict(field='type', size=30)
             ),
-            sources=dict(
+            source=dict(
                 terms=dict(field='sources', size=30)
             ),
             deleted=dict(
@@ -675,7 +675,7 @@ RECORDS_REST_FACETS = dict(
         ),
         filters=dict(
             type=terms_filter('type'),
-            sources=terms_filter('sources'),
+            source=terms_filter('sources'),
             deleted=exists_filter('deleted'),
             deleted_entities=exists_filter('*.deleted')
         )

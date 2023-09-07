@@ -93,7 +93,7 @@ class PlaceRecord(ReroMefRecord):
         return mef_record, {mef_record.pid: mef_action}
 
     @classmethod
-    def get_online_record(cls, id, debug=False):
+    def get_online_record(cls, id_, debug=False):
         """Get online Record.
 
         Has to be overloaded in agent class.

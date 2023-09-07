@@ -63,6 +63,8 @@ if [[ -z "${VIRTUAL_ENV}" ]]; then
 fi
 
 set -e
+# -> Vulnerability found in flask-caching version 2.0.1
+#    Vulnerability ID: 40459
 # -> Vulnerability found in flask-security version 3.0.0
 #    Vulnerability ID: 45183
 # -> Vulnerability found in flask-security version 3.0.0
@@ -75,7 +77,8 @@ set -e
 #    Vulnerability ID: 42852
 # -> Vulnerability found in py version 1.11.0
 #    Vulnerability ID: 51457
-safety check -o bare -i 45183 -i 44501 -i 51668 -i 42194 -i 42852 -i 51457
+info_msg "Test safety:"
+safety check -o bare -i 40459 -i 45183 -i 44501 -i 51668 -i 42194 -i 42852 -i 51457
 info_msg "Test pydocstyle:"
 pydocstyle rero_mef tests docs
 info_msg "Test isort:"

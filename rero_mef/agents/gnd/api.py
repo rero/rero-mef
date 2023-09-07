@@ -53,7 +53,7 @@ class AgentGndRecord(AgentRecord):
     search = AgentGndSearch
 
     @classmethod
-    def get_online_record(cls, id, debug=False):
+    def get_online_record(cls, id_, debug=False):
         """Get online record.
 
         :param id: Id of online record.
@@ -61,7 +61,7 @@ class AgentGndRecord(AgentRecord):
         :returns: record or None
         """
         from .tasks import gnd_get_record
-        return gnd_get_record(id=id, debug=debug)
+        return gnd_get_record(id_=id_, debug=debug)
 
 
 class AgentGndIndexer(AgentIndexer):

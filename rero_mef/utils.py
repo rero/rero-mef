@@ -472,7 +472,7 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
     return count
 
 
-def oai_get_record(id, name, transformation, access_token=None,
+def oai_get_record(id_, name, transformation, access_token=None,
                    identifier=None, debug=False, **kwargs):
     """Get record from an OAI repo.
 
@@ -489,10 +489,10 @@ def oai_get_record(id, name, transformation, access_token=None,
 
     params = {
         'metadataPrefix': metadata_prefix,
-        'identifier': f'{identifier}{id}'
+        'identifier': f'{identifier}{id_}'
     }
     full_url = f'{url}?verb=GetRecord&metadataPrefix={metadata_prefix}'
-    full_url = f'{full_url}&identifier={identifier}{id}'
+    full_url = f'{full_url}&identifier={identifier}{id_}'
 
     if access_token:
         params['accessToken'] = access_token
@@ -500,9 +500,9 @@ def oai_get_record(id, name, transformation, access_token=None,
 
     try:
         record = request.GetRecord(**params)
-        msg = f'OAI-{name:<12} get: {id:<15} {full_url} | OK'
+        msg = f'OAI-{name:<12} get: {id_:<15} {full_url} | OK'
     except Exception as err:
-        msg = f'OAI-{name:<12} get: {id:<15} {full_url} | NO RECORD'
+        msg = f'OAI-{name:<12} get: {id_:<15} {full_url} | NO RECORD'
         if debug:
             raise
         return None, msg
