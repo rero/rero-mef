@@ -40,7 +40,7 @@ def test_view_concepts_mef(client,
     assert json_data['aggregations'] == {
         'deleted': {'doc_count': 0},
         'deleted_entities': {'doc_count': 0},
-        'sources': {
+        'source': {
             'buckets': [{
                 'doc_count': 1,
                 'key': "idref"

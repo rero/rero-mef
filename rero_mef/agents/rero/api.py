@@ -53,10 +53,10 @@ class AgentReroRecord(AgentRecord):
     search = AgentReroSearch
 
     @classmethod
-    def get_online_record(cls, id, debug=False):
+    def get_online_record(cls, id_, debug=False):
         """Get online record."""
         from .tasks import rero_get_record
-        return rero_get_record(id=id, debug=debug)
+        return rero_get_record(id_=id_, debug=debug)
 
 
 class AgentReroIndexer(AgentIndexer):

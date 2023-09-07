@@ -53,10 +53,10 @@ class PlaceIdrefRecord(PlaceRecord):
     search = PlaceIdrefSearch
 
     @classmethod
-    def get_online_record(cls, id, debug=False):
+    def get_online_record(cls, id_, debug=False):
         """Get online Record."""
         from .tasks import idref_get_record
-        return idref_get_record(id=id, debug=debug)
+        return idref_get_record(id_=id_, debug=debug)
 
 
 class PlaceIdrefIndexer(PlaceIndexer):

@@ -86,10 +86,10 @@ def save_records_from_dates(file_name, from_date=None, until_date=None,
 
 
 @shared_task
-def idref_get_record(id, verbose=False, debug=False):
+def idref_get_record(id_, verbose=False, debug=False):
     """Get a record from IDREF OAI repo."""
     return oai_get_record(
-        id=id,
+        id_=id_,
         name='agents.idref',
         transformation=Transformation,
         identifier='oai:IdRefOAIServer.fr:',

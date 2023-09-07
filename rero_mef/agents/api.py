@@ -155,7 +155,7 @@ class AgentRecord(ReroMefRecord):
         return mef_record, mef_actions
 
     @classmethod
-    def get_online_record(cls, id, debug=False):
+    def get_online_record(cls, id_, debug=False):
         """Get online Record.
 
         Has to be overloaded in agent class.
