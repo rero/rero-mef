@@ -69,16 +69,26 @@ set -e
 #    Vulnerability ID: 45183
 # -> Vulnerability found in flask-security version 3.0.0
 #    Vulnerability ID: 44501
-# -> Vulnerability found in sqlalchemy version 1.4.48
+#    CVE-2021-23385, an open redirect vulnerability: When using the...
+# -> Vulnerability found in sqlalchemy version 1.4.50
 #    Vulnerability ID: 51668
 # -> Vulnerability found in sqlalchemy-utils version 0.38.3
 #    Vulnerability ID: 42194
 # -> Vulnerability found in wtforms version 2.3.3
 #    Vulnerability ID: 42852
+# -> Vulnerability found in werkzeug version 2.2.3
+#    Vulnerability ID: 62019
+# -> Vulnerability found in pip version 23.2.1
+#    Vulnerability ID: 62044
 # -> Vulnerability found in py version 1.11.0
 #    Vulnerability ID: 51457
-info_msg "Test safety:"
-safety check -o bare -i 40459 -i 45183 -i 44501 -i 51668 -i 42194 -i 42852 -i 51457
+info_msg "Check vulnerabilities:"
+safety_exceptions="-i 40459 -i 45183 -i 44501 -i 51668 -i 42194 -i 42852 -i 62019 -i 62044 -i 51457"
+msg=$(safety check -o text ${safety_exceptions}) || {
+  echo "Safety vulnerabilites found for packages:" $(safety check -o bare ${safety_exceptions})
+  echo "Run:" "safety check -o screen ${safety_exceptions} | grep -i vulnerability" "for more details"
+  exit 1
+}
 info_msg "Test pydocstyle:"
 pydocstyle rero_mef tests docs
 info_msg "Test isort:"

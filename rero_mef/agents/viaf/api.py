@@ -32,8 +32,6 @@ from .providers import ViafProvider
 from .. import AgentGndRecord, AgentIdrefRecord, AgentMefRecord, \
     AgentReroRecord
 from ..api import Action, ReroIndexer, ReroMefRecord
-from ..mef.api import AgentMefRecord
-from ..utils import get_entity_class
 from ...filter import exists_filter
 from ...utils import add_md5, get_entity_class, progressbar, \
     requests_retry_session
@@ -209,7 +207,7 @@ class AgentViafRecord(ReroMefRecord):
             if agent_class.provider.pid_type in online:
                 data, msg = agent_class.get_online_record(id_=pid)
                 if online_verbose:
-                    click.echo(msg)
+                    click.echo(f'\n{msg}')
                 if data and not data.get('NO TRANSFORMATION'):
                     agent_record, action = agent_class.create_or_update(
                         data=data, dbcommit=dbcommit, reindex=reindex)
@@ -320,7 +318,7 @@ class AgentViafRecord(ReroMefRecord):
         return result
 
     @classmethod
-    def get_online_record(cls, viaf_source_code, pid, format=None):
+    def get_online_record(cls, viaf_source_code, pid, rec_format=None):
         """Get VIAF record.
 
         Get's the VIAF record from:
@@ -328,14 +326,14 @@ class AgentViafRecord(ReroMefRecord):
 
         :param viaf_source_code: agent source code
         :param pid: pid for agent source code
-        :param format: raw = get the not transformed VIAF record
+        :param rec_format: raw = get the not transformed VIAF record
                        link = get the VIAF link record
         :returns: VIAF record as json
         """
         viaf_format = '/viaf.json'
-        if format == 'link':
+        if rec_format == 'link':
             viaf_format = '/justlinks.json'
-            format = 'raw'
+            rec_format = 'raw'
         viaf_url = current_app.config.get('RERO_MEF_VIAF_BASE_URL')
         url = f'{viaf_url}/viaf'
         if viaf_source_code.upper() == 'VIAF':
@@ -346,7 +344,7 @@ class AgentViafRecord(ReroMefRecord):
         result = {}
         if response.status_code == requests.codes.ok:
             msg = f'VIAF get: {pid:<15} {url} | OK'
-            if format == 'raw':
+            if rec_format == 'raw':
                 return response.json(), msg
             data_json = response.json()
             result['pid'] = data_json.get('viafID')
@@ -394,7 +392,6 @@ class AgentViafRecord(ReroMefRecord):
         :param reindex: Reindex record.
         :returns: record and actions message.
         """
-        from rero_mef.api import Action
         online_data, _ = self.get_online_record(
             viaf_source_code='VIAF',
             pid=self.pid
@@ -491,7 +488,7 @@ class AgentViafRecord(ReroMefRecord):
             AgentMefRecord.flush_indexes()
         # recreate MEF records for agents
         for agent_record in old_agent_records.values():
-            mef, test = agent_record.create_or_update_mef(
+            mef, _ = agent_record.create_or_update_mef(
                 dbcommit=True,
                 reindex=True
             )

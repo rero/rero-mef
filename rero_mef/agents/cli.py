@@ -55,7 +55,7 @@ def create_from_viaf(enqueue, online, verbose, online_verbose,
     """Create MEF and agents from viaf."""
     def get_pids_from_json(json_file):
         """Get all pids from JSON file."""
-        for record in read_json_record(viaf_file):
+        for record in read_json_record(json_file):
             yield record['pid']
 
     click.secho(
@@ -69,26 +69,28 @@ def create_from_viaf(enqueue, online, verbose, online_verbose,
 
     if missing:
         missing_pids, non_existing_pids = AgentMefRecord. \
-            get_all_missing_viaf_pids(
-                verbose=progress or verbose
-            )
+            get_all_missing_viaf_pids(verbose=(progress or verbose))
         progress_bar = progressbar(
             items=missing_pids,
             length=len(missing_pids),
-            verbose=progress
+            verbose=progress,
+            label='VIAF missing'
         )
     elif viaf_file:
         progress_bar = progressbar(
             items=get_pids_from_json(viaf_file),
             length=number_records_in_file(viaf_file.name, 'json'),
-            verbose=progress
+            verbose=progress,
+            label='VIAF file'
         )
     else:
         progress_bar = progressbar(
             items=AgentViafRecord.get_all_pids(),
             length=counts['viaf']['old'],
-            verbose=progress
+            verbose=progress,
+            label='VIAF all'
         )
+    click.echo('Create MEF and agents from VIAF')
     for pid in progress_bar:
         if enqueue:
             task = task_create_mef_and_agents_from_viaf.delay(
@@ -111,7 +113,7 @@ def create_from_viaf(enqueue, online, verbose, online_verbose,
     if non_existing_pids:
         click.echo(
             f'Clean VIAF pids from MEF records: {len(non_existing_pids)}')
-        for pid, viaf_pid in non_existing_pids.items():
+        for pid, _ in non_existing_pids.items():
             # TODO: clean MEF records with non existing VIAF pids:
             pass
 
@@ -185,7 +187,7 @@ def create_csv_mef(viaf_metadata_file, output_directory, verbose):
     click.secho(
         f'  VIAF input file: {viaf_metadata_file}',
         err=True)
-    message = f'  CSV output files: {pidstore}, {metadata}'
+    # message = f'  CSV output files: {pidstore}, {metadata}'
 
     count = create_mef_files(
             viaf_metadata_file_name=viaf_metadata_file,

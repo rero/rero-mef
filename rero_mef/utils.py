@@ -190,7 +190,7 @@ class MyOAIItemIterator(OAIItemIterator):
         while count < 5:
             try:
                 self.oai_response = self.sickle.harvest(**params)
-                xml = self.oai_response.xml
+                self.oai_response.xml  # try to get xml
                 count = 5
             except Exception as err:
                 count += 1

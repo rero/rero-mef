@@ -54,11 +54,10 @@ class JsonLoader(object):
         """
         if uri in self.store:
             return self.store[uri]
-        else:
-            result = self.get_remote_json(uri, **kwargs)
-            if self.cache_results:
-                self.store[uri] = result
-            return result
+        result = self.get_remote_json(uri, **kwargs)
+        if self.cache_results:
+            self.store[uri] = result
+        return result
 
     @lru_cache(maxsize=1000)
     def get_remote_json(self, uri, **kwargs):

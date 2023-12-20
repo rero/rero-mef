@@ -109,7 +109,7 @@ def gnd_get_record(id_, debug=False):
             if records := parse_xml_to_array(BytesIO(response.content)):
                 trans_record = Transformation(records[0]).json
                 pid = trans_record.get('pid')
-                if id_ != trans_record.get('pid'):
+                if id_ != pid:
                     msg = f'{msg} | PID changed: {id_} -> {pid}'
                     trans_record = None
                 else:
@@ -119,6 +119,7 @@ def gnd_get_record(id_, debug=False):
         else:
             msg = f'{msg} | HTTP Error: {status_code}'
     except Exception as err:
+        trans_record = None
         msg = f'{msg} | Error: {err}'
         if debug:
             raise

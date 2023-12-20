@@ -83,7 +83,7 @@ def test_get_online(mock_get, app, agent_viaf_online_response):
         json_data=agent_viaf_online_response
     )
     data, msg = AgentViafRecord.get_online_record(
-        'SUDOC', '076515788', format='raw')
+        'SUDOC', '076515788', rec_format='raw')
     assert data == agent_viaf_online_response
     assert msg == (
         'VIAF get: 076515788       '
