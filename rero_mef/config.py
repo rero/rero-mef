@@ -229,7 +229,7 @@ RERO_MEF_AGENTS_GND_GET_RECORD = 'https://services.dnb.de/sru/authorities' \
     '&recordSchema=MARC21-xml'
 
 SEARCH_CLIENT_CONFIG = dict(
-    timeout=30,
+    timeout=60,
     max_retries=5,
 )
 
@@ -259,7 +259,7 @@ RECORDS_REST_ENDPOINTS = dict(
                     '"rero_mef.agents.mef.api:AgentMefRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
-        error_handlers=dict(),
+        error_handlers={},
     ),
     viaf=dict(
         pid_type='viaf',
@@ -283,7 +283,7 @@ RECORDS_REST_ENDPOINTS = dict(
                     '"rero_mef.agents.viaf.api:AgentViafRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
-        error_handlers=dict(),
+        error_handlers={},
     ),
     aggnd=dict(
         pid_type='aggnd',
@@ -307,7 +307,7 @@ RECORDS_REST_ENDPOINTS = dict(
                     '"rero_mef.agents.gnd.api:AgentGndRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
-        error_handlers=dict()
+        error_handlers={}
     ),
     aidref=dict(
         pid_type='aidref',
@@ -332,7 +332,7 @@ RECORDS_REST_ENDPOINTS = dict(
             '"rero_mef.agents.idref.api:AgentIdrefRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
-        error_handlers=dict()
+        error_handlers={}
     ),
     agrero=dict(
         pid_type='agrero',
@@ -356,7 +356,7 @@ RECORDS_REST_ENDPOINTS = dict(
                     '"rero_mef.agents.rero.api:AgentReroRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
-        error_handlers=dict(),
+        error_handlers={},
     ),
     comef=dict(
         pid_type='comef',
@@ -381,7 +381,7 @@ RECORDS_REST_ENDPOINTS = dict(
                     ':pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
-        error_handlers=dict(),
+        error_handlers={},
     ),
     corero=dict(
         pid_type='corero',
@@ -406,7 +406,7 @@ RECORDS_REST_ENDPOINTS = dict(
             '"rero_mef.concepts.rero.api:ConceptReroRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
-        error_handlers=dict(),
+        error_handlers={},
     ),
     cidref=dict(
         pid_type='cidref',
@@ -431,7 +431,7 @@ RECORDS_REST_ENDPOINTS = dict(
             '"rero_mef.concepts.idref.api:ConceptIdrefRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
-        error_handlers=dict(),
+        error_handlers={},
     ),
     plmef=dict(
         pid_type='plmef',
@@ -456,7 +456,7 @@ RECORDS_REST_ENDPOINTS = dict(
                     ':pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
-        error_handlers=dict(),
+        error_handlers={},
     ),
     pidref=dict(
         pid_type='pidref',
@@ -481,7 +481,7 @@ RECORDS_REST_ENDPOINTS = dict(
             '"rero_mef.places.idref.api:PlaceIdrefRecord"):pid_value>'),
         default_media_type='application/json',
         max_result_window=MAX_RESULT_WINDOW,
-        error_handlers=dict(),
+        error_handlers={},
     )
 )
 

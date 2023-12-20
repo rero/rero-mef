@@ -236,13 +236,12 @@ class ReroMefRecord(Record):
         if self.get('md5'):
             new_data = add_md5(new_data)
         self.clear()
-        self = self.update(
+        return self.update(
             data=new_data,
             commit=commit,
             dbcommit=dbcommit,
             reindex=reindex
         )
-        return self
 
     def dbcommit(self, reindex=False, forceindex=False):
         """Commit changes to db."""
@@ -285,18 +284,18 @@ class ReroMefRecord(Record):
                 db.session.rollback()
 
     @classmethod
-    def get_pid_by_id(cls, id):
+    def get_pid_by_id(cls, id_):
         """Get pid by uuid."""
-        persistent_identifier = cls.get_persistent_identifier(id)
+        persistent_identifier = cls.get_persistent_identifier(id_)
         return str(persistent_identifier.pid_value)
 
     @classmethod
-    def get_persistent_identifier(cls, id):
+    def get_persistent_identifier(cls, id_):
         """Get Persistent Identifier."""
         return PersistentIdentifier.get_by_object(
             cls.provider.pid_type,
             cls.object_type,
-            id
+            id_
         )
 
     @classmethod
@@ -374,8 +373,8 @@ class ReroMefRecord(Record):
     @classmethod
     def get_all_records(cls, with_deleted=False, limit=100000):
         """Get all records. Return a generator iterator."""
-        for id in cls.get_all_ids(with_deleted=with_deleted, limit=limit):
-            yield cls.get_record(id)
+        for id_ in cls.get_all_ids(with_deleted=with_deleted, limit=limit):
+            yield cls.get_record(id_)
 
     @classmethod
     def count(cls, with_deleted=False):

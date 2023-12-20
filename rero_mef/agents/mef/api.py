@@ -83,7 +83,8 @@ class AgentMefRecord(EntityMefRecord):
         progress = progressbar(
             items=AgentViafRecord.get_all_pids(),
             length=AgentViafRecord.count(),
-            verbose=verbose
+            verbose=verbose,
+            label='VIAF all'
         )
         missing_pids = {pid: 1 for pid in progress}
         if verbose:
@@ -92,7 +93,8 @@ class AgentMefRecord(EntityMefRecord):
         progress = progressbar(
             items=query.source(['pid', 'viaf_pid']).scan(),
             length=query.count(),
-            verbose=True
+            verbose=verbose,
+            label='VIAF from MEF'
         )
         non_existing_pids = {hit.pid: hit.viaf_pid for hit in progress
                              if not missing_pids.pop(hit.viaf_pid, None)}
