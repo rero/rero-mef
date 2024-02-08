@@ -212,8 +212,6 @@ agents = "rero_mef.agents.cli:agents"
 monitoring = "rero_mef.monitoring.cli:monitoring"
 
 [tool.poetry.plugins."dojson.cli.rule"]
-tomarc = "dojson.contrib.to_marc21:to_marc21"
-idrefjson = "rero_ebooks.dojson.from_unimarc.model:from_unimarc"
 
 [tool.poetry.plugins."dojson.cli.dump"]
 pjson = "rero_mef.dojson.utils:dump"

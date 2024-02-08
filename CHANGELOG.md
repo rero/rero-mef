@@ -117,55 +117,55 @@ and [\#84](https://github.com/rero/rero-mef/pull/84) (by @rerowep)
 - dependencies: upgrade invenio to version 3.4 [\#57](https://github.com/rero/rero-mef/pull/57) ([rerowep](https://github.com/rerowep))
 - license: move from GPLv2 to AGPLv3 [\#56](https://github.com/rero/rero-mef/pull/56) ([rerowep](https://github.com/rerowep))
 
-## [v0.6.0](https://github.com/rero/rero-ebooks/tree/v0.6.0) (2021-04-21)
+## [v0.6.0](https://github.com/rero/rero-mef/tree/v0.6.0) (2021-04-21)
 
-[Full Changelog](https://github.com/rero/rero-ebooks/compare/v0.5.0...v0.6.0)
-
-**Closed issues:**
-
-- Is the license the one we want? [\#36](https://github.com/rero/rero-ebooks/issues/36)
-
-**Merged pull requests:**
-
-- release: v0.6.0 [\#49](https://github.com/rero/rero-ebooks/pull/49) ([iGormilhit](https://github.com/iGormilhit))
-- dependencies: upgrade invenio to 3.4 [\#43](https://github.com/rero/rero-ebooks/pull/43) ([rerowep](https://github.com/rerowep))
-- license: move from GPLv2 to AGPLv3 [\#42](https://github.com/rero/rero-ebooks/pull/42) ([rerowep](https://github.com/rerowep))
-
-## [v0.5.0](https://github.com/rero/rero-ebooks/tree/v0.5.0) (2020-12-18)
-
-[Full Changelog](https://github.com/rero/rero-ebooks/compare/v0.1.0a1...v0.5.0)
+[Full Changelog](https://github.com/rero/rero-mef/compare/v0.5.0...v0.6.0)
 
 **Closed issues:**
 
-- Initial Update [\#35](https://github.com/rero/rero-ebooks/issues/35)
-- Broken links on homepage [\#28](https://github.com/rero/rero-ebooks/issues/28)
+- Is the license the one we want? [\#36](https://github.com/rero/rero-mef/issues/36)
 
 **Merged pull requests:**
 
-- release: v0.5.0 [\#41](https://github.com/rero/rero-ebooks/pull/41) ([iGormilhit](https://github.com/iGormilhit))
-- oai harvesting [\#40](https://github.com/rero/rero-ebooks/pull/40) ([rerowep](https://github.com/rerowep))
+- release: v0.6.0 [\#49](https://github.com/rero/rero-mef/pull/49) ([iGormilhit](https://github.com/iGormilhit))
+- dependencies: upgrade invenio to 3.4 [\#43](https://github.com/rero/rero-mef/pull/43) ([rerowep](https://github.com/rerowep))
+- license: move from GPLv2 to AGPLv3 [\#42](https://github.com/rero/rero-mef/pull/42) ([rerowep](https://github.com/rerowep))
 
-## [v0.1.0a1](https://github.com/rero/rero-ebooks/tree/v0.1.0a1) (2019-05-27)
+## [v0.5.0](https://github.com/rero/rero-mef/tree/v0.5.0) (2020-12-18)
 
-[Full Changelog](https://github.com/rero/rero-ebooks/compare/072714c4e83bd2c6bafca45d87df60e9e754a6ab...v0.1.0a1)
+[Full Changelog](https://github.com/rero/rero-mef/compare/v0.1.0a1...v0.5.0)
+
+**Closed issues:**
+
+- Initial Update [\#35](https://github.com/rero/rero-mef/issues/35)
+- Broken links on homepage [\#28](https://github.com/rero/rero-mef/issues/28)
+
+**Merged pull requests:**
+
+- release: v0.5.0 [\#41](https://github.com/rero/rero-mef/pull/41) ([iGormilhit](https://github.com/iGormilhit))
+- oai harvesting [\#40](https://github.com/rero/rero-mef/pull/40) ([rerowep](https://github.com/rerowep))
+
+## [v0.1.0a1](https://github.com/rero/rero-mef/tree/v0.1.0a1) (2019-05-27)
+
+[Full Changelog](https://github.com/rero/rero-mef/compare/072714c4e83bd2c6bafca45d87df60e9e754a6ab...v0.1.0a1)
 
 **Implemented enhancements:**
 
-- new cookiecutter [\#11](https://github.com/rero/rero-ebooks/issues/11)
+- new cookiecutter [\#11](https://github.com/rero/rero-mef/issues/11)
 
 **Fixed bugs:**
 
-- Socket closed in worker [\#9](https://github.com/rero/rero-ebooks/issues/9)
-- deduplication of uri [\#5](https://github.com/rero/rero-ebooks/issues/5)
+- Socket closed in worker [\#9](https://github.com/rero/rero-mef/issues/9)
+- deduplication of uri [\#5](https://github.com/rero/rero-mef/issues/5)
 
 **Merged pull requests:**
 
-- fix: license update [\#12](https://github.com/rero/rero-ebooks/pull/12) ([Garfield-fr](https://github.com/Garfield-fr))
-- Record deletion [\#7](https://github.com/rero/rero-ebooks/pull/7) ([rerowep](https://github.com/rerowep))
-- automatic harvest [\#4](https://github.com/rero/rero-ebooks/pull/4) ([rerowep](https://github.com/rerowep))
-- oai config [\#3](https://github.com/rero/rero-ebooks/pull/3) ([rerowep](https://github.com/rerowep))
-- feat: ebook record dedup [\#2](https://github.com/rero/rero-ebooks/pull/2) ([BadrAly](https://github.com/BadrAly))
-- clean: remove not necessary modules and remove view [\#1](https://github.com/rero/rero-ebooks/pull/1) ([Garfield-fr](https://github.com/Garfield-fr))
+- fix: license update [\#12](https://github.com/rero/rero-mef/pull/12) ([Garfield-fr](https://github.com/Garfield-fr))
+- Record deletion [\#7](https://github.com/rero/rero-mef/pull/7) ([rerowep](https://github.com/rerowep))
+- automatic harvest [\#4](https://github.com/rero/rero-mef/pull/4) ([rerowep](https://github.com/rerowep))
+- oai config [\#3](https://github.com/rero/rero-mef/pull/3) ([rerowep](https://github.com/rerowep))
+- feat: ebook record dedup [\#2](https://github.com/rero/rero-mef/pull/2) ([BadrAly](https://github.com/BadrAly))
+- clean: remove not necessary modules and remove view [\#1](https://github.com/rero/rero-mef/pull/1) ([Garfield-fr](https://github.com/Garfield-fr))
 
 
 
