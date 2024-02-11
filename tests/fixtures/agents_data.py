@@ -30,7 +30,6 @@ def agent_gnd_data():
         "https://mef.rero.ch/schemas/agents_gnd/gnd-agent-v0.0.1.json",
         "identifier": "http://d-nb.info/gnd/12391664X",
         "pid": "12391664X",
-        "bf:Agent": "bf:Person",
         "type": 'bf:Person',
         "variant_name": [
             "Cavaleriis, Joannes Baptista \u0098de\u009c",
@@ -80,7 +79,6 @@ def agent_gnd_redirect_data():
         "https://mef.rero.ch/schemas/agents_gnd/gnd-agent-v0.0.1.json",
         "identifier": "https://d-nb.info/gnd/GND_REDIRECT",
         "pid": "GND_REDIRECT",
-        "bf:Agent": "bf:Person",
         "type": "bf:Person",
         "authorized_access_point": "Cavalieri, Giovanni Battista, 1525-1601",
         "biographical_information": [
@@ -399,7 +397,6 @@ def agent_rero_data():
     return {
         "$schema":
         "https://mef.rero.ch/schemas/agents_rero/rero-agent-v0.0.1.json",
-        "bf:Agent": "bf:Person",
         "type": "bf:Person",
         "authorized_access_point":
             "Cavalieri, Giovanni Battista,, ca.1525-1601",
@@ -490,7 +487,6 @@ def agent_idref_data():
     """Agent IDREF record."""
     return {
         "pid": "069774331",
-        "bf:Agent": "bf:Person",
         "type": "bf:Person",
         "date_of_birth": "....",
         "date_of_death": "1540",
@@ -513,7 +509,6 @@ def agent_idref_redirect_data():
     """Agent IDREF record."""
     return {
         "pid": "IDREF_REDIRECT",
-        "bf:Agent": "bf:Person",
         "type": "bf:Person",
         "date_of_birth": "....",
         "date_of_death": "1540",
@@ -1138,7 +1133,6 @@ def aggnd_data_139205527():
     """GND JSON for 139205527."""
     return {
         'authorized_access_point': 'Parisi, Chiara',
-        'bf:Agent': 'bf:Person',
         'type': 'bf:Person',
         'country_associated': 'it',
         'gender': 'female',

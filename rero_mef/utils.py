@@ -367,7 +367,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                         import sys
                         sys.exit(1)
             except NoRecordsMatch:
-                from_date = from_date + timedelta(days=days_span + 1)
+                from_date = from_date + timedelta(days=days_span)
                 continue
             except Exception as err:
                 current_app.logger.error(err, exc_info=True, stack_info=True)
@@ -378,7 +378,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                         f'{from_date.strftime(TIME_FORMAT)} .. '
                         f'{until_date.strftime(TIME_FORMAT)}'
                     )
-            from_date = from_date + timedelta(days=days_span + 1)
+            from_date = from_date + timedelta(days=days_span)
 
     if update_last_run:
         last_run = dates_inital['until']
@@ -456,7 +456,7 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
                         rec.leader = f'{rec.leader[:9]}a{rec.leader[10:]}'
                         output_file.write(rec.as_marc())
                 except NoRecordsMatch:
-                    from_date = from_date + timedelta(days=days_span + 1)
+                    from_date = from_date + timedelta(days=days_span)
                     continue
                 except Exception as err:
                     current_app.logger.error(err)
@@ -466,7 +466,7 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
                         f'{from_date.strftime(TIME_FORMAT)} .. '
                         f'{until_date.strftime(TIME_FORMAT)}'
                     )
-                from_date = from_date + timedelta(days=days_span + 1)
+                from_date = from_date + timedelta(days=days_span)
     if verbose:
         click.echo(f'OAI {name}: {count}')
     return count

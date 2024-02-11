@@ -14,9 +14,6 @@
       "pid": {
         "type": "keyword"
       },
-      "bf:Agent": {
-        "type": "keyword"
-      },
       "type": {
         "type": "keyword"
       },

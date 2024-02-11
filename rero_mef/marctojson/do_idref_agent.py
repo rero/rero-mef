@@ -388,7 +388,6 @@ class Transformation(object):
             tag_grouping=tag_grouping
         )
         for authorized_access_point in authorized_access_points:
-            self.json_dict['bf:Agent'] = agent
             self.json_dict['type'] = agent
             if self.json_dict.get('authorized_access_point'):
                 variant_access_points.append(authorized_access_point)
