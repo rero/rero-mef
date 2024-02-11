@@ -192,12 +192,6 @@ class AgentMefRecord(EntityMefRecord):
                 if search.count() > 0:
                     new_data = next(search.scan()).to_dict()
                     new_pid = new_data.get('idref', {}).get('pid')
-            for agent in cls.entities:
-                if agent_data := data.get(agent):
-                    if not agent_data.get('type'):
-                        data[agent]['type'] = agent_data['bf:Agent']
-                        if not data.get('type'):
-                            data['type'] = agent_data['bf:Agent']
             return cls.get_latest(pid_type=pid_type, pid=new_pid) \
                 if new_pid else data
         return {}

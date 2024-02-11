@@ -56,9 +56,6 @@
           "pid": {
             "type": "keyword"
           },
-          "bf:Agent": {
-            "type": "keyword"
-          },
           "type": {
             "type": "keyword"
           },
@@ -164,9 +161,6 @@
           "pid": {
             "type": "keyword"
           },
-          "bf:Agent": {
-            "type": "keyword"
-          },
           "type": {
             "type": "keyword"
           },
@@ -270,9 +264,6 @@
             "type": "keyword"
           },
           "pid": {
-            "type": "keyword"
-          },
-          "bf:Agent": {
             "type": "keyword"
           },
           "type": {

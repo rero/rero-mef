@@ -22,14 +22,6 @@
       "type": "string",
       "minLength": 1
     },
-    "bf:Agent": {
-      "title": "Type",
-      "type": "string",
-      "enum": [
-        "bf:Person",
-        "bf:Organisation"
-      ]
-    },
     "type": {
       "title": "Type",
       "type": "string",

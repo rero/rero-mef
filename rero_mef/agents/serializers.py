@@ -65,10 +65,6 @@ class ReroMefSerializer(JSONSerializer):
         :param record: Record instance.
         :param links_factory: Factory function for record links.
         """
-        # TODO: could be deleted in the future
-        if not record.get('type'):
-            record['type'] = record['bf:Agent']
-
         return super(ReroMefSerializer, self).serialize(
             pid=pid, record=record, links_factory=add_links, **kwargs)
 

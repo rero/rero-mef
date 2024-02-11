@@ -381,7 +381,6 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                 count = -1
             # get the next from to until dates
             from_date = until_date
-
     if update_last_run:
         oai_set_last_run(
             name=name,

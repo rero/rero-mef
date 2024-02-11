@@ -54,7 +54,7 @@ success_msg() {
   colored_msg "${SUCCESS_COLOR}" "SUCCESS" "${1}"
 }
 
-# Displays program name
+# Displays program name-> Vulnerability found in py version 1.11.0
 msg "PROGRAM: ${PROGRAM}"
 
 # Poetry is a mandatory condition to launch this program!
@@ -63,14 +63,13 @@ if [[ -z "${VIRTUAL_ENV}" ]]; then
 fi
 
 set -e
-# -> Vulnerability found in py version 1.11.0
-#    Vulnerability ID: 51457
+# -> Vulnerability ID: 51457
 #    For more information about this vulnerability, visit
 #    To ignore this vulnerability, use PyUp vulnerability id 51457 in safety’s
-#    -> Vulnerability found in pip version 24.0
-#    Vulnerability ID: 67599
+# -> Vulnerability found in jinja2 version 3.1.4
+#    Vulnerability ID: 70612
 #    For more information about this vulnerability, visit
-#    To ignore this vulnerability, use PyUp vulnerability id 67599 in safety’s
+#    To ignore this vulnerability, use PyUp vulnerability id 70612 in safety’s
 # -> Vulnerability found in werkzeug version 2.2.3
 #    Vulnerability ID: 62019
 #    For more information about this vulnerability, visit
@@ -85,8 +84,12 @@ set -e
 #    To ignore this vulnerability, use PyUp vulnerability id 42194 in safety’s
 # -> Vulnerability found in sqlalchemy version 1.4.52
 #    Vulnerability ID: 51668
+#    For more information about this vulnerability, visit
+#    To ignore this vulnerability, use PyUp vulnerability id 51668 in safety’s
+# -> Vulnerability found in flask-cors version 4.0.1
+#    Vulnerability ID: 70624
 info_msg "Check vulnerabilities:"
-safety_exceptions="-i 51457 -i 67599 -i 62019 -i 42852 -i 42194 -i 51668"
+safety_exceptions="-i 51457 -i 70612 -i 62019 -i 42852 -i 42194 -i 51668 -i 70624"
 msg=$(safety check -o text ${safety_exceptions}) || {
   echo "Safety vulnerabilites found for packages:" $(safety check -o bare ${safety_exceptions})
   echo "Run: \"safety check -o screen ${safety_exceptions} | grep -i vulnerability\" for more details"

@@ -2,7 +2,6 @@
   {
     "md5": "357c17f7ee09c8d8d3ef9207adc0671f",
     "pid": "00401653X",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/1002606-X",
@@ -34,7 +33,6 @@
   {
     "md5": "9d287c3e9dde431e16e055d02434fe7e",
     "pid": "00402074X",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/1003478-X",
@@ -103,7 +101,6 @@
   {
     "md5": "38d94c7e0499ba6fc73da9dcc08f7571",
     "pid": "00421952X",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/1034729-X",
@@ -150,7 +147,6 @@
   {
     "md5": "159c51ed378299fb9c3eca025dba667b",
     "pid": "007430779",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/2094183-3",
@@ -192,7 +188,6 @@
   {
     "md5": "bf8f042bc02fe594b9de7e25436fc2d7",
     "pid": "008046662",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
     "conference": true,
     "identifier": "http://d-nb.info/gnd/804666-9",
@@ -203,7 +198,6 @@
   {
     "md5": "312a56bd7fa97c29bedb524106665d9f",
     "pid": "050534696",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/5053469-5",
@@ -226,7 +220,6 @@
   {
     "md5": "ca8a834ebd976880ec6d831e4d9b6980",
     "pid": "051062763",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/16113016-1",
@@ -238,7 +231,6 @@
     "md5": "b6e9429acdb81db81b1efaa85dae04d8",
     "pid": "100023754",
     "gender": "male",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "qualifier": "de Barbanson",
     "identifier": "http://d-nb.info/gnd/100023754",
@@ -289,7 +281,6 @@
     "md5": "67f3bc022f12466ec7a69bda7ed8c000",
     "pid": "1019749911",
     "gender": "male",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1019749911",
     "variant_name": [
@@ -312,7 +303,6 @@
     "md5": "876f6a89592f3ce910d82edd114732ec",
     "pid": "1020174943",
     "gender": "male",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1020174943",
     "variant_name": [
@@ -337,7 +327,6 @@
   {
     "md5": "cebecd01b2375b95f3cd1e2cf8e20fdf",
     "pid": "1032371390",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/1032371390",
@@ -354,7 +343,6 @@
   {
     "md5": "d0dedee1386074feb6b957dd545df78d",
     "pid": "104189576",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "qualifier": "Spanien, Ko\u0308nigin, 1662-1689",
     "identifier": "http://d-nb.info/gnd/104189576",
@@ -387,7 +375,6 @@
   {
     "md5": "79e50969e7f659769d8e7f7c922f3309",
     "pid": "1045857424",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1045857424",
     "variant_name": [
@@ -411,7 +398,6 @@
   {
     "md5": "cc5b6e556728b5e7801e33bbafb9ad23",
     "pid": "1053083351",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1053083351",
     "variant_name": [
@@ -439,7 +425,6 @@
   {
     "md5": "5dcc2a35d57dd302ab480b5fcdbc5381",
     "pid": "1055101586",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1055101586",
     "variant_name": [
@@ -459,7 +444,6 @@
   {
     "md5": "aacd4184aa47315350ac6e210af4856d",
     "pid": "1056901632",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1056901632",
     "variant_name": [
@@ -492,7 +476,6 @@
   {
     "md5": "b0385764c1529aa4d1762ae4ef521b1c",
     "pid": "1060580543",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1060580543",
     "date_of_birth": "1851",
@@ -505,7 +488,6 @@
     "md5": "d3a2923e7fe2f761ef3b510d12b68898",
     "pid": "1073132285",
     "gender": "male",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1073132285",
     "date_of_birth": "08.10.1758",
@@ -517,7 +499,6 @@
   {
     "md5": "deea413c05bda81ca161f7726728f990",
     "pid": "1089786255",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/1089786255",
     "variant_name": [
@@ -538,7 +519,6 @@
     "md5": "425c6a82d586fd1f21789146accd79bc",
     "pid": "1117819884",
     "gender": "male",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "qualifier": "da San Giuseppe",
     "identifier": "http://d-nb.info/gnd/1117819884",
@@ -582,7 +562,6 @@
     "md5": "e3e17e2a5102b26d39af8d07649abb11",
     "pid": "11669355X",
     "gender": "male",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/11669355X",
     "variant_name": [
@@ -645,7 +624,6 @@
     "md5": "a611605c3996cc95b63293e020f40192",
     "pid": "117513601",
     "gender": "male",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/117513601",
     "variant_name": [
@@ -673,7 +651,6 @@
     "md5": "c4490b7c0025ff2c85a878459bfebb7f",
     "pid": "117588768",
     "gender": "male",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/117588768",
     "variant_name": [
@@ -696,7 +673,6 @@
     "md5": "1451bf6d8aa9e750ff0780a44e8c8527",
     "pid": "117671533",
     "gender": "male",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/117671533",
     "variant_name": [
@@ -716,7 +692,6 @@
   {
     "md5": "36b20e443f8b5ba67f37ef7403cfbe83",
     "pid": "118095617",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/118095617",
     "variant_name": [
@@ -745,7 +720,6 @@
     "md5": "8356eb52401765320b07a62fecd51868",
     "pid": "118666762",
     "gender": "male",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/118666762",
     "variant_name": [
@@ -796,7 +770,6 @@
     "md5": "452a1868155ffd2ada821d414e3d91a3",
     "pid": "119120674",
     "gender": "female",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "qualifier": "Preu\u00dfen, Ko\u0308nigin",
     "identifier": "http://d-nb.info/gnd/119120674",
@@ -837,7 +810,6 @@
   {
     "md5": "729068e05f9658616b4d7f190a937bb6",
     "pid": "119291088",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "language": [
       "lat"
@@ -902,7 +874,6 @@
   {
     "md5": "02728606dfedd5e44e290637a2f15c31",
     "pid": "122101359",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/122101359",
     "variant_name": [
@@ -929,7 +900,6 @@
   {
     "md5": "56b1523e8b10cc5750ef98e9768a13e6",
     "pid": "12391664X",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/12391664X",
     "variant_name": [
@@ -1002,7 +972,6 @@
   {
     "md5": "27e54e506f4dc18dd4d7ad7511e4126c",
     "pid": "124813844",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/124813844",
     "variant_name": [
@@ -1028,7 +997,6 @@
   {
     "md5": "f96f8bf5ff7ce5c8ce580e631f3fbc0d",
     "pid": "124981933",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/124981933",
     "variant_name": [
@@ -1077,7 +1045,6 @@
   {
     "md5": "84e51d7ee7be9178f66a7585eb6aa6c5",
     "pid": "129943495",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/129943495",
     "variant_name": [
@@ -1099,7 +1066,6 @@
   {
     "md5": "82270d369e01f3d91b8e9312a0225e58",
     "pid": "130672289",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/130672289",
     "variant_name": [
@@ -1125,7 +1091,6 @@
     "md5": "47d4bf1da13338bc3149d973aa65e11b",
     "pid": "131543334",
     "gender": "male",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/131543334",
     "variant_name": [
@@ -1158,7 +1123,6 @@
   {
     "md5": "a9da34766e9a6db0b5789665d1c39ade",
     "pid": "143032704",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/143032704",
     "variant_name": [
@@ -1175,7 +1139,6 @@
   {
     "md5": "b1420914569198b30b43eee0c9d72ca9",
     "pid": "172759757",
-    "bf:Agent": "bf:Person",
     "type": "bf:Person",
     "identifier": "http://d-nb.info/gnd/172759757",
     "variant_name": [
@@ -1225,7 +1188,6 @@
   {
     "md5": "0702b3914d78ca6142e81de630a652ca",
     "pid": "951795597",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
     "conference": false,
     "identifier": "http://d-nb.info/gnd/5230389-5",
@@ -1251,7 +1213,6 @@
   {
     "md5": "764be174958b583d59d17eb9f528e665",
     "pid": "969004222",
-    "bf:Agent": "bf:Organisation",
     "type": "bf:Organisation",
     "conference": true,
     "identifier": "http://d-nb.info/gnd/1248506-8",

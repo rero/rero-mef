@@ -219,7 +219,6 @@ def test_rero_authorized_access_point():
     trans.trans_rero_authorized_access_point()
     assert trans.json == {
         'authorized_access_point': 'Brontë, Charlotte, 1816-1855 écrivain',
-        'bf:Agent': 'bf:Person',
         'type': 'bf:Person'
     }
 
@@ -235,7 +234,6 @@ def test_rero_authorized_access_point():
     trans.trans_rero_authorized_access_point()
     assert trans.json == {
         'authorized_access_point': 'Paul VI pape 1897-1978',
-        'bf:Agent': 'bf:Organisation',
         'type': 'bf:Organisation',
         'conference': False,
     }
