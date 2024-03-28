@@ -192,7 +192,6 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info(
                 'Call Function', 'trans_rero_authorized_access_point')
-        self.json_dict['bf:Agent'] = agent
         self.json_dict['type'] = agent
         authorized_access_points = build_string_list_from_fields(
             record=self.marc,

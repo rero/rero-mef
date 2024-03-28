@@ -598,7 +598,6 @@ def test_gnd_authorized_access_point():
     trans.trans_gnd_authorized_access_point()
     assert trans.json == {
         'authorized_access_point': 'Johannes Paul, II., Papst, 1920-2005',
-        'bf:Agent': 'bf:Person',
         'type': 'bf:Person'
     }
 
@@ -615,7 +614,6 @@ def test_gnd_authorized_access_point_organisation():
     trans.trans_gnd_authorized_access_point()
     assert trans.json == {
         'authorized_access_point': 'The Young Gods. Musikgruppe',
-        'bf:Agent': 'bf:Organisation',
         'type': 'bf:Organisation'
     }
 

@@ -530,7 +530,6 @@ def test_idref_authorized_access_point():
     assert trans.json == {
         'authorized_access_point':
             'Brontë, Charlotte, écrivain, biographe, 1816-1855',
-        'bf:Agent': 'bf:Person',
         'type': 'bf:Person'
     }
 
@@ -558,7 +557,6 @@ def test_authorized_access_point_diff_order():
     trans.trans_idref_authorized_access_point()
     assert trans.json == {
         'authorized_access_point': '1816-1855, Charlotte, Brontë, écrivain',
-        'bf:Agent': 'bf:Person',
         'type': 'bf:Person'
     }
 
@@ -587,7 +585,6 @@ def test_authorized_access_point_multiple():
     trans.trans_idref_authorized_access_point()
     assert trans.json == {
         'authorized_access_point': 'Ašmāwī, Fawziyyaẗ al-',
-        'bf:Agent': 'bf:Person',
         'type': 'bf:Person',
         'variant_access_point': ['الأشماوي, فوزية']
     }
@@ -610,7 +607,6 @@ def test_authorized_access_point_general_order():
     trans.trans_idref_authorized_access_point()
     assert trans.json == {
         'authorized_access_point': 'Brontë, Charlotte, 1816-1855, écrivain',
-        'bf:Agent': 'bf:Person',
         'type': 'bf:Person'
     }
 
