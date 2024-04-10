@@ -29,7 +29,7 @@ SCHEMA_URL = 'https://mef.rero.ch/schemas/concepts_mef'
 
 def test_create_concept_record(app, concept_rero_data, concept_idref_data,
                                tmpdir):
-    """Test create concept record with VIAF links."""
+    """Test create concept record."""
     idref_record, action = ConceptIdrefRecord.create_or_update(
         data=concept_idref_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
@@ -102,3 +102,18 @@ def test_create_concept_record(app, concept_rero_data, concept_idref_data,
         data=concept_idref_data, dbcommit=True, reindex=True, test_md5=True)
     assert action == Action.UPTODATE
     assert returned_record['pid'] == '050548115'
+
+    idref_record = ConceptIdrefRecord.get_record_by_pid(idref_record.pid)
+    idref_record['type'] = 'bf:Temporal'
+    idref_record.update(data=idref_record, dbcommit=True, reindex=True)
+
+    m_record, m_actions = idref_record.create_or_update_mef(
+        dbcommit=True, reindex=True)
+    assert m_actions == {m_record.pid: Action.UPDATE}
+    assert m_record == {
+        '$schema': f'{SCHEMA_URL}/mef-concept-v0.0.1.json',
+        'idref': {'$ref': 'https://mef.rero.ch/api/concepts/idref/050548115'},
+        'deleted': '2022-09-03T07:07:32.526780+00:00',
+        'pid': '1',
+        'type': 'bf:Temporal'
+    }

@@ -70,9 +70,12 @@ class ConceptMefRecord(EntityMefRecord):
     entities = ['idref', 'rero']
 
     @classmethod
-    def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
-               reindex=False, md5=True, **kwargs):
-        """Create a new agent record."""
+    def _set_type(cls, data):
+        """Set the MEF type.
+
+        :param data: The data to set the type.
+        :returns: data
+        """
         data['type'] = 'bf:Topic'
         concept_classes = get_concept_classes()
         for concept in cls.entities:
@@ -87,6 +90,30 @@ class ConceptMefRecord(EntityMefRecord):
                         ):
                             data['type'] = concept_rec['type']
                             break
+        return data
+
+    def update(self, data, commit=False, dbcommit=False, reindex=False):
+        """Update data for record.
+
+        :param data: a dict data to update the record.
+        :param commit: if True push the db transaction.
+        :param dbcommit: make the change effective in db.
+        :param reindex: reindex the record.
+        :returns: the modified record
+        """
+        data = self._set_type(data)
+        return super().update(
+            data=data,
+            commit=commit,
+            dbcommit=dbcommit,
+            reindex=reindex
+        )
+
+    @classmethod
+    def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
+               reindex=False, md5=True, **kwargs):
+        """Create a new agent record."""
+        data = cls._set_type(data)
         return super().create(
             data=data,
             id_=id_,
