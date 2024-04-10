@@ -246,14 +246,14 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
 
     request = sickle(url, iterator=oai_item_iterator, max_retries=max_retries)
 
-    dates_inital = {
-        'from': from_date or last_run,
-        'until': until_date or datetime.now().isoformat()
-    }
     update_last_run = from_date is None and until_date is None
+    dates_initial = {
+        'from': from_date or last_run,
+        'until': until_date or datetime.now().strftime(TIME_FORMAT)
+    }
     # Sanity check
-    if dates_inital['until'] is not None \
-            and dates_inital['from'] > dates_inital['until']:
+    if dates_initial['until'] is not None \
+            and dates_initial['from'] > dates_initial['until']:
         raise WrongDateCombination("'Until' date larger than 'from' date.")
 
     # If we don't have specifications for set searches the setspecs will be
@@ -264,7 +264,7 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
     action_count = {}
     mef_action_count = {}
     for spec in setspecs:
-        dates = dates_inital
+        dates = dates_initial
         params = {
             'metadataPrefix': metadata_prefix,
             'ignore_deleted': ignore_deleted
@@ -274,9 +274,10 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
         if spec:
             params['set'] = spec
 
-        from_date = parser.isoparse(dates_inital['from'])
-        real_until_date = parser.isoparse(dates_inital['until'])
-        while from_date <= real_until_date:
+        from_date = parser.isoparse(dates_initial['from'])
+        real_until_date = parser.isoparse(
+            f'{dates_initial["until"]} 23:59:59.999999')
+        while from_date < real_until_date:
             until_date = from_date + timedelta(days=days_span)
             until_date = min(until_date, real_until_date)
             dates = {
@@ -284,7 +285,12 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                 'until': until_date.strftime(TIME_FORMAT)
             }
             params |= dates
-
+            if verbose:
+                click.secho(
+                    f'OAI {name} spec({spec}): '
+                    f'{dates["from"]} .. {dates["until"]}',
+                    fg='cyan'
+                )
             try:
                 for idx, record in enumerate(request.ListRecords(**params), 1):
                     records = parse_xml_to_array(StringIO(record.raw))
@@ -295,16 +301,16 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                                 records[0]['005'].data,
                                 '%Y%m%d%H%M%S.%f'
                             )
-                        except Exception as err:
+                        except Exception:
                             updated = '????'
                         if rec := transformation(
                                 records[0], logger=current_app.logger).json:
                             if msg := rec.get('NO TRANSFORMATION'):
                                 if verbose:
-                                    pid = rec.get('pid', '???')
                                     click.secho(
-                                        f'NO TRANSFORMATION '
-                                        f'{name} {idx} {pid}: {msg}',
+                                        f'OAI {name} spec({spec}): '
+                                        f'{idx} {rec.get("pid", "???")}'
+                                        f'NO TRANSFORMATION: {msg}',
                                         fg='yellow'
                                     )
                             else:
@@ -354,40 +360,34 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                                         msg = f'{msg} | viaf: {viaf_pid}'
                                     click.echo(msg)
                         elif verbose:
-                            click.echo(
-                                f'NO TRANSFORMATION: {name} {idx}'
-                                f'\n{records[0]}'
+                            click.secho(
+                                f'OAI {name} spec({spec}): {idx}'
+                                f'NO TRANSFORMATION:'
+                                f'\n{records[0]}',
+                                fg='yellow'
                             )
                     except Exception as err:
                         msg = f'Creating {name} {idx}: {err} {record}'
                         if rec:
-                            msg += f'\n{rec}'
+                            msg = f'{msg}\n{rec}'
                         current_app.logger.error(msg, exc_info=True,
                                                  stack_info=True)
-                        import sys
-                        sys.exit(1)
             except NoRecordsMatch:
-                from_date = from_date + timedelta(days=days_span + 1)
+                # get the next from to until dates
+                from_date = until_date
                 continue
             except Exception as err:
                 current_app.logger.error(err, exc_info=True, stack_info=True)
                 count = -1
-                if verbose:
-                    click.echo(
-                        f'OAI {name} {spec}: '
-                        f'{from_date.strftime(TIME_FORMAT)} .. '
-                        f'{until_date.strftime(TIME_FORMAT)}'
-                    )
-            from_date = from_date + timedelta(days=days_span + 1)
+            # get the next from to until dates
+            from_date = until_date
 
     if update_last_run:
-        last_run = dates_inital['until']
-        if verbose:
-            click.echo(f'OAI {name}: update last run: {last_run}')
-        oai_source = get_oaiharvest_object(name)
-        oai_source.update_lastrun(parser.isoparse(last_run))
-        oai_source.save()
-        db.session.commit()
+        oai_set_last_run(
+            name=name,
+            date=dates_initial["until"],
+            verbose=verbose
+        )
     return count, action_count, mef_action_count
 
 
@@ -407,12 +407,12 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
 
     request = sickle(url, iterator=oai_item_iterator, max_retries=max_retries)
 
-    dates_inital = {
+    dates_initial = {
         'from': from_date or last_run,
-        'until': until_date or datetime.now().isoformat()
+        'until': until_date or datetime.now().strftime(TIME_FORMAT)
     }
     # Sanity check
-    if dates_inital['from'] > dates_inital['until']:
+    if dates_initial['from'] > dates_initial['until']:
         raise WrongDateCombination("'Until' date larger than 'from' date.")
 
     # If we don't have specifications for set searches the setspecs will be
@@ -431,16 +431,22 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
             if spec:
                 params['set'] = spec
 
-            from_date = parser.isoparse(dates_inital['from'])
-            real_until_date = parser.isoparse(dates_inital['until'])
-            while from_date <= real_until_date:
+            from_date = parser.isoparse(dates_initial['from'])
+            real_until_date = parser.isoparse(
+                f'{dates_initial["until"]} 23:59:59.999999')
+            while from_date < real_until_date:
                 until_date = from_date + timedelta(days=days_span)
-                if until_date > real_until_date:
-                    until_date = real_until_date
+                until_date = min(until_date, real_until_date)
                 dates = {
                     'from': from_date.strftime(TIME_FORMAT),
                     'until': until_date.strftime(TIME_FORMAT)
                 }
+                if verbose:
+                    click.secho(
+                        f'OAI {name} spec({spec}): '
+                        f'{dates["from"]} .. {dates["until"]}',
+                        fg='cyan'
+                    )
                 params |= dates
                 try:
                     for record in request.ListRecords(**params):
@@ -456,17 +462,11 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
                         rec.leader = f'{rec.leader[:9]}a{rec.leader[10:]}'
                         output_file.write(rec.as_marc())
                 except NoRecordsMatch:
-                    from_date = from_date + timedelta(days=days_span + 1)
+                    from_date = until_date
                     continue
                 except Exception as err:
                     current_app.logger.error(err)
-                if verbose:
-                    click.echo(
-                        f'OAI {name} {spec}: '
-                        f'{from_date.strftime(TIME_FORMAT)} .. '
-                        f'{until_date.strftime(TIME_FORMAT)}'
-                    )
-                from_date = from_date + timedelta(days=days_span + 1)
+                from_date = until_date
     if verbose:
         click.echo(f'OAI {name}: {count}')
     return count
