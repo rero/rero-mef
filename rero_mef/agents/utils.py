@@ -280,6 +280,4 @@ def get_agent_endpoints():
 def get_agent_classes():
     """Get all agents classes."""
     endpoints = get_agent_endpoints()
-    return [
-        get_entity_class(endpoint) for endpoint, _ in endpoints.items()
-    ]
+    return [get_entity_class(endpoint) for endpoint, _ in endpoints.items()]

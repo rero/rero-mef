@@ -65,9 +65,6 @@ class PlaceRecord(ReroMefRecord):
         if mef_records := PlaceMefRecord.get_mef(self.pid, self.name):
             mef_data = mef_records[0]
 
-        if self.deleted and not mef_data.get('deleted'):
-            mef_data['deleted'] = self.deleted
-
         ref_string = build_ref_string(
             place=self.name,
             place_pid=self.pid
@@ -82,6 +79,8 @@ class PlaceRecord(ReroMefRecord):
                 reindex=reindex
             )
         else:
+            if self.deleted and not mef_data.get('deleted'):
+                mef_data['deleted'] = self.deleted
             mef_action = Action.CREATE
             mef_record = PlaceMefRecord.create(
                 data=mef_data,

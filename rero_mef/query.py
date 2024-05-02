@@ -66,9 +66,8 @@ def and_search_factory(self, search, query_parser=None):
         type=lambda v: v.lower() in ['true', '1']
     )
     if not with_deleted:
-        search = search.filter('bool', must_not=[
-            Q('exists', field='deleted'),  # no deleted MEF's
-            Q('exists', field='*.deleted')  # no deleted entities
-        ])
+        search = search \
+            .exclude('exists', field='deleted') \
+            .exclude('exists', field='*.deleted')
 
     return search, urlkwargs

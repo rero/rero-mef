@@ -65,9 +65,6 @@ class ConceptRecord(ReroMefRecord):
         if mef_records := ConceptMefRecord.get_mef(self.pid, self.name):
             mef_data = mef_records[0]
 
-        if self.deleted and not mef_data.get('deleted'):
-            mef_data['deleted'] = self.deleted
-
         ref_string = build_ref_string(
             concept=self.name,
             concept_pid=self.pid
@@ -82,6 +79,8 @@ class ConceptRecord(ReroMefRecord):
                 reindex=reindex
             )
         else:
+            if self.deleted and not mef_data.get('deleted'):
+                mef_data['deleted'] = self.deleted
             mef_action = Action.CREATE
             mef_record = ConceptMefRecord.create(
                 data=mef_data,

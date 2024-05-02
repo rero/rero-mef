@@ -16,7 +16,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 """API for manipulating records."""
 from copy import deepcopy
-from datetime import datetime, timezone
 from enum import Enum
 from uuid import uuid4
 
@@ -456,17 +455,6 @@ class ReroMefRecord(Record):
     def deleted(self):
         """Get record deleted value."""
         return self.get('deleted')
-
-    def mark_as_deleted(self, dbcommit=False, reindex=False):
-        """Mark record as deleted.
-
-        :param dbcommit: Commit changes to DB.
-        :param reindex: Reindex record.
-        :returns: Modified record.
-        """
-        self['deleted'] = datetime.now(timezone.utc).isoformat()
-        self.update(data=self, dbcommit=dbcommit, reindex=reindex)
-        return self
 
 
 class ReroIndexer(RecordIndexer):

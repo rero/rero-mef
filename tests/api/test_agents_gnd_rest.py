@@ -22,7 +22,7 @@ from copy import deepcopy
 
 from flask import url_for
 
-from rero_mef.agents import Action, AgentGndRecord
+from rero_mef.agents import Action, AgentGndRecord, AgentMefRecord
 
 
 def test_view_agents_gnd(client, agent_gnd_record):
@@ -63,7 +63,7 @@ def test_save_deleted_data(client, agent_gnd_record, agent_gnd_data):
     data = deepcopy(agent_gnd_data)
     data = {
         'deleted': '2022-01-31T10:44:22.552001+00:00',
-        'pid': agent_gnd_record.pid,
+        'pid': pid,
         'relation_pid': {
             'type': 'redirect_to',
             'value': '1134995709'
@@ -79,3 +79,21 @@ def test_save_deleted_data(client, agent_gnd_record, agent_gnd_data):
     assert action == Action.UPDATE
     assert record['deleted'] == data['deleted']
     assert record['relation_pid'] == data['relation_pid']
+
+    mef_record, mef_actions = record.create_or_update_mef(
+        dbcommit=True,
+        reindex=True
+    )
+    assert mef_actions == {'1': Action.CREATE}
+    assert mef_record.deleted
+    assert mef_record['deleted'] == record['deleted']
+
+    record = AgentGndRecord.get_record_by_pid(pid)
+    record.pop('deleted')
+    record.update(data=record, dbcommit=True, reindex=True)
+    mef_record, mef_actions = record.create_or_update_mef(
+        dbcommit=True,
+        reindex=True
+    )
+    mef_record = AgentMefRecord.get_record_by_pid(mef_record.pid)
+    assert 'deleted' not in mef_record
