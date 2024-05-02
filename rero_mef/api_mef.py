@@ -17,7 +17,9 @@
 
 """API for manipulating MEF records."""
 
-from datetime import datetime
+
+from copy import deepcopy
+from datetime import datetime, timezone
 
 import click
 from dateutil import parser
@@ -39,6 +41,42 @@ class EntityMefRecord(ReroMefRecord):
     viaf_cls = None
     search = None
     mef_type = ''
+
+    def set_deleted(self):
+        """Set deleted.
+
+        Sets MEF deleted value from sources.
+        """
+        changed = False
+        source_data = deepcopy(self).replace_refs()
+        if sources := source_data['sources']:
+            for source in sources:
+                if deleted := self[source].get('deleted'):
+                    self['deleted'] = deleted
+                    changed = True
+                    break
+            if not changed and self.get('deleted'):
+                # Delete old deleted data
+                self.pop('deleted')
+                changed = True
+        return changed
+
+    def update(self, data, commit=False, dbcommit=False, reindex=False):
+        """Update data for record.
+
+        :param data: a dict data to update the record.
+        :param commit: if True push the db transaction.
+        :param dbcommit: make the change effective in db.
+        :param reindex: reindex the record.
+        :returns: the modified record
+        """
+        self.set_deleted()
+        return super().update(
+            data=data,
+            commit=commit,
+            dbcommit=dbcommit,
+            reindex=reindex
+        )
 
     @classmethod
     def get_mef(cls, agent_pid, agent_name, pid_only=False):
@@ -89,7 +127,7 @@ class EntityMefRecord(ReroMefRecord):
         :returns: Generator of MEF pids without VIAF pid.
         """
         query = cls.search() \
-            .filter('bool', must_not=[Q('exists', field="viaf_pid")])
+            .exclude('exists', field="viaf_pid")
         for pid_type in current_app.config.get(cls.mef_type, []):
             query = query \
                 .filter('bool', should=[Q('exists', field=pid_type)])
@@ -128,7 +166,7 @@ class EntityMefRecord(ReroMefRecord):
                     f'Record type not found: {record_type}')
 
         # Get all pids from MEF
-        date = datetime.utcnow()
+        date = datetime.now(timezone.utc)
         click.echo('Get mef')
         progress = progressbar(
             items=cls.search()

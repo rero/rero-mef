@@ -17,7 +17,8 @@
 
 """Monitoring utilities."""
 
-from datetime import datetime, timedelta
+
+from datetime import datetime, timedelta, timezone
 
 import click
 from elasticsearch.exceptions import NotFoundError
@@ -110,7 +111,7 @@ class Monitoring(object):
         pids_es = []
         pids_db = []
         if index:
-            date = datetime.utcnow()
+            date = datetime.now(timezone.utc)
             pids_es = {}
             query = RecordsSearch(index=index) \
                 .filter('range', _created={'lte': date})

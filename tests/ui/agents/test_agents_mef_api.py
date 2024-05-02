@@ -48,6 +48,3 @@ def test_get_multiple_missing_pids(app, agent_mef_data, agent_viaf_record):
     }
     assert missing_pids == {'aggnd': [], 'agrero': [], 'aidref': []}
     assert none_pids == {'aggnd': [], 'agrero': [], 'aidref': []}
-
-    m_record_2.mark_as_deleted(dbcommit=True, reindex=True)
-    assert m_record_2.deleted is not None

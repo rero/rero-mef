@@ -34,8 +34,6 @@ class ReroMefRecord{
     persistent_identifier(self)
     get_metadata_identifier_names(cls)
     deleted(self)
-    mark_as_deleted(self, dbcommit=False, reindex=False)
-
 }
 
 class EntityMefRecord{

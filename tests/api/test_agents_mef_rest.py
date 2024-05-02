@@ -255,30 +255,3 @@ def test_agents_mef_get_updated(client, agent_mef_record, agent_idref_record,
     }, {
         'pid': '4'
     }]
-
-    mef_pid2 = agent_mef_idref_redirect_record.mark_as_deleted(
-        dbcommit=True,
-        reindex=True
-    )
-    agent_mef_gnd_redirect_record.delete(dbcommit=True, delindex=True)
-    AgentMefRecord.flush_indexes()
-    res, data = postdata(
-        client,
-        'api_blueprint.agent_mef_get_updated',
-        {"pids": ['1', '2', '3', '4']}
-    )
-    assert res.status_code == 200
-    assert data == [{
-        'pid': agent_mef_record.pid,
-        '_created': utf_isoformat(agent_mef_record.created),
-        '_updated': utf_isoformat(agent_mef_record.updated)
-    }, {
-        'pid': agent_mef_idref_redirect_record.pid,
-        '_created': utf_isoformat(agent_mef_idref_redirect_record.created),
-        '_updated': utf_isoformat(agent_mef_idref_redirect_record.updated),
-        'deleted': agent_mef_idref_redirect_record.get('deleted')
-    }, {
-        'pid': agent_mef_gnd_redirect_record.pid
-    }, {
-        'pid': '4'
-    }]

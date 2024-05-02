@@ -125,6 +125,13 @@ class AgentRecord(ReroMefRecord):
                     reindex=reindex
                 )
                 mef_actions[mef_record.pid] = Action.UPDATE
+            elif mef_record.set_deleted():
+                mef_record = mef_record.update(
+                    data=mef_record,
+                    dbcommit=dbcommit,
+                    reindex=reindex
+                )
+                mef_actions[mef_record.pid] = Action.UPDATE
             else:
                 if reindex:
                     mef_record.reindex()
@@ -132,7 +139,7 @@ class AgentRecord(ReroMefRecord):
         else:
             # No MEF record create one.
             mef_data = {self.name: {'$ref': ref_string}}
-            if self.deleted:
+            if self.deleted and not mef_data.get('deleted'):
                 mef_data['deleted'] = self.deleted
             if viaf_records:
                 mef_data['viaf_pid'] = viaf_records[0].pid
