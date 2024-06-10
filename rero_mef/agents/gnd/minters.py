@@ -24,5 +24,4 @@ from functools import partial
 from .providers import AgentGndProvider
 from ...minters import id_minter
 
-gnd_id_minter = partial(
-    id_minter, provider=AgentGndProvider, recid_field='pid')
+gnd_id_minter = partial(id_minter, provider=AgentGndProvider, recid_field="pid")

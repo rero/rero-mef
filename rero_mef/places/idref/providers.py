@@ -28,7 +28,7 @@ from .models import PlaceIdrefIdentifier
 class PlaceIdrefProvider(BaseProvider):
     """Places identifier provider."""
 
-    pid_type = 'pidref'
+    pid_type = "pidref"
     """Type of persistent identifier."""
 
     pid_identifier = PlaceIdrefIdentifier.__tablename__

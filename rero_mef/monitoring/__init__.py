@@ -19,4 +19,4 @@
 
 from .api import Monitoring
 
-__all__ = (Monitoring, )
+__all__ = (Monitoring,)

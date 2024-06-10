@@ -27,11 +27,11 @@ from invenio_records.models import RecordMetadataBase
 class ViafIdentifier(RecordIdentifier):
     """Sequence generator for VAIF agent identifiers."""
 
-    __tablename__ = 'viaf_id'
-    __mapper_args__ = {'concrete': True}
+    __tablename__ = "viaf_id"
+    __mapper_args__ = {"concrete": True}
 
     recid = db.Column(
-        db.BigInteger().with_variant(db.Integer, 'sqlite'),
+        db.BigInteger().with_variant(db.Integer, "sqlite"),
         primary_key=True,
         autoincrement=True,
     )
@@ -40,4 +40,4 @@ class ViafIdentifier(RecordIdentifier):
 class ViafMetadata(db.Model, RecordMetadataBase):
     """Represent a record metadata."""
 
-    __tablename__ = 'viaf_metadata'
+    __tablename__ = "viaf_metadata"

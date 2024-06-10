@@ -32,9 +32,9 @@ class ConceptIdrefSearch(RecordsSearch):
     class Meta:
         """Search only on index."""
 
-        index = 'concepts_idref'
+        index = "concepts_idref"
         doc_types = None
-        fields = ('*', )
+        fields = ("*",)
         facets = {}
 
         default_filter = None
@@ -46,9 +46,9 @@ class ConceptIdrefRecord(ConceptRecord):
     minter = idref_id_minter
     fetcher = idref_id_fetcher
     provider = ConceptIdrefProvider
-    name = 'idref'
-    viaf_source_code = 'RAMEAU'
-    pid_type = 'concept_idref_pid'
+    name = "idref"
+    viaf_source_code = "RAMEAU"
+    pid_type = "concept_idref_pid"
     model_cls = ConceptIdrefMetadata
     search = ConceptIdrefSearch
 
@@ -59,6 +59,7 @@ class ConceptIdrefRecord(ConceptRecord):
         Has to be overloaded in agent class.
         """
         from .tasks import idref_get_record
+
         return idref_get_record(id_=id_, debug=debug)
 
 
@@ -73,7 +74,5 @@ class ConceptIdrefIndexer(ConceptIndexer):
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
         super().bulk_index(
-            record_id_iterator,
-            index=ConceptIdrefSearch.Meta.index,
-            doc_type='cidref'
+            record_id_iterator, index=ConceptIdrefSearch.Meta.index, doc_type="cidref"
         )

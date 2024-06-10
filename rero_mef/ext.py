@@ -31,7 +31,7 @@ class REROMEFAPP(object):
 
     def init_app(self, app):
         """Flask application initialization."""
-        app.extensions['rero-mef'] = self
+        app.extensions["rero-mef"] = self
 
     def register_signals(self, app):
         """Register signals."""

@@ -23,56 +23,46 @@ from .agents import AgentMefRecord
 from .concepts import ConceptMefRecord
 from .places import PlaceMefRecord
 
-api_blueprint = Blueprint(
-    'api_blueprint',
-    __name__,
-    url_prefix='/'
-)
+api_blueprint = Blueprint("api_blueprint", __name__, url_prefix="/")
 
 
-@api_blueprint.route('/agents/mef/latest/<pid_type>:<pid>')
+@api_blueprint.route("/agents/mef/latest/<pid_type>:<pid>")
 def agent_mef_get_latest(pid_type, pid):
     """Get latest MEF for pid and type."""
     return jsonify(AgentMefRecord.get_latest(pid_type=pid_type, pid=pid))
 
 
-@api_blueprint.route('/agents/mef/updated', methods=['POST'])
+@api_blueprint.route("/agents/mef/updated", methods=["POST"])
 def agent_mef_get_updated():
     """Get latest MEF for pid and type."""
     data = request.get_json()
     generate = AgentMefRecord.get_updated(data)
-    return Response(
-        stream_with_context(generate), content_type='application/json'
-    )
+    return Response(stream_with_context(generate), content_type="application/json")
 
 
-@api_blueprint.route('/concepts/mef/latest/<pid_type>:<pid>')
+@api_blueprint.route("/concepts/mef/latest/<pid_type>:<pid>")
 def concept_mef_get_latest(pid_type, pid):
     """Get latest MEF for pid and type."""
     return jsonify(ConceptMefRecord.get_latest(pid_type=pid_type, pid=pid))
 
 
-@api_blueprint.route('/concepts/mef/updated', methods=['POST'])
+@api_blueprint.route("/concepts/mef/updated", methods=["POST"])
 def concept_mef_get_updated():
     """Get latest MEF for pid and type."""
     data = request.get_json()
     generate = ConceptMefRecord.get_updated(data)
-    return Response(
-        stream_with_context(generate), content_type='application/json'
-    )
+    return Response(stream_with_context(generate), content_type="application/json")
 
 
-@api_blueprint.route('/places/mef/latest/<pid_type>:<pid>')
+@api_blueprint.route("/places/mef/latest/<pid_type>:<pid>")
 def place_mef_get_latest(pid_type, pid):
     """Get latest MEF for pid and type."""
     return jsonify(PlaceMefRecord.get_latest(pid_type=pid_type, pid=pid))
 
 
-@api_blueprint.route('/places/mef/updated', methods=['POST'])
+@api_blueprint.route("/places/mef/updated", methods=["POST"])
 def place_mef_get_updated():
     """Get latest MEF for pid and type."""
     data = request.get_json()
     generate = PlaceMefRecord.get_updated(data)
-    return Response(
-        stream_with_context(generate), content_type='application/json'
-    )
+    return Response(stream_with_context(generate), content_type="application/json")

@@ -28,7 +28,7 @@ from .models import ConceptReroIdentifier
 class ConceptReroProvider(BaseProvider):
     """Concepts identifier provider."""
 
-    pid_type = 'corero'
+    pid_type = "corero"
     """Type of persistent identifier."""
 
     pid_identifier = ConceptReroIdentifier.__tablename__

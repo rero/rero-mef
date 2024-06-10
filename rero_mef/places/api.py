@@ -27,8 +27,16 @@ class PlaceRecord(ReroMefRecord):
     name = None
 
     @classmethod
-    def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
-               reindex=False, md5=True, **kwargs):
+    def create(
+        cls,
+        data,
+        id_=None,
+        delete_pid=False,
+        dbcommit=False,
+        reindex=False,
+        md5=True,
+        **kwargs,
+    ):
         """Create a new places record."""
         return super().create(
             data=data,
@@ -37,7 +45,7 @@ class PlaceRecord(ReroMefRecord):
             dbcommit=dbcommit,
             reindex=reindex,
             md5=True,
-            **kwargs
+            **kwargs,
         )
 
     def delete(self, force=False, dbcommit=False, delindex=False):
@@ -46,11 +54,7 @@ class PlaceRecord(ReroMefRecord):
 
         for mef_record in PlaceMefRecord.get_mef(self.pid, self.name):
             mef_record.delete_ref(self, dbcommit=dbcommit, reindex=delindex)
-        return super().delete(
-            force=force,
-            dbcommit=dbcommit,
-            delindex=delindex
-        )
+        return super().delete(force=force, dbcommit=dbcommit, delindex=delindex)
 
     def create_or_update_mef(self, dbcommit=False, reindex=False):
         """Create or update MEF and VIAF record.
@@ -65,22 +69,17 @@ class PlaceRecord(ReroMefRecord):
         if mef_records := PlaceMefRecord.get_mef(self.pid, self.name):
             mef_data = mef_records[0]
 
-        ref_string = build_ref_string(
-            place=self.name,
-            place_pid=self.pid
-        )
-        mef_data[self.name] = {'$ref': ref_string}
+        ref_string = build_ref_string(place=self.name, place_pid=self.pid)
+        mef_data[self.name] = {"$ref": ref_string}
 
         if mef_records:
             mef_action = Action.UPDATE
             mef_record = mef_data.replace(
-                data=mef_data,
-                dbcommit=dbcommit,
-                reindex=reindex
+                data=mef_data, dbcommit=dbcommit, reindex=reindex
             )
         else:
-            if self.deleted and not mef_data.get('deleted'):
-                mef_data['deleted'] = self.deleted
+            if self.deleted and not mef_data.get("deleted"):
+                mef_data["deleted"] = self.deleted
             mef_action = Action.CREATE
             mef_record = PlaceMefRecord.create(
                 data=mef_data,
@@ -102,6 +101,7 @@ class PlaceRecord(ReroMefRecord):
     def reindex(self, forceindex=False):
         """Reindex record."""
         from .mef.api import PlaceMefRecord
+
         result = super().reindex(forceindex=forceindex)
         # reindex MEF records
         for mef_record in PlaceMefRecord.get_mef(self.pid, self.name):

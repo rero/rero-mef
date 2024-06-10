@@ -19,9 +19,9 @@
 
 
 # revision identifiers, used by Alembic.
-revision = 'c658fa8e9fa5'
+revision = "c658fa8e9fa5"
 down_revision = None
-branch_labels = ('rero_mef',)
+branch_labels = ("rero_mef",)
 depends_on = None
 
 

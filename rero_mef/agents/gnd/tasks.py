@@ -26,15 +26,27 @@ from six import BytesIO
 
 from .api import AgentGndRecord
 from ...marctojson.do_gnd_agent import Transformation
-from ...utils import MyOAIItemIterator, oai_process_records_from_dates, \
-    oai_save_records_from_dates, requests_retry_session
+from ...utils import (
+    MyOAIItemIterator,
+    oai_process_records_from_dates,
+    oai_save_records_from_dates,
+    requests_retry_session,
+)
 
 
 @shared_task
-def process_records_from_dates(from_date=None, until_date=None,
-                               ignore_deleted=False, dbcommit=True,
-                               reindex=True, test_md5=True, verbose=False,
-                               debug=False, viaf_online=False, **kwargs):
+def process_records_from_dates(
+    from_date=None,
+    until_date=None,
+    ignore_deleted=False,
+    dbcommit=True,
+    reindex=True,
+    test_md5=True,
+    verbose=False,
+    debug=False,
+    viaf_online=False,
+    **kwargs,
+):
     """Harvest multiple records from an OAI repo.
 
     :param name: The name of the OAIHarvestConfig to use instead of passing
@@ -43,12 +55,12 @@ def process_records_from_dates(from_date=None, until_date=None,
     :param until_date: The upper bound date for the harvesting (optional).
     """
     return oai_process_records_from_dates(
-        name='agents.gnd',
+        name="agents.gnd",
         sickle=Sickle,
-        max_retries=current_app.config.get('RERO_OAI_RETRIES', 0),
+        max_retries=current_app.config.get("RERO_OAI_RETRIES", 0),
         oai_item_iterator=MyOAIItemIterator,
         transformation=Transformation,
-        access_token=current_app.config.get('RERO_OAI_GND_TOKEN'),
+        access_token=current_app.config.get("RERO_OAI_GND_TOKEN"),
         record_class=AgentGndRecord,
         days_spann=4,
         from_date=from_date,
@@ -60,13 +72,12 @@ def process_records_from_dates(from_date=None, until_date=None,
         verbose=verbose,
         debug=debug,
         viaf_onle=viaf_online,
-        kwargs=kwargs
+        kwargs=kwargs,
     )
 
 
 @shared_task
-def save_records_from_dates(file_name, from_date=None, until_date=None,
-                            verbose=False):
+def save_records_from_dates(file_name, from_date=None, until_date=None, verbose=False):
     """Harvest and save multiple records from an OAI repo.
 
     :param name: The name of the OAIHarvestConfig to use instead of passing
@@ -76,16 +87,16 @@ def save_records_from_dates(file_name, from_date=None, until_date=None,
     """
     # data on IDREF Servers starts on 2000-10-01
     return oai_save_records_from_dates(
-        name='agents.gnd',
+        name="agents.gnd",
         file_name=file_name,
         sickle=Sickle,
-        max_retries=current_app.config.get('RERO_OAI_RETRIES', 0),
+        max_retries=current_app.config.get("RERO_OAI_RETRIES", 0),
         oai_item_iterator=MyOAIItemIterator,
-        access_token=current_app.config.get('RERO_OAI_GND_TOKEN'),
+        access_token=current_app.config.get("RERO_OAI_GND_TOKEN"),
         days_spann=30,
         from_date=from_date,
         until_date=until_date,
-        verbose=verbose
+        verbose=verbose,
     )
 
 
@@ -98,29 +109,28 @@ def gnd_get_record(id_, debug=False):
     https://services.dnb.de/sru/authorities?version=1.1
     &operation=searchRetrieve&query=idn%3D007355440&recordSchema=MARC21-xml
     """
-    url = current_app.config.get(
-        'RERO_MEF_AGENTS_GND_GET_RECORD').replace('{id}', id_)
+    url = current_app.config.get("RERO_MEF_AGENTS_GND_GET_RECORD").replace("{id}", id_)
     trans_record = None
-    msg = f'SRU-agents.gnd  get: {id_:<15} {url}'
+    msg = f"SRU-agents.gnd  get: {id_:<15} {url}"
     try:
         response = requests_retry_session().get(url)
         status_code = response.status_code
         if status_code == requests.codes.ok:
             if records := parse_xml_to_array(BytesIO(response.content)):
                 trans_record = Transformation(records[0]).json
-                pid = trans_record.get('pid')
+                pid = trans_record.get("pid")
                 if id_ != pid:
-                    msg = f'{msg} | PID changed: {id_} -> {pid}'
+                    msg = f"{msg} | PID changed: {id_} -> {pid}"
                     trans_record = None
                 else:
-                    msg = f'{msg} | OK'
+                    msg = f"{msg} | OK"
             else:
-                msg = f'{msg} | No record'
+                msg = f"{msg} | No record"
         else:
-            msg = f'{msg} | HTTP Error: {status_code}'
+            msg = f"{msg} | HTTP Error: {status_code}"
     except Exception as err:
         trans_record = None
-        msg = f'{msg} | Error: {err}'
+        msg = f"{msg} | Error: {err}"
         if debug:
             raise
     return trans_record, msg

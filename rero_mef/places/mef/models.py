@@ -26,4 +26,4 @@ from invenio_records.models import RecordMetadataBase
 class PlaceMefMetadata(db.Model, RecordMetadataBase):
     """Represent a record metadata."""
 
-    __tablename__ = 'place_mef_metadata'
+    __tablename__ = "place_mef_metadata"

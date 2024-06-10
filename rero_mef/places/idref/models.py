@@ -26,11 +26,11 @@ from invenio_records.models import RecordMetadataBase
 class PlaceIdrefIdentifier(RecordIdentifier):
     """Sequence generator for places Authority identifiers."""
 
-    __tablename__ = 'place_idref_id'
-    __mapper_args__ = {'concrete': True}
+    __tablename__ = "place_idref_id"
+    __mapper_args__ = {"concrete": True}
 
     recid = db.Column(
-        db.BigInteger().with_variant(db.Integer, 'sqlite'),
+        db.BigInteger().with_variant(db.Integer, "sqlite"),
         primary_key=True,
         autoincrement=True,
     )
@@ -39,4 +39,4 @@ class PlaceIdrefIdentifier(RecordIdentifier):
 class PlaceIdrefMetadata(db.Model, RecordMetadataBase):
     """Represent a record metadata."""
 
-    __tablename__ = 'place_idref_metadata'
+    __tablename__ = "place_idref_metadata"

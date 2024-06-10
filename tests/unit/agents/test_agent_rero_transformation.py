@@ -27,23 +27,25 @@ def test_rero_identifier():
             <subfield code="a">A000070488</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_identifier()
     assert trans.json == {
-        'pid': 'A000070488',
-        'identifier': 'http://data.rero.ch/02-A000070488',
-        'identifiedBy': [{
-            'source': 'RERO',
-            'type': 'uri',
-            'value': 'http://data.rero.ch/02-A000070488'
-        }]
+        "pid": "A000070488",
+        "identifier": "http://data.rero.ch/02-A000070488",
+        "identifiedBy": [
+            {
+                "source": "RERO",
+                "type": "uri",
+                "value": "http://data.rero.ch/02-A000070488",
+            }
+        ],
     }
 
 
 def test_rero_birth_and_death_dates():
     """Test date of birth 100 $d"""
     xml_part_to_add = ""
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_birth_and_death_dates()
     assert not trans.json
 
@@ -52,46 +54,35 @@ def test_rero_birth_and_death_dates():
             <subfield code="d">1816-1855</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_birth_and_death_dates()
-    assert trans.json == {
-        'date_of_birth': '1816',
-        'date_of_death': '1855'
-    }
+    assert trans.json == {"date_of_birth": "1816", "date_of_death": "1855"}
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="d">1816-</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_birth_and_death_dates()
-    assert trans.json == {
-        'date_of_birth': '1816'
-    }
+    assert trans.json == {"date_of_birth": "1816"}
 
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="d">?-1855</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_birth_and_death_dates()
-    assert trans.json == {
-        'date_of_birth': '?',
-        'date_of_death': '1855'
-    }
+    assert trans.json == {"date_of_birth": "?", "date_of_death": "1855"}
 
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="d">ca. 1800-1855</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_birth_and_death_dates()
-    assert trans.json == {
-        'date_of_birth': 'ca. 1800',
-        'date_of_death': '1855'
-    }
+    assert trans.json == {"date_of_birth": "ca. 1800", "date_of_death": "1855"}
 
 
 def test_rero_biographical_information():
@@ -101,12 +92,10 @@ def test_rero_biographical_information():
             <subfield code="a">Romancière. - Charlotte Brontë.</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_biographical_information()
     assert trans.json == {
-        'biographical_information': [
-            'Romancière. - Charlotte Brontë.'
-        ]
+        "biographical_information": ["Romancière. - Charlotte Brontë."]
     }
 
 
@@ -117,9 +106,9 @@ def test_rero_preferred_name():
             <subfield code="a">Brontë, Charlotte</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_preferred_name()
-    assert trans.json == {'preferred_name': 'Brontë, Charlotte'}
+    assert trans.json == {"preferred_name": "Brontë, Charlotte"}
 
 
 def test_rero_preferred_name_organisation():
@@ -129,9 +118,9 @@ def test_rero_preferred_name_organisation():
             <subfield code="a">Brontë, Charlotte</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_preferred_name()
-    assert trans.json == {'preferred_name': 'Brontë, Charlotte'}
+    assert trans.json == {"preferred_name": "Brontë, Charlotte"}
 
 
 def test_trans_rero_numeration():
@@ -141,12 +130,9 @@ def test_trans_rero_numeration():
             <subfield code="b">II</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_numeration()
-    assert trans.json == {
-        'numeration':
-            'II'
-    }
+    assert trans.json == {"numeration": "II"}
 
 
 def test_trans_rero_qualifier():
@@ -156,9 +142,9 @@ def test_trans_rero_qualifier():
             <subfield code="c">Jr.</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_qualifier()
-    assert trans.json == {'qualifier': 'Jr.'}
+    assert trans.json == {"qualifier": "Jr."}
 
 
 def test_rero_variant_name():
@@ -171,12 +157,12 @@ def test_rero_variant_name():
             <subfield code="a">Brontë, Carlotta</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_variant_name()
     trans.trans_rero_variant_access_point()
     assert trans.json == {
-        'variant_access_point': ['Bell, Currer', 'Brontë, Carlotta'],
-        'variant_name': ['Bell, Currer', 'Brontë, Carlotta']
+        "variant_access_point": ["Bell, Currer", "Brontë, Carlotta"],
+        "variant_name": ["Bell, Currer", "Brontë, Carlotta"],
     }
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="410">
@@ -186,12 +172,12 @@ def test_rero_variant_name():
             <subfield code="a">Brontë, Carlotta</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_variant_name()
     trans.trans_rero_variant_access_point()
     assert trans.json == {
-        'variant_access_point': ['Bell, Currer', 'Brontë, Carlotta'],
-        'variant_name': ['Bell, Currer', 'Brontë, Carlotta']
+        "variant_access_point": ["Bell, Currer", "Brontë, Carlotta"],
+        "variant_name": ["Bell, Currer", "Brontë, Carlotta"],
     }
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="411">
@@ -201,7 +187,7 @@ def test_rero_variant_name():
             <subfield code="a">Brontë, Carlotta</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_variant_name()
     trans.trans_rero_variant_access_point()
 
@@ -215,11 +201,11 @@ def test_rero_authorized_access_point():
             <subfield code="c">écrivain</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_authorized_access_point()
     assert trans.json == {
-        'authorized_access_point': 'Brontë, Charlotte, 1816-1855 écrivain',
-        'type': 'bf:Person'
+        "authorized_access_point": "Brontë, Charlotte, 1816-1855 écrivain",
+        "type": "bf:Person",
     }
 
     xml_part_to_add = """
@@ -230,12 +216,12 @@ def test_rero_authorized_access_point():
             <subfield code="d">1897-1978</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_authorized_access_point()
     assert trans.json == {
-        'authorized_access_point': 'Paul VI pape 1897-1978',
-        'type': 'bf:Organisation',
-        'conference': False,
+        "authorized_access_point": "Paul VI pape 1897-1978",
+        "type": "bf:Organisation",
+        "conference": False,
     }
 
 
@@ -248,10 +234,10 @@ def test_rero_parallel_access_point():
             <subfield code="c">écrivain</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_parallel_access_point()
     assert trans.json == {
-        'parallel_access_point': ['Brontë, Charlotte, 1816-1855 écrivain']
+        "parallel_access_point": ["Brontë, Charlotte, 1816-1855 écrivain"]
     }
 
     xml_part_to_add = """
@@ -262,6 +248,6 @@ def test_rero_parallel_access_point():
             <subfield code="d">1897-1978</subfield>
         </datafield>
      """
-    trans = trans_prep('rero', xml_part_to_add)
+    trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_parallel_access_point()
-    assert trans.json == {'parallel_access_point': ['Paul VI pape 1897-1978']}
+    assert trans.json == {"parallel_access_point": ["Paul VI pape 1897-1978"]}

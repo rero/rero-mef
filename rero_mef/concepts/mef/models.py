@@ -26,4 +26,4 @@ from invenio_records.models import RecordMetadataBase
 class ConceptMefMetadata(db.Model, RecordMetadataBase):
     """Represent a record metadata."""
 
-    __tablename__ = 'concept_mef_metadata'
+    __tablename__ = "concept_mef_metadata"

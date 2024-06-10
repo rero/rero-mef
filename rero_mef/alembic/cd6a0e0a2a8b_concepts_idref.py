@@ -30,20 +30,19 @@ from rero_mef.concepts import ConceptMefRecord, ConceptReroRecord
 from rero_mef.utils import add_oai_source
 
 # revision identifiers, used by Alembic.
-revision = 'cd6a0e0a2a8b'
-down_revision = 'c658fa8e9fa5'
+revision = "cd6a0e0a2a8b"
+down_revision = "c658fa8e9fa5"
 branch_labels = ()
 depends_on = None
 
-INDEX_CIDREF = 'concepts_idref-idref-concept-v0.0.1-20220825'
+INDEX_CIDREF = "concepts_idref-idref-concept-v0.0.1-20220825"
 
 
 def reindex_concepts():
     """Reindex Concepts RERO and MEF."""
     for concept in [ConceptReroRecord, ConceptMefRecord]:
         for idx, rec in enumerate(concept.get_all_records(), 1):
-            click.echo(
-                f'{idx:<10} Reindex Concept {concept.__name__} {rec.pid}')
+            click.echo(f"{idx:<10} Reindex Concept {concept.__name__} {rec.pid}")
             rec.reindex()
 
 
@@ -51,31 +50,28 @@ def delete_oai_harvest_config(sources):
     """Delete OAI harvest configs."""
     with current_app.app_context():
         for source_name in sources:
-            if source := OAIHarvestConfig \
-                    .query.filter_by(name=source_name).first():
+            if source := OAIHarvestConfig.query.filter_by(name=source_name).first():
                 db.session.delete(source)
                 db.session.commit()
-                click.echo(f'Delete OAIHarvestConfig: {source_name}')
+                click.echo(f"Delete OAIHarvestConfig: {source_name}")
 
 
 def init_oai_harvest_config():
     """Init OAIHarvestConfig."""
-    configs = yaml.load(open('./data/oaisources.yml'), Loader=yaml.FullLoader)
+    configs = yaml.load(open("./data/oaisources.yml"), Loader=yaml.FullLoader)
     for name, values in sorted(configs.items()):
-        baseurl = values['baseurl']
-        metadataprefix = values.get('metadataprefix', 'marc21')
-        setspecs = values.get('setspecs', '')
-        comment = values.get('comment', '')
-        click.echo(
-            f'Add OAIHarvestConfig: {name} {baseurl} ', nl=False
-        )
+        baseurl = values["baseurl"]
+        metadataprefix = values.get("metadataprefix", "marc21")
+        setspecs = values.get("setspecs", "")
+        comment = values.get("comment", "")
+        click.echo(f"Add OAIHarvestConfig: {name} {baseurl} ", nl=False)
         msg = add_oai_source(
             name=name,
             baseurl=baseurl,
             metadataprefix=metadataprefix,
             setspecs=setspecs,
             comment=comment,
-            update=True
+            update=True,
         )
         click.echo(msg)
 
@@ -83,53 +79,43 @@ def init_oai_harvest_config():
 def update_mapping():
     """Update the mapping of a given alias."""
     for alias in current_search.aliases.keys():
-        for index, f_mapping in iter(
-            current_search.aliases.get(alias).items()
-        ):
+        for index, f_mapping in iter(current_search.aliases.get(alias).items()):
             mapping = json.load(open(f_mapping))
             try:
                 res = current_search_client.indices.put_mapping(
-                    body=mapping.get('mappings'), index=index)
+                    body=mapping.get("mappings"), index=index
+                )
             except Exception as excep:
-                click.secho(
-                    f'error: {excep}', fg='red')
-            if res.get('acknowledged'):
-                click.secho(
-                    f'index: {index} has been sucessfully updated',
-                    fg='green')
+                click.secho(f"error: {excep}", fg="red")
+            if res.get("acknowledged"):
+                click.secho(f"index: {index} has been sucessfully updated", fg="green")
             else:
-                click.secho(
-                    f'error: {res}', fg='red')
+                click.secho(f"error: {res}", fg="red")
 
 
 def upgrade():
     """Upgrade database."""
-    f_mapping = list(
-        current_search.aliases.get('concepts_idref').values()).pop()
-    mapping = json.load(open(f'{f_mapping}'))
+    f_mapping = list(current_search.aliases.get("concepts_idref").values()).pop()
+    mapping = json.load(open(f"{f_mapping}"))
     current_search_client.indices.create(INDEX_CIDREF, mapping)
     current_search_client.indices.put_alias(
-        INDEX_CIDREF, 'concepts_idref-idref-concept-v0.0.1')
-    current_search_client.indices.put_alias(
-        INDEX_CIDREF, 'concepts_idref')
-    click.secho(f'Index {INDEX_CIDREF} has been created.', fg='green')
+        INDEX_CIDREF, "concepts_idref-idref-concept-v0.0.1"
+    )
+    current_search_client.indices.put_alias(INDEX_CIDREF, "concepts_idref")
+    click.secho(f"Index {INDEX_CIDREF} has been created.", fg="green")
     update_mapping()
     reindex_concepts()
-    delete_oai_harvest_config(['idref', 'gnd'])
+    delete_oai_harvest_config(["idref", "gnd"])
     init_oai_harvest_config()
 
 
 def downgrade():
     """Downgrade database."""
-    result = current_search_client.indices.delete(
-        index=INDEX_CIDREF,
-        ignore=[400, 404]
-    )
+    result = current_search_client.indices.delete(index=INDEX_CIDREF, ignore=[400, 404])
     click.secho(
-        f'Index {INDEX_CIDREF} has been deleted. {json.dumps(result)}',
-        fg='yellow'
+        f"Index {INDEX_CIDREF} has been deleted. {json.dumps(result)}", fg="yellow"
     )
     update_mapping()
     reindex_concepts()
-    delete_oai_harvest_config(['agents.idref', 'agents.gnd', 'concepts.idref'])
+    delete_oai_harvest_config(["agents.idref", "agents.gnd", "concepts.idref"])
     init_oai_harvest_config()

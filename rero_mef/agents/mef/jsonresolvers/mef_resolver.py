@@ -26,7 +26,7 @@ from ..api import AgentMefRecord
 from ....utils import get_host, resolve_record
 
 
-@jsonresolver.route('/api/agents/mef/<path:path>', host=get_host())
+@jsonresolver.route("/api/agents/mef/<path:path>", host=get_host())
 def resolve_mef(path):
     """Resolve MEF records."""
     return resolve_record(path, AgentMefRecord)

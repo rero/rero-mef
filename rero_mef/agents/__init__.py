@@ -24,9 +24,21 @@ from .rero.api import AgentReroIndexer, AgentReroRecord, AgentReroSearch
 from .viaf.api import AgentViafIndexer, AgentViafRecord, AgentViafSearch
 from ..api import Action
 
-__all__ = ('AgentGndIndexer', 'AgentGndRecord', 'AgentGndSearch',
-           'AgentIdrefIndexer', 'AgentIdrefRecord', 'AgentIdrefSearch',
-           'AgentMefIndexer', 'AgentMefRecord', 'AgentMefSearch',
-           'AgentReroIndexer', 'AgentReroRecord', 'AgentReroSearch',
-           'AgentViafIndexer', 'AgentViafRecord', 'AgentViafSearch',
-           'Action')
+__all__ = (
+    "AgentGndIndexer",
+    "AgentGndRecord",
+    "AgentGndSearch",
+    "AgentIdrefIndexer",
+    "AgentIdrefRecord",
+    "AgentIdrefSearch",
+    "AgentMefIndexer",
+    "AgentMefRecord",
+    "AgentMefSearch",
+    "AgentReroIndexer",
+    "AgentReroRecord",
+    "AgentReroSearch",
+    "AgentViafIndexer",
+    "AgentViafRecord",
+    "AgentViafSearch",
+    "Action",
+)

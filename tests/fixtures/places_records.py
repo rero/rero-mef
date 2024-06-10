@@ -23,26 +23,27 @@ from utils import create_record
 from rero_mef.places import PlaceIdrefRecord, PlaceMefRecord
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def place_idref_record(app, place_idref_data):
     """Create a IdRef record."""
     return create_record(PlaceIdrefRecord, place_idref_data)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def place_idref_redirect_record(app, place_idref_redirect_data):
     """Create a IdRef record."""
     return create_record(PlaceIdrefRecord, place_idref_redirect_data)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def place_mef_idref_record(app, place_mef_idref_data, place_idref_record):
     """Create a IdRef record."""
     return create_record(PlaceMefRecord, place_mef_idref_data)
 
 
-@pytest.fixture(scope='module')
-def place_mef_idref_redirect_record(app, place_mef_idref_redirect_data,
-                                    place_idref_redirect_record):
+@pytest.fixture(scope="module")
+def place_mef_idref_redirect_record(
+    app, place_mef_idref_redirect_data, place_idref_redirect_record
+):
     """Create a IdRef record."""
     return create_record(PlaceMefRecord, place_mef_idref_redirect_data)

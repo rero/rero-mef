@@ -26,7 +26,7 @@ from ..api import ConceptIdrefRecord
 from ....utils import get_host, resolve_record
 
 
-@jsonresolver.route('/api/concepts/idref/<path:path>', host=get_host())
+@jsonresolver.route("/api/concepts/idref/<path:path>", host=get_host())
 def resolve_idref(path):
     """Resolve Concepts records."""
     return resolve_record(path, ConceptIdrefRecord)

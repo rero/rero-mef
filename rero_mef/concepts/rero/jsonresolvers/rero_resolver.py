@@ -26,7 +26,7 @@ from ..api import ConceptReroRecord
 from ....utils import get_host, resolve_record
 
 
-@jsonresolver.route('/api/concepts/rero/<path:path>', host=get_host())
+@jsonresolver.route("/api/concepts/rero/<path:path>", host=get_host())
 def resolve_rero(path):
     """Resolve Concepts records."""
     return resolve_record(path, ConceptReroRecord)

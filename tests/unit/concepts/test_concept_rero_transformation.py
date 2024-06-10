@@ -38,27 +38,16 @@ def test_rero_identifier():
         </datafield>
     """
 
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_rero_identifier()
     assert trans.json == {
-        'pid': 'A021029523',
-        'type': 'bf:Topic',
-        'identifiedBy': [
-            {
-                'type': 'bf:Local',
-                'source': 'RERO',
-                'value': 'A021029523'
-            },
-            {
-                'type': 'bf:Local',
-                'source': 'BNF',
-                'value': 'FRBNF120611480'
-            },
-            {
-                'type': 'uri',
-                'value': 'http://catalogue.bnf.fr/ark:/12148/cb120611486'
-            }
-        ]
+        "pid": "A021029523",
+        "type": "bf:Topic",
+        "identifiedBy": [
+            {"type": "bf:Local", "source": "RERO", "value": "A021029523"},
+            {"type": "bf:Local", "source": "BNF", "value": "FRBNF120611480"},
+            {"type": "uri", "value": "http://catalogue.bnf.fr/ark:/12148/cb120611486"},
+        ],
     }
 
 
@@ -70,11 +59,9 @@ def test_rero_bnf_type():
         </datafield>
     """
 
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_rero_bnf_type()
-    assert trans.json == {
-        'bnf_type': 'Genre / Fiction'
-    }
+    assert trans.json == {"bnf_type": "Genre / Fiction"}
 
 
 def test_rero_authorized_access_point():
@@ -86,11 +73,10 @@ def test_rero_authorized_access_point():
             </subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_rero_authorized_access_point()
     assert trans.json == {
-        'authorized_access_point':
-            'Bibliothèques publiques - Services audiovisuels'
+        "authorized_access_point": "Bibliothèques publiques - Services audiovisuels"
     }
 
     xml_part_to_add = """
@@ -100,11 +86,9 @@ def test_rero_authorized_access_point():
             </subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_rero_authorized_access_point()
-    assert trans.json == {
-        'authorized_access_point': '[Bandes dessinées fantastiques]'
-    }
+    assert trans.json == {"authorized_access_point": "[Bandes dessinées fantastiques]"}
 
 
 def test_rero_variant_access_point():
@@ -121,12 +105,12 @@ def test_rero_variant_access_point():
             </subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_rero_variant_access_point()
     assert trans.json == {
-        'variant_access_point': [
-            'Bibliothèques publiques et audiovisuel',
-            'Bibliothèques publiques et audiovisuel 2'
+        "variant_access_point": [
+            "Bibliothèques publiques et audiovisuel",
+            "Bibliothèques publiques et audiovisuel 2",
         ]
     }
 
@@ -136,13 +120,9 @@ def test_rero_variant_access_point():
             <subfield code="x">Bandes dessinées</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_rero_variant_access_point()
-    assert trans.json == {
-        'variant_access_point': [
-            '[Fantastique] - Bandes dessinées'
-        ]
-    }
+    assert trans.json == {"variant_access_point": ["[Fantastique] - Bandes dessinées"]}
 
 
 def test_rero_relation():
@@ -158,15 +138,19 @@ def test_rero_relation():
         </datafield>
 
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_rero_relation()
     assert trans.json == {
-        'broader': [{
-            'authorized_access_point': 'Bibliothèques - Services audiovisuels',
-        }],
-        'narrower': [{
-            'authorized_access_point': 'Ordinateurs neuronaux',
-        }],
+        "broader": [
+            {
+                "authorized_access_point": "Bibliothèques - Services audiovisuels",
+            }
+        ],
+        "narrower": [
+            {
+                "authorized_access_point": "Ordinateurs neuronaux",
+            }
+        ],
     }
 
     xml_part_to_add = """
@@ -177,58 +161,59 @@ def test_rero_relation():
           <subfield code="a">Livres en plastique</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_rero_relation()
     assert trans.json == {
-        'related': [
+        "related": [
             {
-                'authorized_access_point': 'Livres en carton',
+                "authorized_access_point": "Livres en carton",
             },
             {
-                'authorized_access_point': 'Livres en plastique',
-            }
+                "authorized_access_point": "Livres en plastique",
+            },
         ],
     }
 
 
 def test_rero_classification():
-    """Test """
+    """Test"""
     xml_part_to_add = """
         <datafield tag="072" ind1=" " ind2=" ">
           <subfield code="a">020 - Sciences de l'information</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_rero_classification()
     assert trans.json == {
-        'classification': [{
-            'type': 'bf:ClassificationDdc',
-            'classificationPortion': '020',
-            'name': "Sciences de l'information"
-        }]
+        "classification": [
+            {
+                "type": "bf:ClassificationDdc",
+                "classificationPortion": "020",
+                "name": "Sciences de l'information",
+            }
+        ]
     }
 
 
 def test_rero_close_match():
-    """Test """
+    """Test"""
     xml_part_to_add = """
         <datafield tag="682" ind1=" " ind2=" ">
           <subfield code="a">Public Libraries</subfield>
           <subfield code="v">LCSH</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_rero_close_match()
     assert trans.json == {
-        'closeMatch': [{
-            'authorized_access_point': 'Public Libraries',
-            'source': 'LCSH'
-        }]
+        "closeMatch": [
+            {"authorized_access_point": "Public Libraries", "source": "LCSH"}
+        ]
     }
 
 
 def test_rero_notes():
-    """Test """
+    """Test"""
     xml_part_to_add = """
         <datafield tag="670" ind1=" " ind2=" ">
           <subfield code="a">
@@ -282,46 +267,35 @@ def test_rero_notes():
           <subfield code="9">VF3, NC3, NC30</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_rero_note()
     assert trans.json == {
-        'note': [
+        "note": [
             {
-                'noteType': 'dataSource',
-                'label': ['Grand Larousse universel (art. : Livre)']
+                "noteType": "dataSource",
+                "label": ["Grand Larousse universel (art. : Livre)"],
             },
+            {"noteType": "dataNotFound", "label": ["Laval RVM (en ligne), 2004-11-23"]},
             {
-                'noteType': 'dataNotFound',
-                'label': ['Laval RVM (en ligne), 2004-11-23']
+                "label": ["Mers profondément engagées dans la" " masse des continents"],
+                "noteType": "general",
             },
+            {"label": ["Note interne"], "noteType": "nonPublic"},
             {
-                'label': ['Mers profondément engagées dans la'
-                          ' masse des continents'],
-                'noteType': 'general'
-            },
-            {
-                'label': ['Note interne'],
-                'noteType': 'nonPublic'
-            },
-            {
-                'label': [
-                    'Voir le descripteur Opposition (science politique)',
-                    'Combiner un des descripteurs Mouvements contestataires',
-                    'Voir les vedettes : Mouvements contestataires ; '
-                    'Opposition',
-                    'Voir les vedettes du type : Antifascisme ; Mouvements',
+                "label": [
+                    "Voir le descripteur Opposition (science politique)",
+                    "Combiner un des descripteurs Mouvements contestataires",
+                    "Voir les vedettes : Mouvements contestataires ; " "Opposition",
+                    "Voir les vedettes du type : Antifascisme ; Mouvements",
                     "Voir aux mouvements d'opposition particuliers, par ex. : "
-                    'Combat'
+                    "Combat",
                 ],
-                'noteType': 'seeReference'
+                "noteType": "seeReference",
             },
             {
-                'label': ['Voir aussi aux mers et océans particuliers'],
-                'noteType': 'seeAlsoReference'
+                "label": ["Voir aussi aux mers et océans particuliers"],
+                "noteType": "seeAlsoReference",
             },
-            {
-                'label': ['VF3, NC3, NC30'],
-                'noteType': 'REROtreatment'
-            },
+            {"label": ["VF3, NC3, NC30"], "noteType": "REROtreatment"},
         ]
     }

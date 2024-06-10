@@ -26,4 +26,4 @@ from invenio_records.models import RecordMetadataBase
 class AgentMefMetadata(db.Model, RecordMetadataBase):
     """Represent a record metadata."""
 
-    __tablename__ = 'mef_metadata'
+    __tablename__ = "mef_metadata"

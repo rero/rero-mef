@@ -29,20 +29,18 @@ from rero_mef.agents.cli import create_csv_mef, create_csv_viaf
 def test_create_csv_viaf_mef(script_info, tmpdir):
     """Test create CSV VIAF."""
     runner = CliRunner()
-    viaf_text_file = join(dirname(__file__), '../../data/viaf.txt')
+    viaf_text_file = join(dirname(__file__), "../../data/viaf.txt")
     output_directory = tempfile.mkdtemp()
     res = runner.invoke(
-        create_csv_viaf,
-        [viaf_text_file, output_directory],
-        obj=script_info
+        create_csv_viaf, [viaf_text_file, output_directory], obj=script_info
     )
-    assert res.output.strip().split('\n') == [
-        'Create VIAF CSV files.',
-        f'  VIAF input file: {viaf_text_file}',
-        '  Number of VIAF records created: 859.'
+    assert res.output.strip().split("\n") == [
+        "Create VIAF CSV files.",
+        f"  VIAF input file: {viaf_text_file}",
+        "  Number of VIAF records created: 859.",
     ]
-    viaf_metadata = join(output_directory, 'viaf_metadata.csv')
-    viaf_pidstore = join(output_directory, 'viaf_pidstore.csv')
+    viaf_metadata = join(output_directory, "viaf_metadata.csv")
+    viaf_pidstore = join(output_directory, "viaf_pidstore.csv")
     assert isfile(viaf_metadata)
     assert isfile(viaf_pidstore)
     with open(viaf_metadata) as in_file:
@@ -50,7 +48,7 @@ def test_create_csv_viaf_mef(script_info, tmpdir):
         for line in in_file:
             metadata_count += 1
         assert metadata_count == 859
-        data = line.strip().split('\t')
+        data = line.strip().split("\t")
         # don't use the first two lines with dates.
         assert data[3:] == [
             '{"bne_pid": "XX871391", '
@@ -59,42 +57,31 @@ def test_create_csv_viaf_mef(script_info, tmpdir):
             '_\\\\u0633\\\\u062a\\\\u064a\\\\u0631\\\\u0646", '
             '"https://de.wikipedia.org/wiki/Guy_Stern", '
             '"https://en.wikipedia.org/wiki/Guy_Stern"'
-            '], '
+            "], "
             '"rero_pid": "A003863577", '
             '"md5": "efbf1aaff7acc20e0a966432cfeeab12", '
             '"$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json", '
             '"pid": "108685760"}',
-            '1',
+            "1",
         ]
     with open(viaf_pidstore) as in_file:
         pidstore_count = sum(1 for _ in in_file)
         assert pidstore_count == metadata_count
 
-    copy2(
-        join(dirname(__file__), '../../data/aggnd_pidstore.csv'),
-        output_directory
-    )
-    copy2(
-        join(dirname(__file__), '../../data/aidref_pidstore.csv'),
-        output_directory
-    )
-    copy2(
-        join(dirname(__file__), '../../data/agrero_pidstore.csv'),
-        output_directory
-    )
+    copy2(join(dirname(__file__), "../../data/aggnd_pidstore.csv"), output_directory)
+    copy2(join(dirname(__file__), "../../data/aidref_pidstore.csv"), output_directory)
+    copy2(join(dirname(__file__), "../../data/agrero_pidstore.csv"), output_directory)
     res = runner.invoke(
-        create_csv_mef,
-        [viaf_metadata, output_directory],
-        obj=script_info
+        create_csv_mef, [viaf_metadata, output_directory], obj=script_info
     )
-    assert res.output.strip().split('\n') == [
-        'Create MEF CSV files from VIAF metadata.',
-        f'  VIAF input file: {viaf_metadata}',
-        '  Number of MEF records created: 132.'
+    assert res.output.strip().split("\n") == [
+        "Create MEF CSV files from VIAF metadata.",
+        f"  VIAF input file: {viaf_metadata}",
+        "  Number of MEF records created: 132.",
     ]
-    mef_metadata = join(output_directory, 'mef_metadata.csv')
-    mef_pidstore = join(output_directory, 'mef_pidstore.csv')
-    mef_id = join(output_directory, 'mef_id.csv')
+    mef_metadata = join(output_directory, "mef_metadata.csv")
+    mef_pidstore = join(output_directory, "mef_pidstore.csv")
+    mef_id = join(output_directory, "mef_id.csv")
     assert isfile(mef_metadata)
     assert isfile(mef_pidstore)
     assert isfile(mef_id)

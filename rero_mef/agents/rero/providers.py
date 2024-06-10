@@ -28,7 +28,7 @@ from .models import AgentReroIdentifier
 class AgentReroProvider(BaseProvider):
     """Rero identifier provider."""
 
-    pid_type = 'agrero'
+    pid_type = "agrero"
     """Type of persistent identifier."""
 
     pid_identifier = AgentReroIdentifier.__tablename__

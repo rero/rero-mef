@@ -40,8 +40,10 @@ def build_ref_string(agent_pid, agent):
     :returns: URL to agent
     """
     with current_app.app_context():
-        return (f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
-                f'/api/agents/{agent}/{agent_pid}')
+        return (
+            f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
+            f"/api/agents/{agent}/{agent_pid}"
+        )
 
 
 class AgentMefSearch(RecordsSearch):
@@ -50,9 +52,9 @@ class AgentMefSearch(RecordsSearch):
     class Meta:
         """Search only on index."""
 
-        index = 'mef'
+        index = "mef"
         doc_types = None
-        fields = ('*', )
+        fields = ("*",)
         facets = {}
 
         default_filter = None
@@ -64,11 +66,11 @@ class AgentMefRecord(EntityMefRecord):
     minter = mef_id_minter
     fetcher = mef_id_fetcher
     provider = MefProvider
-    name = 'mef'
+    name = "mef"
     model_cls = AgentMefMetadata
     search = AgentMefSearch
-    mef_type = 'AGENTS'
-    entities = ['idref', 'gnd', 'rero']
+    mef_type = "AGENTS"
+    entities = ["idref", "gnd", "rero"]
 
     @classmethod
     def get_all_missing_viaf_pids(cls, verbose=False):
@@ -78,47 +80,57 @@ class AgentMefRecord(EntityMefRecord):
         :returns: Missing VIAF pids.
         """
         from ..viaf.api import AgentViafRecord
+
         if verbose:
-            click.echo('Get pids from VIAF ...')
+            click.echo("Get pids from VIAF ...")
         progress = progressbar(
             items=AgentViafRecord.get_all_pids(),
             length=AgentViafRecord.count(),
             verbose=verbose,
-            label='VIAF all'
+            label="VIAF all",
         )
         missing_pids = {pid: 1 for pid in progress}
         if verbose:
-            click.echo('Get pids from MEF and calculate missing ...')
-        query = cls.search().filter('exists', field='viaf_pid')
+            click.echo("Get pids from MEF and calculate missing ...")
+        query = cls.search().filter("exists", field="viaf_pid")
         progress = progressbar(
-            items=query.source(['pid', 'viaf_pid']).scan(),
+            items=query.source(["pid", "viaf_pid"]).scan(),
             length=query.count(),
             verbose=verbose,
-            label='VIAF from MEF'
+            label="VIAF from MEF",
         )
-        non_existing_pids = {hit.pid: hit.viaf_pid for hit in progress
-                             if not missing_pids.pop(hit.viaf_pid, None)}
+        non_existing_pids = {
+            hit.pid: hit.viaf_pid
+            for hit in progress
+            if not missing_pids.pop(hit.viaf_pid, None)
+        }
 
         return list(missing_pids), non_existing_pids
 
     @classmethod
-    def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
-               reindex=False, md5=True, **kwargs):
+    def create(
+        cls,
+        data,
+        id_=None,
+        delete_pid=False,
+        dbcommit=False,
+        reindex=False,
+        md5=True,
+        **kwargs,
+    ):
         """Create a new agent record."""
         # replace_refs_data = deepcopy(data).replace_refs()
-        data['type'] = 'bf:Person'
+        data["type"] = "bf:Person"
         entity_classes = get_entity_classes()
         for agent in cls.entities:
             if agent := data.get(agent):
-                ref_split = agent['$ref'].split('/')
+                ref_split = agent["$ref"].split("/")
                 ref_type = ref_split[-2]
                 ref_pid = ref_split[-1]
                 for entity_class in entity_classes.values():
                     if entity_class.name == ref_type:
-                        if entity_rec := entity_class.get_record_by_pid(
-                            ref_pid
-                        ):
-                            data['type'] = entity_rec['type']
+                        if entity_rec := entity_class.get_record_by_pid(ref_pid):
+                            data["type"] = entity_rec["type"]
                             break
 
         return super().create(
@@ -128,7 +140,7 @@ class AgentMefRecord(EntityMefRecord):
             dbcommit=dbcommit,
             reindex=reindex,
             md5=False,
-            **kwargs
+            **kwargs,
         )
 
     def replace_refs(self):
@@ -136,7 +148,7 @@ class AgentMefRecord(EntityMefRecord):
         data = deepcopy(self)
         data = super().replace_refs()
         sources = [agent for agent in self.entities if data.get(agent)]
-        data['sources'] = sources
+        data["sources"] = sources
         return data
 
     def add_information(self, resolve=False, sources=False):
@@ -153,21 +165,21 @@ class AgentMefRecord(EntityMefRecord):
         for agent in self.entities:
             if agent_data := data.get(agent):
                 # we got a error status in data
-                if agent_data.get('status'):
+                if agent_data.get("status"):
                     data.pop(agent)
                     current_app.logger.error(
                         f'MEF replace refs {data.get("pid")} {agent}'
                         f' status: {agent_data.get("status")}'
-                        f' {agent_data.get("message")}')
+                        f' {agent_data.get("message")}'
+                    )
                 else:
                     my_sources.append(agent)
                 for agent in self.entities:
                     if agent_data := replace_refs_data.get(agent):
-                        if metadata := replace_refs_data[agent] \
-                                .get('metadata'):
+                        if metadata := replace_refs_data[agent].get("metadata"):
                             data[agent] = metadata
         if my_sources and (resolve or sources):
-            data['sources'] = my_sources
+            data["sources"] = my_sources
         return data
 
     @classmethod
@@ -178,22 +190,20 @@ class AgentMefRecord(EntityMefRecord):
         :param pid: pid to use..
         :returns: latest record.
         """
-        search = AgentMefSearch().filter({'term': {f'{pid_type}.pid': pid}})
+        search = AgentMefSearch().filter({"term": {f"{pid_type}.pid": pid}})
         if search.count() > 0:
             data = next(search.scan()).to_dict()
             new_pid = None
-            if relation_pid := data.get(pid_type, {}).get('relation_pid'):
-                if relation_pid['type'] == 'redirect_to':
-                    new_pid = relation_pid['value']
-            elif pid_type == 'idref':
+            if relation_pid := data.get(pid_type, {}).get("relation_pid"):
+                if relation_pid["type"] == "redirect_to":
+                    new_pid = relation_pid["value"]
+            elif pid_type == "idref":
                 # Find new pid from redirect_pid redirect_from
-                search = AgentMefSearch() \
-                        .filter('term', idref__relation_pid__value=pid)
+                search = AgentMefSearch().filter("term", idref__relation_pid__value=pid)
                 if search.count() > 0:
                     new_data = next(search.scan()).to_dict()
-                    new_pid = new_data.get('idref', {}).get('pid')
-            return cls.get_latest(pid_type=pid_type, pid=new_pid) \
-                if new_pid else data
+                    new_pid = new_data.get("idref", {}).get("pid")
+            return cls.get_latest(pid_type=pid_type, pid=new_pid) if new_pid else data
         return {}
 
 
@@ -208,7 +218,5 @@ class AgentMefIndexer(ReroIndexer):
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
         super().bulk_index(
-            record_id_iterator,
-            index=AgentMefSearch.Meta.index,
-            doc_type='mef'
+            record_id_iterator, index=AgentMefSearch.Meta.index, doc_type="mef"
         )

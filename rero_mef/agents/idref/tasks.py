@@ -22,16 +22,28 @@ from flask import current_app
 
 from .api import AgentIdrefRecord
 from ...marctojson.do_idref_agent import Transformation
-from ...utils import MyOAIItemIterator, SickleWithRetries, oai_get_record, \
-    oai_process_records_from_dates, oai_save_records_from_dates
+from ...utils import (
+    MyOAIItemIterator,
+    SickleWithRetries,
+    oai_get_record,
+    oai_process_records_from_dates,
+    oai_save_records_from_dates,
+)
 
 
 @shared_task
-def process_records_from_dates(from_date=None, until_date=None,
-                               ignore_deleted=False, dbcommit=True,
-                               reindex=True, test_md5=True,
-                               verbose=False, debug=False, viaf_online=False,
-                               **kwargs):
+def process_records_from_dates(
+    from_date=None,
+    until_date=None,
+    ignore_deleted=False,
+    dbcommit=True,
+    reindex=True,
+    test_md5=True,
+    verbose=False,
+    debug=False,
+    viaf_online=False,
+    **kwargs
+):
     """Harvest multiple records from an OAI repo.
 
     :param name: The name of the OAIHarvestConfig to use instead of passing
@@ -41,9 +53,9 @@ def process_records_from_dates(from_date=None, until_date=None,
     """
     # data on IDREF Servers starts on 2000-10-01
     return oai_process_records_from_dates(
-        name='agents.idref',
+        name="agents.idref",
         sickle=SickleWithRetries,
-        max_retries=current_app.config.get('RERO_OAI_RETRIES', 0),
+        max_retries=current_app.config.get("RERO_OAI_RETRIES", 0),
         oai_item_iterator=MyOAIItemIterator,
         transformation=Transformation,
         record_class=AgentIdrefRecord,
@@ -57,13 +69,12 @@ def process_records_from_dates(from_date=None, until_date=None,
         verbose=verbose,
         debug=debug,
         viaf_online=viaf_online,
-        kwargs=kwargs
+        kwargs=kwargs,
     )
 
 
 @shared_task
-def save_records_from_dates(file_name, from_date=None, until_date=None,
-                            verbose=False):
+def save_records_from_dates(file_name, from_date=None, until_date=None, verbose=False):
     """Harvest and save multiple records from an OAI repo.
 
     :param name: The name of the OAIHarvestConfig to use instead of passing
@@ -73,15 +84,15 @@ def save_records_from_dates(file_name, from_date=None, until_date=None,
     """
     # data on IDREF Servers starts on 2000-10-01
     return oai_save_records_from_dates(
-        name='agents.idref',
+        name="agents.idref",
         file_name=file_name,
         sickle=SickleWithRetries,
-        max_retries=current_app.config.get('RERO_OAI_RETRIES', 0),
+        max_retries=current_app.config.get("RERO_OAI_RETRIES", 0),
         oai_item_iterator=MyOAIItemIterator,
         days_spann=30,
         from_date=from_date,
         until_date=until_date,
-        verbose=verbose
+        verbose=verbose,
     )
 
 
@@ -90,8 +101,8 @@ def idref_get_record(id_, verbose=False, debug=False):
     """Get a record from IDREF OAI repo."""
     return oai_get_record(
         id_=id_,
-        name='agents.idref',
+        name="agents.idref",
         transformation=Transformation,
-        identifier='oai:IdRefOAIServer.fr:',
-        debug=debug
+        identifier="oai:IdRefOAIServer.fr:",
+        debug=debug,
     )

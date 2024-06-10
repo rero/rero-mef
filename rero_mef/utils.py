@@ -45,8 +45,10 @@ from flask import current_app
 from invenio_cache.proxies import current_cache
 from invenio_db import db
 from invenio_oaiharvester.api import get_info_by_oai_name
-from invenio_oaiharvester.errors import InvenioOAIHarvesterConfigNotFound, \
-    WrongDateCombination
+from invenio_oaiharvester.errors import (
+    InvenioOAIHarvesterConfigNotFound,
+    WrongDateCombination,
+)
 from invenio_oaiharvester.models import OAIHarvestConfig
 from invenio_oaiharvester.utils import get_oaiharvest_object
 from invenio_pidstore.errors import PIDDoesNotExistError
@@ -62,7 +64,7 @@ from sickle.oaiexceptions import NoRecordsMatch
 
 # Hours can not be retrieved by get_info_by_oai_name
 # TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
-TIME_FORMAT = '%Y-%m-%d'
+TIME_FORMAT = "%Y-%m-%d"
 
 
 class SickleWithRetries(Sickle):
@@ -76,12 +78,14 @@ class SickleWithRetries(Sickle):
         """
         http_response = self._request(kwargs)
         for _ in range(self.max_retries):
-            if self._is_error_code(http_response.status_code) \
-                    and http_response.status_code in self.retry_status_codes:
+            if (
+                self._is_error_code(http_response.status_code)
+                and http_response.status_code in self.retry_status_codes
+            ):
                 retry_after = self.get_retry_after(http_response)
                 current_app.logger.warning(
-                    f'HTTP {http_response.status_code}! '
-                    f'Retrying after {retry_after} seconds...'
+                    f"HTTP {http_response.status_code}! "
+                    f"Retrying after {retry_after} seconds..."
                 )
                 time.sleep(retry_after)
                 http_response = self._request(kwargs)
@@ -91,8 +95,9 @@ class SickleWithRetries(Sickle):
         return OAIResponse(http_response, params=kwargs)
 
 
-def add_oai_source(name, baseurl, metadataprefix='marc21',
-                   setspecs='', comment='', update=False):
+def add_oai_source(
+    name, baseurl, metadataprefix="marc21", setspecs="", comment="", update=False
+):
     """Add OAIHarvestConfig."""
     with current_app.app_context():
         source = OAIHarvestConfig.query.filter_by(name=name).first()
@@ -102,22 +107,22 @@ def add_oai_source(name, baseurl, metadataprefix='marc21',
                 baseurl=baseurl,
                 metadataprefix=metadataprefix,
                 setspecs=setspecs,
-                comment=comment
+                comment=comment,
             )
             source.save()
             db.session.commit()
-            return 'Added'
+            return "Added"
         elif update:
             source.name = name
             source.baseurl = baseurl
             source.metadataprefix = metadataprefix
-            if setspecs != '':
+            if setspecs != "":
                 source.setspecs = setspecs
-            if comment != '':
+            if comment != "":
                 source.comment = comment
             db.session.commit()
-            return 'Updated'
-        return 'Not Updated'
+            return "Updated"
+        return "Not Updated"
 
 
 def oai_get_last_run(name, verbose=False):
@@ -130,11 +135,11 @@ def oai_get_last_run(name, verbose=False):
         oai_source = get_oaiharvest_object(name)
         lastrun_date = oai_source.lastrun
         if verbose:
-            click.echo(f'OAI {name}: last run: {lastrun_date}')
+            click.echo(f"OAI {name}: last run: {lastrun_date}")
         return lastrun_date
     except InvenioOAIHarvesterConfigNotFound:
         if verbose:
-            click.echo((f'ERROR OAI config not found: {name}'))
+            click.echo((f"ERROR OAI config not found: {name}"))
         return None
 
 
@@ -154,14 +159,14 @@ def oai_set_last_run(name, date, verbose=False):
         oai_source.save()
         db.session.commit()
         if verbose:
-            click.echo(f'OAI {name}: set last run: {lastrun_date}')
+            click.echo(f"OAI {name}: set last run: {lastrun_date}")
         return lastrun_date
     except InvenioOAIHarvesterConfigNotFound:
         if verbose:
-            click.echo(f'ERROR OAI config not found: {name}')
+            click.echo(f"ERROR OAI config not found: {name}")
     except ValueError as err:
         if verbose:
-            click.echo(f'OAI set lastrun {name}: {err}')
+            click.echo(f"OAI set lastrun {name}: {err}")
     return None
 
 
@@ -172,19 +177,17 @@ class MyOAIItemIterator(OAIItemIterator):
         """Get next resumtion token and items."""
         self.resumption_token = self._get_resumption_token()
         self._items = self.oai_response.xml.iterfind(
-            f'.//{self.sickle.oai_namespace}{self.element}')
+            f".//{self.sickle.oai_namespace}{self.element}"
+        )
 
     def _next_response(self):
         """Get the next response from the OAI server."""
         params = self.params
-        access_token = params.get('accessToken')
+        access_token = params.get("accessToken")
         if self.resumption_token:
-            params = {
-                'resumptionToken': self.resumption_token.token,
-                'verb': self.verb
-            }
+            params = {"resumptionToken": self.resumption_token.token, "verb": self.verb}
         if access_token:
-            params['accessToken'] = access_token
+            params["accessToken"] = access_token
 
         count = 0
         while count < 5:
@@ -194,28 +197,27 @@ class MyOAIItemIterator(OAIItemIterator):
                 count = 5
             except Exception as err:
                 count += 1
-                current_app.logger.error(f'Sickle harvest {count} {err}')
+                current_app.logger.error(f"Sickle harvest {count} {err}")
                 sleep(60)
-        error = self.oai_response.xml.find(
-            f'.//{self.sickle.oai_namespace}error')
+        error = self.oai_response.xml.find(f".//{self.sickle.oai_namespace}error")
         if error is not None:
-            code = error.attrib.get('code', 'UNKNOWN')
-            description = error.text or ''
+            code = error.attrib.get("code", "UNKNOWN")
+            description = error.text or ""
             try:
-                raise getattr(
-                    oaiexceptions, code[0].upper() + code[1:])(description)
+                raise getattr(oaiexceptions, code[0].upper() + code[1:])(description)
             except AttributeError:
                 raise oaiexceptions.OAIError(description)
         if self.resumption_token:
             # Test we got a complete response ('resumptionToken' in xml)
             resumption_token_element = self.oai_response.xml.find(
-                f'.//{self.sickle.oai_namespace}resumptionToken')
+                f".//{self.sickle.oai_namespace}resumptionToken"
+            )
 
             if resumption_token_element is None:
                 current_app.logger.error(
-                    f'ERROR HARVESTING incomplete response: '
-                    f'{self.resumption_token.cursor} '
-                    f'{self.resumption_token.token}'
+                    f"ERROR HARVESTING incomplete response: "
+                    f"{self.resumption_token.cursor} "
+                    f"{self.resumption_token.token}"
                 )
                 sleep(60)
             else:
@@ -225,13 +227,25 @@ class MyOAIItemIterator(OAIItemIterator):
             self.next_resumption_token_and_items()
 
 
-def oai_process_records_from_dates(name, sickle, oai_item_iterator,
-                                   transformation, record_class, max_retries=0,
-                                   access_token=None, days_span=30,
-                                   from_date=None, until_date=None,
-                                   ignore_deleted=False, dbcommit=True,
-                                   reindex=True, test_md5=True,
-                                   verbose=False, debug=False, **kwargs):
+def oai_process_records_from_dates(
+    name,
+    sickle,
+    oai_item_iterator,
+    transformation,
+    record_class,
+    max_retries=0,
+    access_token=None,
+    days_span=30,
+    from_date=None,
+    until_date=None,
+    ignore_deleted=False,
+    dbcommit=True,
+    reindex=True,
+    test_md5=True,
+    verbose=False,
+    debug=False,
+    **kwargs,
+):
     """Harvest multiple records from an OAI repo.
 
     :param name: The name of the OAIHarvestConfig to use instead of passing
@@ -248,12 +262,14 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
 
     update_last_run = from_date is None and until_date is None
     dates_initial = {
-        'from': from_date or last_run,
-        'until': until_date or datetime.now().strftime(TIME_FORMAT)
+        "from": from_date or last_run,
+        "until": until_date or datetime.now().strftime(TIME_FORMAT),
     }
     # Sanity check
-    if dates_initial['until'] is not None \
-            and dates_initial['from'] > dates_initial['until']:
+    if (
+        dates_initial["until"] is not None
+        and dates_initial["from"] > dates_initial["until"]
+    ):
         raise WrongDateCombination("'Until' date larger than 'from' date.")
 
     # If we don't have specifications for set searches the setspecs will be
@@ -265,31 +281,26 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
     mef_action_count = {}
     for spec in setspecs:
         dates = dates_initial
-        params = {
-            'metadataPrefix': metadata_prefix,
-            'ignore_deleted': ignore_deleted
-        }
+        params = {"metadataPrefix": metadata_prefix, "ignore_deleted": ignore_deleted}
         if access_token:
-            params['accessToken'] = access_token
+            params["accessToken"] = access_token
         if spec:
-            params['set'] = spec
+            params["set"] = spec
 
-        from_date = parser.isoparse(dates_initial['from'])
-        real_until_date = parser.isoparse(
-            f'{dates_initial["until"]} 23:59:59.999999')
+        from_date = parser.isoparse(dates_initial["from"])
+        real_until_date = parser.isoparse(f'{dates_initial["until"]} 23:59:59.999999')
         while from_date < real_until_date:
             until_date = from_date + timedelta(days=days_span)
             until_date = min(until_date, real_until_date)
             dates = {
-                'from': from_date.strftime(TIME_FORMAT),
-                'until': until_date.strftime(TIME_FORMAT)
+                "from": from_date.strftime(TIME_FORMAT),
+                "until": until_date.strftime(TIME_FORMAT),
             }
             params |= dates
             if verbose:
                 click.secho(
-                    f'OAI {name} spec({spec}): '
-                    f'{dates["from"]} .. {dates["until"]}',
-                    fg='cyan'
+                    f"OAI {name} spec({spec}): " f'{dates["from"]} .. {dates["until"]}',
+                    fg="cyan",
                 )
             try:
                 for idx, record in enumerate(request.ListRecords(**params), 1):
@@ -298,28 +309,28 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                     try:
                         try:
                             updated = datetime.strptime(
-                                records[0]['005'].data,
-                                '%Y%m%d%H%M%S.%f'
+                                records[0]["005"].data, "%Y%m%d%H%M%S.%f"
                             )
                         except Exception:
-                            updated = '????'
+                            updated = "????"
                         if rec := transformation(
-                                records[0], logger=current_app.logger).json:
-                            if msg := rec.get('NO TRANSFORMATION'):
+                            records[0], logger=current_app.logger
+                        ).json:
+                            if msg := rec.get("NO TRANSFORMATION"):
                                 if verbose:
                                     click.secho(
-                                        f'OAI {name} spec({spec}): '
+                                        f"OAI {name} spec({spec}): "
                                         f'{idx} {rec.get("pid", "???")}'
-                                        f'NO TRANSFORMATION: {msg}',
-                                        fg='yellow'
+                                        f"NO TRANSFORMATION: {msg}",
+                                        fg="yellow",
                                     )
                             else:
-                                pid = rec.get('pid')
+                                pid = rec.get("pid")
                                 record, action = record_class.create_or_update(
                                     data=rec,
                                     dbcommit=True,
                                     reindex=True,
-                                    test_md5=test_md5
+                                    test_md5=test_md5,
                                 )
                                 count += 1
                                 action_count.setdefault(action, 0)
@@ -328,50 +339,46 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
                                 if action in [
                                     Action.CREATE,
                                     Action.UPDATE,
-                                    Action.REPLACE
+                                    Action.REPLACE,
                                 ]:
-                                    m_record, m_actions = \
-                                        record.create_or_update_mef(
-                                            dbcommit=True, reindex=True)
+                                    m_record, m_actions = record.create_or_update_mef(
+                                        dbcommit=True, reindex=True
+                                    )
                                     for m_action in m_actions.values():
-                                        mef_action_count.setdefault(
-                                            m_action, 0)
+                                        mef_action_count.setdefault(m_action, 0)
                                         mef_action_count[m_action] += 1
 
                                 else:
                                     m_action = Action.UPTODATE
                                     m_record = {}
-                                    mef_action_count.setdefault(
-                                        m_action, 0)
+                                    mef_action_count.setdefault(m_action, 0)
                                     mef_action_count[m_action] += 1
 
                                 if verbose:
                                     msg = (
-                                        f'OAI {name} spec({spec}): {pid}'
-                                        f' updated: {updated} {action.value}'
+                                        f"OAI {name} spec({spec}): {pid}"
+                                        f" updated: {updated} {action.value}"
                                     )
                                     for mef_pid, m_action in m_actions.items():
                                         msg = (
-                                            f'{msg} | mef: {mef_pid} '
-                                            f'{m_action.value}'
+                                            f"{msg} | mef: {mef_pid} "
+                                            f"{m_action.value}"
                                         )
-                                    if viaf_pid := m_record.get(
-                                            'viaf_pid'):
-                                        msg = f'{msg} | viaf: {viaf_pid}'
+                                    if viaf_pid := m_record.get("viaf_pid"):
+                                        msg = f"{msg} | viaf: {viaf_pid}"
                                     click.echo(msg)
                         elif verbose:
                             click.secho(
-                                f'OAI {name} spec({spec}): {idx}'
-                                f'NO TRANSFORMATION:'
-                                f'\n{records[0]}',
-                                fg='yellow'
+                                f"OAI {name} spec({spec}): {idx}"
+                                f"NO TRANSFORMATION:"
+                                f"\n{records[0]}",
+                                fg="yellow",
                             )
                     except Exception as err:
-                        msg = f'Creating {name} {idx}: {err} {record}'
+                        msg = f"Creating {name} {idx}: {err} {record}"
                         if rec:
-                            msg = f'{msg}\n{rec}'
-                        current_app.logger.error(msg, exc_info=True,
-                                                 stack_info=True)
+                            msg = f"{msg}\n{rec}"
+                        current_app.logger.error(msg, exc_info=True, stack_info=True)
             except NoRecordsMatch:
                 # get the next from to until dates
                 from_date = until_date
@@ -382,19 +389,23 @@ def oai_process_records_from_dates(name, sickle, oai_item_iterator,
             # get the next from to until dates
             from_date = until_date
     if update_last_run:
-        oai_set_last_run(
-            name=name,
-            date=dates_initial["until"],
-            verbose=verbose
-        )
+        oai_set_last_run(name=name, date=dates_initial["until"], verbose=verbose)
     return count, action_count, mef_action_count
 
 
-def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
-                                max_retries=0,
-                                access_token=None, days_span=30,
-                                from_date=None, until_date=None,
-                                verbose=False, **kwargs):
+def oai_save_records_from_dates(
+    name,
+    file_name,
+    sickle,
+    oai_item_iterator,
+    max_retries=0,
+    access_token=None,
+    days_span=30,
+    from_date=None,
+    until_date=None,
+    verbose=False,
+    **kwargs,
+):
     """Harvest and save multiple records from an OAI repo.
 
     :param name: The name of the OAIHarvestConfig to use instead of passing
@@ -407,11 +418,11 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
     request = sickle(url, iterator=oai_item_iterator, max_retries=max_retries)
 
     dates_initial = {
-        'from': from_date or last_run,
-        'until': until_date or datetime.now().strftime(TIME_FORMAT)
+        "from": from_date or last_run,
+        "until": until_date or datetime.now().strftime(TIME_FORMAT),
     }
     # Sanity check
-    if dates_initial['from'] > dates_initial['until']:
+    if dates_initial["from"] > dates_initial["until"]:
         raise WrongDateCombination("'Until' date larger than 'from' date.")
 
     # If we don't have specifications for set searches the setspecs will be
@@ -419,32 +430,30 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
     # a set definition (line 177)
     setspecs = setspecs.split() or [None]
     count = 0
-    with open(file_name, 'bw') as output_file:
+    with open(file_name, "bw") as output_file:
         for spec in setspecs:
-            params = {
-                'metadataPrefix': metadata_prefix,
-                'ignore_deleted': False
-            }
+            params = {"metadataPrefix": metadata_prefix, "ignore_deleted": False}
             if access_token:
-                params['accessToken'] = access_token
+                params["accessToken"] = access_token
             if spec:
-                params['set'] = spec
+                params["set"] = spec
 
-            from_date = parser.isoparse(dates_initial['from'])
+            from_date = parser.isoparse(dates_initial["from"])
             real_until_date = parser.isoparse(
-                f'{dates_initial["until"]} 23:59:59.999999')
+                f'{dates_initial["until"]} 23:59:59.999999'
+            )
             while from_date < real_until_date:
                 until_date = from_date + timedelta(days=days_span)
                 until_date = min(until_date, real_until_date)
                 dates = {
-                    'from': from_date.strftime(TIME_FORMAT),
-                    'until': until_date.strftime(TIME_FORMAT)
+                    "from": from_date.strftime(TIME_FORMAT),
+                    "until": until_date.strftime(TIME_FORMAT),
                 }
                 if verbose:
                     click.secho(
-                        f'OAI {name} spec({spec}): '
+                        f"OAI {name} spec({spec}): "
                         f'{dates["from"]} .. {dates["until"]}',
-                        fg='cyan'
+                        fg="cyan",
                     )
                 params |= dates
                 try:
@@ -454,11 +463,11 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
                         rec = records[0]
                         if verbose:
                             click.echo(
-                                f'OAI {name} spec({spec}): '
-                                f'{from_date.strftime(TIME_FORMAT)} '
+                                f"OAI {name} spec({spec}): "
+                                f"{from_date.strftime(TIME_FORMAT)} "
                                 f'count:{count:>10} = {rec["001"].data}'
                             )
-                        rec.leader = f'{rec.leader[:9]}a{rec.leader[10:]}'
+                        rec.leader = f"{rec.leader[:9]}a{rec.leader[10:]}"
                         output_file.write(rec.as_marc())
                 except NoRecordsMatch:
                     from_date = until_date
@@ -467,12 +476,13 @@ def oai_save_records_from_dates(name, file_name, sickle, oai_item_iterator,
                     current_app.logger.error(err)
                 from_date = until_date
     if verbose:
-        click.echo(f'OAI {name}: {count}')
+        click.echo(f"OAI {name}: {count}")
     return count
 
 
-def oai_get_record(id_, name, transformation, access_token=None,
-                   identifier=None, debug=False, **kwargs):
+def oai_get_record(
+    id_, name, transformation, access_token=None, identifier=None, debug=False, **kwargs
+):
     """Get record from an OAI repo.
 
     :param identifier: identifier of record.
@@ -483,31 +493,29 @@ def oai_get_record(id_, name, transformation, access_token=None,
         endpoint=url,
         max_retries=5,
         default_retry_after=10,
-        retry_status_codes=[423, 503]
+        retry_status_codes=[423, 503],
     )
 
-    params = {
-        'metadataPrefix': metadata_prefix,
-        'identifier': f'{identifier}{id_}'
-    }
-    full_url = f'{url}?verb=GetRecord&metadataPrefix={metadata_prefix}'
-    full_url = f'{full_url}&identifier={identifier}{id_}'
+    params = {"metadataPrefix": metadata_prefix, "identifier": f"{identifier}{id_}"}
+    full_url = f"{url}?verb=GetRecord&metadataPrefix={metadata_prefix}"
+    full_url = f"{full_url}&identifier={identifier}{id_}"
 
     if access_token:
-        params['accessToken'] = access_token
-        full_url = f'{full_url}&accessToken={access_token}'
+        params["accessToken"] = access_token
+        full_url = f"{full_url}&accessToken={access_token}"
 
     try:
         record = request.GetRecord(**params)
-        msg = f'OAI-{name:<12} get: {id_:<15} {full_url} | OK'
+        msg = f"OAI-{name:<12} get: {id_:<15} {full_url} | OK"
     except Exception as err:
-        msg = f'OAI-{name:<12} get: {id_:<15} {full_url} | NO RECORD'
+        msg = f"OAI-{name:<12} get: {id_:<15} {full_url} | NO RECORD"
         if debug:
             raise
         return None, msg
     records = parse_xml_to_array(StringIO(record.raw))
     if debug:
         from rero_mef.marctojson.helper import display_record
+
         display_record(records[0])
     trans_record = transformation(records[0], logger=current_app.logger).json
     return trans_record, msg
@@ -521,15 +529,15 @@ def read_json_record(json_file, buf_size=1024, decoder=JSONDecoder()):
     :param decoder: decoder to use for decoding
     :return: record Generator
     """
-    buffer = json_file.read(2).replace('\n', '')
+    buffer = json_file.read(2).replace("\n", "")
     # we have to delete the first [ for an list of records
-    if buffer.startswith('['):
+    if buffer.startswith("["):
         buffer = buffer[1:].lstrip()
     while True:
         block = json_file.read(buf_size)
         if not block:
             break
-        buffer += block.replace('\n', '')
+        buffer += block.replace("\n", "")
         pos = 0
         while True:
             try:
@@ -544,13 +552,14 @@ def read_json_record(json_file, buf_size=1024, decoder=JSONDecoder()):
                 if len(buffer) <= 0:
                     # buffer is empty read more data
                     buffer = json_file.read(buf_size)
-                if buffer.startswith(','):
+                if buffer.startswith(","):
                     # delete records deliminators
                     buffer = buffer[1:].lstrip()
 
 
-def export_json_records(pids, pid_type, output_file_name, indent=2,
-                        schema=True, verbose=False):
+def export_json_records(
+    pids, pid_type, output_file_name, indent=2, schema=True, verbose=False
+):
     """Writes records from record_class to file.
 
     :param pids: pids to use
@@ -569,35 +578,33 @@ def export_json_records(pids, pid_type, output_file_name, indent=2,
             rec = record_class.get_record_by_pid(pid)
             count += 1
             if verbose:
-                click.echo(
-                    f'{count: <8} {pid_type} export {rec.pid}:{rec.id}'
-                )
+                click.echo(f"{count: <8} {pid_type} export {rec.pid}:{rec.id}")
             if not schema:
-                rec.pop('$schema', None)
-                for source in ('idref', 'gnd', 'rero'):
+                rec.pop("$schema", None)
+                for source in ("idref", "gnd", "rero"):
                     if source in rec:
                         if isinstance(source, dict):
-                            rec[source].pop('$schema', None)
+                            rec[source].pop("$schema", None)
             outfile.write(rec)
         except Exception as err:
             click.echo(err)
-            click.echo(f'ERROR: Can not export pid:{pid}')
+            click.echo(f"ERROR: Can not export pid:{pid}")
 
 
 def number_records_in_file(json_file, file_type):
     """Get number of records per file."""
     count = 0
-    with open(json_file, 'r',  buffering=1) as file:
+    with open(json_file, "r", buffering=1) as file:
         for line in file:
-            if file_type == 'json' and '"pid"' in line or file_type == 'csv':
+            if file_type == "json" and '"pid"' in line or file_type == "csv":
                 count += 1
     return count
 
 
-def progressbar(items, length=0, verbose=False, label=''):
+def progressbar(items, length=0, verbose=False, label=""):
     """Verbose progress bar."""
     if verbose:
-        label = f'{label} ({length})' if label else str(length)
+        label = f"{label} ({length})" if label else str(length)
         with click.progressbar(
             items,
             label=label,
@@ -613,7 +620,7 @@ def get_host():
     # from flask import current_app
     # with current_app.app_context():
     #     return current_app.config.get('JSONSCHEMAS_HOST')
-    return 'mef.rero.ch'
+    return "mef.rero.ch"
 
 
 def resolve_record(path, object_class):
@@ -632,13 +639,13 @@ def resolve_record(path, object_class):
 def metadata_csv_line(record, record_uuid, date):
     """Build CSV metadata table line."""
     created_date = updated_date = date
-    sep = '\t'
+    sep = "\t"
     metadata = (
         created_date,
         updated_date,
         record_uuid,
-        json.dumps(record).replace('\\', '\\\\'),
-        '1',
+        json.dumps(record).replace("\\", "\\\\"),
+        "1",
     )
     metadata_line = sep.join(metadata)
     return metadata_line + os.linesep
@@ -647,14 +654,14 @@ def metadata_csv_line(record, record_uuid, date):
 def pidstore_csv_line(entity, entity_pid, record_uuid, date):
     """Build CSV pidstore table line."""
     created_date = updated_date = date
-    sep = '\t'
+    sep = "\t"
     pidstore_data = [
         created_date,
         updated_date,
         entity,
         entity_pid,
-        'R',
-        'rec',
+        "R",
+        "rec",
         record_uuid,
     ]
     pidstore_line = sep.join(pidstore_data)
@@ -664,7 +671,7 @@ def pidstore_csv_line(entity, entity_pid, record_uuid, date):
 def raw_connection():
     """Return a raw connection to the database."""
     with current_app.app_context():
-        URI = current_app.config.get('SQLALCHEMY_DATABASE_URI')
+        URI = current_app.config.get("SQLALCHEMY_DATABASE_URI")
         engine = sqlalchemy.create_engine(URI)
         # conn = engine.connect()
         connection = engine.raw_connection()
@@ -677,15 +684,10 @@ def db_copy_from(buffer, table, columns):
     connection = raw_connection()
     cursor = connection.cursor()
     try:
-        cursor.copy_from(
-            file=buffer,
-            table=table,
-            columns=columns,
-            sep='\t'
-        )
+        cursor.copy_from(file=buffer, table=table, columns=columns, sep="\t")
         connection.commit()
     except psycopg2.DataError as err:
-        current_app.logger.error(f'data load error: {err}')
+        current_app.logger.error(f"data load error: {err}")
     # cursor.execute(f'VACUUM ANALYSE {table}')
     # cursor.close()
     connection.close()
@@ -696,16 +698,11 @@ def db_copy_to(filehandle, table, columns):
     connection = raw_connection()
     cursor = connection.cursor()
     try:
-        cursor.copy_to(
-            file=filehandle,
-            table=table,
-            columns=columns,
-            sep='\t'
-        )
+        cursor.copy_to(file=filehandle, table=table, columns=columns, sep="\t")
         cursor.connection.commit()
     except psycopg2.DataError as err:
-        current_app.logger.error(f'data load error: {err}')
-    cursor.execute(f'VACUUM ANALYSE {table}')
+        current_app.logger.error(f"data load error: {err}")
+    cursor.execute(f"VACUUM ANALYSE {table}")
     cursor.close()
     connection.close()
 
@@ -720,34 +717,35 @@ def bulk_index(entity, uuids, verbose=False):
             indexer_class.bulk_index(uuids)
             res = indexer_class.process_bulk_queue()
             if verbose:
-                click.echo(f' bulk indexed: {entity} {res}')
+                click.echo(f" bulk indexed: {entity} {res}")
             retry = False
         except Exception as exc:
-            msg = f'Bulk Index Error: retry in {minutes} min {exc}'
+            msg = f"Bulk Index Error: retry in {minutes} min {exc}"
             current_app.logger.error(msg)
             if verbose:
-                click.secho(msg, fg='red')
+                click.secho(msg, fg="red")
             sleep(minutes * 60)
             retry = True
             minutes *= 2
 
 
-def bulk_load_entity(entity, data, table, columns, bulk_count=0, verbose=False,
-                     reindex=False):
+def bulk_load_entity(
+    entity, data, table, columns, bulk_count=0, verbose=False, reindex=False
+):
     """Bulk load entity data to table."""
     if bulk_count <= 0:
-        bulk_count = current_app.config.get('BULK_CHUNK_COUNT', 100000)
+        bulk_count = current_app.config.get("BULK_CHUNK_COUNT", 100000)
     count = 0
     buffer = StringIO()
     buffer_uuid = []
-    index = columns.index('id') if 'id' in columns else -1
+    index = columns.index("id") if "id" in columns else -1
     start_time = datetime.now(timezone.utc)
-    with open(data, 'r', encoding='utf-8', buffering=1) as input_file:
+    with open(data, "r", encoding="utf-8", buffering=1) as input_file:
         for line in input_file:
             count += 1
             buffer.write(line)
             if index >= 0 and reindex:
-                buffer_uuid.append(line.split('\t')[index])
+                buffer_uuid.append(line.split("\t")[index])
             if count % bulk_count == 0:
                 buffer.flush()
                 buffer.seek(0)
@@ -756,16 +754,14 @@ def bulk_load_entity(entity, data, table, columns, bulk_count=0, verbose=False,
                     diff_time = end_time - start_time
                     start_time = end_time
                     click.echo(
-                        f'{entity} copy from file: '
-                        f'{count} {diff_time.seconds}s',
-                        nl=False
+                        f"{entity} copy from file: " f"{count} {diff_time.seconds}s",
+                        nl=False,
                     )
                 db_copy_from(buffer=buffer, table=table, columns=columns)
                 buffer.close()
 
                 if index >= 0 and reindex:
-                    bulk_index(entity=entity, uuids=buffer_uuid,
-                               verbose=verbose)
+                    bulk_index(entity=entity, uuids=buffer_uuid, verbose=verbose)
                     buffer_uuid.clear()
                 elif verbose:
                     click.echo()
@@ -779,8 +775,7 @@ def bulk_load_entity(entity, data, table, columns, bulk_count=0, verbose=False,
             end_time = datetime.now(timezone.utc)
             diff_time = end_time - start_time
             click.echo(
-                f'{entity} copy from file: {count} {diff_time.seconds}s',
-                nl=False
+                f"{entity} copy from file: {count} {diff_time.seconds}s", nl=False
             )
         buffer.flush()
         buffer.seek(0)
@@ -796,18 +791,11 @@ def bulk_load_entity(entity, data, table, columns, bulk_count=0, verbose=False,
     gc.collect()
 
 
-def bulk_load_metadata(entity, metadata, bulk_count=0, verbose=True,
-                       reindex=False):
+def bulk_load_metadata(entity, metadata, bulk_count=0, verbose=True, reindex=False):
     """Bulk load entity data to metadata table."""
     entity_class = get_entity_class(entity)
     table, identifier = entity_class.get_metadata_identifier_names()
-    columns = (
-        'created',
-        'updated',
-        'id',
-        'json',
-        'version_id'
-    )
+    columns = ("created", "updated", "id", "json", "version_id")
     bulk_load_entity(
         entity=entity,
         data=metadata,
@@ -815,22 +803,21 @@ def bulk_load_metadata(entity, metadata, bulk_count=0, verbose=True,
         columns=columns,
         bulk_count=bulk_count,
         verbose=verbose,
-        reindex=reindex
+        reindex=reindex,
     )
 
 
-def bulk_load_pids(entity, pidstore, bulk_count=0, verbose=True,
-                   reindex=False):
+def bulk_load_pids(entity, pidstore, bulk_count=0, verbose=True, reindex=False):
     """Bulk load entity data to metadata table."""
-    table = 'pidstore_pid'
+    table = "pidstore_pid"
     columns = (
-        'created',
-        'updated',
-        'pid_type',
-        'pid_value',
-        'status',
-        'object_type',
-        'object_uuid',
+        "created",
+        "updated",
+        "pid_type",
+        "pid_value",
+        "status",
+        "object_type",
+        "object_uuid",
     )
     bulk_load_entity(
         entity=entity,
@@ -839,7 +826,7 @@ def bulk_load_pids(entity, pidstore, bulk_count=0, verbose=True,
         columns=columns,
         bulk_count=bulk_count,
         verbose=verbose,
-        reindex=reindex
+        reindex=reindex,
     )
 
 
@@ -847,7 +834,7 @@ def bulk_load_ids(entity, ids, bulk_count=0, verbose=True, reindex=False):
     """Bulk load entity data to id table."""
     entity_class = get_entity_class(entity)
     metadata, identifier = entity_class.get_metadata_identifier_names()
-    columns = ('recid', )
+    columns = ("recid",)
     bulk_load_entity(
         entity=entity,
         data=ids,
@@ -855,64 +842,48 @@ def bulk_load_ids(entity, ids, bulk_count=0, verbose=True, reindex=False):
         columns=columns,
         bulk_count=bulk_count,
         verbose=verbose,
-        reindex=reindex
+        reindex=reindex,
     )
 
 
 def bulk_save_entity(file_name, table, columns, verbose=False):
     """Bulk save entity data to file."""
-    with open(file_name, 'w', encoding='utf-8') as output_file:
-        db_copy_to(
-            filehandle=output_file,
-            table=table,
-            columns=columns
-        )
+    with open(file_name, "w", encoding="utf-8") as output_file:
+        db_copy_to(filehandle=output_file, table=table, columns=columns)
 
 
 def bulk_save_metadata(entity, file_name, verbose=False):
     """Bulk save entity data from metadata table."""
     if verbose:
-        click.echo(f'{entity} save to file: {file_name}')
+        click.echo(f"{entity} save to file: {file_name}")
     entity_class = get_entity_class(entity)
     metadata, identifier = entity_class.get_metadata_identifier_names()
-    columns = (
-        'created',
-        'updated',
-        'id',
-        'json',
-        'version_id'
-    )
+    columns = ("created", "updated", "id", "json", "version_id")
     bulk_save_entity(
-        file_name=file_name,
-        table=metadata,
-        columns=columns,
-        verbose=verbose
+        file_name=file_name, table=metadata, columns=columns, verbose=verbose
     )
 
 
 def bulk_save_pids(entity, file_name, verbose=False):
     """Bulk save entity data from pids table."""
     if verbose:
-        click.echo(f'{entity} save to file: {file_name}')
-    table = 'pidstore_pid'
+        click.echo(f"{entity} save to file: {file_name}")
+    table = "pidstore_pid"
     columns = (
-        'created',
-        'updated',
-        'pid_type',
-        'pid_value',
-        'status',
-        'object_type',
-        'object_uuid',
+        "created",
+        "updated",
+        "pid_type",
+        "pid_value",
+        "status",
+        "object_type",
+        "object_uuid",
     )
-    tmp_file_name = f'{file_name}_tmp'
+    tmp_file_name = f"{file_name}_tmp"
     bulk_save_entity(
-        file_name=tmp_file_name,
-        table=table,
-        columns=columns,
-        verbose=verbose
+        file_name=tmp_file_name, table=table, columns=columns, verbose=verbose
     )
     # clean pid file
-    with open(tmp_file_name, 'r') as file_in:
+    with open(tmp_file_name, "r") as file_in:
         with open(file_name, "w") as file_out:
             file_out.writelines(line for line in file_in if entity in line)
     os.remove(tmp_file_name)
@@ -921,59 +892,55 @@ def bulk_save_pids(entity, file_name, verbose=False):
 def bulk_save_ids(entity, file_name, verbose=False):
     """Bulk save entity data from id table."""
     if verbose:
-        click.echo(f'{entity} save to file: {file_name}')
+        click.echo(f"{entity} save to file: {file_name}")
     entity_class = get_entity_class(entity)
     metadata, identifier = entity_class.get_metadata_identifier_names()
-    columns = ('recid', )
+    columns = ("recid",)
     bulk_save_entity(
-        file_name=file_name,
-        table=identifier,
-        columns=columns,
-        verbose=verbose
+        file_name=file_name, table=identifier, columns=columns, verbose=verbose
     )
 
 
 def create_md5(record):
     """Create md5 for record."""
-    return hashlib.md5(
-        json.dumps(record, sort_keys=True).encode('utf-8')
-    ).hexdigest()
+    return hashlib.md5(json.dumps(record, sort_keys=True).encode("utf-8")).hexdigest()
 
 
 def add_md5(record):
     """Add md5 to json."""
-    schema = record.pop('$schema') if record.get('$schema') else None
-    if record.get('md5'):
-        record.pop('md5')
-    record['md5'] = create_md5(record)
+    schema = record.pop("$schema") if record.get("$schema") else None
+    if record.get("md5"):
+        record.pop("md5")
+    record["md5"] = create_md5(record)
     if schema:
-        record['$schema'] = schema
+        record["$schema"] = schema
     return record
 
 
 def add_schema(record, entity):
     """Add the $schema to the record."""
     with current_app.app_context():
-        schemas = current_app.config.get('RECORDS_JSON_SCHEMA')
+        schemas = current_app.config.get("RECORDS_JSON_SCHEMA")
         if entity in schemas:
-            base_url = current_app.config.get('RERO_MEF_APP_BASE_URL')
-            endpoint = current_app.config.get('JSONSCHEMAS_ENDPOINT')
+            base_url = current_app.config.get("RERO_MEF_APP_BASE_URL")
+            endpoint = current_app.config.get("JSONSCHEMAS_ENDPOINT")
             schema = schemas[entity]
-            record['$schema'] = f'{base_url}{endpoint}{schema}'
+            record["$schema"] = f"{base_url}{endpoint}{schema}"
     return record
 
 
 def create_csv_file(input_file, entity, pidstore, metadata):
     """Create entity CSV file to load."""
     count = 0
-    with \
-            open(input_file, 'r', encoding='utf-8') as entity_file, \
-            open(metadata, 'w', encoding='utf-8') as entity_metadata_file, \
-            open(pidstore, 'w', encoding='utf-8') as entity_pids_file:
+    with open(input_file, "r", encoding="utf-8") as entity_file, open(
+        metadata, "w", encoding="utf-8"
+    ) as entity_metadata_file, open(
+        pidstore, "w", encoding="utf-8"
+    ) as entity_pids_file:
 
         for record in ijson.items(entity_file, "item"):
-            if entity == 'viaf':
-                record['pid'] = record['viaf_pid']
+            if entity == "viaf":
+                record["pid"] = record["viaf_pid"]
 
             ordered_record = add_md5(record)
             add_schema(ordered_record, entity)
@@ -986,7 +953,7 @@ def create_csv_file(input_file, entity, pidstore, metadata):
             )
 
             entity_pids_file.write(
-                pidstore_csv_line(entity, record['pid'], record_uuid, date)
+                pidstore_csv_line(entity, record["pid"], record_uuid, date)
             )
             count += 1
     return count
@@ -995,79 +962,73 @@ def create_csv_file(input_file, entity, pidstore, metadata):
 def get_entity_classes(without_mef_viaf=True):
     """Get entity classes from config."""
     entities = {}
-    endpoints = deepcopy(current_app.config.get('RECORDS_REST_ENDPOINTS', {}))
+    endpoints = deepcopy(current_app.config.get("RECORDS_REST_ENDPOINTS", {}))
     if without_mef_viaf:
-        endpoints.pop('mef', None)
-        endpoints.pop('viaf', None)
-        endpoints.pop('comef', None)
-        endpoints.pop('plmef', None)
+        endpoints.pop("mef", None)
+        endpoints.pop("viaf", None)
+        endpoints.pop("comef", None)
+        endpoints.pop("plmef", None)
     for entity in endpoints:
-        if record_class := obj_or_import_string(
-                endpoints[entity].get('record_class')):
+        if record_class := obj_or_import_string(endpoints[entity].get("record_class")):
             entities[entity] = record_class
     return entities
 
 
 def get_endpoint_class(entity, class_name):
     """Get entity class from config."""
-    endpoints = current_app.config.get('RECORDS_REST_ENDPOINTS', {})
+    endpoints = current_app.config.get("RECORDS_REST_ENDPOINTS", {})
     if endpoint := endpoints.get(entity, {}):
         return obj_or_import_string(endpoint.get(class_name))
 
 
 def get_entity_class(entity):
     """Get entity record class from config."""
-    if entity := get_endpoint_class(entity=entity, class_name='record_class'):
+    if entity := get_endpoint_class(entity=entity, class_name="record_class"):
         return entity
 
 
 def get_entity_search_class(entity):
     """Get entity search class from config."""
-    if search := get_endpoint_class(entity=entity, class_name='search_class'):
+    if search := get_endpoint_class(entity=entity, class_name="search_class"):
         return search
 
 
 def get_entity_indexer_class(entity):
     """Get entity indexer class from config."""
-    if search := get_endpoint_class(entity=entity, class_name='indexer_class'):
+    if search := get_endpoint_class(entity=entity, class_name="indexer_class"):
         return search
 
 
 def write_viaf_json(
-    pidstore_file,
-    metadata_file,
-    viaf_pid,
-    corresponding_data,
-    verbose=False
+    pidstore_file, metadata_file, viaf_pid, corresponding_data, verbose=False
 ):
     """Write a JSON record into VIAF file."""
     from rero_mef.agents import AgentViafRecord
+
     json_data = {}
     for source, value in corresponding_data.items():
         if source in AgentViafRecord.sources:
-            key = AgentViafRecord.sources[source]['name']
-            if pid := value.get('pid'):
-                json_data[f'{key}_pid'] = pid
-                if url := value.get('url'):
+            key = AgentViafRecord.sources[source]["name"]
+            if pid := value.get("pid"):
+                json_data[f"{key}_pid"] = pid
+                if url := value.get("url"):
                     json_data[key] = url
-        elif source == 'Wikipedia':
-            if pid := value.get('pid'):
-                json_data['wiki_pid'] = pid
-            if wiki_urls := value.get('url'):
-                json_data['wiki'] = sorted(wiki_urls)
+        elif source == "Wikipedia":
+            if pid := value.get("pid"):
+                json_data["wiki_pid"] = pid
+            if wiki_urls := value.get("url"):
+                json_data["wiki"] = sorted(wiki_urls)
 
-    json_data['md5'] = create_md5(json_data)
-    add_schema(json_data, 'viaf')
-    json_data['pid'] = viaf_pid
+    json_data["md5"] = create_md5(json_data)
+    add_schema(json_data, "viaf")
+    json_data["pid"] = viaf_pid
     # only save VIAF data with used pids
     record_uuid = str(uuid4())
     date = str(datetime.now(timezone.utc))
-    pidstore_file.write(
-        pidstore_csv_line('viaf', viaf_pid, record_uuid, date)
-    )
+    pidstore_file.write(pidstore_csv_line("viaf", viaf_pid, record_uuid, date))
     metadata_file.write(metadata_csv_line(json_data, record_uuid, date))
     if verbose:
-        click.echo(f'  VIAF: {json_data}')
+        click.echo(f"  VIAF: {json_data}")
 
 
 def append_fixtures_new_identifiers(identifier, pids, pid_type):
@@ -1075,11 +1036,16 @@ def append_fixtures_new_identifiers(identifier, pids, pid_type):
     with db.session.begin_nested():
         for pid in pids:
             db.session.add(identifier(recid=pid))
-        max_pid = PersistentIdentifier.query.filter_by(
-            pid_type=pid_type
-        ).order_by(sqlalchemy.desc(
-            sqlalchemy.cast(PersistentIdentifier.pid_value, sqlalchemy.Integer)
-        )).first().pid_value
+        max_pid = (
+            PersistentIdentifier.query.filter_by(pid_type=pid_type)
+            .order_by(
+                sqlalchemy.desc(
+                    sqlalchemy.cast(PersistentIdentifier.pid_value, sqlalchemy.Integer)
+                )
+            )
+            .first()
+            .pid_value
+        )
         identifier._set_sequence(max_pid)
 
 
@@ -1092,15 +1058,15 @@ def set_timestamp(name, **kwargs):
     :param name: name of time stamp.
     :returns: time of time stamp
     """
-    time_stamps = current_cache.get('timestamps')
+    time_stamps = current_cache.get("timestamps")
     if not time_stamps:
         time_stamps = {}
     utc_now = datetime.now(timezone.utc)
     time_stamps[name] = {}
-    time_stamps[name]['time'] = utc_now
+    time_stamps[name]["time"] = utc_now
     for key, value in kwargs.items():
         time_stamps[name][key] = value
-    current_cache.set('timestamps', time_stamps)
+    current_cache.set("timestamps", time_stamps)
     return utc_now
 
 
@@ -1110,7 +1076,7 @@ def get_timestamp(name):
     :param name: name of time stamp.
     :returns: time of time stamp
     """
-    time_stamps = current_cache.get('timestamps')
+    time_stamps = current_cache.get("timestamps")
     return time_stamps.get(name) if time_stamps else None
 
 
@@ -1126,13 +1092,13 @@ class JsonWriter(object):
         :param indent: indentation.
         """
         self.indent = indent
-        self.file_handle = open(filename, 'w')
-        self.file_handle.write('[')
+        self.file_handle = open(filename, "w")
+        self.file_handle.write("[")
 
     def __del__(self):
         """Destructor."""
         if self.file_handle:
-            self.file_handle.write('\n]')
+            self.file_handle.write("\n]")
             self.file_handle.close()
             self.file_handle = None
 
@@ -1158,13 +1124,13 @@ class JsonWriter(object):
         :param data: JSON data to write into the file.
         """
         if self.count > 0:
-            self.file_handle.write(',')
+            self.file_handle.write(",")
         if self.indent:
-            for line in dumps(data, indent=self.indent).split('\n'):
+            for line in dumps(data, indent=self.indent).split("\n"):
                 self.file_handle.write(f'\n{" ".ljust(self.indent)}')
                 self.file_handle.write(line)
         else:
-            self.file_handle.write(dumps(data), separators=(',', ':'))
+            self.file_handle.write(dumps(data), separators=(",", ":"))
         self.count += 1
 
     def close(self):
@@ -1184,25 +1150,21 @@ def mef_get_all_missing_entity_pids(mef_class, entity, verbose=False):
     non_existing_pids = {}
     no_pids = []
     if verbose:
-        click.echo(f'Get pids from {entity} ...')
+        click.echo(f"Get pids from {entity} ...")
     progress = progressbar(
-        items=record_class.get_all_pids(),
-        length=record_class.count(),
-        verbose=verbose
+        items=record_class.get_all_pids(), length=record_class.count(), verbose=verbose
     )
     missing_pids = {pid: 1 for pid in progress}
     name = record_class.name
     if verbose:
-        click.echo(f'Get pids for {name} from MEF and calculate missing ...')
-    query = mef_class.search().filter('exists', field=name)
+        click.echo(f"Get pids for {name} from MEF and calculate missing ...")
+    query = mef_class.search().filter("exists", field=name)
     progress = progressbar(
-        items=query.source(['pid', name]).scan(),
-        length=query.count(),
-        verbose=True
+        items=query.source(["pid", name]).scan(), length=query.count(), verbose=True
     )
     for hit in progress:
         data = hit.to_dict()
-        if entity_pid := data.get(name, {}).get('pid'):
+        if entity_pid := data.get(name, {}).get("pid"):
             res = missing_pids.pop(entity_pid, False)
             if not res:
                 non_existing_pids[hit.pid] = entity_pid
@@ -1220,39 +1182,31 @@ def get_mefs_endpoints():
     from rero_mef.places import PlaceMefRecord
     from rero_mef.places.utils import get_places_endpoints
 
-    mefs = [{
-        'mef_class': AgentMefRecord,
-        'endpoints': get_agent_endpoints()
-    }]
-    mefs.append({
-        'mef_class': ConceptMefRecord,
-        'endpoints': get_concept_endpoints()
-    })
-    mefs.append({
-        'mef_class': PlaceMefRecord,
-        'endpoints': get_places_endpoints()
-    })
+    mefs = [{"mef_class": AgentMefRecord, "endpoints": get_agent_endpoints()}]
+    mefs.append({"mef_class": ConceptMefRecord, "endpoints": get_concept_endpoints()})
+    mefs.append({"mef_class": PlaceMefRecord, "endpoints": get_places_endpoints()})
     return mefs
 
 
 def generate(search, deleted):
     """Lagging genarator."""
-    yield '['
+    yield "["
     idx = 0
     for hit in search.scan():
         if idx != 0:
-            yield ', '
+            yield ", "
         yield json.dumps(hit.to_dict())
         idx += 1
     for idx_deleted, record in enumerate(deleted):
         if idx + idx_deleted != 0:
-            yield ', '
+            yield ", "
         yield json.dumps(record)
-    yield ']'
+    yield "]"
 
 
-def requests_retry_session(retries=5, backoff_factor=0.5,
-                           status_forcelist=(500, 502, 504), session=None):
+def requests_retry_session(
+    retries=5, backoff_factor=0.5, status_forcelist=(500, 502, 504), session=None
+):
     """Request retry session.
 
     :params retries: The total number of retry attempts to make.
@@ -1272,6 +1226,6 @@ def requests_retry_session(retries=5, backoff_factor=0.5,
         status_forcelist=status_forcelist,
     )
     adapter = HTTPAdapter(max_retries=retry)
-    session.mount('http://', adapter)
-    session.mount('https://', adapter)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
     return session

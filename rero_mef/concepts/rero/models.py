@@ -26,11 +26,11 @@ from invenio_records.models import RecordMetadataBase
 class ConceptReroIdentifier(RecordIdentifier):
     """Sequence generator for concepts Authority identifiers."""
 
-    __tablename__ = 'concept_rero_id'
-    __mapper_args__ = {'concrete': True}
+    __tablename__ = "concept_rero_id"
+    __mapper_args__ = {"concrete": True}
 
     recid = db.Column(
-        db.BigInteger().with_variant(db.Integer, 'sqlite'),
+        db.BigInteger().with_variant(db.Integer, "sqlite"),
         primary_key=True,
         autoincrement=True,
     )
@@ -39,4 +39,4 @@ class ConceptReroIdentifier(RecordIdentifier):
 class ConceptReroMetadata(db.Model, RecordMetadataBase):
     """Represent a record metadata."""
 
-    __tablename__ = 'concept_rero_metadata'
+    __tablename__ = "concept_rero_metadata"

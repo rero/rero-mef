@@ -21,8 +21,10 @@ from flask import request, url_for
 from invenio_records_rest.links import default_links_factory_with_additional
 from invenio_records_rest.schemas import RecordSchemaJSONV1
 from invenio_records_rest.serializers.json import JSONSerializer
-from invenio_records_rest.serializers.response import record_responsify, \
-    search_responsify
+from invenio_records_rest.serializers.response import (
+    record_responsify,
+    search_responsify,
+)
 
 from ...utils import get_entity_classes
 
@@ -45,14 +47,12 @@ def add_links(pid, record):
 def local_link(concept, name, record):
     """Change links to actual links."""
     if name in record:
-        if ref := record[name].get('$ref'):
-            my_pid = ref.split('/')[-1]
+        if ref := record[name].get("$ref"):
+            my_pid = ref.split("/")[-1]
             url = url_for(
-                f'invenio_records_rest.{concept}_item',
-                pid_value=my_pid,
-                _external=True
+                f"invenio_records_rest.{concept}_item", pid_value=my_pid, _external=True
             )
-            record[name].update({'$ref': url})
+            record[name].update({"$ref": url})
 
 
 class ReroMefSerializer(JSONSerializer):
@@ -69,33 +69,30 @@ class ReroMefSerializer(JSONSerializer):
         if request:
             rec = rec.add_information(
                 resolve=request.args.get(
-                    'resolve',
-                    default=False,
-                    type=lambda v: v.lower() in ['true', '1']
+                    "resolve", default=False, type=lambda v: v.lower() in ["true", "1"]
                 ),
                 sources=request.args.get(
-                    'sources',
-                    default=False,
-                    type=lambda v: v.lower() in ['true', '1']
-                )
+                    "sources", default=False, type=lambda v: v.lower() in ["true", "1"]
+                ),
             )
             # because the replace_refs loose the record original model. We need
             # to reset it to have correct 'created'/'updated' output data
             rec.model = record.model
-            if not rec.get('type'):
-                rec['type'] = 'bf:Topic'
+            if not rec.get("type"):
+                rec["type"] = "bf:Topic"
 
         concept_classes = get_entity_classes()
         for concept, concept_classe in concept_classes.items():
-            if concept in ['corero', 'cidref']:
+            if concept in ["corero", "cidref"]:
                 local_link(concept, concept_classe.name, rec)
 
         return super(ReroMefSerializer, self).serialize(
-             pid=pid, record=rec, links_factory=add_links, **kwargs)
+            pid=pid, record=rec, links_factory=add_links, **kwargs
+        )
 
 
 _json = ReroMefSerializer(RecordSchemaJSONV1)
 """JSON v1 serializer."""
 
-json_concept_mef_response = record_responsify(_json, 'application/rero+json')
-json_concept_mef_search = search_responsify(_json, 'application/rero+json')
+json_concept_mef_response = record_responsify(_json, "application/rero+json")
+json_concept_mef_search = search_responsify(_json, "application/rero+json")

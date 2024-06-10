@@ -24,9 +24,9 @@ from .viaf.api import AgentViafRecord
 
 
 @shared_task
-def task_create_mef_and_agents_from_viaf(pid, dbcommit=True, reindex=True,
-                                         online=None, verbose=False,
-                                         online_verbose=False):
+def task_create_mef_and_agents_from_viaf(
+    pid, dbcommit=True, reindex=True, online=None, verbose=False, online_verbose=False
+):
     """Create MEF and agents from VIAF task.
 
     :param pid: pid for VIAF to use
@@ -44,7 +44,7 @@ def task_create_mef_and_agents_from_viaf(pid, dbcommit=True, reindex=True,
             reindex=reindex,
             online=online,
             verbose=verbose,
-            online_verbose=online_verbose
+            online_verbose=online_verbose,
         )
-    click.secho(f'VIAF not found: {pid}', fg='red')
+    click.secho(f"VIAF not found: {pid}", fg="red")
     return {}, {}

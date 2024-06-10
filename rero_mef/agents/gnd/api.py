@@ -32,9 +32,9 @@ class AgentGndSearch(RecordsSearch):
     class Meta:
         """Search only on index."""
 
-        index = 'agents_gnd'
+        index = "agents_gnd"
         doc_types = None
-        fields = ('*', )
+        fields = ("*",)
         facets = {}
 
         default_filter = None
@@ -46,9 +46,9 @@ class AgentGndRecord(AgentRecord):
     minter = gnd_id_minter
     fetcher = gnd_id_fetcher
     provider = AgentGndProvider
-    name = 'gnd'
-    viaf_pid_name = 'gnd_pid'
-    viaf_source_code = 'DNB'
+    name = "gnd"
+    viaf_pid_name = "gnd_pid"
+    viaf_source_code = "DNB"
     model_cls = AgentGndMetadata
     search = AgentGndSearch
 
@@ -61,6 +61,7 @@ class AgentGndRecord(AgentRecord):
         :returns: record or None
         """
         from .tasks import gnd_get_record
+
         return gnd_get_record(id_=id_, debug=debug)
 
 
@@ -75,7 +76,5 @@ class AgentGndIndexer(AgentIndexer):
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
         super().bulk_index(
-            record_id_iterator,
-            index=AgentGndSearch.Meta.index,
-            doc_type='aggnd'
+            record_id_iterator, index=AgentGndSearch.Meta.index, doc_type="aggnd"
         )

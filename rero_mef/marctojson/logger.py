@@ -38,8 +38,14 @@ class LoggerError:
 class Logger:
     """To log several messages."""
 
-    def __init__(self, name="VirtuaScript", log_output_file=None,
-                 log_console=True, log_level=logging.DEBUG, log_master=True):
+    def __init__(
+        self,
+        name="VirtuaScript",
+        log_output_file=None,
+        log_console=True,
+        log_level=logging.DEBUG,
+        log_master=True,
+    ):
         """
         Create an Looger object for messages logging.
 
@@ -56,23 +62,18 @@ class Logger:
         if log_master:
             self.logger.setLevel(log_level)
             formatter = logging.Formatter(
-                u"%(id)9s"
-                u"\t%(levelname)8s"
-                u"\t%(error)25s"
-                u"\t%(message)s"
+                "%(id)9s" "\t%(levelname)8s" "\t%(error)25s" "\t%(message)s"
             )
             # create file handler logger
             if log_output_file is not None:
                 try:
                     log_filehandler = logging.FileHandler(
-                        log_output_file,
-                        mode="w",
-                        encoding="UTF-8"
+                        log_output_file, mode="w", encoding="UTF-8"
                     )
                 except IOError:
                     raise LoggerError.InvalidileName(
-                        "Output file: %s cannot be "
-                        "created." % log_output_file)
+                        "Output file: %s cannot be " "created." % log_output_file
+                    )
                 log_filehandler.setFormatter(formatter)
                 self.logger.addHandler(log_filehandler)
             # create console handler logger
@@ -119,20 +120,20 @@ class Logger:
     # without id---
     def debug(self, error, message):
         """Docstring."""
-        self.debug_id('', error, message)
+        self.debug_id("", error, message)
 
     def info(self, error, message):
         """Docstring."""
-        self.info_id('', error, message)
+        self.info_id("", error, message)
 
     def warning(self, error, message):
         """Docstring."""
-        self.warning_id('', error, message)
+        self.warning_id("", error, message)
 
     def error(self, error, message):
         """Docstring."""
-        self.error_id('', error, message)
+        self.error_id("", error, message)
 
     def critical(self, error, message):
         """Docstring."""
-        self.critical_id('', error, message)
+        self.critical_id("", error, message)

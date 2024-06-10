@@ -21,8 +21,10 @@ from flask import current_app, request, url_for
 from invenio_records_rest.links import default_links_factory_with_additional
 from invenio_records_rest.schemas import RecordSchemaJSONV1
 from invenio_records_rest.serializers.json import JSONSerializer
-from invenio_records_rest.serializers.response import record_responsify, \
-    search_responsify
+from invenio_records_rest.serializers.response import (
+    record_responsify,
+    search_responsify,
+)
 
 from ...utils import get_entity_classes
 
@@ -30,11 +32,10 @@ from ...utils import get_entity_classes
 def add_links(pid, record):
     """Add VIAF links to MEF."""
     links = {}
-    if viaf_pid := record.get('viaf_pid'):
-        links['viaf'] = '{scheme}://{host}/api/agents/viaf/' \
-                + str(viaf_pid)
-        viaf_url = current_app.config.get('RERO_MEF_VIAF_BASE_URL')
-        links['viaf.org'] = f'{viaf_url}/viaf/{str(viaf_pid)}'
+    if viaf_pid := record.get("viaf_pid"):
+        links["viaf"] = "{scheme}://{host}/api/agents/viaf/" + str(viaf_pid)
+        viaf_url = current_app.config.get("RERO_MEF_VIAF_BASE_URL")
+        links["viaf.org"] = f"{viaf_url}/viaf/{str(viaf_pid)}"
 
     link_factory = default_links_factory_with_additional(links)
     return link_factory(pid)
@@ -44,14 +45,12 @@ def add_links(pid, record):
 def local_link(agent, name, record):
     """Change links to actual links."""
     if name in record:
-        if ref := record[name].get('$ref'):
-            my_pid = ref.split('/')[-1]
+        if ref := record[name].get("$ref"):
+            my_pid = ref.split("/")[-1]
             url = url_for(
-                f'invenio_records_rest.{agent}_item',
-                pid_value=my_pid,
-                _external=True
+                f"invenio_records_rest.{agent}_item", pid_value=my_pid, _external=True
             )
-            record[name].update({'$ref': url})
+            record[name].update({"$ref": url})
 
 
 class ReroMefSerializer(JSONSerializer):
@@ -68,29 +67,26 @@ class ReroMefSerializer(JSONSerializer):
         if request:
             rec = rec.add_information(
                 resolve=request.args.get(
-                    'resolve',
-                    default=False,
-                    type=lambda v: v.lower() in ['true', '1']
+                    "resolve", default=False, type=lambda v: v.lower() in ["true", "1"]
                 ),
                 sources=request.args.get(
-                    'sources',
-                    default=False,
-                    type=lambda v: v.lower() in ['true', '1']
-                )
+                    "sources", default=False, type=lambda v: v.lower() in ["true", "1"]
+                ),
             )
             rec.model = record.model
 
         agent_classes = get_entity_classes()
         for agent, agent_classe in agent_classes.items():
-            if agent in ['aidref', 'aggnd', 'agrero']:
+            if agent in ["aidref", "aggnd", "agrero"]:
                 local_link(agent, agent_classe.name, rec)
 
         return super(ReroMefSerializer, self).serialize(
-            pid=pid, record=rec, links_factory=add_links, **kwargs)
+            pid=pid, record=rec, links_factory=add_links, **kwargs
+        )
 
 
 json_ = ReroMefSerializer(RecordSchemaJSONV1)
 """JSON v1 serializer."""
 
-json_agent_mef_response = record_responsify(json_, 'application/rero+json')
-json_agent_mef_search = search_responsify(json_, 'application/rero+json')
+json_agent_mef_response = record_responsify(json_, "application/rero+json")
+json_agent_mef_search = search_responsify(json_, "application/rero+json")

@@ -17,8 +17,12 @@
 
 """Test api."""
 
-from rero_mef.agents import AgentIdrefIndexer, AgentIdrefRecord, \
-    AgentMefRecord, AgentMefSearch
+from rero_mef.agents import (
+    AgentIdrefIndexer,
+    AgentIdrefRecord,
+    AgentMefRecord,
+    AgentMefSearch,
+)
 from rero_mef.api import Action
 from rero_mef.tasks import process_bulk_queue
 
@@ -29,30 +33,29 @@ def test_reromefrecord_api(app, agent_idref_record):
     assert AgentIdrefRecord.count() == 1
     assert AgentIdrefRecord.index_all() == 1
 
-    assert len(list(AgentIdrefRecord.get_all_records())) == len(list(
-        AgentIdrefRecord.get_all_records(limit=0)))
+    assert len(list(AgentIdrefRecord.get_all_records())) == len(
+        list(AgentIdrefRecord.get_all_records(limit=0))
+    )
 
     assert AgentIdrefRecord.get_metadata_identifier_names() == (
-        'agent_idref_metadata', 'agent_idref_id')
+        "agent_idref_metadata",
+        "agent_idref_id",
+    )
 
     count = sum(1 for _ in AgentIdrefRecord.get_all_records())
     assert count == 1
 
-    _, agent_action = idref.update_md5_changed(
-        data=idref, dbcommit=True, reindex=True)
+    _, agent_action = idref.update_md5_changed(data=idref, dbcommit=True, reindex=True)
     assert agent_action == Action.UPTODATE
 
     mef_record, _ = idref.create_or_update_mef(dbcommit=True, reindex=True)
 
-    idref['gender'] = 'female'
-    _, agent_action = idref.update_md5_changed(
-        data=idref, dbcommit=True, reindex=True)
+    idref["gender"] = "female"
+    _, agent_action = idref.update_md5_changed(data=idref, dbcommit=True, reindex=True)
     assert agent_action == Action.UPDATE
     AgentMefRecord.flush_indexes()
-    mef_es = next(
-        AgentMefSearch().filter('term', pid=mef_record.pid).scan()
-    ).to_dict()
-    assert mef_es.get('idref').get('gender') == 'female'
+    mef_es = next(AgentMefSearch().filter("term", pid=mef_record.pid).scan()).to_dict()
+    assert mef_es.get("idref").get("gender") == "female"
 
     assert AgentIdrefRecord.get_pid_by_id(idref.id) == idref.pid
 

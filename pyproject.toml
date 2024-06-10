@@ -92,6 +92,8 @@ sqlalchemy-continuum = ">=1.3.12,<1.4.0"
 pytest-invenio = ">=2.1.0,<3.0.0"
 python-dotenv = ">=0.13.0"
 pydocstyle = ">=6.1.1"
+pytest-black = ">=0.3.2"
+pytest-black-ng = ">=0.4.0"
 Sphinx = ">=4.5.0"
 ## RERO ILS specific python packages
 safety = ">=1.8,<3.0.0"
@@ -223,6 +225,9 @@ update = {cmd = "./scripts/update", help = "Runs update"}
 run_tests = {cmd = "./scripts/test", help = "Runs all tests"}
 tests = {cmd = "pytest", help = "pytest"}
 tests_debug = {cmd = "pytest -s -vv --no-cov", help = "pytest -s -vv --no-cov"}
+
+[tool.isort]
+profile = "black"
 
 [build-system]
 requires = ["poetry>=0.12"]

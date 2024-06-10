@@ -24,4 +24,4 @@ from functools import partial
 from .providers import ViafProvider
 from ...minters import id_minter
 
-viaf_id_minter = partial(id_minter, provider=ViafProvider, recid_field='pid')
+viaf_id_minter = partial(id_minter, provider=ViafProvider, recid_field="pid")

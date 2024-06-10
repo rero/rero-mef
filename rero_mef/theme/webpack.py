@@ -35,8 +35,6 @@ project = WebpackBundleProject(
 
 theme = WebpackBundle(
     __name__,
-    'assets',
-    entry={
-        'global': './scss/rero_mef/mef.scss'
-    },
+    "assets",
+    entry={"global": "./scss/rero_mef/mef.scss"},
 )

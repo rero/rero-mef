@@ -28,7 +28,7 @@ from .models import AgentGndIdentifier
 class AgentGndProvider(BaseProvider):
     """Gnd identifier provider."""
 
-    pid_type = 'aggnd'
+    pid_type = "aggnd"
     """Type of persistent identifier."""
 
     pid_identifier = AgentGndIdentifier.__tablename__
