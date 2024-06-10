@@ -100,6 +100,8 @@ THEME_FRONTPAGE_TEMPLATE = 'rero_mef/frontpage.html'
 #: Template for error pages.
 THEME_ERROR_TEMPLATE = 'rero_mef/page_error.html'
 
+WEBPACKEXT_PROJECT = 'rero_mef.theme.webpack:project'
+
 # Email configuration
 # ===================
 #: Email address for support.
