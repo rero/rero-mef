@@ -38,8 +38,10 @@ def build_ref_string(place_pid, place):
     :returns: Reference string to record.
     """
     with current_app.app_context():
-        return (f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
-                f'/api/places/{place}/{place_pid}')
+        return (
+            f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
+            f"/api/places/{place}/{place_pid}"
+        )
 
 
 class PlaceMefSearch(RecordsSearch):
@@ -48,9 +50,9 @@ class PlaceMefSearch(RecordsSearch):
     class Meta:
         """Search only on index."""
 
-        index = 'places_mef'
+        index = "places_mef"
         doc_types = None
-        fields = ('*', )
+        fields = ("*",)
         facets = {}
 
         default_filter = None
@@ -62,17 +64,25 @@ class PlaceMefRecord(EntityMefRecord):
     minter = mef_id_minter
     fetcher = mef_id_fetcher
     provider = PlaceMefProvider
-    name = 'mef'
+    name = "mef"
     model_cls = PlaceMefMetadata
     search = PlaceMefSearch
-    mef_type = 'PLACES'
-    entities = ['idref']
+    mef_type = "PLACES"
+    entities = ["idref"]
 
     @classmethod
-    def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
-               reindex=False, md5=True, **kwargs):
+    def create(
+        cls,
+        data,
+        id_=None,
+        delete_pid=False,
+        dbcommit=False,
+        reindex=False,
+        md5=True,
+        **kwargs,
+    ):
         """Create a new place record."""
-        data['type'] = 'bf:Place'
+        data["type"] = "bf:Place"
         return super().create(
             data=data,
             id_=id_,
@@ -80,15 +90,14 @@ class PlaceMefRecord(EntityMefRecord):
             dbcommit=dbcommit,
             reindex=reindex,
             md5=False,
-            **kwargs
+            **kwargs,
         )
 
     def replace_refs(self):
         """Replace $ref with real data."""
         data = deepcopy(self)
         data = super().replace_refs()
-        data['sources'] = [
-            place for place in self.entities if data.get(place)]
+        data["sources"] = [place for place in self.entities if data.get(place)]
         return data
 
     def add_information(self, resolve=False, sources=False):
@@ -105,20 +114,20 @@ class PlaceMefRecord(EntityMefRecord):
         for place in self.entities:
             if place_data := data.get(place):
                 # we got a error status in data
-                if place_data.get('status'):
+                if place_data.get("status"):
                     data.pop(place)
                     current_app.logger.error(
                         f'MEF replace refs {data.get("pid")} {place}'
                         f' status: {place_data.get("status")}'
-                        f' {place_data.get("message")}')
+                        f' {place_data.get("message")}'
+                    )
                 else:
                     my_sources.append(place)
                 for place in self.entities:
-                    if metadata := replace_refs_data.get(
-                            place, {}).get('metadata'):
+                    if metadata := replace_refs_data.get(place, {}).get("metadata"):
                         data[place] = metadata
         if my_sources and (resolve or sources):
-            data['sources'] = my_sources
+            data["sources"] = my_sources
         return data
 
     @classmethod
@@ -129,22 +138,20 @@ class PlaceMefRecord(EntityMefRecord):
         :param pid: pid to use..
         :returns: latest record.
         """
-        search = PlaceMefSearch().filter({'term': {f'{pid_type}.pid': pid}})
+        search = PlaceMefSearch().filter({"term": {f"{pid_type}.pid": pid}})
         if search.count() > 0:
             data = next(search.scan()).to_dict()
             new_pid = None
-            if relation_pid := data.get(pid_type, {}).get('relation_pid'):
-                if relation_pid['type'] == 'redirect_to':
-                    new_pid = relation_pid['value']
-            elif pid_type == 'idref':
+            if relation_pid := data.get(pid_type, {}).get("relation_pid"):
+                if relation_pid["type"] == "redirect_to":
+                    new_pid = relation_pid["value"]
+            elif pid_type == "idref":
                 # Find new pid from redirect_pid redirect_from
-                search = PlaceMefSearch() \
-                        .filter('term', idref__relation_pid__value=pid)
+                search = PlaceMefSearch().filter("term", idref__relation_pid__value=pid)
                 if search.count() > 0:
                     new_data = next(search.scan()).to_dict()
-                    new_pid = new_data.get('idref', {}).get('pid')
-            return cls.get_latest(pid_type=pid_type, pid=new_pid) \
-                if new_pid else data
+                    new_pid = new_data.get("idref", {}).get("pid")
+            return cls.get_latest(pid_type=pid_type, pid=new_pid) if new_pid else data
         return {}
 
 
@@ -159,7 +166,5 @@ class PlaceMefIndexer(ReroIndexer):
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
         super().bulk_index(
-            record_id_iterator,
-            index=PlaceMefSearch.Meta.index,
-            doc_type='plmef'
+            record_id_iterator, index=PlaceMefSearch.Meta.index, doc_type="plmef"
         )

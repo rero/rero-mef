@@ -27,11 +27,11 @@ from invenio_records.models import RecordMetadataBase
 class AgentIdrefIdentifier(RecordIdentifier):
     """Sequence generator for IDREF agent identifiers."""
 
-    __tablename__ = 'agent_idref_id'
-    __mapper_args__ = {'concrete': True}
+    __tablename__ = "agent_idref_id"
+    __mapper_args__ = {"concrete": True}
 
     recid = db.Column(
-        db.BigInteger().with_variant(db.Integer, 'sqlite'),
+        db.BigInteger().with_variant(db.Integer, "sqlite"),
         primary_key=True,
         autoincrement=True,
     )
@@ -40,4 +40,4 @@ class AgentIdrefIdentifier(RecordIdentifier):
 class AgentIdrefMetadata(db.Model, RecordMetadataBase):
     """Represent a record metadata."""
 
-    __tablename__ = 'agent_idref_metadata'
+    __tablename__ = "agent_idref_metadata"

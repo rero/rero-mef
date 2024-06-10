@@ -39,11 +39,13 @@ class MrcIterator(object):
     def __init__(self, file_name, exceptions=False):
         """DocString."""
         self.error = None
-        self._marc_reader = pymarc.MARCReader(open(file_name, 'rb'),
-                                              to_unicode=True,
-                                              force_utf8=True,
-                                              utf8_handling='ignore')
-        self.error = ''
+        self._marc_reader = pymarc.MARCReader(
+            open(file_name, "rb"),
+            to_unicode=True,
+            force_utf8=True,
+            utf8_handling="ignore",
+        )
+        self.error = ""
         self.exceptions = exceptions
 
     def __next_valid__(self, error):
@@ -64,7 +66,7 @@ class MrcIterator(object):
 
     def __next__(self):
         """Get next MARC record."""
-        self.error = ''
+        self.error = ""
         try:
             rec = self._marc_reader.__next__()
         except StopIteration:
@@ -74,7 +76,7 @@ class MrcIterator(object):
             if self.exceptions:
                 raise Exception(err)
             return None, err, False
-        return rec, '', False
+        return rec, "", False
 
     def __iter__(self):
         """To support iteration."""
@@ -88,11 +90,7 @@ class MrcIterator(object):
 class Records(pymarc.Record):
     """Represents Marc Records fetched from mrc file."""
 
-    def __init__(
-        self,
-        mrc_file_name=None,
-        exceptions=False
-    ):
+    def __init__(self, mrc_file_name=None, exceptions=False):
         """Constructor."""
         self._iterator = MrcIterator(mrc_file_name, exceptions)
         self.error = self._iterator.error
@@ -110,9 +108,7 @@ class Records(pymarc.Record):
 class RecordsCount(Records):
     """Represents Marc Records fetched from mrc file with count."""
 
-    def __init__(self,
-                 mrc_file_name=None,
-                 exceptions=True):
+    def __init__(self, mrc_file_name=None, exceptions=True):
         """DocString."""
         super().__init__(mrc_file_name)
         self.count = 0
@@ -128,11 +124,7 @@ class RecordsCount(Records):
 class RecordsCountError(RecordsCount):
     """Represents Marc Records fetched mrc file with count and error."""
 
-    def __init__(
-        self,
-        mrc_file_name=None,
-        exceptions=True
-    ):
+    def __init__(self, mrc_file_name=None, exceptions=True):
         """DocString."""
         super().__init__(mrc_file_name)
 

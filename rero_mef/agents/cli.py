@@ -28,8 +28,12 @@ from .mef.api import AgentMefRecord
 from .tasks import task_create_mef_and_agents_from_viaf
 from .utils import create_mef_files, create_viaf_files
 from .viaf.api import AgentViafRecord
-from ..utils import get_entity_classes, number_records_in_file, progressbar, \
-    read_json_record
+from ..utils import (
+    get_entity_classes,
+    number_records_in_file,
+    progressbar,
+    read_json_record,
+)
 
 
 @click.group()
@@ -38,68 +42,71 @@ def agents():
 
 
 @agents.command()
-@click.option('-k', '--enqueue', 'enqueue', is_flag=True, default=False,
-              help="Enqueue record creation.")
-@click.option('-o', '--online', 'online', multiple=True, default=[])
-@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
-@click.option('-V', '--online_verbose', 'online_verbose', is_flag=True,
-              default=False)
-@click.option('-p', '--progress', 'progress', is_flag=True, default=False)
-@click.option('-w', '--wait', 'wait', is_flag=True, default=False)
-@click.option('-m', '--missing', 'missing', is_flag=True, default=False)
-@click.option('-f', '--viaf_file', 'viaf_file', type=click.File('r'),
-              default=None)
+@click.option(
+    "-k",
+    "--enqueue",
+    "enqueue",
+    is_flag=True,
+    default=False,
+    help="Enqueue record creation.",
+)
+@click.option("-o", "--online", "online", multiple=True, default=[])
+@click.option("-v", "--verbose", "verbose", is_flag=True, default=False)
+@click.option("-V", "--online_verbose", "online_verbose", is_flag=True, default=False)
+@click.option("-p", "--progress", "progress", is_flag=True, default=False)
+@click.option("-w", "--wait", "wait", is_flag=True, default=False)
+@click.option("-m", "--missing", "missing", is_flag=True, default=False)
+@click.option("-f", "--viaf_file", "viaf_file", type=click.File("r"), default=None)
 @with_appcontext
-def create_from_viaf(enqueue, online, verbose, online_verbose,
-                     progress, wait, missing, viaf_file):
+def create_from_viaf(
+    enqueue, online, verbose, online_verbose, progress, wait, missing, viaf_file
+):
     """Create MEF and agents from viaf."""
+
     def get_pids_from_json(json_file):
         """Get all pids from JSON file."""
         for record in read_json_record(json_file):
-            yield record['pid']
+            yield record["pid"]
 
-    click.secho(
-        'Create MEF and Agency from VIAF.',
-        fg='green'
-    )
+    click.secho("Create MEF and Agency from VIAF.", fg="green")
     non_existing_pids = {}
     agent_classes = get_entity_classes(without_mef_viaf=False)
-    counts = {name: {'old': agent_class.count()}
-              for name, agent_class in agent_classes.items()}
+    counts = {
+        name: {"old": agent_class.count()}
+        for name, agent_class in agent_classes.items()
+    }
 
     if missing:
-        missing_pids, non_existing_pids = AgentMefRecord. \
-            get_all_missing_viaf_pids(verbose=(progress or verbose))
+        missing_pids, non_existing_pids = AgentMefRecord.get_all_missing_viaf_pids(
+            verbose=(progress or verbose)
+        )
         progress_bar = progressbar(
             items=missing_pids,
             length=len(missing_pids),
             verbose=progress,
-            label='VIAF missing'
+            label="VIAF missing",
         )
     elif viaf_file:
         progress_bar = progressbar(
             items=get_pids_from_json(viaf_file),
-            length=number_records_in_file(viaf_file.name, 'json'),
+            length=number_records_in_file(viaf_file.name, "json"),
             verbose=progress,
-            label='VIAF file'
+            label="VIAF file",
         )
     else:
         progress_bar = progressbar(
             items=AgentViafRecord.get_all_pids(),
-            length=counts['viaf']['old'],
+            length=counts["viaf"]["old"],
             verbose=progress,
-            label='VIAF all'
+            label="VIAF all",
         )
-    click.echo('Create MEF and agents from VIAF')
+    click.echo("Create MEF and agents from VIAF")
     for pid in progress_bar:
         if enqueue:
             task = task_create_mef_and_agents_from_viaf.delay(
-                pid=pid,
-                dbcommit=True,
-                reindex=True,
-                online=online
+                pid=pid, dbcommit=True, reindex=True, online=online
             )
-            click.echo(f'viaf pid: {pid} task:{task}')
+            click.echo(f"viaf pid: {pid} task:{task}")
         else:
             task_create_mef_and_agents_from_viaf(
                 pid=pid,
@@ -107,39 +114,36 @@ def create_from_viaf(enqueue, online, verbose, online_verbose,
                 reindex=True,
                 online=online,
                 verbose=verbose,
-                online_verbose=online_verbose
+                online_verbose=online_verbose,
             )
 
     if non_existing_pids:
-        click.echo(
-            f'Clean VIAF pids from MEF records: {len(non_existing_pids)}')
+        click.echo(f"Clean VIAF pids from MEF records: {len(non_existing_pids)}")
         for pid, _ in non_existing_pids.items():
             # TODO: clean MEF records with non existing VIAF pids:
             pass
 
     if wait:
         from ..cli import wait_empty_tasks
-        wait_empty_tasks(delay=3, verbose=True)
-        for name, agent_class in get_entity_classes(
-            without_mef_viaf=False
-        ).items():
-            counts[name]['new'] = agent_class.count()
-        counts.pop('viaf', None)
-        msgs = [f'mef: {counts["mef"]["old"]}|{counts["mef"]["new"]}']
-        counts.pop('mef', None)
-        msgs.extend(f"{agent}: {value['old']}|{counts[agent]['new']}"
-                    for agent, value in counts.items())
 
-        click.secho(
-            f'COUNTS: {", ".join(msgs)}',
-            fg='blue'
+        wait_empty_tasks(delay=3, verbose=True)
+        for name, agent_class in get_entity_classes(without_mef_viaf=False).items():
+            counts[name]["new"] = agent_class.count()
+        counts.pop("viaf", None)
+        msgs = [f'mef: {counts["mef"]["old"]}|{counts["mef"]["new"]}']
+        counts.pop("mef", None)
+        msgs.extend(
+            f"{agent}: {value['old']}|{counts[agent]['new']}"
+            for agent, value in counts.items()
         )
+
+        click.secho(f'COUNTS: {", ".join(msgs)}', fg="blue")
 
 
 @agents.command()
-@click.argument('viaf_file')
-@click.argument('output_directory')
-@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@click.argument("viaf_file")
+@click.argument("output_directory")
+@click.option("-v", "--verbose", "verbose", is_flag=True, default=False)
 @with_appcontext
 def create_csv_viaf(viaf_file, output_directory, verbose):
     """Create VIAF CSV from VIAF source text file.
@@ -148,29 +152,24 @@ def create_csv_viaf(viaf_file, output_directory, verbose):
     :param output_directory: Output directory.
     :param verbose: Verbose.
     """
-    click.secho('  Create VIAF CSV files.', err=True)
-    pidstore = os.path.join(output_directory, 'viaf_pidstore.csv')
-    metadata = os.path.join(output_directory, 'viaf_metadata.csv')
-    click.secho(
-        f'  VIAF input file: {viaf_file}',
-        err=True)
+    click.secho("  Create VIAF CSV files.", err=True)
+    pidstore = os.path.join(output_directory, "viaf_pidstore.csv")
+    metadata = os.path.join(output_directory, "viaf_metadata.csv")
+    click.secho(f"  VIAF input file: {viaf_file}", err=True)
 
     count = create_viaf_files(
         viaf_input_file_name=viaf_file,
         viaf_pidstore_file_name=pidstore,
         viaf_metadata_file_name=metadata,
-        verbose=verbose
+        verbose=verbose,
     )
-    click.secho(
-        f'  Number of VIAF records created: {count}.',
-        fg='green',
-        err=True)
+    click.secho(f"  Number of VIAF records created: {count}.", fg="green", err=True)
 
 
 @agents.command()
-@click.argument('viaf_metadata_file')
-@click.argument('output_directory')
-@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@click.argument("viaf_metadata_file")
+@click.argument("output_directory")
+@click.option("-v", "--verbose", "verbose", is_flag=True, default=False)
 @with_appcontext
 def create_csv_mef(viaf_metadata_file, output_directory, verbose):
     """Create MEF CSV from INVENIO metadata file.
@@ -179,26 +178,21 @@ def create_csv_mef(viaf_metadata_file, output_directory, verbose):
     :param output_directory: Output directory.
     :param verbose: Verbose.
     """
-    click.secho('  Create MEF CSV files from VIAF metadata.', err=True)
-    pidstore = os.path.join(output_directory, 'mef_pidstore.csv')
-    metadata = os.path.join(output_directory, 'mef_metadata.csv')
-    ids = os.path.join(output_directory, 'mef_id.csv')
+    click.secho("  Create MEF CSV files from VIAF metadata.", err=True)
+    pidstore = os.path.join(output_directory, "mef_pidstore.csv")
+    metadata = os.path.join(output_directory, "mef_metadata.csv")
+    ids = os.path.join(output_directory, "mef_id.csv")
 
-    click.secho(
-        f'  VIAF input file: {viaf_metadata_file}',
-        err=True)
+    click.secho(f"  VIAF input file: {viaf_metadata_file}", err=True)
     # message = f'  CSV output files: {pidstore}, {metadata}'
 
     count = create_mef_files(
-            viaf_metadata_file_name=viaf_metadata_file,
-            input_directory=output_directory,
-            mef_pidstore_file_name=pidstore,
-            mef_metadata_file_name=metadata,
-            mef_ids_file_name=ids,
-            verbose=verbose
-        )
+        viaf_metadata_file_name=viaf_metadata_file,
+        input_directory=output_directory,
+        mef_pidstore_file_name=pidstore,
+        mef_metadata_file_name=metadata,
+        mef_ids_file_name=ids,
+        verbose=verbose,
+    )
 
-    click.secho(
-        f'  Number of MEF records created: {count}.',
-        fg='green',
-        err=True)
+    click.secho(f"  Number of MEF records created: {count}.", fg="green", err=True)

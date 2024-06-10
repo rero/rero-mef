@@ -32,9 +32,9 @@ class PlaceIdrefSearch(RecordsSearch):
     class Meta:
         """Search only on index."""
 
-        index = 'places_idref'
+        index = "places_idref"
         doc_types = None
-        fields = ('*', )
+        fields = ("*",)
         facets = {}
 
         default_filter = None
@@ -46,9 +46,9 @@ class PlaceIdrefRecord(PlaceRecord):
     minter = idref_id_minter
     fetcher = idref_id_fetcher
     provider = PlaceIdrefProvider
-    name = 'idref'
-    viaf_source_code = 'RAMEAU'
-    pid_type = 'place_idref_pid'
+    name = "idref"
+    viaf_source_code = "RAMEAU"
+    pid_type = "place_idref_pid"
     model_cls = PlaceIdrefMetadata
     search = PlaceIdrefSearch
 
@@ -56,6 +56,7 @@ class PlaceIdrefRecord(PlaceRecord):
     def get_online_record(cls, id_, debug=False):
         """Get online Record."""
         from .tasks import idref_get_record
+
         return idref_get_record(id_=id_, debug=debug)
 
 
@@ -70,7 +71,5 @@ class PlaceIdrefIndexer(PlaceIndexer):
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
         super().bulk_index(
-            record_id_iterator,
-            index=PlaceIdrefSearch.Meta.index,
-            doc_type='pidref'
+            record_id_iterator, index=PlaceIdrefSearch.Meta.index, doc_type="pidref"
         )

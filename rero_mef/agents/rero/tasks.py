@@ -35,22 +35,21 @@ def rero_get_record(id_, debug=False):
     http://data.rero.ch/
     http://data.rero.ch/02-A000069866/marcxml
     """
-    url = current_app.config.get(
-        'RERO_MEF_AGENTS_RERO_GET_RECORD').replace('{id}', id_)
-    msg = f'API-agents.rero  get: {id:<15} {url}'
+    url = current_app.config.get("RERO_MEF_AGENTS_RERO_GET_RECORD").replace("{id}", id_)
+    msg = f"API-agents.rero  get: {id:<15} {url}"
     trans_record = None
     try:
         response = requests_retry_session().get(url)
         if response.status_code == requests.codes.ok:
             if records := parse_xml_to_array(BytesIO(response.content)):
                 trans_record = Transformation(records[0]).json
-                msg = f'{msg} | OK'
+                msg = f"{msg} | OK"
             else:
-                msg = f'{msg} | ERROR NO DATA'
+                msg = f"{msg} | ERROR NO DATA"
         else:
-            msg = f'{msg} | ERROR HTTP: {response.status_code}'
+            msg = f"{msg} | ERROR HTTP: {response.status_code}"
     except Exception as err:
-        msg = f'{msg} | ERROR: {err}'
+        msg = f"{msg} | ERROR: {err}"
         if debug:
             raise
     return trans_record, msg

@@ -28,7 +28,7 @@ from .models import AgentIdrefIdentifier
 class AgentIdrefProvider(BaseProvider):
     """Idref identifier provider."""
 
-    pid_type = 'aidref'
+    pid_type = "aidref"
     """Type of persistent identifier."""
 
     pid_identifier = AgentIdrefIdentifier.__tablename__

@@ -20,5 +20,5 @@
 from flask_principal import RoleNeed
 from invenio_access.permissions import Permission
 
-admin_permission = Permission(RoleNeed('admins'))
-monitoring_permission = Permission(RoleNeed('monitoring'))
+admin_permission = Permission(RoleNeed("admins"))
+monitoring_permission = Permission(RoleNeed("monitoring"))

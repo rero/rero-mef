@@ -28,12 +28,9 @@ def test_idref_pid():
         <controlfield tag="001">027227812</controlfield>
         <controlfield tag="008">Tg5</controlfield>
     """
-    trans = trans_prep(Transformation, 'places', xml_part_to_add)
+    trans = trans_prep(Transformation, "places", xml_part_to_add)
     trans.trans_idref_pid()
-    assert trans.json == {
-        'pid': '027227812',
-        'type': 'bf:Place'
-    }
+    assert trans.json == {"pid": "027227812", "type": "bf:Place"}
 
 
 def test_idref_identifier():
@@ -49,19 +46,19 @@ def test_idref_identifier():
             <subfield code="d">20180619</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'places', xml_part_to_add)
+    trans = trans_prep(Transformation, "places", xml_part_to_add)
     trans.trans_idref_identifier()
     assert trans.json == {
-        'identifiedBy': [
+        "identifiedBy": [
             {
-                'type': 'uri',
-                'source': 'IDREF',
-                'value': 'http://www.idref.fr/027227812'
+                "type": "uri",
+                "source": "IDREF",
+                "value": "http://www.idref.fr/027227812",
             },
             {
-                'type': 'uri',
-                'source': 'BNF',
-                'value': 'http://catalogue.bnf.fr/ark:/12148/cb11931552b'
+                "type": "uri",
+                "source": "BNF",
+                "value": "http://catalogue.bnf.fr/ark:/12148/cb11931552b",
             },
         ]
     }
@@ -76,11 +73,9 @@ def test_idref_authorized_access_point():
         <subfield code="a">Gdańsk (Pologne)</subfield>
     </datafield>
     """
-    trans = trans_prep(Transformation, 'places', xml_part_to_add)
+    trans = trans_prep(Transformation, "places", xml_part_to_add)
     trans.trans_idref_authorized_access_point()
-    assert trans.json == {
-        'authorized_access_point': "Gdańsk (Pologne)"
-    }
+    assert trans.json == {"authorized_access_point": "Gdańsk (Pologne)"}
 
 
 def test_idref_variant_access_point():
@@ -106,14 +101,14 @@ def test_idref_variant_access_point():
             <subfield code="a">Danzig (Pologne)</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'places', xml_part_to_add)
+    trans = trans_prep(Transformation, "places", xml_part_to_add)
     trans.trans_idref_variant_access_point()
     assert trans.json == {
-        'variant_access_point': [
-            'Dantzig (Pologne)',
-            'Gedania',
-            'Gedani',
-            'Danzig (Pologne)'
+        "variant_access_point": [
+            "Dantzig (Pologne)",
+            "Gedania",
+            "Gedani",
+            "Danzig (Pologne)",
         ]
     }
 
@@ -129,11 +124,11 @@ def test_idref_relation():
             <subfield code="a">Pologne</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'places', xml_part_to_add)
+    trans = trans_prep(Transformation, "places", xml_part_to_add)
     trans.trans_idref_relation()
     assert trans.json == {
-        'broader': [
-            {'authorized_access_point': 'Pologne'},
+        "broader": [
+            {"authorized_access_point": "Pologne"},
         ]
     }
 
@@ -148,14 +143,16 @@ def test_idref_classification():
             <subfield code="2">Note de regroupement par domaine</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'places', xml_part_to_add)
+    trans = trans_prep(Transformation, "places", xml_part_to_add)
     trans.trans_idref_classification()
     assert trans.json == {
-        'classification': [{
-            'type': 'bf:ClassificationDdc',
-            'classificationPortion': '370',
-            'name': "Education et enseignement"
-        }]
+        "classification": [
+            {
+                "type": "bf:ClassificationDdc",
+                "classificationPortion": "370",
+                "name": "Education et enseignement",
+            }
+        ]
     }
 
 
@@ -188,37 +185,39 @@ def test_idref_close_match():
             <subfield code="d">2022-07-22</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'places', xml_part_to_add)
+    trans = trans_prep(Transformation, "places", xml_part_to_add)
     trans.trans_idref_close_match()
     assert trans.json == {
-        'closeMatch': [{
-            'authorized_access_point': 'Fasting',
-            'source': 'LCSH',
-            'identifiedBy': {
-                'source': 'LCSH',
-                'type': 'uri',
-                'value': 'http://id.loc.gov/authorities/subjects/sh85047403'
-            }
-        }, {
-            'authorized_access_point': 'Fasting -- Religious aspects',
-            'source': 'LCSH',
-            'identifiedBy': {
-                'source': 'LCSH',
-                'type': 'uri',
-                'value': 'http://id.loc.gov/authorities/subjects/sh2003003108'
-            }
-        }, {
-            'authorized_access_point': 'Jeûne',
-            'source': 'RVMLaval'
-        }, {
-            'authorized_access_point': 'Jeûne -- Aspect religieux',
-            'source': 'RVMLaval'
-        }]
+        "closeMatch": [
+            {
+                "authorized_access_point": "Fasting",
+                "source": "LCSH",
+                "identifiedBy": {
+                    "source": "LCSH",
+                    "type": "uri",
+                    "value": "http://id.loc.gov/authorities/subjects/sh85047403",
+                },
+            },
+            {
+                "authorized_access_point": "Fasting -- Religious aspects",
+                "source": "LCSH",
+                "identifiedBy": {
+                    "source": "LCSH",
+                    "type": "uri",
+                    "value": "http://id.loc.gov/authorities/subjects/sh2003003108",
+                },
+            },
+            {"authorized_access_point": "Jeûne", "source": "RVMLaval"},
+            {
+                "authorized_access_point": "Jeûne -- Aspect religieux",
+                "source": "RVMLaval",
+            },
+        ]
     }
 
 
 def test_idref_notes():
-    """Test """
+    """Test"""
     xml_part_to_add = """
         <controlfield tag="008">Tg5</controlfield>
         <datafield tag="810" ind1=" " ind2=" ">
@@ -257,34 +256,33 @@ def test_idref_notes():
             </subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'places', xml_part_to_add)
+    trans = trans_prep(Transformation, "places", xml_part_to_add)
     trans.trans_idref_note()
     assert trans.json == {
-        'note': [{
-            'label': [
-                'Grand Larousse universel',
-                'Les langues du monde / M. Sala, I. Vintila-Radulescu, '
-                '1984'
-            ],
-            'noteType': 'dataSource'
-        }, {
-            'label': [
-                'GDEL: Juin 1940 (appel du 18)'
-            ],
-            'noteType': 'dataNotFound'
-        }, {
-            'label': [
-                'Processus de perception et de production du langage',
-                "S'emploie également en subdivision. Cette subdivision ..."
-            ],
-            'noteType': 'general'
-        }, {
-            'label': [
-                'Voir aussi la subdivision Métrique et rythmique ...',
-                'Voir le descripteur Opposition (science politique).'
-            ],
-            'noteType': 'seeReference'
-        }]
+        "note": [
+            {
+                "label": [
+                    "Grand Larousse universel",
+                    "Les langues du monde / M. Sala, I. Vintila-Radulescu, " "1984",
+                ],
+                "noteType": "dataSource",
+            },
+            {"label": ["GDEL: Juin 1940 (appel du 18)"], "noteType": "dataNotFound"},
+            {
+                "label": [
+                    "Processus de perception et de production du langage",
+                    "S'emploie également en subdivision. Cette subdivision ...",
+                ],
+                "noteType": "general",
+            },
+            {
+                "label": [
+                    "Voir aussi la subdivision Métrique et rythmique ...",
+                    "Voir le descripteur Opposition (science politique).",
+                ],
+                "noteType": "seeReference",
+            },
+        ]
     }
 
 
@@ -293,14 +291,14 @@ def test_idref_deleted():
     xml_part_to_add = """
         <leader>     dx  a22     3  45  </leader>
      """
-    trans = trans_prep(Transformation, 'places', xml_part_to_add)
+    trans = trans_prep(Transformation, "places", xml_part_to_add)
     trans.trans_idref_deleted()
-    assert 'deleted' in trans.json
+    assert "deleted" in trans.json
 
     xml_part_to_add = """
         <leader>     cx  a22     3  45  </leader>
      """
-    trans = trans_prep(Transformation, 'places', xml_part_to_add)
+    trans = trans_prep(Transformation, "places", xml_part_to_add)
     trans.trans_idref_deleted()
     assert not trans.json
 
@@ -329,9 +327,8 @@ def test_idref_relation_pid():
             <subfield code="d">20200302</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'places', xml_part_to_add)
+    trans = trans_prep(Transformation, "places", xml_part_to_add)
     trans.trans_idref_relation_pid()
-    assert trans.json == {'relation_pid': {
-        'value': '027630501',
-        'type': 'redirect_from'
-    }}
+    assert trans.json == {
+        "relation_pid": {"value": "027630501", "type": "redirect_from"}
+    }

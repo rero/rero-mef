@@ -44,18 +44,18 @@ from .utils import add_md5, add_schema
 class Action(Enum):
     """Class holding all availabe agent record creation actions."""
 
-    CREATE = 'create'
-    UPDATE = 'update'
-    REPLACE = 'replace'
-    UPTODATE = 'uptodate'
-    DISCARD = 'discard'
-    DELETE = 'delete'
-    ALREADY_DELETED = 'already deleted'
-    DELETE_AGENT = 'delete agent'
-    VALIDATION_ERROR = 'validation error'
-    ERROR = 'error'
-    NOT_ONLINE = 'not online'
-    NOT_FOUND = 'not found'
+    CREATE = "create"
+    UPDATE = "update"
+    REPLACE = "replace"
+    UPTODATE = "uptodate"
+    DISCARD = "discard"
+    DELETE = "delete"
+    ALREADY_DELETED = "already deleted"
+    DELETE_AGENT = "delete agent"
+    VALIDATION_ERROR = "validation error"
+    ERROR = "error"
+    NOT_ONLINE = "not online"
+    NOT_FOUND = "not found"
 
 
 class ReroMefRecordError:
@@ -89,7 +89,7 @@ class ReroMefRecord(Record):
     minter = None
     fetcher = None
     provider = None
-    object_type = 'rec'
+    object_type = "rec"
     name = None
 
     @classmethod
@@ -98,63 +98,76 @@ class ReroMefRecord(Record):
         try:
             current_search.flush_and_refresh(cls.search.Meta.index)
         except Exception as err:
-            current_app.logger.error(f'ERROR flush and refresh: {err}')
+            current_app.logger.error(f"ERROR flush and refresh: {err}")
 
     @classmethod
-    def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
-               reindex=False, md5=False, **kwargs):
+    def create(
+        cls,
+        data,
+        id_=None,
+        delete_pid=False,
+        dbcommit=False,
+        reindex=False,
+        md5=False,
+        **kwargs,
+    ):
         """Create a new agent record."""
         assert cls.minter
-        if '$schema' not in data:
+        if "$schema" not in data:
             data = add_schema(data, cls.provider.pid_type)
         if delete_pid:
-            data.pop('pid', None)
+            data.pop("pid", None)
         if not id_:
             id_ = uuid4()
         cls.minter(id_, data)
         if md5:
             data = add_md5(data)
-        record = super().create(
-            data=data,
-            id_=id_,
-            **kwargs
-        )
+        record = super().create(data=data, id_=id_, **kwargs)
         if dbcommit:
             record.dbcommit(reindex)
         return record
 
     @classmethod
-    def create_or_update(cls, data, id_=None, delete_pid=True, dbcommit=False,
-                         reindex=False, test_md5=False):
+    def create_or_update(
+        cls,
+        data,
+        id_=None,
+        delete_pid=True,
+        dbcommit=False,
+        reindex=False,
+        test_md5=False,
+    ):
         """Create or update agent record."""
         agent_action = None
         return_record = data
 
-        pid = data.get('pid')
+        pid = data.get("pid")
         if agent_record := cls.get_record_by_pid(pid):
             # record exist
             data = add_schema(data, agent_record.provider.pid_type)
             # save the records old data if the new one is empty
-            copy_fields = ['pid', '$schema', 'identifier', 'identifiedBy',
-                           'authorized_access_point', 'type',
-                           'relation_pid', 'deleted']
-            original_data = {
-                k: v for k, v in agent_record.items() if k in copy_fields}
+            copy_fields = [
+                "pid",
+                "$schema",
+                "identifier",
+                "identifiedBy",
+                "authorized_access_point",
+                "type",
+                "relation_pid",
+                "deleted",
+            ]
+            original_data = {k: v for k, v in agent_record.items() if k in copy_fields}
             # dict merging, `original_data` values
             # will be override by `data` values
             data = {**original_data, **data}
 
             if test_md5:
                 return_record, agent_action = agent_record.update_md5_changed(
-                    data=data,
-                    dbcommit=dbcommit,
-                    reindex=reindex
+                    data=data, dbcommit=dbcommit, reindex=reindex
                 )
             else:
                 return_record = agent_record.replace(
-                    data=data,
-                    dbcommit=dbcommit,
-                    reindex=reindex
+                    data=data, dbcommit=dbcommit, reindex=reindex
                 )
                 agent_action = Action.UPDATE
         else:
@@ -169,8 +182,7 @@ class ReroMefRecord(Record):
                 agent_action = Action.CREATE
             except Exception as err:
                 current_app.logger.error(
-                    f'ERROR create_or_update {cls.name} '
-                    f'{data.get("pid")} {err}'
+                    f"ERROR create_or_update {cls.name} " f'{data.get("pid")} {err}'
                 )
                 agent_action = Action.ERROR
         if reindex:
@@ -200,7 +212,7 @@ class ReroMefRecord(Record):
         :param reindex: reindex the record.
         :returns: the modified record
         """
-        if self.get('md5'):
+        if self.get("md5"):
             data = add_md5(data)
         super().update(data)
         if commit or dbcommit:
@@ -219,27 +231,23 @@ class ReroMefRecord(Record):
         """
         data = deepcopy(data)
         data = add_md5(data)
-        if data.get('md5', 'data') == self.get('md5', 'agent'):
+        if data.get("md5", "data") == self.get("md5", "agent"):
             # record has no changes
             return self, Action.UPTODATE
-        return_record = self.replace(
-            data=data, dbcommit=dbcommit, reindex=reindex)
+        return_record = self.replace(data=data, dbcommit=dbcommit, reindex=reindex)
         return return_record, Action.UPDATE
 
     def replace(self, data, commit=False, dbcommit=False, reindex=False):
         """Replace data in record."""
         new_data = deepcopy(data)
-        pid = new_data.get('pid')
+        pid = new_data.get("pid")
         if not pid:
-            raise ReroMefRecordError.PidMissing(f'missing pid={self.pid}')
-        if self.get('md5'):
+            raise ReroMefRecordError.PidMissing(f"missing pid={self.pid}")
+        if self.get("md5"):
             new_data = add_md5(new_data)
         self.clear()
         return self.update(
-            data=new_data,
-            commit=commit,
-            dbcommit=dbcommit,
-            reindex=reindex
+            data=new_data, commit=commit, dbcommit=dbcommit, reindex=reindex
         )
 
     def dbcommit(self, reindex=False, forceindex=False):
@@ -252,7 +260,7 @@ class ReroMefRecord(Record):
         """Reindex record."""
         indexer = self.get_indexer_class()
         if forceindex:
-            return indexer(version_type='external_gte').index(self)
+            return indexer(version_type="external_gte").index(self)
         return indexer().index(self)
 
     @classmethod
@@ -264,12 +272,12 @@ class ReroMefRecord(Record):
         while not get_record_ok and get_record_error_count < 5:
             try:
                 persistent_identifier = PersistentIdentifier.get(
-                    cls.provider.pid_type,
-                    pid
+                    cls.provider.pid_type, pid
                 )
                 get_record_ok = True
-                return super().get_record(persistent_identifier.object_uuid,
-                                          with_deleted=with_deleted)
+                return super().get_record(
+                    persistent_identifier.object_uuid, with_deleted=with_deleted
+                )
 
             except PIDDoesNotExistError:
                 return None
@@ -277,8 +285,7 @@ class ReroMefRecord(Record):
                 return None
             except OperationalError:
                 get_record_error_count += 1
-                msg = (f'Get record OperationalError: '
-                       f'{get_record_error_count} {pid}')
+                msg = f"Get record OperationalError: " f"{get_record_error_count} {pid}"
                 current_app.logger.error(msg)
                 db.session.rollback()
 
@@ -292,17 +299,13 @@ class ReroMefRecord(Record):
     def get_persistent_identifier(cls, id_):
         """Get Persistent Identifier."""
         return PersistentIdentifier.get_by_object(
-            cls.provider.pid_type,
-            cls.object_type,
-            id_
+            cls.provider.pid_type, cls.object_type, id_
         )
 
     @classmethod
     def _get_all(cls, with_deleted=False, date=None):
         """Get all persistent identifier records."""
-        query = PersistentIdentifier \
-            .query \
-            .filter_by(pid_type=cls.provider.pid_type)
+        query = PersistentIdentifier.query.filter_by(pid_type=cls.provider.pid_type)
         if not with_deleted:
             query = query.filter_by(status=PIDStatus.REGISTERED)
         if date:
@@ -315,7 +318,7 @@ class ReroMefRecord(Record):
         query = cls._get_all(with_deleted=with_deleted, date=date)
         if limit:
             # slower, less memory
-            query = query.order_by(text('pid_value')).limit(limit)
+            query = query.order_by(text("pid_value")).limit(limit)
             offset = 0
             count = cls.count(with_deleted=with_deleted)
             while offset < count:
@@ -330,17 +333,15 @@ class ReroMefRecord(Record):
     @classmethod
     def get_all_deleted_pids(cls, limit=100000, from_date=None):
         """Get all records pids. Return a generator iterator."""
-        query = PersistentIdentifier \
-            .query \
-            .filter_by(pid_type=cls.provider.pid_type) \
-            .filter_by(status=PIDStatus.DELETED)
+        query = PersistentIdentifier.query.filter_by(
+            pid_type=cls.provider.pid_type
+        ).filter_by(status=PIDStatus.DELETED)
         if from_date:
-            query = query \
-                .filter(func.DATE(PersistentIdentifier.updated) >= from_date)
+            query = query.filter(func.DATE(PersistentIdentifier.updated) >= from_date)
         if limit:
             # slower, less memory
             count = query.count()
-            query = query.order_by(text('pid_value')).limit(limit)
+            query = query.order_by(text("pid_value")).limit(limit)
             offset = 0
             while offset < count:
                 for identifier in query.offset(offset):
@@ -357,7 +358,7 @@ class ReroMefRecord(Record):
         query = cls._get_all(with_deleted=with_deleted, date=date)
         if limit:
             # slower, less memory
-            query = query.order_by(text('pid_value')).limit(limit)
+            query = query.order_by(text("pid_value")).limit(limit)
             offset = 0
             count = cls.count(with_deleted=with_deleted)
             while offset < count:
@@ -386,10 +387,10 @@ class ReroMefRecord(Record):
                 return cls._get_all(with_deleted=with_deleted).count()
             except OperationalError:
                 get_count_count += 1
-                msg = f'Get count OperationalError: {get_count_count}'
+                msg = f"Get count OperationalError: {get_count_count}"
                 current_app.logger.error(msg)
                 db.session.rollback()
-        raise OperationalError('Get count')
+        raise OperationalError("Get count")
 
     @classmethod
     def index_all(cls):
@@ -411,14 +412,14 @@ class ReroMefRecord(Record):
         """Get the indexer from config."""
         try:
             indexer = obj_or_import_string(
-                current_app.config['RECORDS_REST_ENDPOINTS'][
-                    cls.provider.pid_type
-                ]['indexer_class']
+                current_app.config["RECORDS_REST_ENDPOINTS"][cls.provider.pid_type][
+                    "indexer_class"
+                ]
             )
         except Exception:
             # provide default indexer if no indexer is defined in config.
             indexer = ReroIndexer
-            current_app.logger.error(f'Get indexer class {cls.__name__}')
+            current_app.logger.error(f"Get indexer class {cls.__name__}")
         return indexer
 
     def delete_from_index(self):
@@ -428,16 +429,15 @@ class ReroMefRecord(Record):
             indexer().delete(self)
         except NotFoundError:
             current_app.logger.warning(
-                'Can not delete from index {class_name}: {pid}'.format(
-                    class_name=self.__class__.__name__,
-                    pid=self.pid
+                "Can not delete from index {class_name}: {pid}".format(
+                    class_name=self.__class__.__name__, pid=self.pid
                 )
             )
 
     @property
     def pid(self):
         """Get record pid value."""
-        return self.get('pid')
+        return self.get("pid")
 
     @property
     def persistent_identifier(self):
@@ -454,7 +454,7 @@ class ReroMefRecord(Record):
     @property
     def deleted(self):
         """Get record deleted value."""
-        return self.get('deleted')
+        return self.get("deleted")
 
 
 class ReroIndexer(RecordIndexer):
@@ -466,10 +466,7 @@ class ReroIndexer(RecordIndexer):
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
         self._bulk_op(
-            record_id_iterator,
-            op_type='index',
-            index=index,
-            doc_type=doc_type
+            record_id_iterator, op_type="index", index=index, doc_type=doc_type
         )
 
     def process_bulk_queue(self, search_bulk_kwargs=None, stats_only=True):
@@ -488,7 +485,7 @@ class ReroIndexer(RecordIndexer):
                 routing_key=self.mq_routing_key,
             )
 
-            req_timeout = current_app.config['INDEXER_BULK_REQUEST_TIMEOUT']
+            req_timeout = current_app.config["INDEXER_BULK_REQUEST_TIMEOUT"]
 
             search_bulk_kwargs = search_bulk_kwargs or {}
 
@@ -498,7 +495,7 @@ class ReroIndexer(RecordIndexer):
                 stats_only=stats_only,
                 request_timeout=req_timeout,
                 expand_action_callback=search.helpers.expand_action,
-                **search_bulk_kwargs
+                **search_bulk_kwargs,
             )
 
             consumer.close()
@@ -513,7 +510,7 @@ class ReroIndexer(RecordIndexer):
         for message in message_iterator:
             payload = message.decode()
             try:
-                if payload['op'] == 'delete':
+                if payload["op"] == "delete":
                     yield self._delete_action(payload=payload)
                 else:
                     yield self._index_action(payload=payload)
@@ -522,10 +519,8 @@ class ReroIndexer(RecordIndexer):
                 message.reject()
             except Exception:
                 message.reject()
-                uid = payload.get('id', '???')
-                current_app.logger.error(
-                    f"Failed to index record {uid}",
-                    exc_info=True)
+                uid = payload.get("id", "???")
+                current_app.logger.error(f"Failed to index record {uid}", exc_info=True)
 
     def _index_action(self, payload):
         """Bulk index action.
@@ -533,7 +528,7 @@ class ReroIndexer(RecordIndexer):
         :param payload: Decoded message body.
         :returns: Dictionary defining the search engine bulk 'index' action.
         """
-        if doc_type := payload.get('doc_type'):
+        if doc_type := payload.get("doc_type"):
             record = get_entity_class(doc_type).get_record(payload["id"])
         else:
             record = self.record_cls.get_record(payload["id"])
@@ -565,12 +560,7 @@ class ReroIndexer(RecordIndexer):
         """
         with self.create_producer() as producer:
             for rec in record_id_iterator:
-                data = dict(
-                    id=str(rec),
-                    op=op_type,
-                    index=index,
-                    doc_type=doc_type
-                )
+                data = dict(id=str(rec), op=op_type, index=index, doc_type=doc_type)
                 producer.publish(
                     data,
                     declare=[self.mq_queue],

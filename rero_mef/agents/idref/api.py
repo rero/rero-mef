@@ -32,9 +32,9 @@ class AgentIdrefSearch(RecordsSearch):
     class Meta:
         """Search only on index."""
 
-        index = 'agents_idref'
+        index = "agents_idref"
         doc_types = None
-        fields = ('*', )
+        fields = ("*",)
         facets = {}
 
         default_filter = None
@@ -46,9 +46,9 @@ class AgentIdrefRecord(AgentRecord):
     minter = idref_id_minter
     fetcher = idref_id_fetcher
     provider = AgentIdrefProvider
-    name = 'idref'
-    viaf_source_code = 'SUDOC'
-    viaf_pid_name = 'idref_pid'
+    name = "idref"
+    viaf_source_code = "SUDOC"
+    viaf_pid_name = "idref_pid"
     model_cls = AgentIdrefMetadata
     search = AgentIdrefSearch
 
@@ -56,6 +56,7 @@ class AgentIdrefRecord(AgentRecord):
     def get_online_record(cls, id_, debug=False):
         """Get online record."""
         from .tasks import idref_get_record
+
         return idref_get_record(id_=id_, debug=debug)
 
 
@@ -70,7 +71,5 @@ class AgentIdrefIndexer(AgentIndexer):
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
         super().bulk_index(
-            record_id_iterator,
-            index=AgentIdrefSearch.Meta.index,
-            doc_type='aidref'
+            record_id_iterator, index=AgentIdrefSearch.Meta.index, doc_type="aidref"
         )

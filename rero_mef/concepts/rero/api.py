@@ -32,9 +32,9 @@ class ConceptReroSearch(RecordsSearch):
     class Meta:
         """Search only on index."""
 
-        index = 'concepts_rero'
+        index = "concepts_rero"
         doc_types = None
-        fields = ('*', )
+        fields = ("*",)
         facets = {}
 
         default_filter = None
@@ -46,9 +46,9 @@ class ConceptReroRecord(ConceptRecord):
     minter = rero_id_minter
     fetcher = rero_id_fetcher
     provider = ConceptReroProvider
-    name = 'rero'
-    viaf_source_code = 'RAMEAU'
-    pid_type = 'concept_rero_pid'
+    name = "rero"
+    viaf_source_code = "RAMEAU"
+    pid_type = "concept_rero_pid"
     model_cls = ConceptReroMetadata
     search = ConceptReroSearch
 
@@ -64,7 +64,5 @@ class ConceptReroIndexer(ConceptIndexer):
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
         super().bulk_index(
-            record_id_iterator,
-            index=ConceptReroSearch.Meta.index,
-            doc_type='corero'
+            record_id_iterator, index=ConceptReroSearch.Meta.index, doc_type="corero"
         )

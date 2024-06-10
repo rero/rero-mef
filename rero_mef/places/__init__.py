@@ -17,11 +17,16 @@
 
 """Places."""
 
-from .idref.api import PlaceIdrefIndexer, PlaceIdrefRecord, \
-    PlaceIdrefSearch
+from .idref.api import PlaceIdrefIndexer, PlaceIdrefRecord, PlaceIdrefSearch
 from .mef.api import PlaceMefIndexer, PlaceMefRecord, PlaceMefSearch
 from ..api import Action
 
-__all__ = ('PlaceMefIndexer', 'PlaceMefRecord', 'PlaceMefSearch',
-           'PlaceIdrefIndexer', 'PlaceIdrefRecord', 'PlaceIdrefSearch',
-           'Action')
+__all__ = (
+    "PlaceMefIndexer",
+    "PlaceMefRecord",
+    "PlaceMefSearch",
+    "PlaceIdrefIndexer",
+    "PlaceIdrefRecord",
+    "PlaceIdrefSearch",
+    "Action",
+)

@@ -20,17 +20,17 @@
 import pytest
 
 pytest_plugins = (
-    'celery.contrib.pytest',
-    'fixtures.agents_data',
-    'fixtures.agents_records',
-    'fixtures.concepts_data',
-    'fixtures.concepts_records',
-    'fixtures.places_data',
-    'fixtures.places_records'
+    "celery.contrib.pytest",
+    "fixtures.agents_data",
+    "fixtures.agents_records",
+    "fixtures.concepts_data",
+    "fixtures.concepts_records",
+    "fixtures.places_data",
+    "fixtures.places_records",
 )
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def es(appctx):
     """Setup and teardown all registered Elasticsearch indices.
 
@@ -42,7 +42,7 @@ def es(appctx):
     """
     from invenio_search import current_search, current_search_client
 
-    current_search_client.indices.delete_template('*')
+    current_search_client.indices.delete_template("*")
     list(current_search.put_templates())
 
     list(current_search.delete(ignore=[404]))
@@ -52,20 +52,20 @@ def es(appctx):
     try:
         yield current_search_client
     finally:
-        current_search_client.indices.delete(index='*')
-        current_search_client.indices.delete_template('*')
+        current_search_client.indices.delete(index="*")
+        current_search_client.indices.delete_template("*")
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def app_config(app_config):
     """Create temporary instance dir for each test."""
-    app_config['CELERY_BROKER_URL'] = 'memory://'
-    app_config['RATELIMIT_STORAGE_URL'] = 'memory://'
-    app_config['CACHE_TYPE'] = 'simple'
-    app_config['ACCOUNTS_SESSION_REDIS_URL'] = 'redis://localhost:6379/1'
-    app_config['SEARCH_ELASTIC_HOSTS'] = None
-    app_config['CELERY_CACHE_BACKEND'] = "memory"
-    app_config['CELERY_RESULT_BACKEND'] = "cache"
-    app_config['CELERY_TASK_ALWAYS_EAGER'] = True
-    app_config['CELERY_TASK_EAGER_PROPAGATES'] = True
+    app_config["CELERY_BROKER_URL"] = "memory://"
+    app_config["RATELIMIT_STORAGE_URL"] = "memory://"
+    app_config["CACHE_TYPE"] = "simple"
+    app_config["ACCOUNTS_SESSION_REDIS_URL"] = "redis://localhost:6379/1"
+    app_config["SEARCH_ELASTIC_HOSTS"] = None
+    app_config["CELERY_CACHE_BACKEND"] = "memory"
+    app_config["CELERY_RESULT_BACKEND"] = "cache"
+    app_config["CELERY_TASK_ALWAYS_EAGER"] = True
+    app_config["CELERY_TASK_EAGER_PROPAGATES"] = True
     return app_config

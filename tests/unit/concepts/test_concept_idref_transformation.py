@@ -28,11 +28,9 @@ def test_idref_pid():
         <controlfield tag="001">249594463</controlfield>
         <controlfield tag="008">Td6</controlfield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_pid()
-    assert trans.json == {
-        'pid': '249594463'
-    }
+    assert trans.json == {"pid": "249594463"}
 
 
 def test_idref_bnf_type():
@@ -40,20 +38,16 @@ def test_idref_bnf_type():
     xml_part_to_add = """
         <controlfield tag="008">Td6</controlfield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_bnf_type()
-    assert trans.json == {
-        'bnf_type': 'sujet Rameau'
-    }
+    assert trans.json == {"bnf_type": "sujet Rameau"}
 
     xml_part_to_add = """
         <controlfield tag="008">Tf8</controlfield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_bnf_type()
-    assert trans.json == {
-        'bnf_type': 'genre/forme Rameau'
-    }
+    assert trans.json == {"bnf_type": "genre/forme Rameau"}
 
 
 def test_idref_identifier():
@@ -69,19 +63,19 @@ def test_idref_identifier():
             <subfield code="d">20200616</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_identifier()
     assert trans.json == {
-        'identifiedBy': [
+        "identifiedBy": [
             {
-                'type': 'uri',
-                'source': 'IDREF',
-                'value': 'http://www.idref.fr/249594463'
+                "type": "uri",
+                "source": "IDREF",
+                "value": "http://www.idref.fr/249594463",
             },
             {
-                'type': 'uri',
-                'source': 'BNF',
-                'value': 'http://catalogue.bnf.fr/ark:/12148/cb17876933v'
+                "type": "uri",
+                "source": "BNF",
+                "value": "http://catalogue.bnf.fr/ark:/12148/cb17876933v",
             },
         ]
     }
@@ -98,10 +92,10 @@ def test_idref_authorized_access_point():
             <subfield code="x">Méthodes d&apos;apprentissage</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_authorized_access_point()
     assert trans.json == {
-        'authorized_access_point': "Lecture - Méthodes d'apprentissage"
+        "authorized_access_point": "Lecture - Méthodes d'apprentissage"
     }
 
     xml_part_to_add = """
@@ -113,10 +107,10 @@ def test_idref_authorized_access_point():
             <subfield code="z">20e siècle</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_authorized_access_point()
     assert trans.json == {
-        'authorized_access_point': 'Littérature espagnole - 20e siècle'
+        "authorized_access_point": "Littérature espagnole - 20e siècle"
     }
 
 
@@ -136,12 +130,12 @@ def test_idref_variant_access_point():
             <subfield code="a">Jeûne religieux</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_variant_access_point()
     assert trans.json == {
-        'variant_access_point': [
-            'Jeûne - Aspect religieux',
-            'Jeûne religieux',
+        "variant_access_point": [
+            "Jeûne - Aspect religieux",
+            "Jeûne religieux",
         ]
     }
 
@@ -158,13 +152,10 @@ def test_idref_variant_access_point():
             <subfield code="a">Certificats d&apos;addition</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_variant_access_point()
     assert trans.json == {
-        'variant_access_point': [
-            'Brevets (droit commercial)',
-            "Certificats d'addition"
-        ]
+        "variant_access_point": ["Brevets (droit commercial)", "Certificats d'addition"]
     }
 
 
@@ -227,23 +218,23 @@ def test_idref_relation():
             <subfield code="a">Chansons espagnoles</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_relation()
     assert trans.json == {
-        'broader': [
-            {'authorized_access_point': 'Langues ibéro-romanes'},
-            {'authorized_access_point': 'Langues romanes'}
+        "broader": [
+            {"authorized_access_point": "Langues ibéro-romanes"},
+            {"authorized_access_point": "Langues romanes"},
         ],
-        'narrower': [
-            {'authorized_access_point': 'Espagnol (langue) - Argot'},
-            {'authorized_access_point': 'Espagnol (langue) - Dialectes'}
+        "narrower": [
+            {"authorized_access_point": "Espagnol (langue) - Argot"},
+            {"authorized_access_point": "Espagnol (langue) - Dialectes"},
         ],
-        'related': [
-            {'authorized_access_point': 'Abécédaires espagnols'},
-            {'authorized_access_point': 'Abréviations espagnoles'},
-            {'authorized_access_point': 'Cantiques espagnols'},
-            {'authorized_access_point': 'Chansons espagnoles'}
-        ]
+        "related": [
+            {"authorized_access_point": "Abécédaires espagnols"},
+            {"authorized_access_point": "Abréviations espagnoles"},
+            {"authorized_access_point": "Cantiques espagnols"},
+            {"authorized_access_point": "Chansons espagnoles"},
+        ],
     }
 
 
@@ -261,17 +252,20 @@ def test_idref_classification():
             <subfield code="2">Note de regroupement par domaine</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_classification()
     assert trans.json == {
-        'classification': [{
-            'type': 'bf:ClassificationDdc',
-            'classificationPortion': '370',
-            'name': "Education et enseignement"
-        }, {
-            'type': 'bf:ClassificationDdc',
-            'classificationPortion': '401',
-        }]
+        "classification": [
+            {
+                "type": "bf:ClassificationDdc",
+                "classificationPortion": "370",
+                "name": "Education et enseignement",
+            },
+            {
+                "type": "bf:ClassificationDdc",
+                "classificationPortion": "401",
+            },
+        ]
     }
 
 
@@ -304,37 +298,39 @@ def test_idref_close_match():
             <subfield code="d">2022-07-22</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_close_match()
     assert trans.json == {
-        'closeMatch': [{
-            'authorized_access_point': 'Fasting',
-            'source': 'LCSH',
-            'identifiedBy': {
-                'source': 'LCSH',
-                'type': 'uri',
-                'value': 'http://id.loc.gov/authorities/subjects/sh85047403'
-            }
-        }, {
-            'authorized_access_point': 'Fasting -- Religious aspects',
-            'source': 'LCSH',
-            'identifiedBy': {
-                'source': 'LCSH',
-                'type': 'uri',
-                'value': 'http://id.loc.gov/authorities/subjects/sh2003003108'
-            }
-        }, {
-            'authorized_access_point': 'Jeûne',
-            'source': 'RVMLaval'
-        }, {
-            'authorized_access_point': 'Jeûne -- Aspect religieux',
-            'source': 'RVMLaval'
-        }]
+        "closeMatch": [
+            {
+                "authorized_access_point": "Fasting",
+                "source": "LCSH",
+                "identifiedBy": {
+                    "source": "LCSH",
+                    "type": "uri",
+                    "value": "http://id.loc.gov/authorities/subjects/sh85047403",
+                },
+            },
+            {
+                "authorized_access_point": "Fasting -- Religious aspects",
+                "source": "LCSH",
+                "identifiedBy": {
+                    "source": "LCSH",
+                    "type": "uri",
+                    "value": "http://id.loc.gov/authorities/subjects/sh2003003108",
+                },
+            },
+            {"authorized_access_point": "Jeûne", "source": "RVMLaval"},
+            {
+                "authorized_access_point": "Jeûne -- Aspect religieux",
+                "source": "RVMLaval",
+            },
+        ]
     }
 
 
 def test_idref_notes():
-    """Test """
+    """Test"""
     xml_part_to_add = """
         <controlfield tag="008">Td6</controlfield>
         <datafield tag="810" ind1=" " ind2=" ">
@@ -373,34 +369,33 @@ def test_idref_notes():
             </subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_note()
     assert trans.json == {
-        'note': [{
-            'label': [
-                'Grand Larousse universel',
-                'Les langues du monde / M. Sala, I. Vintila-Radulescu, '
-                '1984'
-            ],
-            'noteType': 'dataSource'
-        }, {
-            'label': [
-                'GDEL: Juin 1940 (appel du 18)'
-            ],
-            'noteType': 'dataNotFound'
-        }, {
-            'label': [
-                'Processus de perception et de production du langage',
-                "S'emploie également en subdivision. Cette subdivision ..."
-            ],
-            'noteType': 'general'
-        }, {
-            'label': [
-                'Voir aussi la subdivision Métrique et rythmique ...',
-                'Voir le descripteur Opposition (science politique).'
-            ],
-            'noteType': 'seeReference'
-        }]
+        "note": [
+            {
+                "label": [
+                    "Grand Larousse universel",
+                    "Les langues du monde / M. Sala, I. Vintila-Radulescu, " "1984",
+                ],
+                "noteType": "dataSource",
+            },
+            {"label": ["GDEL: Juin 1940 (appel du 18)"], "noteType": "dataNotFound"},
+            {
+                "label": [
+                    "Processus de perception et de production du langage",
+                    "S'emploie également en subdivision. Cette subdivision ...",
+                ],
+                "noteType": "general",
+            },
+            {
+                "label": [
+                    "Voir aussi la subdivision Métrique et rythmique ...",
+                    "Voir le descripteur Opposition (science politique).",
+                ],
+                "noteType": "seeReference",
+            },
+        ]
     }
 
 
@@ -409,14 +404,14 @@ def test_idref_deleted():
     xml_part_to_add = """
         <leader>     dx  a22     3  45  </leader>
      """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_deleted()
-    assert 'deleted' in trans.json
+    assert "deleted" in trans.json
 
     xml_part_to_add = """
         <leader>     cx  a22     3  45  </leader>
      """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_deleted()
     assert not trans.json
 
@@ -445,9 +440,8 @@ def test_idref_relation_pid():
             <subfield code="d">20200302</subfield>
         </datafield>
     """
-    trans = trans_prep(Transformation, 'concepts', xml_part_to_add)
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_relation_pid()
-    assert trans.json == {'relation_pid': {
-        'value': '027630501',
-        'type': 'redirect_from'
-    }}
+    assert trans.json == {
+        "relation_pid": {"value": "027630501", "type": "redirect_from"}
+    }

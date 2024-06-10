@@ -29,90 +29,87 @@ from rero_mef.utils import get_timestamp, set_timestamp
 
 def test_monitoring_es_db_counts(client):
     """Test monitoring es_db_counts."""
-    res = client.get(url_for('api_monitoring.es_db_counts'))
+    res = client.get(url_for("api_monitoring.es_db_counts"))
     assert res.status_code == 200
     assert json.loads(res.get_data(as_text=True)) == {
-        'data': {
-            'aggnd': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'agents_gnd'},
-            'agrero': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'agents_rero'},
-            'aidref': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'agents_idref'},
-            'cidref': {
-                'db': 0, 'db-es': 0, 'es': 0, 'index': 'concepts_idref'},
-            'comef': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'concepts_mef'},
-            'corero': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'concepts_rero'},
-            'mef': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'mef'},
-            'viaf': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'viaf'},
-            'pidref': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'places_idref'},
-            'plmef': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'places_mef'}
+        "data": {
+            "aggnd": {"db": 0, "db-es": 0, "es": 0, "index": "agents_gnd"},
+            "agrero": {"db": 0, "db-es": 0, "es": 0, "index": "agents_rero"},
+            "aidref": {"db": 0, "db-es": 0, "es": 0, "index": "agents_idref"},
+            "cidref": {"db": 0, "db-es": 0, "es": 0, "index": "concepts_idref"},
+            "comef": {"db": 0, "db-es": 0, "es": 0, "index": "concepts_mef"},
+            "corero": {"db": 0, "db-es": 0, "es": 0, "index": "concepts_rero"},
+            "mef": {"db": 0, "db-es": 0, "es": 0, "index": "mef"},
+            "viaf": {"db": 0, "db-es": 0, "es": 0, "index": "viaf"},
+            "pidref": {"db": 0, "db-es": 0, "es": 0, "index": "places_idref"},
+            "plmef": {"db": 0, "db-es": 0, "es": 0, "index": "places_mef"},
         }
     }
 
 
 def test_monitoring_check_es_db_counts(app, client, agent_idref_data):
     """Test monitoring check_es_db_counts."""
-    res = client.get(url_for('api_monitoring.check_es_db_counts'))
+    res = client.get(url_for("api_monitoring.check_es_db_counts"))
     assert res.status_code == 200
-    assert json.loads(res.get_data(as_text=True)) == {
-        'data': {'status': 'green'}}
+    assert json.loads(res.get_data(as_text=True)) == {"data": {"status": "green"}}
 
     AgentIdrefRecord.create(
-        data=agent_idref_data,
-        delete_pid=False,
-        dbcommit=True,
-        reindex=False)
+        data=agent_idref_data, delete_pid=False, dbcommit=True, reindex=False
+    )
     AgentIdrefRecord.flush_indexes()
-    res = client.get(url_for('api_monitoring.check_es_db_counts'))
+    res = client.get(url_for("api_monitoring.check_es_db_counts"))
     assert res.status_code == 200
     assert json.loads(res.get_data(as_text=True)) == {
-        'data': {'status': 'red'},
-        'errors': [{
-            'code': 'DB_ES_COUNTER_MISSMATCH',
-            'details': 'There are 1 items from aidref missing in ES.',
-            'id': 'DB_ES_COUNTER_MISSMATCH',
-            'links': {
-                'about': 'http://localhost/monitoring/check_es_db_counts',
-                'aidref': 'http://localhost/monitoring/missing_pids/aidref'
-            },
-            'title': "DB items counts don't match ES items count."
-        }]
+        "data": {"status": "red"},
+        "errors": [
+            {
+                "code": "DB_ES_COUNTER_MISSMATCH",
+                "details": "There are 1 items from aidref missing in ES.",
+                "id": "DB_ES_COUNTER_MISSMATCH",
+                "links": {
+                    "about": "http://localhost/monitoring/check_es_db_counts",
+                    "aidref": "http://localhost/monitoring/missing_pids/aidref",
+                },
+                "title": "DB items counts don't match ES items count.",
+            }
+        ],
     }
 
     # this view is only accessible by admin
-    res = client.get(url_for('api_monitoring.missing_pids', doc_type='aidref'))
+    res = client.get(url_for("api_monitoring.missing_pids", doc_type="aidref"))
     assert res.status_code == 401
 
     create_and_login_monitoring_user(app, client)
 
-    res = client.get(url_for(
-        'api_monitoring.missing_pids', doc_type='aidref', delay=0))
+    res = client.get(url_for("api_monitoring.missing_pids", doc_type="aidref", delay=0))
     assert res.status_code == 200
 
     assert json.loads(res.get_data(as_text=True)) == {
-        'data': {
-            'DB': [],
-            'ES': ['http://localhost/agents/idref/069774331'],
-            'ES duplicate': []
+        "data": {
+            "DB": [],
+            "ES": ["http://localhost/agents/idref/069774331"],
+            "ES duplicate": [],
         }
     }
 
 
 def test_timestamps(app, client):
     """Test timestamps"""
-    time_stamp = set_timestamp('test', msg='test msg')
-    assert get_timestamp('test') == {'time': time_stamp, 'msg': 'test msg'}
-    res = client.get(url_for('api_monitoring.timestamps'))
+    time_stamp = set_timestamp("test", msg="test msg")
+    assert get_timestamp("test") == {"time": time_stamp, "msg": "test msg"}
+    res = client.get(url_for("api_monitoring.timestamps"))
     assert res.status_code == 401
 
     create_and_login_monitoring_user(app, client)
 
-    res = client.get(url_for('api_monitoring.timestamps'))
+    res = client.get(url_for("api_monitoring.timestamps"))
     assert res.status_code == 200
     assert json.loads(res.get_data(as_text=True)) == {
-        'data': {
-            'test': {
-                'msg': 'test msg',
-                'unixtime': time.mktime(time_stamp.timetuple()),
-                'utctime': time_stamp.strftime("%Y-%m-%d %H:%M:%S")
+        "data": {
+            "test": {
+                "msg": "test msg",
+                "unixtime": time.mktime(time_stamp.timetuple()),
+                "utctime": time_stamp.strftime("%Y-%m-%d %H:%M:%S"),
             }
         }
     }

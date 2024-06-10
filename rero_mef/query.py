@@ -31,15 +31,15 @@ def and_search_factory(self, search, query_parser=None):
     :param search: Elastic search DSL search instance.
     :returns: Tuple with search instance and URL arguments.
     """
+
     def _default_parser(qstr=None):
         """Default parser that uses the Q() from elasticsearch_dsl."""
-        return Q('query_string', query=qstr, default_operator='AND') \
-            if qstr else Q()
+        return Q("query_string", query=qstr, default_operator="AND") if qstr else Q()
 
     from invenio_records_rest.facets import default_facets_factory
     from invenio_records_rest.sorter import default_sorter_factory
 
-    query_string = request.values.get('q')
+    query_string = request.values.get("q")
     query_parser = query_parser or _default_parser
 
     try:
@@ -57,17 +57,15 @@ def and_search_factory(self, search, query_parser=None):
     for key, value in sortkwargs.items():
         urlkwargs.add(key, value)
 
-    urlkwargs.add('q', query_string)
+    urlkwargs.add("q", query_string)
 
     # include deleted
     with_deleted = request.args.get(
-        'with_deleted',
-        default=False,
-        type=lambda v: v.lower() in ['true', '1']
+        "with_deleted", default=False, type=lambda v: v.lower() in ["true", "1"]
     )
     if not with_deleted:
-        search = search \
-            .exclude('exists', field='deleted') \
-            .exclude('exists', field='*.deleted')
+        search = search.exclude("exists", field="deleted").exclude(
+            "exists", field="*.deleted"
+        )
 
     return search, urlkwargs

@@ -28,8 +28,16 @@ class AgentRecord(ReroMefRecord):
     name = None
 
     @classmethod
-    def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
-               reindex=False, md5=True, **kwargs):
+    def create(
+        cls,
+        data,
+        id_=None,
+        delete_pid=False,
+        dbcommit=False,
+        reindex=False,
+        md5=True,
+        **kwargs,
+    ):
         """Create a new agent record."""
         return super().create(
             data=data,
@@ -38,22 +46,18 @@ class AgentRecord(ReroMefRecord):
             dbcommit=dbcommit,
             reindex=reindex,
             md5=True,
-            **kwargs
+            **kwargs,
         )
 
     def delete(self, force=False, dbcommit=False, delindex=False):
         """Delete agent from MEF record."""
         from .mef.api import AgentMefRecord
+
         for mef_record in AgentMefRecord.get_mef(self.pid, self.name):
             mef_record.delete_ref(self, dbcommit=dbcommit, reindex=delindex)
-        return super().delete(
-            force=force,
-            dbcommit=dbcommit,
-            delindex=delindex
-        )
+        return super().delete(force=force, dbcommit=dbcommit, delindex=delindex)
 
-    def create_or_update_mef(self, dbcommit=False, reindex=False,
-                             viaf_record=None):
+    def create_or_update_mef(self, dbcommit=False, reindex=False, viaf_record=None):
         """Create or update MEF.
 
         :param dbcommit: Commit changes to DB.
@@ -75,7 +79,7 @@ class AgentRecord(ReroMefRecord):
                 viaf_records.append(viaf)
         if len(viaf_records) > 1:
             current_app.logger.error(
-                f'MULTIPLE VIAF FOUND FOR: {self.name} {self.pid} | '
+                f"MULTIPLE VIAF FOUND FOR: {self.name} {self.pid} | "
                 f'viaf: {", ".join([viaf.pid for viaf in viaf_records])}'
             )
         # get all VIAF associated MEF records.
@@ -91,7 +95,7 @@ class AgentRecord(ReroMefRecord):
                 mef_records.append(mef)
         if len(mef_records) > 1:
             current_app.logger.error(
-                f'MULTIPLE MEF FOUND FOR: {self.name} {self.pid} | '
+                f"MULTIPLE MEF FOUND FOR: {self.name} {self.pid} | "
                 f'mef: {", ".join([mef.pid for mef in mef_records])}'
             )
 
@@ -102,7 +106,7 @@ class AgentRecord(ReroMefRecord):
             for mef in mef_records[1:]:
                 # Delete ref in MEF records
                 if old_ref := mef.pop(self.name, None):
-                    old_pid = old_ref['$ref'].split('/')[-1]
+                    old_pid = old_ref["$ref"].split("/")[-1]
                     if old_pid != self.pid:
                         old_pids.add(old_pid)
                         mef_actions[old_pid] = Action.DELETE
@@ -111,25 +115,21 @@ class AgentRecord(ReroMefRecord):
             # Update first MEF record
             mef_record = mef_records[0]
             if old_ref := mef_record.get(self.name):
-                old_pid = old_ref['$ref'].split('/')[-1]
+                old_pid = old_ref["$ref"].split("/")[-1]
             else:
                 old_pid = None
             if old_pid != self.pid:
                 if old_pid:
                     old_pids.add(old_pid)
                     mef_actions[old_pid] = Action.DELETE
-                mef_record[self.name] = {'$ref': ref_string}
+                mef_record[self.name] = {"$ref": ref_string}
                 mef_record = mef_record.update(
-                    data=mef_record,
-                    dbcommit=dbcommit,
-                    reindex=reindex
+                    data=mef_record, dbcommit=dbcommit, reindex=reindex
                 )
                 mef_actions[mef_record.pid] = Action.UPDATE
             elif mef_record.set_deleted():
                 mef_record = mef_record.update(
-                    data=mef_record,
-                    dbcommit=dbcommit,
-                    reindex=reindex
+                    data=mef_record, dbcommit=dbcommit, reindex=reindex
                 )
                 mef_actions[mef_record.pid] = Action.UPDATE
             else:
@@ -138,11 +138,11 @@ class AgentRecord(ReroMefRecord):
                 mef_actions[mef_record.pid] = Action.UPTODATE
         else:
             # No MEF record create one.
-            mef_data = {self.name: {'$ref': ref_string}}
-            if self.deleted and not mef_data.get('deleted'):
-                mef_data['deleted'] = self.deleted
+            mef_data = {self.name: {"$ref": ref_string}}
+            if self.deleted and not mef_data.get("deleted"):
+                mef_data["deleted"] = self.deleted
             if viaf_records:
-                mef_data['viaf_pid'] = viaf_records[0].pid
+                mef_data["viaf_pid"] = viaf_records[0].pid
             mef_record = AgentMefRecord.create(
                 data=mef_data,
                 dbcommit=dbcommit,
@@ -154,10 +154,7 @@ class AgentRecord(ReroMefRecord):
         # create all MEF records for old pids
         for old_pid in old_pids:
             old_rec = self.get_record_by_pid(old_pid)
-            mef, action = old_rec.create_or_update_mef(
-                dbcommit=True,
-                reindex=True
-            )
+            mef, action = old_rec.create_or_update_mef(dbcommit=True, reindex=True)
             mef_actions[old_pid] = action
         return mef_record, mef_actions
 
@@ -178,6 +175,7 @@ class AgentRecord(ReroMefRecord):
     def reindex(self, forceindex=False):
         """Reindex record."""
         from .mef.api import AgentMefRecord
+
         result = super().reindex(forceindex=forceindex)
         # reindex MEF records
         for mef_record in AgentMefRecord.get_mef(self.pid, self.name):

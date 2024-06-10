@@ -28,71 +28,68 @@ def test_monitoring(app, agent_idref_data, script_info):
     """Test monitoring."""
 
     cli_output = [
-        'DB - ES    type      count                      index   count_es',
-        '----------------------------------------------------------------',
-        '      0   aggnd          0                 agents_gnd          0',
-        '      0  agrero          0                agents_rero          0',
-        '      1  aidref          1               agents_idref          0',
-        '      0  cidref          0             concepts_idref          0',
-        '      0   comef          0               concepts_mef          0',
-        '      0  corero          0              concepts_rero          0',
-        '      0     mef          0                        mef          0',
-        '      0  pidref          0               places_idref          0',
-        '      0   plmef          0                 places_mef          0',
-        '      0    viaf          0                       viaf          0'
+        "DB - ES    type      count                      index   count_es",
+        "----------------------------------------------------------------",
+        "      0   aggnd          0                 agents_gnd          0",
+        "      0  agrero          0                agents_rero          0",
+        "      1  aidref          1               agents_idref          0",
+        "      0  cidref          0             concepts_idref          0",
+        "      0   comef          0               concepts_mef          0",
+        "      0  corero          0              concepts_rero          0",
+        "      0     mef          0                        mef          0",
+        "      0  pidref          0               places_idref          0",
+        "      0   plmef          0                 places_mef          0",
+        "      0    viaf          0                       viaf          0",
     ]
     mon = Monitoring(time_delta=0)
-    assert mon.get_es_count('xxx') == 'No >>xxx<< in ES'
-    assert mon.get_db_count('xxx') == 'No >>xxx<< in DB'
+    assert mon.get_es_count("xxx") == "No >>xxx<< in ES"
+    assert mon.get_db_count("xxx") == "No >>xxx<< in DB"
 
     idref = AgentIdrefRecord.create(
-        data=agent_idref_data,
-        delete_pid=False,
-        dbcommit=True,
-        reindex=False
+        data=agent_idref_data, delete_pid=False, dbcommit=True, reindex=False
     )
     idref_pid = idref.pid
-    assert mon.get_db_count('aidref') == 1
-    assert mon.get_es_count('agents_idref') == 0
-    assert mon.check() == {'aidref': {'db_es': 1}}
-    assert mon.missing('aidref') == {
-        'DB': [], 'ES': ['069774331'], 'ES duplicate': []}
+    assert mon.get_db_count("aidref") == 1
+    assert mon.get_es_count("agents_idref") == 0
+    assert mon.check() == {"aidref": {"db_es": 1}}
+    assert mon.missing("aidref") == {"DB": [], "ES": ["069774331"], "ES duplicate": []}
     # not flushed by default
     assert mon.info() == {
-        'aggnd': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'agents_gnd'},
-        'agrero': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'agents_rero'},
-        'aidref': {'db': 1, 'db-es': 1, 'es': 0, 'index': 'agents_idref'},
-        'cidref': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'concepts_idref'},
-        'comef': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'concepts_mef'},
-        'corero': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'concepts_rero'},
-        'mef': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'mef'},
-        'pidref': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'places_idref'},
-        'plmef': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'places_mef'},
-        'viaf': {'db': 0, 'db-es': 0, 'es': 0, 'index': 'viaf'}
+        "aggnd": {"db": 0, "db-es": 0, "es": 0, "index": "agents_gnd"},
+        "agrero": {"db": 0, "db-es": 0, "es": 0, "index": "agents_rero"},
+        "aidref": {"db": 1, "db-es": 1, "es": 0, "index": "agents_idref"},
+        "cidref": {"db": 0, "db-es": 0, "es": 0, "index": "concepts_idref"},
+        "comef": {"db": 0, "db-es": 0, "es": 0, "index": "concepts_mef"},
+        "corero": {"db": 0, "db-es": 0, "es": 0, "index": "concepts_rero"},
+        "mef": {"db": 0, "db-es": 0, "es": 0, "index": "mef"},
+        "pidref": {"db": 0, "db-es": 0, "es": 0, "index": "places_idref"},
+        "plmef": {"db": 0, "db-es": 0, "es": 0, "index": "places_mef"},
+        "viaf": {"db": 0, "db-es": 0, "es": 0, "index": "viaf"},
     }
-    assert mon.__str__().split('\n') == cli_output + ['']
+    assert mon.__str__().split("\n") == cli_output + [""]
 
     runner = CliRunner()
-    res = runner.invoke(
-        es_db_missing_cli, ['aidref', '-d', 0], obj=script_info)
-    assert res.output == 'aidref: pids missing in ES:\n069774331\n'
+    res = runner.invoke(es_db_missing_cli, ["aidref", "-d", 0], obj=script_info)
+    assert res.output == "aidref: pids missing in ES:\n069774331\n"
 
     runner = CliRunner()
-    res = runner.invoke(es_db_counts_cli, ['-m', '-d', 0], obj=script_info)
-    assert res.output.split('\n') == cli_output + [
-        'aidref: pids missing in ES:', '069774331', '']
+    res = runner.invoke(es_db_counts_cli, ["-m", "-d", 0], obj=script_info)
+    assert res.output.split("\n") == cli_output + [
+        "aidref: pids missing in ES:",
+        "069774331",
+        "",
+    ]
 
     # we have to get the idref again because we lost the session after the use
     # of the CliRunner
     idref = AgentIdrefRecord.get_record_by_pid(idref_pid)
     idref.reindex()
     AgentIdrefRecord.flush_indexes()
-    assert mon.get_es_count('agents_idref') == 1
+    assert mon.get_es_count("agents_idref") == 1
     assert mon.check() == {}
-    assert mon.missing('aidref') == {'DB': [], 'ES': [], 'ES duplicate': []}
+    assert mon.missing("aidref") == {"DB": [], "ES": [], "ES duplicate": []}
     idref.delete(force=True, dbcommit=True)
-    assert mon.get_db_count('aidref') == 0
-    assert mon.get_es_count('agents_idref') == 1
-    assert mon.check() == {'aidref': {'db_es': -1}}
-    assert mon.missing('aidref') == {
-        'DB': ['069774331'], 'ES': [], 'ES duplicate': []}
+    assert mon.get_db_count("aidref") == 0
+    assert mon.get_es_count("agents_idref") == 1
+    assert mon.check() == {"aidref": {"db_es": -1}}
+    assert mon.missing("aidref") == {"DB": ["069774331"], "ES": [], "ES duplicate": []}

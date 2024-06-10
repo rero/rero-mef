@@ -26,8 +26,7 @@ from .utils import get_entity_class
 
 
 @shared_task(ignore_result=True)
-def process_bulk_queue(version_type=None, search_bulk_kwargs=None,
-                       stats_only=True):
+def process_bulk_queue(version_type=None, search_bulk_kwargs=None, stats_only=True):
     """Process bulk indexing queue.
 
     :param str version_type: Elasticsearch version type.
@@ -39,12 +38,14 @@ def process_bulk_queue(version_type=None, search_bulk_kwargs=None,
     Note: You can start multiple versions of this task.
     """
     return ReroIndexer(version_type=version_type).process_bulk_queue(
-        search_bulk_kwargs=search_bulk_kwargs, stats_only=stats_only)
+        search_bulk_kwargs=search_bulk_kwargs, stats_only=stats_only
+    )
 
 
 @shared_task
-def create_or_update(idx, record, entity, dbcommit=True, reindex=True,
-                     test_md5=False, verbose=False):
+def create_or_update(
+    idx, record, entity, dbcommit=True, reindex=True, test_md5=False, verbose=False
+):
     """Create or update record task.
 
     :param index: index of record
@@ -58,26 +59,28 @@ def create_or_update(idx, record, entity, dbcommit=True, reindex=True,
     """
     entity_class = get_entity_class(entity)
     record, agent_action = entity_class.create_or_update(
-        data=record, dbcommit=dbcommit, reindex=reindex, test_md5=test_md5)
-    entities = current_app.config.get('RERO_ENTITIES', [])
+        data=record, dbcommit=dbcommit, reindex=reindex, test_md5=test_md5
+    )
+    entities = current_app.config.get("RERO_ENTITIES", [])
     mef_record = None
-    if entity in entities and \
-            agent_action in (Action.CREATE, Action.UPDATE, Action.REPLACE):
+    if entity in entities and agent_action in (
+        Action.CREATE,
+        Action.UPDATE,
+        Action.REPLACE,
+    ):
         mef_record, mef_actions = record.create_or_update_mef(
-            dbcommit=dbcommit, reindex=reindex)
-    rec_id = record.get('pid')
-    id_type = 'pid:'
+            dbcommit=dbcommit, reindex=reindex
+        )
+    rec_id = record.get("pid")
+    id_type = "pid:"
     if not rec_id:
-        id_type = 'uuid:'
+        id_type = "uuid:"
         rec_id = record.id
     if verbose:
-        msg = (
-            f'{idx:<10} {entity:<6} {id_type:<5} {rec_id:<25} '
-            f'{agent_action.name}'
-        )
+        msg = f"{idx:<10} {entity:<6} {id_type:<5} {rec_id:<25} " f"{agent_action.name}"
         if mef_record:
             for mef_pid, mef_action in mef_actions.items():
-                msg = f'{msg} | mef: {mef_pid} {mef_action.name}'
+                msg = f"{msg} | mef: {mef_pid} {mef_action.name}"
         click.echo(msg)
     return id_type, str(rec_id), agent_action
 
@@ -98,11 +101,11 @@ def delete(idx, pid, entity, dbcommit=True, delindex=True, verbose=False):
     if entity_record := entity_class.get_record_by_pid(pid):
         entity_record.delete(dbcommit=dbcommit, delindex=delindex)
         if verbose:
-            msg = f'{idx:<10} {entity:<6} pid: {pid:<25} DELETED'
+            msg = f"{idx:<10} {entity:<6} pid: {pid:<25} DELETED"
             click.echo(msg)
-        return 'DELETED: {entity} {pid}'
-    msg = f'{idx:<10} {entity:<6} pid: {pid:<25} NOT FOUND'
+        return "DELETED: {entity} {pid}"
+    msg = f"{idx:<10} {entity:<6} pid: {pid:<25} NOT FOUND"
     if verbose:
-        click.secho(msg, fg='yellow')
+        click.secho(msg, fg="yellow")
     current_app.logger.warning(msg)
-    return f'DELETE NOT FOUND: {entity} {pid}'
+    return f"DELETE NOT FOUND: {entity} {pid}"

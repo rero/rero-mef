@@ -39,8 +39,10 @@ def build_ref_string(concept_pid, concept):
     :returns: Reference string to record.
     """
     with current_app.app_context():
-        return (f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
-                f'/api/concepts/{concept}/{concept_pid}')
+        return (
+            f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
+            f"/api/concepts/{concept}/{concept_pid}"
+        )
 
 
 class ConceptMefSearch(RecordsSearch):
@@ -49,9 +51,9 @@ class ConceptMefSearch(RecordsSearch):
     class Meta:
         """Search only on index."""
 
-        index = 'concepts_mef'
+        index = "concepts_mef"
         doc_types = None
-        fields = ('*', )
+        fields = ("*",)
         facets = {}
 
         default_filter = None
@@ -63,11 +65,11 @@ class ConceptMefRecord(EntityMefRecord):
     minter = mef_id_minter
     fetcher = mef_id_fetcher
     provider = ConceptMefProvider
-    name = 'mef'
+    name = "mef"
     model_cls = ConceptMefMetadata
     search = ConceptMefSearch
-    mef_type = 'CONCEPTS'
-    entities = ['idref', 'rero']
+    mef_type = "CONCEPTS"
+    entities = ["idref", "rero"]
 
     @classmethod
     def _set_type(cls, data):
@@ -76,19 +78,17 @@ class ConceptMefRecord(EntityMefRecord):
         :param data: The data to set the type.
         :returns: data
         """
-        data['type'] = 'bf:Topic'
+        data["type"] = "bf:Topic"
         concept_classes = get_concept_classes()
         for concept in cls.entities:
             if concept := data.get(concept):
-                ref_split = concept['$ref'].split('/')
+                ref_split = concept["$ref"].split("/")
                 ref_type = ref_split[-2]
                 ref_pid = ref_split[-1]
                 for concept_class in concept_classes.values():
                     if concept_class.name == ref_type:
-                        if concept_rec := concept_class.get_record_by_pid(
-                            ref_pid
-                        ):
-                            data['type'] = concept_rec['type']
+                        if concept_rec := concept_class.get_record_by_pid(ref_pid):
+                            data["type"] = concept_rec["type"]
                             break
         return data
 
@@ -103,15 +103,20 @@ class ConceptMefRecord(EntityMefRecord):
         """
         data = self._set_type(data)
         return super().update(
-            data=data,
-            commit=commit,
-            dbcommit=dbcommit,
-            reindex=reindex
+            data=data, commit=commit, dbcommit=dbcommit, reindex=reindex
         )
 
     @classmethod
-    def create(cls, data, id_=None, delete_pid=False, dbcommit=False,
-               reindex=False, md5=True, **kwargs):
+    def create(
+        cls,
+        data,
+        id_=None,
+        delete_pid=False,
+        dbcommit=False,
+        reindex=False,
+        md5=True,
+        **kwargs,
+    ):
         """Create a new agent record."""
         data = cls._set_type(data)
         return super().create(
@@ -121,15 +126,14 @@ class ConceptMefRecord(EntityMefRecord):
             dbcommit=dbcommit,
             reindex=reindex,
             md5=False,
-            **kwargs
+            **kwargs,
         )
 
     def replace_refs(self):
         """Replace $ref with real data."""
         data = deepcopy(self)
         data = super().replace_refs()
-        data['sources'] = [
-            concept for concept in self.entities if data.get(concept)]
+        data["sources"] = [concept for concept in self.entities if data.get(concept)]
         return data
 
     def add_information(self, resolve=False, sources=False):
@@ -146,20 +150,20 @@ class ConceptMefRecord(EntityMefRecord):
         for concept in self.entities:
             if concept_data := data.get(concept):
                 # we got a error status in data
-                if concept_data.get('status'):
+                if concept_data.get("status"):
                     data.pop(concept)
                     current_app.logger.error(
                         f'MEF replace refs {data.get("pid")} {concept}'
                         f' status: {concept_data.get("status")}'
-                        f' {concept_data.get("message")}')
+                        f' {concept_data.get("message")}'
+                    )
                 else:
                     my_sources.append(concept)
                 for concept in self.entities:
-                    if metadata := replace_refs_data.get(
-                            concept, {}).get('metadata'):
+                    if metadata := replace_refs_data.get(concept, {}).get("metadata"):
                         data[concept] = metadata
         if my_sources and (resolve or sources):
-            data['sources'] = my_sources
+            data["sources"] = my_sources
         return data
 
     @classmethod
@@ -170,22 +174,22 @@ class ConceptMefRecord(EntityMefRecord):
         :param pid: pid to use..
         :returns: latest record.
         """
-        search = ConceptMefSearch().filter({'term': {f'{pid_type}.pid': pid}})
+        search = ConceptMefSearch().filter({"term": {f"{pid_type}.pid": pid}})
         if search.count() > 0:
             data = next(search.scan()).to_dict()
             new_pid = None
-            if relation_pid := data.get(pid_type, {}).get('relation_pid'):
-                if relation_pid['type'] == 'redirect_to':
-                    new_pid = relation_pid['value']
-            elif pid_type == 'idref':
+            if relation_pid := data.get(pid_type, {}).get("relation_pid"):
+                if relation_pid["type"] == "redirect_to":
+                    new_pid = relation_pid["value"]
+            elif pid_type == "idref":
                 # Find new pid from redirect_pid redirect_from
-                search = ConceptMefSearch() \
-                        .filter('term', idref__relation_pid__value=pid)
+                search = ConceptMefSearch().filter(
+                    "term", idref__relation_pid__value=pid
+                )
                 if search.count() > 0:
                     new_data = next(search.scan()).to_dict()
-                    new_pid = new_data.get('idref', {}).get('pid')
-            return cls.get_latest(pid_type=pid_type, pid=new_pid) \
-                if new_pid else data
+                    new_pid = new_data.get("idref", {}).get("pid")
+            return cls.get_latest(pid_type=pid_type, pid=new_pid) if new_pid else data
         return {}
 
 
@@ -200,7 +204,5 @@ class ConceptMefIndexer(ReroIndexer):
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
         super().bulk_index(
-            record_id_iterator,
-            index=ConceptMefSearch.Meta.index,
-            doc_type='comef'
+            record_id_iterator, index=ConceptMefSearch.Meta.index, doc_type="comef"
         )

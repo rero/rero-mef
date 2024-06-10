@@ -15,18 +15,14 @@ from sqlalchemy import func
 from rero_mef.utils import get_entity_class
 
 # revision identifiers, used by Alembic.
-revision = '28982ef7ce63'
-down_revision = '0d0b3009dbe0'
+revision = "28982ef7ce63"
+down_revision = "0d0b3009dbe0"
 branch_labels = ()
 depends_on = None
 
-LOGGER = getLogger('alembic')
+LOGGER = getLogger("alembic")
 
-agents = {
-    'aggnd': 'GND',
-    'aidref': 'IDREF',
-    'agrero': 'RERO'
-}
+agents = {"aggnd": "GND", "aidref": "IDREF", "agrero": "RERO"}
 
 
 def commit_changes(indexer, ids):
@@ -45,15 +41,12 @@ def upgrade():
         agent_class = get_entity_class(agent)
 
         count = agent_class.model_cls.query.filter(
-            agent_class.model_cls.json.op('->')('bf:Agent') is not None
+            agent_class.model_cls.json.op("->")("bf:Agent") is not None
         ).update(
-            {
-                agent_class.model_cls.json:
-                agent_class.model_cls.json - "bf:Agent"
-            },
-            synchronize_session=False
+            {agent_class.model_cls.json: agent_class.model_cls.json - "bf:Agent"},
+            synchronize_session=False,
         )
-        LOGGER.info(f'Delete bf:Agent from {agent}: {count}')
+        LOGGER.info(f"Delete bf:Agent from {agent}: {count}")
         db.session.commit()
     # For ES: update mapping must be done.
 
@@ -67,18 +60,18 @@ def downgrade():
         agent_class = get_entity_class(agent)
 
         count = agent_class.model_cls.query.filter(
-            agent_class.model_cls.json.op('->')('type') is not None
+            agent_class.model_cls.json.op("->")("type") is not None
         ).update(
             {
                 "json": func.jsonb_set(
                     agent_class.model_cls.json,
-                    '{bf:Agent}',
-                    agent_class.model_cls.json.op('->')('type')
+                    "{bf:Agent}",
+                    agent_class.model_cls.json.op("->")("type"),
                 )
             },
-            synchronize_session=False
+            synchronize_session=False,
         )
-        LOGGER.info(f'Add bf:Agent to {agent}: {count}')
+        LOGGER.info(f"Add bf:Agent to {agent}: {count}")
         db.session.commit()
     # For ES: update mapping must be done
     # and all agents and MEF have to be reindexed

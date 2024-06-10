@@ -23,5 +23,4 @@ from functools import partial
 from .providers import PlaceIdrefProvider
 from ...minters import id_minter
 
-idref_id_minter = partial(
-    id_minter, provider=PlaceIdrefProvider, recid_field='pid')
+idref_id_minter = partial(id_minter, provider=PlaceIdrefProvider, recid_field="pid")

@@ -25,19 +25,16 @@ from flask import Blueprint, render_template
 from ..version import __version__
 
 blueprint = Blueprint(
-    'rero_mef',
+    "rero_mef",
     __name__,
-    template_folder='templates',
-    static_folder='static',
+    template_folder="templates",
+    static_folder="static",
 )
 
-api_blueprint = Blueprint(
-    'api_rero_mef',
-    __name__
-)
+api_blueprint = Blueprint("api_rero_mef", __name__)
 
 
-@blueprint.route('/')
+@blueprint.route("/")
 def index():
     """Home Page."""
-    return render_template('rero_mef/frontpage.html', version=__version__)
+    return render_template("rero_mef/frontpage.html", version=__version__)

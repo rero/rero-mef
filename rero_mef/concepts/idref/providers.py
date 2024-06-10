@@ -28,7 +28,7 @@ from .models import ConceptIdrefIdentifier
 class ConceptIdrefProvider(BaseProvider):
     """Concepts identifier provider."""
 
-    pid_type = 'cidref'
+    pid_type = "cidref"
     """Type of persistent identifier."""
 
     pid_identifier = ConceptIdrefIdentifier.__tablename__

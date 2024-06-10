@@ -23,5 +23,4 @@ from functools import partial
 from .providers import AgentReroProvider
 from ...minters import id_minter
 
-rero_id_minter = partial(
-    id_minter, provider=AgentReroProvider, recid_field='pid')
+rero_id_minter = partial(id_minter, provider=AgentReroProvider, recid_field="pid")

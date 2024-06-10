@@ -28,7 +28,7 @@ from .models import ViafIdentifier
 class ViafProvider(BaseProvider):
     """VIAF identifier provider."""
 
-    pid_type = 'viaf'
+    pid_type = "viaf"
     """Type of persistent identifier."""
 
     pid_identifier = ViafIdentifier.__tablename__

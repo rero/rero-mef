@@ -18,6 +18,7 @@
 """JSON schemas utils."""
 
 from invenio_jsonschemas.proxies import current_jsonschemas
+
 # jsonref = 0.3.0 # from jsonref import _URIDict as URIDict
 from jsonref import URIDict
 

@@ -24,8 +24,10 @@ from flask import current_app
 from invenio_records_rest.links import default_links_factory_with_additional
 from invenio_records_rest.schemas import RecordSchemaJSONV1
 from invenio_records_rest.serializers.json import JSONSerializer
-from invenio_records_rest.serializers.response import record_responsify, \
-    search_responsify
+from invenio_records_rest.serializers.response import (
+    record_responsify,
+    search_responsify,
+)
 
 from .mef.api import AgentMefRecord
 from .viaf.api import AgentViafSearch
@@ -34,23 +36,24 @@ from .viaf.api import AgentViafSearch
 def add_links(pid, record):
     """Add MEF link to agents."""
     links = {}
-    for idx, mef_pid in enumerate(AgentMefRecord.get_mef(
-            record.pid, record.name, pid_only=True)):
-        number = f'-{idx}' if idx else ''
-        links[f'mef{number}'] = '{scheme}://{host}/api/agents/mef/' \
-            + str(mef_pid)
+    for idx, mef_pid in enumerate(
+        AgentMefRecord.get_mef(record.pid, record.name, pid_only=True)
+    ):
+        number = f"-{idx}" if idx else ""
+        links[f"mef{number}"] = "{scheme}://{host}/api/agents/mef/" + str(mef_pid)
 
     with contextlib.suppress(Exception):
-        query = AgentViafSearch() \
-            .filter({'term': {record.viaf_pid_name: pid.pid_value}}) \
-            .params(preserve_order=True) \
-            .sort({'_updated': {'order': 'desc'}}) \
-            .source('pid')
+        query = (
+            AgentViafSearch()
+            .filter({"term": {record.viaf_pid_name: pid.pid_value}})
+            .params(preserve_order=True)
+            .sort({"_updated": {"order": "desc"}})
+            .source("pid")
+        )
         viaf_pid = next(query.scan()).pid
-        links['viaf'] = '{scheme}://{host}/api/agents/viaf/' \
-            + str(viaf_pid)
-        viaf_url = current_app.config.get('RERO_MEF_VIAF_BASE_URL')
-        links['viaf.org'] = f'{viaf_url}/viaf/{str(viaf_pid)}'
+        links["viaf"] = "{scheme}://{host}/api/agents/viaf/" + str(viaf_pid)
+        viaf_url = current_app.config.get("RERO_MEF_VIAF_BASE_URL")
+        links["viaf.org"] = f"{viaf_url}/viaf/{str(viaf_pid)}"
     link_factory = default_links_factory_with_additional(links)
     return link_factory(pid)
 
@@ -66,11 +69,12 @@ class ReroMefSerializer(JSONSerializer):
         :param links_factory: Factory function for record links.
         """
         return super(ReroMefSerializer, self).serialize(
-            pid=pid, record=record, links_factory=add_links, **kwargs)
+            pid=pid, record=record, links_factory=add_links, **kwargs
+        )
 
 
 json_ = ReroMefSerializer(RecordSchemaJSONV1)
 """JSON v1 serializer."""
 
-json_agent_response = record_responsify(json_, 'application/rero+json')
-json_agent_search = search_responsify(json_, 'application/rero+json')
+json_agent_response = record_responsify(json_, "application/rero+json")
+json_agent_search = search_responsify(json_, "application/rero+json")

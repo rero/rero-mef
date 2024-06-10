@@ -20,8 +20,10 @@
 from invenio_records_rest.links import default_links_factory_with_additional
 from invenio_records_rest.schemas import RecordSchemaJSONV1
 from invenio_records_rest.serializers.json import JSONSerializer
-from invenio_records_rest.serializers.response import record_responsify, \
-    search_responsify
+from invenio_records_rest.serializers.response import (
+    record_responsify,
+    search_responsify,
+)
 
 from .mef.api import PlaceMefRecord
 
@@ -29,11 +31,11 @@ from .mef.api import PlaceMefRecord
 def add_links(pid, record):
     """Add MEF link to places."""
     links = {}
-    for idx, mef_pid in enumerate(PlaceMefRecord.get_mef(
-            record.pid, record.name, pid_only=True)):
-        number = f'-{idx}' if idx else ''
-        links[f'mef{number}'] = '{scheme}://{host}/api/places/mef/' \
-            + str(mef_pid)
+    for idx, mef_pid in enumerate(
+        PlaceMefRecord.get_mef(record.pid, record.name, pid_only=True)
+    ):
+        number = f"-{idx}" if idx else ""
+        links[f"mef{number}"] = "{scheme}://{host}/api/places/mef/" + str(mef_pid)
 
     link_factory = default_links_factory_with_additional(links)
     return link_factory(pid)
@@ -50,11 +52,12 @@ class ReroMefSerializer(JSONSerializer):
         :param links_factory: Factory function for record links.
         """
         return super(ReroMefSerializer, self).serialize(
-            pid=pid, record=record, links_factory=add_links, **kwargs)
+            pid=pid, record=record, links_factory=add_links, **kwargs
+        )
 
 
 json_ = ReroMefSerializer(RecordSchemaJSONV1)
 """JSON v1 serializer."""
 
-json_place_response = record_responsify(json_, 'application/rero+json')
-json_place_search = search_responsify(json_, 'application/rero+json')
+json_place_response = record_responsify(json_, "application/rero+json")
+json_place_search = search_responsify(json_, "application/rero+json")

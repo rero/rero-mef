@@ -32,9 +32,9 @@ class AgentReroSearch(RecordsSearch):
     class Meta:
         """Search only on index."""
 
-        index = 'agents_rero'
+        index = "agents_rero"
         doc_types = None
-        fields = ('*', )
+        fields = ("*",)
         facets = {}
 
         default_filter = None
@@ -46,9 +46,9 @@ class AgentReroRecord(AgentRecord):
     minter = rero_id_minter
     fetcher = rero_id_fetcher
     provider = AgentReroProvider
-    name = 'rero'
-    viaf_source_code = 'RERO'
-    viaf_pid_name = 'rero_pid'
+    name = "rero"
+    viaf_source_code = "RERO"
+    viaf_pid_name = "rero_pid"
     model_cls = AgentReroMetadata
     search = AgentReroSearch
 
@@ -56,6 +56,7 @@ class AgentReroRecord(AgentRecord):
     def get_online_record(cls, id_, debug=False):
         """Get online record."""
         from .tasks import rero_get_record
+
         return rero_get_record(id_=id_, debug=debug)
 
 
@@ -70,7 +71,5 @@ class AgentReroIndexer(AgentIndexer):
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
         super().bulk_index(
-            record_id_iterator,
-            index=AgentReroSearch.Meta.index,
-            doc_type='agrero'
+            record_id_iterator, index=AgentReroSearch.Meta.index, doc_type="agrero"
         )

@@ -18,7 +18,6 @@
 """Poetry script utils."""
 
 import os
-# import subprocess
 import sys
 
 # def __getattr__(name):  # python 3.7+, otherwise define each script manually

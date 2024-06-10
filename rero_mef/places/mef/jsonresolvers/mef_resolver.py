@@ -26,7 +26,7 @@ from ..api import PlaceMefRecord
 from ....utils import get_host, resolve_record
 
 
-@jsonresolver.route('/api/places/mef/<path:path>', host=get_host())
+@jsonresolver.route("/api/places/mef/<path:path>", host=get_host())
 def resolve_mef(path):
     """Resolve Mef records."""
     return resolve_record(path, PlaceMefRecord)

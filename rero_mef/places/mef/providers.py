@@ -28,7 +28,7 @@ from ...models import MefIdentifier
 class PlaceMefProvider(BaseProvider):
     """Mef identifier provider."""
 
-    pid_type = 'plmef'
+    pid_type = "plmef"
     """Type of persistent identifier."""
 
     pid_identifier = MefIdentifier.__tablename__
@@ -47,10 +47,11 @@ class PlaceMefProvider(BaseProvider):
     @classmethod
     def create(cls, object_type=None, object_uuid=None, **kwargs):
         """Create a new Mef Authority identifier."""
-        assert 'pid_value' not in kwargs
-        kwargs['pid_value'] = str(MefIdentifier.next())
-        kwargs.setdefault('status', cls.default_status)
+        assert "pid_value" not in kwargs
+        kwargs["pid_value"] = str(MefIdentifier.next())
+        kwargs.setdefault("status", cls.default_status)
         if object_type and object_uuid:
-            kwargs['status'] = PIDStatus.REGISTERED
+            kwargs["status"] = PIDStatus.REGISTERED
         return super().create(
-            object_type=object_type, object_uuid=object_uuid, **kwargs)
+            object_type=object_type, object_uuid=object_uuid, **kwargs
+        )

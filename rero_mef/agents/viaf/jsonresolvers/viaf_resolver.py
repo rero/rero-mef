@@ -26,7 +26,7 @@ from ..api import AgentViafRecord
 from ....utils import get_host, resolve_record
 
 
-@jsonresolver.route('/api/agents/viaf/<path:path>', host=get_host())
+@jsonresolver.route("/api/agents/viaf/<path:path>", host=get_host())
 def resolve_rero(path):
     """Resolve VIAF records."""
     return resolve_record(path, AgentViafRecord)
