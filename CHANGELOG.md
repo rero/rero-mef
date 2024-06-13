@@ -1,5 +1,23 @@
 # Changelog
 
+## [v0.15.0](https://github.com/rero/rero-mef/tree/v0.15.0) (2024-06-13)
+
+[Full Changelog](https://github.com/rero/rero-mef/compare/v0.14.0...v0.15.0)
+
+**Enhancements:**
+* agent: remove bf:Agent [\#158](https://github.com/rero/rero-mef/pull/158) (by @rerowep)
+
+**Fixes:**
+* mef: corrects deleted [\#162](https://github.com/rero/rero-mef/pull/162) (by @rerowep)
+* concepts: correct type [\#161](https://github.com/rero/rero-mef/pull/161) (by @rerowep)
+* api: fix sources filter [\#149](https://github.com/rero/rero-mef/pull/149) (by @rerowep)
+
+**Other changes:**
+* pytest use black [\#164](https://github.com/rero/rero-mef/pull/164) (by @rerowep)
+* dependencies: fix security issues [\#163](https://github.com/rero/rero-mef/pull/163) (by @rerowep)
+* dependencies: fix security issues [\#157](https://github.com/rero/rero-mef/pull/157) (by @rerowep)
+* dependencies: fix security issues [\#154](https://github.com/rero/rero-mef/pull/154) (by @rerowep)
+
 ## [v0.14.0](https://github.com/rero/rero-mef/tree/v0.14.0) (2023-09-06)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.12.0...v0.14.0)
