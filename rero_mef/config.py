@@ -96,7 +96,7 @@ THEME_FRONTPAGE_TEMPLATE = "rero_mef/frontpage.html"
 #: Template for error pages.
 THEME_ERROR_TEMPLATE = "rero_mef/page_error.html"
 
-WEBPACKEXT_PROJECT = 'rero_mef.theme.webpack:project'
+WEBPACKEXT_PROJECT = "rero_mef.theme.webpack:project"
 
 # Email configuration
 # ===================
@@ -532,6 +532,9 @@ RECORDS_REST_FACETS = dict(
             source=dict(terms=dict(field="sources", size=30)),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
             deleted_entities=dict(filter=dict(exists=dict(field="*.deleted"))),
+            identifiedBy_source=dict(
+                terms=dict(field="*.identifiedBy.source", size=30)
+            ),
         ),
         filters=dict(
             type=terms_filter("type"),
@@ -539,6 +542,7 @@ RECORDS_REST_FACETS = dict(
             deleted=exists_filter("deleted"),
             deleted_entities=exists_filter("*.deleted"),
             rero_double=terms_filter("rero.pid"),
+            identifiedBy_source=terms_filter("*.identifiedBy.source"),
         ),
     ),
     viaf=dict(aggs=AgentViafRecord.aggregations(), filters=AgentViafRecord.filters()),
@@ -546,30 +550,36 @@ RECORDS_REST_FACETS = dict(
         aggs=dict(
             type=dict(terms=dict(field="type", size=30)),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
+            identifiedBy_source=dict(terms=dict(field="identifiedBy.source", size=30)),
         ),
         filters=dict(
             type=terms_filter("type"),
             deleted=exists_filter("deleted"),
+            identifiedBy_source=terms_filter("identifiedBy.source"),
         ),
     ),
     agents_idref=dict(
         aggs=dict(
             type=dict(terms=dict(field="type", size=30)),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
+            identifiedBy_source=dict(terms=dict(field="identifiedBy.source", size=30)),
         ),
         filters=dict(
             type=terms_filter("type"),
             deleted=exists_filter("deleted"),
+            identifiedBy_source=terms_filter("identifiedBy.source"),
         ),
     ),
     agents_rero=dict(
         aggs=dict(
             type=dict(terms=dict(field="type", size=30)),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
+            identifiedBy_source=dict(terms=dict(field="identifiedBy.source", size=30)),
         ),
         filters=dict(
             type=terms_filter("type"),
             deleted=exists_filter("deleted"),
+            identifiedBy_source=terms_filter("identifiedBy.source"),
         ),
     ),
     concepts_mef=dict(
@@ -578,6 +588,9 @@ RECORDS_REST_FACETS = dict(
             source=dict(terms=dict(field="sources", size=30)),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
             deleted_entities=dict(filter=dict(exists=dict(field="*.deleted"))),
+            identifiedBy_source=dict(
+                terms=dict(field="*.identifiedBy.source", size=30)
+            ),
         ),
         filters=dict(
             type=terms_filter("type"),
@@ -585,6 +598,7 @@ RECORDS_REST_FACETS = dict(
             deleted=exists_filter("deleted"),
             deleted_entities=exists_filter("*.deleted"),
             rero_double=terms_filter("rero.pid"),
+            identifiedBy_source=terms_filter("*.identifiedBy.source"),
         ),
     ),
     concepts_rero=dict(
@@ -595,11 +609,14 @@ RECORDS_REST_FACETS = dict(
                 terms=dict(field="classification.classificationPortion", size=30)
             ),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
+            identifiedBy_source=dict(terms=dict(field="identifiedBy.source", size=30)),
         ),
         filters=dict(
             type=terms_filter("type"),
             classification=terms_filter("classification.name"),
             classificationPortion=terms_filter("classification.classificationPortion"),
+            deleted=exists_filter("deleted"),
+            identifiedBy_source=terms_filter("identifiedBy.source"),
         ),
     ),
     concepts_idref=dict(
@@ -610,11 +627,14 @@ RECORDS_REST_FACETS = dict(
                 terms=dict(field="classification.classificationPortion", size=30)
             ),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
+            identifiedBy_source=dict(terms=dict(field="identifiedBy.source", size=30)),
         ),
         filters=dict(
             type=terms_filter("type"),
             classification=terms_filter("classification.name"),
             classificationPortion=terms_filter("classification.classificationPortion"),
+            deleted=exists_filter("deleted"),
+            identifiedBy_source=terms_filter("identifiedBy.source"),
         ),
     ),
     places_mef=dict(
@@ -623,12 +643,16 @@ RECORDS_REST_FACETS = dict(
             source=dict(terms=dict(field="sources", size=30)),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
             deleted_entities=dict(filter=dict(exists=dict(field="*.deleted"))),
+            identifiedBy_source=dict(
+                terms=dict(field="*.identifiedBy.source", size=30)
+            ),
         ),
         filters=dict(
             type=terms_filter("type"),
             source=terms_filter("sources"),
             deleted=exists_filter("deleted"),
             deleted_entities=exists_filter("*.deleted"),
+            identifiedBy_source=terms_filter("*.identifiedBy.source"),
         ),
     ),
     places_idref=dict(
@@ -639,11 +663,14 @@ RECORDS_REST_FACETS = dict(
                 terms=dict(field="classification.classificationPortion", size=30)
             ),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
+            identifiedBy_source=dict(terms=dict(field="identifiedBy.source", size=30)),
         ),
         filters=dict(
             type=terms_filter("type"),
             classification=terms_filter("classification.name"),
             classificationPortion=terms_filter("classification.classificationPortion"),
+            deleted=exists_filter("deleted"),
+            identifiedBy_source=terms_filter("identifiedBy.source"),
         ),
     ),
 )
