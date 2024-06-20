@@ -330,5 +330,10 @@ def test_idref_relation_pid():
     trans = trans_prep(Transformation, "places", xml_part_to_add)
     trans.trans_idref_relation_pid()
     assert trans.json == {
+        'identifiedBy': [{
+            'source': 'VIAF',
+            'type': 'uri',
+            'value': 'http://viaf.org/viaf/124265140'
+        }],
         "relation_pid": {"value": "027630501", "type": "redirect_from"}
     }

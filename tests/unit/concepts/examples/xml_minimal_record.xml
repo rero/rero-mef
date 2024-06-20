@@ -1,55 +1,24 @@
 
         <record>
             <leader>00589nx  a2200193   45  </leader> 
-        <datafield tag="670" ind1=" " ind2=" ">
-          <subfield code="a">
-            Grand Larousse universel (art. : Livre)
-          </subfield>
+        <datafield tag="035" ind1=" " ind2=" ">
+            <subfield code="a">027630501</subfield>
+            <subfield code="9">sudoc</subfield>
         </datafield>
-        <datafield tag="675" ind1=" " ind2=" ">
-          <subfield code="a">
-            Laval RVM (en ligne), 2004-11-23
-          </subfield>
+        <datafield tag="035" ind1=" " ind2=" ">
+            <subfield code="a">frBN001940328</subfield>
         </datafield>
-        <datafield tag="680" ind1=" " ind2=" ">
-          <subfield code="a">
-            Mers profondément engagées dans la masse des continents
-        </subfield>
+        <datafield tag="035" ind1=" " ind2=" ">
+            <subfield code="a">frBN000000089</subfield>
         </datafield>
-        <datafield tag="667" ind1=" " ind2=" ">
-          <subfield code="a">Note interne</subfield>
+        <datafield tag="035" ind1=" " ind2=" ">
+            <subfield code="a">FRBNF118620892</subfield>
+            <subfield code="z">FRBNF11862089</subfield>
         </datafield>
-        <datafield tag="260" ind1=" " ind2="9">
-          <subfield code="a">
-            Voir le descripteur Opposition (science politique)
-        </subfield>
-        </datafield>
-        <datafield tag="260" ind1=" " ind2="9">
-          <subfield code="a">
-            Combiner un des descripteurs Mouvements contestataires
-        </subfield>
-        </datafield>
-        <datafield tag="260" ind1=" " ind2=" ">
-          <subfield code="a">
-            Voir les vedettes : Mouvements contestataires ; Opposition
-        </subfield>
-        </datafield>
-        <datafield tag="260" ind1=" " ind2=" ">
-          <subfield code="a">
-            Voir les vedettes du type : Antifascisme ; Mouvements
-          </subfield>
-        </datafield>
-        <datafield tag="260" ind1=" " ind2=" ">
-          <subfield code="a">
-            Voir aux mouvements d'opposition particuliers, par ex. : Combat
-          </subfield>
-        </datafield>
-        <datafield tag="360" ind1=" " ind2=" ">
-          <subfield code="a">
-            Voir aussi aux mers et océans particuliers
-        </subfield>
-        </datafield>
-        <datafield tag="016" ind1=" " ind2=" ">
-          <subfield code="9">VF3, NC3, NC30</subfield>
+        <datafield tag="035" ind1=" " ind2=" ">
+            <subfield code="a">http://viaf.org/viaf/124265140</subfield>
+            <subfield code="2">VIAF</subfield>
+            <subfield code="C">VIAF</subfield>
+            <subfield code="d">20200302</subfield>
         </datafield>
     </record>
