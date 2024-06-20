@@ -48,15 +48,13 @@
           "type": {
             "enum": [
               "bf:Local",
-              "uri"
+              "uri",
+              "bf:Nbn"
             ]
           },
           "source": {
-            "enum": [
-              "BNF",
-              "RERO",
-              "IDREF"
-            ]
+            "type": "string",
+            "minLength": 2
           },
           "value": {
             "type": "string",
@@ -232,7 +230,8 @@
               "type": {
                 "enum": [
                   "bf:Local",
-                  "uri"
+                  "uri",
+                  "bf:Nbn"
                 ]
               },
               "source": {

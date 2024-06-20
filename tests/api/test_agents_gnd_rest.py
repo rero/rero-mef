@@ -38,6 +38,11 @@ def test_view_agents_gnd(client, agent_gnd_record):
             "sum_other_doc_count": 0,
         },
         "deleted": {"doc_count": 0},
+        "identifiedBy_source": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
     }
 
     url = url_for("invenio_records_rest.aggnd_item", pid_value=pid)

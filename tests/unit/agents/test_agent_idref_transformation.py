@@ -60,11 +60,23 @@ def test_idref_relation_pid():
             <subfield code="C">VIAF</subfield>
             <subfield code="d">20200302</subfield>
         </datafield>
+        <datafield tag="035" ind1=" " ind2=" ">
+            <subfield code="a">A003915957</subfield>
+            <subfield code="2">RERO</subfield>
+        </datafield>
     """
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_relation_pid()
     assert trans.json == {
-        "relation_pid": {"value": "027630501", "type": "redirect_from"}
+        "identifiedBy": [
+            {
+                "source": "VIAF",
+                "type": "uri",
+                "value": "http://viaf.org/viaf/124265140",
+            },
+            {"source": "RERO", "type": "bf:Nbn", "value": "A003915957"},
+        ],
+        "relation_pid": {"value": "027630501", "type": "redirect_from"},
     }
 
 

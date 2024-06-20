@@ -53,6 +53,11 @@ def test_view_agents_mef(
         },
         "deleted": {"doc_count": 0},
         "deleted_entities": {"doc_count": 0},
+        "identifiedBy_source": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
     }
     url = url_for("invenio_records_rest.mef_item", pid_value=pid)
     res = client.get(url)

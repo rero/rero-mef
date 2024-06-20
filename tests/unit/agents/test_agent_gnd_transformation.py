@@ -600,9 +600,7 @@ def test_gnd_parallel_access_point_organisation():
     """
     trans = trans_prep("gnd", xml_part_to_add)
     trans.trans_gnd_parallel_access_point()
-    assert trans.json == {
-        "parallel_access_point": ["Гёте, Йоҳанн Волфганг, 1749-1832"]
-    }
+    assert trans.json == {"parallel_access_point": ["Гёте, Йоҳанн Волфганг, 1749-1832"]}
 
 
 def test_gnd_country_associated():

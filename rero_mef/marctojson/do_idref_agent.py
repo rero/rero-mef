@@ -175,11 +175,30 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_idref_relation_pid")
         for field_035 in self.marc.get_fields("035"):
-            if field_035.get("a") and field_035.get("9") and field_035["9"] == "sudoc":
+            subfield_a = field_035.get("a")
+            if isinstance(subfield_a, list):
+                subfield_a = subfield_a[0]
+            subfield_2 = field_035.get("2")
+            if isinstance(subfield_2, list):
+                subfield_2 = subfield_2[0]
+            subfield_9 = field_035.get("9")
+            if isinstance(subfield_9, list):
+                subfield_9 = subfield_9[0]
+            if subfield_a and subfield_9 == "sudoc":
                 self.json_dict["relation_pid"] = {
                     "value": field_035["a"],
                     "type": "redirect_from",
                 }
+            elif subfield_2:
+                identified_by = self.json_dict.get("identifiedBy", [])
+                identified_by.append(
+                    {
+                        "source": subfield_2.upper(),
+                        "type": "uri" if subfield_a.startswith("http") else "bf:Nbn",
+                        "value": subfield_a,
+                    }
+                )
+                self.json_dict["identifiedBy"] = identified_by
 
     def trans_idref_gender(self):
         """Transformation gender 120 $a a:female, b: male, -:not known."""
