@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2022 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +20,7 @@
 import pytest
 from utils import create_record
 
-from rero_mef.places import PlaceIdrefRecord, PlaceMefRecord
+from rero_mef.places import PlaceGndRecord, PlaceIdrefRecord, PlaceMefRecord
 
 
 @pytest.fixture(scope="module")
@@ -33,6 +33,18 @@ def place_idref_record(app, place_idref_data):
 def place_idref_redirect_record(app, place_idref_redirect_data):
     """Create a IdRef record."""
     return create_record(PlaceIdrefRecord, place_idref_redirect_data)
+
+
+@pytest.fixture(scope="module")
+def place_gnd_record(app, place_gnd_data):
+    """Create a GND record."""
+    return create_record(PlaceGndRecord, place_gnd_data)
+
+
+@pytest.fixture(scope="module")
+def place_gnd_redirect_record(app, place_gnd_redirect_data):
+    """Create a GND record."""
+    return create_record(PlaceGndRecord, place_gnd_redirect_data)
 
 
 @pytest.fixture(scope="module")

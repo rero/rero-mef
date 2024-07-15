@@ -38,6 +38,7 @@ def test_monitoring(app, agent_idref_data, script_info):
         "      0  corero          0              concepts_rero          0",
         "      0     mef          0                        mef          0",
         "      0  pidref          0               places_idref          0",
+        "      0   plgnd          0                 places_gnd          0",
         "      0   plmef          0                 places_mef          0",
         "      0    viaf          0                       viaf          0",
     ]
@@ -62,6 +63,7 @@ def test_monitoring(app, agent_idref_data, script_info):
         "comef": {"db": 0, "db-es": 0, "es": 0, "index": "concepts_mef"},
         "corero": {"db": 0, "db-es": 0, "es": 0, "index": "concepts_rero"},
         "mef": {"db": 0, "db-es": 0, "es": 0, "index": "mef"},
+        "plgnd": {"db": 0, "db-es": 0, "es": 0, "index": "places_gnd"},
         "pidref": {"db": 0, "db-es": 0, "es": 0, "index": "places_idref"},
         "plmef": {"db": 0, "db-es": 0, "es": 0, "index": "places_mef"},
         "viaf": {"db": 0, "db-es": 0, "es": 0, "index": "viaf"},

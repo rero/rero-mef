@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -428,7 +428,7 @@ def save_csv(entities, output_directory, verbose):
     :param output_directory: Output directory.
     :param entities: entity to export.
         default=['aggnd', 'aidref', 'agrero', 'mef', 'viaf',
-                 'cidref', 'corero', 'comef', 'pidref', 'plmef'])
+                 'cidref', 'corero', 'comef', 'pidref', 'plgnd', 'plmef'])
     :param verbose: Verbose.
     """
     oai_names = {

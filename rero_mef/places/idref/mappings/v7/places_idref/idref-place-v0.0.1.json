@@ -35,7 +35,7 @@
         }
       },
       "bnf_type": {
-        "type": "text"
+        "type": "keyword"
       },
       "authorized_access_point": {
         "type": "text"
@@ -46,9 +46,6 @@
       "broader": {
         "type": "object",
         "properties": {
-          "$ref": {
-            "type": "object"
-          },
           "authorized_access_point": {
             "type": "text"
           }
@@ -57,9 +54,6 @@
       "related": {
         "type": "object",
         "properties": {
-          "$ref": {
-            "type": "object"
-          },
           "authorized_access_point": {
             "type": "text"
           }
@@ -68,9 +62,6 @@
       "narrower": {
         "type": "object",
         "properties": {
-          "$ref": {
-            "type": "object"
-          },
           "authorized_access_point": {
             "type": "text"
           }

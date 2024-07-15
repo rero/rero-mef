@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2022 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -19,11 +19,11 @@
 
 from invenio_search.api import RecordsSearch
 
+from ..api import ConceptIndexer, ConceptRecord
 from .fetchers import idref_id_fetcher
 from .minters import idref_id_minter
 from .models import ConceptIdrefMetadata
 from .providers import ConceptIdrefProvider
-from ..api import ConceptIndexer, ConceptRecord
 
 
 class ConceptIdrefSearch(RecordsSearch):
@@ -56,6 +56,9 @@ class ConceptIdrefRecord(ConceptRecord):
     def get_online_record(cls, id_, debug=False):
         """Get online Record.
 
+        :param id_: Id of online record.
+        :param debug: Debug print.
+        :returns: record or None
         Has to be overloaded in agent class.
         """
         from .tasks import idref_get_record

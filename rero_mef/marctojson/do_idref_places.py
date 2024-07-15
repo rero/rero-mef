@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -80,9 +80,19 @@ class Transformation(object):
                 {"type": "uri", "value": field_003[0].data.strip(), "source": "IDREF"}
             )
         for field_033 in self.marc.get_fields("033"):
-            if field_033.get("2") and field_033["2"] == "BNF" and field_033.get("a"):
+            if field_033.get("2") and field_033.get("a"):
+                subfield_a = field_033.get("a")
+                if isinstance(subfield_a, list):
+                    subfield_a = subfield_a[0]
+                subfield_2 = field_033.get("2")
+                if isinstance(subfield_2, list):
+                    subfield_2 = subfield_2[0]
                 identifiers.append(
-                    {"type": "uri", "value": field_033["a"].strip(), "source": "BNF"}
+                    {
+                        "type": "uri" if subfield_a.startswith("http") else "bf:Nbn",
+                        "value": subfield_a.strip(),
+                        "source": subfield_2.upper(),
+                    }
                 )
         if identifiers:
             self.json_dict["identifiedBy"] = identifiers

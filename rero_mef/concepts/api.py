@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -94,6 +94,9 @@ class ConceptRecord(ReroMefRecord):
     def get_online_record(cls, id_, debug=False):
         """Get online Record.
 
+        :param id_: Id of online record.
+        :param debug: Debug print.
+        :returns: record or None
         Has to be overloaded in agent class.
         """
         raise NotImplementedError()

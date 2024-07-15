@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -903,7 +903,9 @@ def bulk_save_ids(entity, file_name, verbose=False):
 
 def create_md5(record):
     """Create md5 for record."""
-    return hashlib.md5(json.dumps(record, sort_keys=True).encode("utf-8")).hexdigest()
+    return hashlib.md5(
+        json.dumps(record, sort_keys=True, default=str).encode("utf-8")
+    ).hexdigest()
 
 
 def add_md5(record):

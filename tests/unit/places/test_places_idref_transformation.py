@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -39,9 +39,7 @@ def test_idref_identifier():
         <controlfield tag="008">Tg5</controlfield>
         <controlfield tag="003">http://www.idref.fr/027227812</controlfield>
         <datafield tag="033" ind1=" " ind2=" ">
-            <subfield code="a">
-                http://catalogue.bnf.fr/ark:/12148/cb11931552b
-            </subfield>
+            <subfield code="a">http://catalogue.bnf.fr/ark:/12148/cb11931552b</subfield>
             <subfield code="2">BNF</subfield>
             <subfield code="d">20180619</subfield>
         </datafield>
@@ -163,15 +161,13 @@ def test_idref_close_match():
         <datafield tag="822" ind1=" " ind2=" ">
             <subfield code="a">Fasting</subfield>
             <subfield code="2">LCSH</subfield>
-            <subfield code="u">
-            http://id.loc.gov/authorities/subjects/sh85047403</subfield>
+            <subfield code="u">http://id.loc.gov/authorities/subjects/sh85047403</subfield>
             <subfield code="d">2022-07-22</subfield>
         </datafield>
         <datafield tag="822" ind1=" " ind2=" ">
             <subfield code="a">Fasting -- Religious aspects</subfield>
             <subfield code="2">LCSH</subfield>
-            <subfield code="u">
-            http://id.loc.gov/authorities/subjects/sh2003003108</subfield>
+            <subfield code="u">http://id.loc.gov/authorities/subjects/sh2003003108</subfield>
             <subfield code="d">2022-07-22</subfield>
         </datafield>
         <datafield tag="822" ind1=" " ind2=" ">
@@ -224,36 +220,26 @@ def test_idref_notes():
             <subfield code="a">Grand Larousse universel</subfield>
         </datafield>
         <datafield tag="810" ind1=" " ind2=" ">
-            <subfield code="a">
-                Les langues du monde / M. Sala, I. Vintila-Radulescu, 1984
-            </subfield>
+            <subfield code="a">Les langues du monde / M. Sala, I. Vintila-Radulescu, 1984</subfield>
         </datafield>
         <datafield tag="815" ind1=" " ind2=" ">
             <subfield code="a">GDEL: Juin 1940 (appel du 18)</subfield>
         </datafield>
         <datafield tag="300" ind1=" " ind2=" ">
             <subfield code="7">ba0yba0y</subfield>
-            <subfield code="a">
-                Processus de perception et de production du langage
-            </subfield>
+            <subfield code="a">Processus de perception et de production du langage</subfield>
         </datafield>
         <datafield tag="330" ind1="1" ind2=" ">
             <subfield code="7">ba0yba0y</subfield>
-            <subfield code="a">
-                S&apos;emploie également en subdivision. Cette subdivision ...
-            </subfield>
+            <subfield code="a">S&apos;emploie également en subdivision. Cette subdivision ...</subfield>
         </datafield>
         <datafield tag="305" ind1="1" ind2=" ">
             <subfield code="7">ba0yba0y</subfield>
-            <subfield code="a">
-                Voir aussi la subdivision Métrique et rythmique ...
-            </subfield>
+            <subfield code="a">Voir aussi la subdivision Métrique et rythmique ...</subfield>
         </datafield>
         <datafield tag="320" ind1="1" ind2=" ">
             <subfield code="7">ba0yba0y</subfield>
-            <subfield code="a">
-                Voir le descripteur Opposition (science politique).
-            </subfield>
+            <subfield code="a">Voir le descripteur Opposition (science politique).</subfield>
         </datafield>
     """
     trans = trans_prep(Transformation, "places", xml_part_to_add)

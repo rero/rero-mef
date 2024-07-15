@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2022 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -130,4 +130,62 @@ def place_mef_idref_redirect_data():
         "$schema": "https://mef.rero.ch/schemas/places_mef/" "mef-place-v0.0.1.json",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163x2"},
         "type": "bf:Place",
+    }
+
+
+@pytest.fixture(scope="module")
+def place_gnd_data():
+    """Place IdRef data."""
+    return {
+        "authorized_access_point": "Nordschleswig",
+        "closeMatch": [
+            {
+                "authorized_access_point": "Nordschleswig",
+                "source": "GND",
+                "identifiedBy": {
+                    "type": "bf:Nbn",
+                    "value": "(DE-101)992404371",
+                    "source": "(DE-101)992404371",
+                },
+            }
+        ],
+        "identifiedBy": [
+            {"source": "GND", "type": "uri", "value": "http://d-nb.info/gnd/4075476-5"},
+            {"source": "GND", "type": "bf:Nbn", "value": "(DE-101)040754766"},
+            {"source": "GND", "type": "bf:Nbn", "value": "(DE-588)4075476-5"},
+        ],
+        "pid": "040754766",
+        "type": "bf:Place",
+        "broader": [
+            {"authorized_access_point": "Herzogtum Schleswig"},
+            {"authorized_access_point": "Da\u0308nemark"},
+        ],
+        "variant_access_point": [
+            "Su\u0308dliches Ju\u0308tland",
+            "Ju\u0308tland",
+            "Schleswig",
+            "Su\u0308dju\u0308tland",
+            "Nordslesvig",
+            "Da\u0308nemark",
+            "Su\u0308dda\u0308nemark",
+            "S\u00f8nderjylland",
+        ],
+        "md5": "4928526430cc69ce78284fc42389d088",
+    }
+
+
+@pytest.fixture(scope="module")
+def place_gnd_redirect_data():
+    """Place IdRef data with redirect from."""
+    return {
+        "authorized_access_point": "Arhiepiscopia Romanului şi Bacăului",
+        "deleted": "2024-07-17T15:06:23.887218+00:00",
+        "identifiedBy": [
+            {"source": "GND", "type": "bf:Nbn", "value": "(DE-101)1332367461"},
+            {"source": "GND", "type": "bf:Nbn", "value": "(DE-588)1332367461"},
+        ],
+        "pid": "1332367461",
+        "type": "bf:Place",
+        "relation_pid": {"value": "1332364101", "type": "redirect_to"},
+        "md5": "4f6181dd5cb82589e6d17b5c3dd33372",
     }

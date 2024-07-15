@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2021 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -263,7 +263,7 @@ class EntityMefRecord(ReroMefRecord):
         :returns: Modified record and executed action.
         """
         action = Action.DISCARD
-        if self.pop(record.name):
+        if self.pop(record.name, None):
             action = Action.DELETE
             self.replace(data=self, dbcommit=dbcommit, reindex=reindex)
             if reindex:

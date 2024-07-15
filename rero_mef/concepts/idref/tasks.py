@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2022 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +20,6 @@
 from celery import shared_task
 from flask import current_app
 
-from .api import ConceptIdrefRecord
 from ...marctojson.do_idref_concepts import Transformation
 from ...utils import (
     MyOAIItemIterator,
@@ -29,6 +28,7 @@ from ...utils import (
     oai_process_records_from_dates,
     oai_save_records_from_dates,
 )
+from .api import ConceptIdrefRecord
 
 
 @shared_task
@@ -46,10 +46,15 @@ def process_records_from_dates(
 ):
     """Harvest multiple records from an OAI repo.
 
-    :param name: The name of the OAIHarvestConfig to use instead of passing
-                 specific parameters.
     :param from_date: The lower bound date for the harvesting (optional).
     :param until_date: The upper bound date for the harvesting (optional).
+    :param ignore_deleted: Ignore deleted records.
+    :param dbcommit: Commit changes to DB.
+    :param reindex: Reindex in ES.
+    :param test_md5: Test MD5 for changes.
+    :param verbose: Verbose print.
+    :param debug: Debug print.
+    :param viaf_online: Get also VIAF.
     """
     # data on IDREF Servers starts on 2000-10-01
     return oai_process_records_from_dates(

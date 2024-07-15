@@ -38,6 +38,17 @@
         }
       }
     },
+    "gnd": {
+      "title": "GND place ID",
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "title": "ref",
+          "type": "string",
+          "pattern": "^https://mef.rero.ch/api/places/gnd/.*?$"
+        }
+      }
+    },
     "deleted": {
       "title": "Deletion date",
       "type": "string",

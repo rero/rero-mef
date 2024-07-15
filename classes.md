@@ -207,6 +207,17 @@ class PlaceIdrefRecord {
     get_online_record(cls, id, debug=False)
 }
 
+class PlaceGndRecord {
+    minter = gnd_id_minter
+    fetcher = gnd_id_fetcher
+    provider = PlaceGndProvider
+    name = 'idref'
+    viaf_source_code = 'RAMEAU'
+    pid_type = 'place_gnd_pid'
+    model_cls = PlaceGndMetadata
+    search = PlaceGndSearch
+    get_online_record(cls, id, debug=False)
+
 EntityMefRecord --|> ReroMefRecord
 ReroMefRecord --|> AgentMefRecord
 ReroMefRecord --|> ConceptMefRecord
@@ -225,4 +236,5 @@ ConceptRecord --|> ConceptReroRecord
 
 ReroMefRecord --|> PlaceRecord
 PlaceRecord --|> PlaceIdrefRecord
+PlaceRecord --|> PlaceGndRecord
 ```

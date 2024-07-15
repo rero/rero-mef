@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -38,12 +38,14 @@ from .concepts.idref.models import ConceptIdrefIdentifier
 from .concepts.rero.models import ConceptReroIdentifier
 from .filter import exists_filter
 from .marctojson.do_gnd_agent import Transformation as AgentGndTransformation
+from .marctojson.do_gnd_places import Transformation as PlaceGndTransformation
 from .marctojson.do_idref_agent import Transformation as AgentIdrefTransformation
 from .marctojson.do_idref_concepts import Transformation as ConceptIdrefTransformation
 from .marctojson.do_idref_places import Transformation as PlaceIdrefTransformation
 from .marctojson.do_rero_agent import Transformation as AgentReroTransformation
 from .marctojson.do_rero_concepts import Transformation as ConceptReroTransformation
 from .models import MefIdentifier
+from .places.gnd.models import PlaceGndIdentifier
 from .places.idref.models import PlaceIdrefIdentifier
 
 APP_THEME = ["bootstrap3"]
@@ -204,6 +206,7 @@ TRANSFORMATION = {
     "corero": ConceptReroTransformation,
     "cidref": ConceptIdrefTransformation,
     "pidref": PlaceIdrefTransformation,
+    "plgnd": PlaceGndTransformation,
 }
 
 IDENTIFIERS = {
@@ -216,6 +219,7 @@ IDENTIFIERS = {
     "corero": ConceptReroIdentifier,
     "cidref": ConceptIdrefIdentifier,
     "pidref": PlaceIdrefIdentifier,
+    "plgnd": PlaceGndIdentifier,
 }
 
 RERO_MEF_APP_BASE_URL = "https://mef.rero.ch"
@@ -502,19 +506,44 @@ RECORDS_REST_ENDPOINTS = dict(
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers={},
     ),
+    plgnd=dict(
+        pid_type="plgnd",
+        pid_minter="place_gnd_id",
+        pid_fetcher="place_gnd_id",
+        search_class="rero_mef.places.gnd.api:PlaceGndSearch",
+        indexer_class="rero_mef.places.gnd.api:PlaceGndIndexer",
+        record_class="rero_mef.places.gnd.api:PlaceGndRecord",
+        search_index="places_gnd",
+        record_serializers={
+            "application/json": ("rero_mef.places.serializers" ":json_place_response"),
+        },
+        search_serializers={
+            "application/json": ("rero_mef.places.serializers" ":json_place_search"),
+        },
+        search_factory_imp="rero_mef.query:and_search_factory",
+        list_route="/places/gnd/",
+        item_route=(
+            "/places/gnd/<pid(plgnd, record_class="
+            '"rero_mef.places.gnd.api:PlaceGndRecord"):pid_value>'
+        ),
+        default_media_type="application/json",
+        max_result_window=MAX_RESULT_WINDOW,
+        error_handlers={},
+    ),
 )
 
 RERO_AGENTS = ["aidref", "aggnd", "agrero"]
 
 RERO_CONCEPTS = ["cidref", "corero"]
 
-RERO_PLACES = ["pidref"]
+RERO_PLACES = ["pidref", "plgnd"]
 
 RERO_ENTITIES = RERO_AGENTS + RERO_CONCEPTS + RERO_PLACES
 
 RECORDS_JSON_SCHEMA = {
     "plmef": "/places_mef/mef-place-v0.0.1.json",
     "pidref": "/places_idref/idref-place-v0.0.1.json",
+    "plgnd": "/places_gnd/gnd-place-v0.0.1.json",
     "corero": "/concepts_rero/rero-concept-v0.0.1.json",
     "cidref": "/concepts_idref/idref-concept-v0.0.1.json",
     "comef": "/concepts_mef/mef-concept-v0.0.1.json",
@@ -532,9 +561,6 @@ RECORDS_REST_FACETS = dict(
             source=dict(terms=dict(field="sources", size=30)),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
             deleted_entities=dict(filter=dict(exists=dict(field="*.deleted"))),
-            identifiedBy_source=dict(
-                terms=dict(field="*.identifiedBy.source", size=30)
-            ),
         ),
         filters=dict(
             type=terms_filter("type"),
@@ -542,7 +568,6 @@ RECORDS_REST_FACETS = dict(
             deleted=exists_filter("deleted"),
             deleted_entities=exists_filter("*.deleted"),
             rero_double=terms_filter("rero.pid"),
-            identifiedBy_source=terms_filter("*.identifiedBy.source"),
         ),
     ),
     viaf=dict(aggs=AgentViafRecord.aggregations(), filters=AgentViafRecord.filters()),
@@ -588,9 +613,6 @@ RECORDS_REST_FACETS = dict(
             source=dict(terms=dict(field="sources", size=30)),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
             deleted_entities=dict(filter=dict(exists=dict(field="*.deleted"))),
-            identifiedBy_source=dict(
-                terms=dict(field="*.identifiedBy.source", size=30)
-            ),
         ),
         filters=dict(
             type=terms_filter("type"),
@@ -598,7 +620,6 @@ RECORDS_REST_FACETS = dict(
             deleted=exists_filter("deleted"),
             deleted_entities=exists_filter("*.deleted"),
             rero_double=terms_filter("rero.pid"),
-            identifiedBy_source=terms_filter("*.identifiedBy.source"),
         ),
     ),
     concepts_rero=dict(
@@ -643,19 +664,33 @@ RECORDS_REST_FACETS = dict(
             source=dict(terms=dict(field="sources", size=30)),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
             deleted_entities=dict(filter=dict(exists=dict(field="*.deleted"))),
-            identifiedBy_source=dict(
-                terms=dict(field="*.identifiedBy.source", size=30)
-            ),
         ),
         filters=dict(
             type=terms_filter("type"),
             source=terms_filter("sources"),
             deleted=exists_filter("deleted"),
             deleted_entities=exists_filter("*.deleted"),
-            identifiedBy_source=terms_filter("*.identifiedBy.source"),
         ),
     ),
     places_idref=dict(
+        aggs=dict(
+            type=dict(terms=dict(field="type", size=30)),
+            classification=dict(terms=dict(field="classification.name", size=30)),
+            classificationPortion=dict(
+                terms=dict(field="classification.classificationPortion", size=30)
+            ),
+            deleted=dict(filter=dict(exists=dict(field="deleted"))),
+            identifiedBy_source=dict(terms=dict(field="identifiedBy.source", size=30)),
+        ),
+        filters=dict(
+            type=terms_filter("type"),
+            classification=terms_filter("classification.name"),
+            classificationPortion=terms_filter("classification.classificationPortion"),
+            deleted=exists_filter("deleted"),
+            identifiedBy_source=terms_filter("identifiedBy.source"),
+        ),
+    ),
+    places_gnd=dict(
         aggs=dict(
             type=dict(terms=dict(field="type", size=30)),
             classification=dict(terms=dict(field="classification.name", size=30)),

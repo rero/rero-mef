@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2021 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -22,12 +22,12 @@ from copy import deepcopy
 from flask import current_app
 from invenio_search.api import RecordsSearch
 
+from ...api import ReroIndexer
+from ...api_mef import EntityMefRecord
 from .fetchers import mef_id_fetcher
 from .minters import mef_id_minter
 from .models import PlaceMefMetadata
 from .providers import PlaceMefProvider
-from ...api import ReroIndexer
-from ...api_mef import EntityMefRecord
 
 
 def build_ref_string(place_pid, place):
@@ -68,7 +68,7 @@ class PlaceMefRecord(EntityMefRecord):
     model_cls = PlaceMefMetadata
     search = PlaceMefSearch
     mef_type = "PLACES"
-    entities = ["idref"]
+    entities = ["idref", "gnd"]
 
     @classmethod
     def create(
@@ -108,7 +108,7 @@ class PlaceMefRecord(EntityMefRecord):
         :param sources: Add sources information to record
         :returns: record
         """
-        replace_refs_data = deepcopy(self).replace_refs()
+        replace_refs_data = PlaceMefRecord(deepcopy(self).replace_refs())
         data = replace_refs_data if resolve else deepcopy(self)
         my_sources = []
         for place in self.entities:

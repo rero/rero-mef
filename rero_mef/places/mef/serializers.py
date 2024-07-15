@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2021 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -83,7 +83,7 @@ class ReroMefSerializer(JSONSerializer):
 
         place_classes = get_entity_classes()
         for place, place_classe in place_classes.items():
-            if place in ["pidref"]:
+            if place in ["pidref", "plgnd"]:
                 local_link(place, place_classe.name, rec)
 
         return super(ReroMefSerializer, self).serialize(
