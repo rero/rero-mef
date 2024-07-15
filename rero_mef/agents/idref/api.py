@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -19,11 +19,11 @@
 
 from invenio_search.api import RecordsSearch
 
+from ..api import AgentIndexer, AgentRecord
 from .fetchers import idref_id_fetcher
 from .minters import idref_id_minter
 from .models import AgentIdrefMetadata
 from .providers import AgentIdrefProvider
-from ..api import AgentIndexer, AgentRecord
 
 
 class AgentIdrefSearch(RecordsSearch):
@@ -54,7 +54,12 @@ class AgentIdrefRecord(AgentRecord):
 
     @classmethod
     def get_online_record(cls, id_, debug=False):
-        """Get online record."""
+        """Get online record.
+
+        :param id_: Id of online record.
+        :param debug: Debug print.
+        :returns: record or None
+        """
         from .tasks import idref_get_record
 
         return idref_get_record(id_=id_, debug=debug)

@@ -18,8 +18,8 @@
 
 from flask import current_app
 
-from .mef.api import build_ref_string
 from ..api import Action, ReroIndexer, ReroMefRecord
+from .mef.api import build_ref_string
 
 
 class AgentRecord(ReroMefRecord):
@@ -164,8 +164,7 @@ class AgentRecord(ReroMefRecord):
 
         Has to be overloaded in agent class.
 
-        :param id: Id of online record.
-        :param verbose: Verbose print.
+        :param id_: Id of online record.
         :param debug: Debug print.
         :returns: record or None
         Has to be overloaded in agent class.

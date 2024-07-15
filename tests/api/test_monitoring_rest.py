@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2021 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -42,6 +42,7 @@ def test_monitoring_es_db_counts(client):
             "mef": {"db": 0, "db-es": 0, "es": 0, "index": "mef"},
             "viaf": {"db": 0, "db-es": 0, "es": 0, "index": "viaf"},
             "pidref": {"db": 0, "db-es": 0, "es": 0, "index": "places_idref"},
+            "plgnd": {"db": 0, "db-es": 0, "es": 0, "index": "places_gnd"},
             "plmef": {"db": 0, "db-es": 0, "es": 0, "index": "places_mef"},
         }
     }

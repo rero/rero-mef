@@ -1,7 +1,10 @@
 
         <record>
             <leader>00589nx  a2200193   45  </leader> 
-        <datafield tag="102" ind1=" " ind2=" ">
-            <subfield code="a">DE</subfield>
+        <datafield ind1=" " ind2=" " tag="710">
+            <subfield code="a">Paul</subfield>
+            <subfield code="b">VI</subfield>
+            <subfield code="c">pape</subfield>
+            <subfield code="d">1897-1978</subfield>
         </datafield>
-    </record>
+     </record>

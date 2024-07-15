@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -24,7 +24,6 @@ from pymarc.marcxml import parse_xml_to_array
 from sickle import Sickle
 from six import BytesIO
 
-from .api import AgentGndRecord
 from ...marctojson.do_gnd_agent import Transformation
 from ...utils import (
     MyOAIItemIterator,
@@ -32,6 +31,7 @@ from ...utils import (
     oai_save_records_from_dates,
     requests_retry_session,
 )
+from .api import AgentGndRecord
 
 
 @shared_task
@@ -49,10 +49,15 @@ def process_records_from_dates(
 ):
     """Harvest multiple records from an OAI repo.
 
-    :param name: The name of the OAIHarvestConfig to use instead of passing
-                 specific parameters.
     :param from_date: The lower bound date for the harvesting (optional).
     :param until_date: The upper bound date for the harvesting (optional).
+    :param ignore_deleted: Ignore deleted records.
+    :param dbcommit: Commit changes to DB.
+    :param reindex: Reindex in ES.
+    :param test_md5: Test MD5 for changes.
+    :param verbose: Verbose print.
+    :param debug: Debug print.
+    :param viaf_online: Get also VIAF.
     """
     return oai_process_records_from_dates(
         name="agents.gnd",
@@ -109,8 +114,7 @@ def gnd_get_record(id_, debug=False):
     https://services.dnb.de/sru/authorities?version=1.1
     &operation=searchRetrieve&query=idn%3D007355440&recordSchema=MARC21-xml
     """
-    url = current_app.config.get("RERO_MEF_AGENTS_GND_GET_RECORD").replace("{id}", id_)
-    trans_record = None
+    url = current_app.config["RERO_MEF_AGENTS_GND_GET_RECORD"].replace("{id}", id_)
     msg = f"SRU-agents.gnd  get: {id_:<15} {url}"
     try:
         response = requests_retry_session().get(url)
@@ -120,17 +124,11 @@ def gnd_get_record(id_, debug=False):
                 trans_record = Transformation(records[0]).json
                 pid = trans_record.get("pid")
                 if id_ != pid:
-                    msg = f"{msg} | PID changed: {id_} -> {pid}"
-                    trans_record = None
-                else:
-                    msg = f"{msg} | OK"
-            else:
-                msg = f"{msg} | No record"
-        else:
-            msg = f"{msg} | HTTP Error: {status_code}"
+                    return None, f"{msg} | PID changed: {id_} -> {pid}"
+                return trans_record, f"{msg} | OK"
+            return None, f"{msg} | No record"
+        return None, f"{msg} | HTTP Error: {status_code}"
     except Exception as err:
-        trans_record = None
-        msg = f"{msg} | Error: {err}"
         if debug:
             raise
-    return trans_record, msg
+        return None, f"{msg} | Error: {err}"

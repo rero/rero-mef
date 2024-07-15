@@ -30,3 +30,9 @@ places.idref:
     metadataprefix: marc-xml
     comment: 'idref'
     setspecs: 'c'
+places.gnd:
+    # https://www.dnb.de/EN/Professionell/Metadatendienste/Datenbezug/OAI/oai_node.html
+    baseurl: http://services.dnb.de/oai/repository
+    metadataprefix: MARC21-xml
+    comment: 'gnd'
+    setspecs: 'authorities:geografikum'

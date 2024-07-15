@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -131,6 +131,7 @@ def test_create_mef_and_agents(
         "cidref": {"db": 0, "index": "cidref", "mef": 0, "mef-db": 0},
         "corero": {"db": 0, "index": "corero", "mef": 0, "mef-db": 0},
         "pidref": {"db": 0, "index": "pidref", "mef": 0, "mef-db": 0},
+        "plgnd": {"db": 0, "index": "plgnd", "mef": 0, "mef-db": 0},
     }
     # Change RERO in VIAF:
     agent_viaf_record["rero_pid"] = "AXXXXXXXXX"
@@ -163,6 +164,7 @@ def test_create_mef_and_agents(
         "cidref": {"db": 0, "index": "cidref", "mef": 0, "mef-db": 0},
         "corero": {"db": 0, "index": "corero", "mef": 0, "mef-db": 0},
         "pidref": {"db": 0, "index": "pidref", "mef": 0, "mef-db": 0},
+        "plgnd": {"db": 0, "index": "plgnd", "mef": 0, "mef-db": 0},
     }
 
     # Create missing RERO record
@@ -211,6 +213,7 @@ def test_create_mef_and_agents(
         "cidref": {"db": 0, "index": "cidref", "mef": 0, "mef-db": 0},
         "corero": {"db": 0, "index": "corero", "mef": 0, "mef-db": 0},
         "pidref": {"db": 0, "index": "pidref", "mef": 0, "mef-db": 0},
+        "plgnd": {"db": 0, "index": "plgnd", "mef": 0, "mef-db": 0},
     }
 
     # readd GND to VIAF and add wrongly VIAF pid to GND MEF record:
@@ -273,6 +276,7 @@ def test_create_mef_and_agents(
         "cidref": {"db": 0, "index": "cidref", "mef": 0, "mef-db": 0},
         "corero": {"db": 0, "index": "corero", "mef": 0, "mef-db": 0},
         "pidref": {"db": 0, "index": "pidref", "mef": 0, "mef-db": 0},
+        "plgnd": {"db": 0, "index": "plgnd", "mef": 0, "mef-db": 0},
     }
 
     from pprint import pprint
@@ -310,6 +314,7 @@ def test_create_mef_and_agents(
         "cidref": {"db": 0, "index": "cidref", "mef": 0, "mef-db": 0},
         "corero": {"db": 0, "index": "corero", "mef": 0, "mef-db": 0},
         "pidref": {"db": 0, "index": "pidref", "mef": 0, "mef-db": 0},
+        "plgnd": {"db": 0, "index": "plgnd", "mef": 0, "mef-db": 0},
     }
 
 

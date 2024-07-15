@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Schema for IdRef place",
+  "title": "Schema for places",
   "type": "object",
   "required": [
     "$schema",

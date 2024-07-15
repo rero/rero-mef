@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2024 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -17,9 +17,10 @@
 
 """Places."""
 
+from ..api import Action
+from .gnd.api import PlaceGndIndexer, PlaceGndRecord, PlaceGndSearch
 from .idref.api import PlaceIdrefIndexer, PlaceIdrefRecord, PlaceIdrefSearch
 from .mef.api import PlaceMefIndexer, PlaceMefRecord, PlaceMefSearch
-from ..api import Action
 
 __all__ = (
     "PlaceMefIndexer",
@@ -28,5 +29,8 @@ __all__ = (
     "PlaceIdrefIndexer",
     "PlaceIdrefRecord",
     "PlaceIdrefSearch",
+    "PlaceGndIndexer",
+    "PlaceGndRecord",
+    "PlaceGndSearch",
     "Action",
 )
