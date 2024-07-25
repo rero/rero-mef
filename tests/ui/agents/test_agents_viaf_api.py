@@ -100,8 +100,8 @@ def test_create_mef_and_agents(
 
     actions = agent_viaf_record.create_mef_and_agents(dbcommit=True, reindex=True)
     mef_pid = AgentMefRecord.get_mef(
-        agent_pid=agent_viaf_record.pid,
-        agent_name=agent_viaf_record.name,
+        entity_pid=agent_viaf_record.pid,
+        entity_name=agent_viaf_record.name,
         pid_only=True,
     )[0]
     assert actions == {
@@ -129,6 +129,7 @@ def test_create_mef_and_agents(
         "agrero": {"db": 1, "index": "agrero", "mef": 1, "mef-db": 0},
         "aidref": {"db": 1, "index": "aidref", "mef": 1, "mef-db": 0},
         "cidref": {"db": 0, "index": "cidref", "mef": 0, "mef-db": 0},
+        "cognd": {"db": 0, "index": "cognd", "mef": 0, "mef-db": 0},
         "corero": {"db": 0, "index": "corero", "mef": 0, "mef-db": 0},
         "pidref": {"db": 0, "index": "pidref", "mef": 0, "mef-db": 0},
         "plgnd": {"db": 0, "index": "plgnd", "mef": 0, "mef-db": 0},
@@ -162,6 +163,7 @@ def test_create_mef_and_agents(
         "agrero": {"db": 1, "index": "agrero", "mef": 1, "mef-db": 0},
         "aidref": {"db": 1, "index": "aidref", "mef": 1, "mef-db": 0},
         "cidref": {"db": 0, "index": "cidref", "mef": 0, "mef-db": 0},
+        "cognd": {"db": 0, "index": "cognd", "mef": 0, "mef-db": 0},
         "corero": {"db": 0, "index": "corero", "mef": 0, "mef-db": 0},
         "pidref": {"db": 0, "index": "pidref", "mef": 0, "mef-db": 0},
         "plgnd": {"db": 0, "index": "plgnd", "mef": 0, "mef-db": 0},
@@ -211,6 +213,7 @@ def test_create_mef_and_agents(
         "agrero": {"db": 2, "index": "agrero", "mef": 2, "mef-db": 0},
         "aidref": {"db": 1, "index": "aidref", "mef": 1, "mef-db": 0},
         "cidref": {"db": 0, "index": "cidref", "mef": 0, "mef-db": 0},
+        "cognd": {"db": 0, "index": "cognd", "mef": 0, "mef-db": 0},
         "corero": {"db": 0, "index": "corero", "mef": 0, "mef-db": 0},
         "pidref": {"db": 0, "index": "pidref", "mef": 0, "mef-db": 0},
         "plgnd": {"db": 0, "index": "plgnd", "mef": 0, "mef-db": 0},
@@ -230,8 +233,8 @@ def test_create_mef_and_agents(
     agent_viaf_record.update(data=agent_viaf_record, dbcommit=True, reindex=True)
     actions = agent_viaf_record.create_mef_and_agents(dbcommit=True, reindex=True)
     mef_pid_new = AgentMefRecord.get_mef(
-        agent_pid=agent_viaf_record.pid,
-        agent_name=agent_viaf_record.name,
+        entity_pid=agent_viaf_record.pid,
+        entity_name=agent_viaf_record.name,
         pid_only=True,
     )[0]
     mef_record = AgentMefRecord.get_record_by_pid(mef_pid_new)
@@ -274,15 +277,11 @@ def test_create_mef_and_agents(
         "agrero": {"db": 2, "index": "agrero", "mef": 2, "mef-db": 0},
         "aidref": {"db": 1, "index": "aidref", "mef": 1, "mef-db": 0},
         "cidref": {"db": 0, "index": "cidref", "mef": 0, "mef-db": 0},
+        "cognd": {"db": 0, "index": "cognd", "mef": 0, "mef-db": 0},
         "corero": {"db": 0, "index": "corero", "mef": 0, "mef-db": 0},
         "pidref": {"db": 0, "index": "pidref", "mef": 0, "mef-db": 0},
         "plgnd": {"db": 0, "index": "plgnd", "mef": 0, "mef-db": 0},
     }
-
-    from pprint import pprint
-
-    for rec in AgentMefRecord.get_all_records():
-        pprint(rec)
 
     # delete VIAF
     rec = AgentViafRecord.get_record_by_pid(agent_viaf_record.get("pid"))
@@ -312,6 +311,7 @@ def test_create_mef_and_agents(
         "agrero": {"db": 2, "index": "agrero", "mef": 2, "mef-db": 0},
         "aidref": {"db": 1, "index": "aidref", "mef": 1, "mef-db": 0},
         "cidref": {"db": 0, "index": "cidref", "mef": 0, "mef-db": 0},
+        "cognd": {"db": 0, "index": "cognd", "mef": 0, "mef-db": 0},
         "corero": {"db": 0, "index": "corero", "mef": 0, "mef-db": 0},
         "pidref": {"db": 0, "index": "pidref", "mef": 0, "mef-db": 0},
         "plgnd": {"db": 0, "index": "plgnd", "mef": 0, "mef-db": 0},
@@ -330,7 +330,7 @@ def test_create_mef_and_agents_online(
     res = runner.invoke(init_oai_harvest_config, [oaisources], obj=script_info)
     assert res.output.strip().split("\n") == [
         "Add OAIHarvestConfig: "
-        "agents.gnd http://services.dnb.de/oai/repository Added",
+        "agents.gnd https://services.dnb.de/oai/repository Added",
         "Add OAIHarvestConfig: " "agents.idref https://www.idref.fr/OAI/oai.jsp Added",
         "Add OAIHarvestConfig: "
         "concepts.idref https://www.idref.fr/OAI/oai.jsp Added",

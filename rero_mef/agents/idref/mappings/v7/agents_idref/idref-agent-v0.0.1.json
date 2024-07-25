@@ -26,9 +26,6 @@
       "gender": {
         "type": "keyword"
       },
-      "identifier": {
-        "type": "keyword"
-      },
       "identifiedBy": {
         "type": "object",
         "properties": {
@@ -39,6 +36,9 @@
             "type": "keyword"
           },
           "value": {
+            "type": "keyword"
+          },
+          "_identifier": {
             "type": "keyword"
           }
         }

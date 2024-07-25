@@ -14,7 +14,7 @@ agents.idref:
     setspecs: 'a b'
 agents.gnd:
     # https://www.dnb.de/EN/Professionell/Metadatendienste/Datenbezug/OAI/oai_node.html
-    baseurl: http://services.dnb.de/oai/repository
+    baseurl: https://services.dnb.de/oai/repository
     metadataprefix: MARC21-xml
     comment: 'gnd'
     setspecs: 'authorities:kongress authorities:koerperschaft authorities:person'

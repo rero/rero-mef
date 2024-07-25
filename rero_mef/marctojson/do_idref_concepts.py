@@ -41,16 +41,16 @@ class Transformation(object):
         """Call the transformation functions."""
         if fields_008 := self.marc.get_fields("008"):
             fields_008_data = fields_008[0].data
-            if fields_008_data in ["Td8", "Tf8", "Tz8"]:
+            if fields_008_data in ["Td5", "Td8", "Tf8", "Tz5", "Tz8"]:
                 self.json_dict["type"] = "bf:Topic"
-                if fields_008_data == "Tz8":
+                if fields_008_data in ["Tz5", "Tz8"]:
                     self.json_dict["type"] = "bf:Temporal"
                 for func in dir(self):
                     if func.startswith("trans"):
                         func = getattr(self, func)
                         func()
             else:
-                msg = f"008 not in [Td8, Tf8, Tz8]: {fields_008_data}"
+                msg = f"008 not in [Td5, Td8, Tf8, Tz5, Tz8]: {fields_008_data}"
                 self.json_dict = {"NO TRANSFORMATION": msg}
                 self.trans_idref_pid()
                 if self.logger and self.verbose:
@@ -89,14 +89,16 @@ class Transformation(object):
             self.logger.info("Call Function", "trans_idref_identifier")
         identifiers = self.json_dict.get("identifiedBy", [])
         if field_003 := self.marc.get_fields("003"):
-            identifiers.append(
-                {"type": "uri", "value": field_003[0].data.strip(), "source": "IDREF"}
-            )
+            uri = field_003[0].data.strip()
+            identifiers.append({"type": "uri", "value": uri, "source": "IDREF"})
+        uris = {}
         for field_033 in self.marc.get_fields("033"):
             if field_033.get("2") and field_033["2"] == "BNF" and field_033.get("a"):
-                identifiers.append(
-                    {"type": "uri", "value": field_033["a"].strip(), "source": "BNF"}
-                )
+                date = int(date) if (date := field_033.get("d")) else 0
+                uris[date] = field_033["a"].strip()
+        if uris:
+            latest = sorted(uris)[-1]
+            identifiers.append({"type": "uri", "value": uris[latest], "source": "BNF"})
         if identifiers:
             self.json_dict["identifiedBy"] = identifiers
 
@@ -104,6 +106,7 @@ class Transformation(object):
         """Transformation old pids 035 $a $9 = sudoc."""
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_idref_relation_pid")
+        bnf_ids = {}
         for field_035 in self.marc.get_fields("035"):
             subfield_a = field_035.get("a")
             if isinstance(subfield_a, list):
@@ -114,21 +117,34 @@ class Transformation(object):
             subfield_9 = field_035.get("9")
             if isinstance(subfield_9, list):
                 subfield_9 = subfield_9[0]
+            subfield_z = field_035.get("z")
+            if isinstance(subfield_z, list):
+                subfield_z = subfield_z[0]
             if subfield_a and subfield_9 == "sudoc":
                 self.json_dict["relation_pid"] = {
                     "value": field_035["a"],
                     "type": "redirect_from",
                 }
             elif subfield_2:
-                identified_by = self.json_dict.get("identifiedBy", [])
-                identified_by.append(
+                self.json_dict.setdefault("identifiedBy", []).append(
                     {
                         "source": subfield_2.upper(),
                         "type": "uri" if subfield_a.startswith("http") else "bf:Nbn",
                         "value": subfield_a,
                     }
                 )
-                self.json_dict["identifiedBy"] = identified_by
+            elif subfield_z:
+                date = int(date) if (date := field_035.get("d")) else 0
+                bnf_ids[date] = subfield_z.strip()
+        if bnf_ids:
+            latest = sorted(bnf_ids)[-1]
+            self.json_dict.setdefault("identifiedBy", []).append(
+                {
+                    "source": "BNF",
+                    "type": "bf:Nbn",
+                    "value": bnf_ids[latest],
+                }
+            )
 
     def trans_idref_deleted(self):
         """Transformation deleted leader 5 == d."""
@@ -225,11 +241,13 @@ class Transformation(object):
                         "source": field_822["2"].strip(),
                     }
                     if field_822.get("u"):
-                        close_match["identifiedBy"] = {
-                            "type": "uri",
-                            "value": field_822["u"].strip(),
-                            "source": field_822["2"].strip(),
-                        }
+                        close_match["identifiedBy"] = [
+                            {
+                                "type": "uri",
+                                "value": field_822["u"].strip(),
+                                "source": field_822["2"].strip(),
+                            }
+                        ]
                 if close_match:
                     close_matchs.append(close_match)
         if close_matchs:

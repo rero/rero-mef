@@ -23,27 +23,14 @@ import click
 from flask import current_app
 from invenio_search.api import RecordsSearch
 
+from rero_mef.api import EntityIndexer
+from rero_mef.api_mef import EntityMefRecord
+from rero_mef.utils import get_entity_classes, progressbar
+
 from .fetchers import mef_id_fetcher
 from .minters import mef_id_minter
 from .models import AgentMefMetadata
 from .providers import MefProvider
-from ...api import ReroIndexer
-from ...api_mef import EntityMefRecord
-from ...utils import get_entity_classes, progressbar
-
-
-def build_ref_string(agent_pid, agent):
-    """Build url for agent's api.
-
-    :param agent_pid: Agent pid.
-    :param agent: Agent type.
-    :returns: URL to agent
-    """
-    with current_app.app_context():
-        return (
-            f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
-            f"/api/agents/{agent}/{agent_pid}"
-        )
 
 
 class AgentMefSearch(RecordsSearch):
@@ -207,7 +194,7 @@ class AgentMefRecord(EntityMefRecord):
         return {}
 
 
-class AgentMefIndexer(ReroIndexer):
+class AgentMefIndexer(EntityIndexer):
     """Agent MEF indexer."""
 
     record_cls = AgentMefRecord

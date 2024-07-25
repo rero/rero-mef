@@ -154,7 +154,6 @@ def test_idref_identifier():
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_identifier()
     assert trans.json == {
-        "identifier": "http://www.idref.fr/069774331",
         "identifiedBy": [
             {"source": "IDREF", "type": "uri", "value": "http://www.idref.fr/069774331"}
         ],

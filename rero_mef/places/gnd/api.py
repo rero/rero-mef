@@ -19,7 +19,8 @@
 
 from invenio_search.api import RecordsSearch
 
-from ..api import PlaceIndexer, PlaceRecord
+from rero_mef.places.api import PlaceIndexer, PlaceRecord
+
 from .fetchers import gnd_id_fetcher
 from .minters import gnd_id_minter
 from .models import PlaceGndMetadata
@@ -63,6 +64,27 @@ class PlaceGndRecord(PlaceRecord):
         from .tasks import gnd_get_record
 
         return gnd_get_record(id_=id_, debug=debug)
+
+    @property
+    def association_identifier(self):
+        """Get associated identifier."""
+        return self.pid
+
+    @property
+    def association_info(self):
+        """Get associated record."""
+        from rero_mef.places import PlaceIdrefRecord, PlaceIdrefSearch, PlaceMefRecord
+
+        PlaceIdrefRecord.flush_indexes()
+        return {
+            "identifier": self.association_identifier,
+            "record": self.get_association_record(
+                association_cls=PlaceIdrefRecord, association_search=PlaceIdrefSearch
+            ),
+            "record_cls": PlaceIdrefRecord,
+            "search_cls": PlaceIdrefSearch,
+            "mef_cls": PlaceMefRecord,
+        }
 
 
 class PlaceGndIndexer(PlaceIndexer):

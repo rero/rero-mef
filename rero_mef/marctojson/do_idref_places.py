@@ -76,9 +76,8 @@ class Transformation(object):
             self.logger.info("Call Function", "trans_idref_identifier")
         identifiers = self.json_dict.get("identifiedBy", [])
         if field_003 := self.marc.get_fields("003"):
-            identifiers.append(
-                {"type": "uri", "value": field_003[0].data.strip(), "source": "IDREF"}
-            )
+            uri = field_003[0].data.strip()
+            identifiers.append({"type": "uri", "value": uri, "source": "IDREF"})
         for field_033 in self.marc.get_fields("033"):
             if field_033.get("2") and field_033.get("a"):
                 subfield_a = field_033.get("a")
@@ -222,11 +221,13 @@ class Transformation(object):
                         "source": field_822["2"].strip(),
                     }
                     if field_822.get("u"):
-                        close_match["identifiedBy"] = {
-                            "type": "uri",
-                            "value": field_822["u"].strip(),
-                            "source": field_822["2"].strip(),
-                        }
+                        close_match["identifiedBy"] = [
+                            {
+                                "type": "uri",
+                                "value": field_822["u"].strip(),
+                                "source": field_822["2"].strip(),
+                            }
+                        ]
                 if close_match:
                     close_matchs.append(close_match)
         if close_matchs:

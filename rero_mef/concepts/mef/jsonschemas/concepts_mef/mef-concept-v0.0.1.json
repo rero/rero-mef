@@ -50,6 +50,17 @@
         }
       }
     },
+    "gnd": {
+      "title": "IdRGNDef concept ID",
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "title": "ref",
+          "type": "string",
+          "pattern": "^https://mef.rero.ch/api/concepts/gnd/.*?$"
+        }
+      }
+    },
     "deleted": {
       "title": "Deletion date",
       "type": "string",

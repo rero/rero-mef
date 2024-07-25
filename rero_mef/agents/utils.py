@@ -53,7 +53,7 @@ def write_mef_files(pid, data, pidstore, metadata, ids):
     return pid + 1
 
 
-def init_agent_pids(input_directory, verbose):
+def init_entity_pids(input_directory, verbose):
     """Init agent data.
 
     :param input_directory: Input directory to look for agent pidstore files.
@@ -62,14 +62,14 @@ def init_agent_pids(input_directory, verbose):
               VIAF agent pid names.
     """
     pids = {}
-    viaf_agent_pid_names = {}
+    viaf_entity_pid_names = {}
     agents = current_app.config.get("RERO_AGENTS", [])
     for agent in agents:
         agent_classe = get_entity_class(agent)
         name = agent_classe.name
         try:
             if viaf_pid_name := agent_classe.viaf_pid_name:
-                viaf_agent_pid_names[viaf_pid_name] = name
+                viaf_entity_pid_names[viaf_pid_name] = name
                 file_name = os.path.join(input_directory, f"{agent}_pidstore.csv")
                 if os.path.exists(file_name):
                     if verbose:
@@ -84,7 +84,7 @@ def init_agent_pids(input_directory, verbose):
                         pids[name][pid] = 1
         except Exception as err:
             click.secho(err, fg="red")
-    return pids, viaf_agent_pid_names
+    return pids, viaf_entity_pid_names
 
 
 def create_mef_files(
@@ -107,7 +107,7 @@ def create_mef_files(
     """
     if verbose:
         click.echo("Start ***")
-    pids, viaf_agent_pid_names = init_agent_pids(input_directory, verbose)
+    pids, viaf_entity_pid_names = init_entity_pids(input_directory, verbose)
 
     mef_pid = 1
     corresponding_data = {}
@@ -135,13 +135,13 @@ def create_mef_files(
             viaf_data = json.loads(line.split("\t")[3])
             viaf_pid = viaf_data["pid"]
             corresponding_data = {"pid": str(mef_pid), "$schema": schema}
-            for viaf_pid_name, name in viaf_agent_pid_names.items():
-                agent_pid = viaf_data.get(viaf_pid_name)
-                if agent_pid and pids.get(name, {}).get(agent_pid):
+            for viaf_pid_name, name in viaf_entity_pid_names.items():
+                entity_pid = viaf_data.get(viaf_pid_name)
+                if entity_pid and pids.get(name, {}).get(entity_pid):
                     corresponding_data["viaf_pid"] = viaf_pid
-                    pids[name].pop(agent_pid)
+                    pids[name].pop(entity_pid)
                     corresponding_data[name] = {
-                        "$ref": f"{base_url}/api/{name}/{agent_pid}"
+                        "$ref": f"{base_url}/api/{name}/{entity_pid}"
                     }
             if corresponding_data.get("viaf_pid"):
                 # Write MEF with VIAF to file

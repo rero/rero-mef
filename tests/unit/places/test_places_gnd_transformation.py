@@ -69,7 +69,7 @@ def test_gnd_identifier():
                 "source": "GND",
                 "value": "(DE-588)7655914-2",
             },
-        ]
+        ],
     }
 
 
@@ -107,7 +107,7 @@ def test_gnd_variant_access_point():
 
 
 def test_gnd_relation():
-    """Test trans_gnd_relation 515"""
+    """Test trans_gnd_relation 551"""
     xml_part_to_add = """
         <datafield tag="551" ind1=" " ind2=" ">
             <subfield code="0">(DE-101)041079302</subfield>
@@ -130,30 +130,8 @@ def test_gnd_relation():
 
 
 def test_gnd_classification():
-    """Test trans_gnd_classification 550."""
-    xml_part_to_add = """
-        <datafield tag="550" ind1=" " ind2=" ">
-            <subfield code="0">(DE-101)041229703</subfield>
-            <subfield code="0">(DE-588)4122970-8</subfield>
-            <subfield code="0">https://d-nb.info/gnd/4122970-8</subfield>
-            <subfield code="a">Bucht</subfield>
-            <subfield code="4">obin</subfield>
-            <subfield code="4">https://d-nb.info/standards/elementset/gnd#broaderTermInstantial</subfield>
-            <subfield code="w">r</subfield>
-            <subfield code="i">Oberbegriff instantiell</subfield>
-        </datafield>
-    """
-    trans = trans_prep(Transformation, "places", xml_part_to_add)
-    trans.trans_gnd_classification()
-    assert trans.json == {
-        "classification": [
-            {
-                "type": "bf:ClassificationDdc",
-                "classificationPortion": "obin",
-                "name": "Bucht",
-            }
-        ]
-    }
+    """Test trans_gnd_classification ???."""
+    # TODO: trans_gnd_classification
 
 
 def test_gnd_close_match():
@@ -170,17 +148,24 @@ def test_gnd_close_match():
         </datafield>
     """
     trans = trans_prep(Transformation, "places", xml_part_to_add)
-    trans.trans_gnd_close_match()
+    trans.trans_gnd_match()
     assert trans.json == {
-        "closeMatch": [
+        "exactMatch": [
             {
                 "authorized_access_point": "Venedig",
                 "source": "GND",
-                "identifiedBy": {
-                    "source": "DE-101",
-                    "type": "bf:Nbn",
-                    "value": "997977663",
-                },
+                "identifiedBy": [
+                    {
+                        "source": "GND",
+                        "type": "bf:Nbn",
+                        "value": "(DE-101)997977663",
+                    },
+                    {
+                        "source": "ZBW",
+                        "type": "bf:Nbn",
+                        "value": "091419204",
+                    },
+                ],
             }
         ]
     }

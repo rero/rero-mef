@@ -18,11 +18,12 @@
 
 from flask import current_app
 
-from ..api import Action, ReroIndexer, ReroMefRecord
-from .mef.api import build_ref_string
+from rero_mef.utils import build_ref_string
+
+from ..api import Action, EntityIndexer, EntityRecord
 
 
-class AgentRecord(ReroMefRecord):
+class AgentRecord(EntityRecord):
     """Agent Record class."""
 
     name = None
@@ -99,7 +100,9 @@ class AgentRecord(ReroMefRecord):
                 f'mef: {", ".join([mef.pid for mef in mef_records])}'
             )
 
-        ref_string = build_ref_string(agent=self.name, agent_pid=self.pid)
+        ref_string = build_ref_string(
+            entity_type="agents", entity_name=self.name, entity_pid=self.pid
+        )
         old_pids = set()
         if mef_records:
             # We have MEF records change them.
@@ -182,5 +185,5 @@ class AgentRecord(ReroMefRecord):
         return result
 
 
-class AgentIndexer(ReroIndexer):
+class AgentIndexer(EntityIndexer):
     """Indexing class for agents."""

@@ -36,13 +36,21 @@ from sqlalchemy import func, text
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm.exc import NoResultFound
 
-from rero_mef.utils import get_entity_class
+from rero_mef.utils import build_ref_string, get_entity_class
 
 from .utils import add_md5, add_schema
 
+RERO_ILS_ENTITY_TYPES = {
+    "bf:Person": "agents",
+    "bf:Organisation": "agents",
+    "bf:Topic": "concepts",
+    "bf:Temporal": "concepts",
+    "bf:Place": "places",
+}
+
 
 class Action(Enum):
-    """Class holding all availabe agent record creation actions."""
+    """Class holding all available entities record creation actions."""
 
     CREATE = "create"
     UPDATE = "update"
@@ -51,14 +59,14 @@ class Action(Enum):
     DISCARD = "discard"
     DELETE = "delete"
     ALREADY_DELETED = "already deleted"
-    DELETE_AGENT = "delete agent"
+    DELETE_ENTITY = "delete entity"
     VALIDATION_ERROR = "validation error"
     ERROR = "error"
     NOT_ONLINE = "not online"
     NOT_FOUND = "not found"
 
 
-class ReroMefRecordError:
+class EntityRecordError:
     """Base class for errors in the Record class."""
 
     class Deleted(Exception):
@@ -83,7 +91,7 @@ class ReroMefRecordError:
         """Data missing in record."""
 
 
-class ReroMefRecord(Record):
+class EntityRecord(Record):
     """Entity Record class."""
 
     minter = None
@@ -138,7 +146,7 @@ class ReroMefRecord(Record):
         test_md5=False,
     ):
         """Create or update agent record."""
-        agent_action = None
+        action = Action.ERROR
         return_record = data
 
         pid = data.get("pid")
@@ -149,7 +157,6 @@ class ReroMefRecord(Record):
             copy_fields = [
                 "pid",
                 "$schema",
-                "identifier",
                 "identifiedBy",
                 "authorized_access_point",
                 "type",
@@ -160,16 +167,15 @@ class ReroMefRecord(Record):
             # dict merging, `original_data` values
             # will be override by `data` values
             data = {**original_data, **data}
-
             if test_md5:
-                return_record, agent_action = agent_record.update_md5_changed(
+                return_record, action = agent_record.update_md5_changed(
                     data=data, dbcommit=dbcommit, reindex=reindex
                 )
             else:
                 return_record = agent_record.replace(
                     data=data, dbcommit=dbcommit, reindex=reindex
                 )
-                agent_action = Action.UPDATE
+                action = Action.UPDATE
         else:
             try:
                 return_record = cls.create(
@@ -179,15 +185,15 @@ class ReroMefRecord(Record):
                     dbcommit=dbcommit,
                     reindex=reindex,
                 )
-                agent_action = Action.CREATE
+                action = Action.CREATE
             except Exception as err:
                 current_app.logger.error(
                     f"ERROR create_or_update {cls.name} " f'{data.get("pid")} {err}'
                 )
-                agent_action = Action.ERROR
+                action = Action.ERROR
         if reindex:
             cls.flush_indexes()
-        return return_record, agent_action
+        return return_record, action
 
     def delete(self, force=True, dbcommit=False, delindex=False):
         """Delete record and persistent identifier."""
@@ -242,7 +248,7 @@ class ReroMefRecord(Record):
         new_data = deepcopy(data)
         pid = new_data.get("pid")
         if not pid:
-            raise ReroMefRecordError.PidMissing(f"missing pid={self.pid}")
+            raise EntityRecordError.PidMissing(f"missing pid={self.pid}")
         if self.get("md5"):
             new_data = add_md5(new_data)
         self.clear()
@@ -418,7 +424,7 @@ class ReroMefRecord(Record):
             )
         except Exception:
             # provide default indexer if no indexer is defined in config.
-            indexer = ReroIndexer
+            indexer = EntityIndexer
             current_app.logger.error(f"Get indexer class {cls.__name__}")
         return indexer
 
@@ -457,7 +463,208 @@ class ReroMefRecord(Record):
         return self.get("deleted")
 
 
-class ReroIndexer(RecordIndexer):
+class ConceptPlaceRecord(EntityRecord):
+    """Mef concept place class."""
+
+    def get_association_record(self, association_cls, association_search):
+        """Get associated record.
+
+        :params association_cls: Association class
+        :params association_search: Association search class.
+        :returns: Associated record.
+        """
+        if association_identifier := self.association_identifier:
+            # Test if my identifier is unique
+            count = (
+                self.search()
+                .filter("term", _association_identifier=association_identifier)
+                .count()
+            )
+            if count > 1:
+                current_app.logger.error(
+                    f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
+                    f"| {association_identifier}"
+                )
+                return
+            # Get associated record
+            query = association_search().filter(
+                "term", _association_identifier=association_identifier
+            )
+            if query.count() > 1:
+                current_app.logger.error(
+                    f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
+                    f"| {association_identifier}"
+                )
+            if query.count() == 1:
+                hit = next(query.source("pid").scan())
+                return association_cls.get_record_by_pid(hit.pid)
+
+    @property
+    def association_info(self):
+        """Get associated record.
+
+        Has to be overloaded in concept/place class.
+        """
+        raise NotImplementedError()
+
+    def create_or_update_mef(self, dbcommit=False, reindex=False):
+        """Create or update MEF and VIAF record.
+
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex record.
+        :returns: MEF record, MEF action
+        """
+
+        def mef_create(mef_cls, data, association_info, dbcommit, reindex):
+            """Crate MEF record."""
+            mef_data = {
+                data.name: {
+                    "$ref": build_ref_string(
+                        entity_type=RERO_ILS_ENTITY_TYPES[data["type"]],
+                        entity_name=data.name,
+                        entity_pid=data.pid,
+                    )
+                },
+                "type": data["type"],
+            }
+            if deleted := data.get("deleted"):
+                mef_data["deleted"] = deleted
+            if association_record := association_info.get("record"):
+                ref = build_ref_string(
+                    entity_type=RERO_ILS_ENTITY_TYPES[association_record["type"]],
+                    entity_name=association_record.name,
+                    entity_pid=association_record.pid,
+                )
+                mef_data[association_record.name] = {"$ref": ref}
+
+            mef_record = mef_cls.create(
+                data=mef_data,
+                dbcommit=dbcommit,
+                reindex=reindex,
+            )
+            return mef_record, {mef_record.pid: Action.CREATE}
+
+        def get_mef_record(mef_cls, name, pid):
+            """Get MEF record."""
+            mef_records = mef_cls.get_mef(entity_name=name, entity_pid=pid)
+            if len(mef_records) > 1:
+                mef_pids = [mef_record.pid for mef_record in mef_records]
+                current_app.logger.error(
+                    f"MULTIPLE MEF FOUND FOR: {name} {pid} | mef: {', '.join(mef_pids)}"
+                )
+            if len(mef_records) == 1:
+                return mef_records[0]
+
+        association_info = self.association_info
+        # Get direct MEF record
+        mef_record = get_mef_record(
+            mef_cls=association_info["mef_cls"], name=self.name, pid=self.pid
+        )
+        # Get associated MEF record
+        mef_associated_record = {}
+        if associated_record := association_info["record"]:
+            # Get MEF record for the associated record.
+            mef_associated_record = get_mef_record(
+                mef_cls=association_info["mef_cls"],
+                name=associated_record.name,
+                pid=associated_record.pid,
+            )
+        new_mef_record = mef_record or mef_associated_record
+
+        actions = {}
+        if not mef_record and not mef_associated_record:
+            mef_record, actions = mef_create(
+                mef_cls=association_info["mef_cls"],
+                data=self,
+                association_info=association_info,
+                dbcommit=dbcommit,
+                reindex=reindex,
+            )
+        else:
+            mef_pids = mef_record.ref_pids if mef_record else {}
+            mef_association_pids = (
+                mef_associated_record.ref_pids if mef_associated_record else {}
+            )
+            association_name = association_info["record_cls"].name
+            mef_self_pid = mef_pids.get(self.name)
+            mef_self_association_pid = mef_association_pids.get(self.name)
+            mef_other_pid = mef_pids.get(association_name)
+            mef_other_association_pid = mef_association_pids.get(association_name)
+
+            # print(
+            #     "------->",
+            #     self.name,
+            #     mef_self_pid,
+            #     mef_self_association_pid,
+            #     "|",
+            #     association_name,
+            #     mef_other_pid,
+            #     mef_other_association_pid,
+            # )
+
+            # New ref
+            if not new_mef_record.get(self.name):
+                # Add new ref
+                new_mef_record[self.name] = {
+                    "$ref": build_ref_string(
+                        entity_type=RERO_ILS_ENTITY_TYPES[self["type"]],
+                        entity_name=self.name,
+                        entity_pid=self.pid,
+                    )
+                }
+            if (
+                not mef_self_association_pid
+                and not mef_other_association_pid
+                and mef_other_pid
+            ):
+                # Delete associated ref from MEF an create a new one
+                new_mef_record.pop(association_name)
+                if association_record := association_info[
+                    "record_cls"
+                ].get_record_by_pid(mef_other_pid):
+                    _, action = mef_create(
+                        mef_cls=association_info["mef_cls"],
+                        data=association_record,
+                        association_info={},
+                        dbcommit=dbcommit,
+                        reindex=reindex,
+                    )
+                    actions |= action
+            if (
+                mef_self_pid
+                and not mef_self_association_pid
+                and not mef_other_pid
+                and mef_other_association_pid
+            ):
+                # Delete entity from old MEF and add it to new MEF
+                ref = mef_associated_record.pop(association_name)
+                associated_mef_record = mef_associated_record.replace(
+                    data=mef_associated_record, dbcommit=dbcommit, reindex=reindex
+                )
+                actions[associated_mef_record.pid] = Action.DELETE_ENTITY
+                new_mef_record[association_name] = ref
+
+            mef_record = new_mef_record.replace(
+                data=new_mef_record, dbcommit=dbcommit, reindex=reindex
+            )
+            actions[mef_record.pid] = Action.UPDATE
+
+        association_info["mef_cls"].flush_indexes()
+        return mef_record, actions
+
+    @classmethod
+    def get_online_record(cls, id_, debug=False):
+        """Get online Record.
+
+        :param id_: Id of online record.
+        :param debug: Debug print.
+        :returns: record or None
+        Has to be overloaded in concept/place class.
+        """
+        raise NotImplementedError()
+
+
+class EntityIndexer(RecordIndexer):
     """Indexing class for mef."""
 
     def bulk_index(self, record_id_iterator, index=None, doc_type=None):

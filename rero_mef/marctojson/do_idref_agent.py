@@ -241,7 +241,6 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_idref_identifier")
         if fields_003 := self.marc.get_fields("003"):
-            self.json_dict["identifier"] = fields_003[0].data
             identified_by = self.json_dict.get("identifiedBy", [])
             identified_by.append(
                 {"source": "IDREF", "type": "uri", "value": fields_003[0].data}

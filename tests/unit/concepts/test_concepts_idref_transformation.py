@@ -77,7 +77,7 @@ def test_idref_identifier():
                 "source": "BNF",
                 "value": "http://catalogue.bnf.fr/ark:/12148/cb17876933v",
             },
-        ]
+        ],
     }
 
 
@@ -305,20 +305,24 @@ def test_idref_close_match():
             {
                 "authorized_access_point": "Fasting",
                 "source": "LCSH",
-                "identifiedBy": {
-                    "source": "LCSH",
-                    "type": "uri",
-                    "value": "http://id.loc.gov/authorities/subjects/sh85047403",
-                },
+                "identifiedBy": [
+                    {
+                        "source": "LCSH",
+                        "type": "uri",
+                        "value": "http://id.loc.gov/authorities/subjects/sh85047403",
+                    }
+                ],
             },
             {
                 "authorized_access_point": "Fasting -- Religious aspects",
                 "source": "LCSH",
-                "identifiedBy": {
-                    "source": "LCSH",
-                    "type": "uri",
-                    "value": "http://id.loc.gov/authorities/subjects/sh2003003108",
-                },
+                "identifiedBy": [
+                    {
+                        "source": "LCSH",
+                        "type": "uri",
+                        "value": "http://id.loc.gov/authorities/subjects/sh2003003108",
+                    }
+                ],
             },
             {"authorized_access_point": "Jeûne", "source": "RVMLaval"},
             {
@@ -444,7 +448,12 @@ def test_idref_relation_pid():
     trans.trans_idref_relation_pid()
     assert trans.json == {
         "identifiedBy": [
-            {"source": "VIAF", "type": "uri", "value": "http://viaf.org/viaf/124265140"}
+            {
+                "source": "VIAF",
+                "type": "uri",
+                "value": "http://viaf.org/viaf/124265140",
+            },
+            {"source": "BNF", "type": "bf:Nbn", "value": "FRBNF11862089"},
         ],
         "relation_pid": {"value": "027630501", "type": "redirect_from"},
     }

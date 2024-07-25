@@ -17,9 +17,11 @@
 
 """API for manipulating IdRef agent."""
 
+from flask import current_app
 from invenio_search.api import RecordsSearch
 
-from ..api import PlaceIndexer, PlaceRecord
+from rero_mef.places.api import PlaceIndexer, PlaceRecord
+
 from .fetchers import idref_id_fetcher
 from .minters import idref_id_minter
 from .models import PlaceIdrefMetadata
@@ -63,6 +65,40 @@ class PlaceIdrefRecord(PlaceRecord):
         from .tasks import idref_get_record
 
         return idref_get_record(id_=id_, debug=debug)
+
+    @property
+    def association_identifier(self):
+        """Get associated identifier from identifiedBy."""
+        pids = []
+        for identified_by in self.get("identifiedBy", []):
+            value = identified_by.get("value", "")
+            if (
+                identified_by.get("source") == "GND"
+                and identified_by.get("type") == "bf:Nbn"
+                and value.startswith("(DE-101)")
+            ):
+                pids.append(value.replace("(DE-101)", ""))
+        if len(pids) > 1:
+            current_app.logger.error(
+                f"MULTIPLE ASSOCIATIONS FOUND FOR: {self.name} {self.pid} | {', '.join(pids)}"
+            )
+        if len(pids) == 1:
+            return pids[0]
+
+    @property
+    def association_info(self):
+        """Get associated record."""
+        from rero_mef.places import PlaceGndRecord, PlaceGndSearch, PlaceMefRecord
+
+        PlaceGndRecord.flush_indexes()
+        return {
+            "record": self.get_association_record(
+                association_cls=PlaceGndRecord, association_search=PlaceGndSearch
+            ),
+            "record_cls": PlaceGndRecord,
+            "search_cls": PlaceGndSearch,
+            "mef_cls": PlaceMefRecord,
+        }
 
 
 class PlaceIdrefIndexer(PlaceIndexer):

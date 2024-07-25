@@ -17,12 +17,16 @@
 
 """Concepts."""
 
+from ..api import Action
+from .gnd.api import ConceptGndIndexer, ConceptGndRecord, ConceptGndSearch
 from .idref.api import ConceptIdrefIndexer, ConceptIdrefRecord, ConceptIdrefSearch
 from .mef.api import ConceptMefIndexer, ConceptMefRecord, ConceptMefSearch
 from .rero.api import ConceptReroIndexer, ConceptReroRecord, ConceptReroSearch
-from ..api import Action
 
 __all__ = (
+    "ConceptGndIndexer",
+    "ConceptGndRecord",
+    "ConceptGndSearch",
     "ConceptMefIndexer",
     "ConceptMefRecord",
     "ConceptMefSearch",

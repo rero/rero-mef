@@ -77,7 +77,7 @@ class Transformation(object):
     def _transform(self):
         """Call the transformation functions."""
         record_type = self.get_type()
-        if record_type in ["bf:Person", "bf:Organisation"]:
+        if record_type in {"bf:Person", "bf:Organisation"}:
             if self.marc.get_fields("100", "110", "111"):
                 for func in dir(self):
                     if func.startswith("trans"):
@@ -181,7 +181,6 @@ class Transformation(object):
             subfields_0 = field_024.get("0")
             subfields_2 = field_024.get("2")
             if subfields_0 and subfields_2 == "gnd":
-                self.json_dict["identifier"] = subfields_0
                 self.json_dict.setdefault("identifiedBy", []).append(
                     {"type": "uri", "value": subfields_0, "source": "GND"}
                 )

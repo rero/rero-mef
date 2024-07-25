@@ -46,11 +46,20 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     assert m_idref_record == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
-        "deleted": "2022-09-03T07:07:32.526780+00:00",
         "pid": "1",
         "type": "bf:Place",
     }
-
+    PlaceMefRecord.flush_indexes()
+    m_idref_record, m_action = idref_record.create_or_update_mef(
+        dbcommit=True, reindex=True
+    )
+    assert m_action == {"1": Action.UPDATE}
+    assert m_idref_record == {
+        "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
+        "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
+        "pid": "1",
+        "type": "bf:Place",
+    }
     # Test JSON export.
     tmp_file_name = os.path.join(tmpdir, "mef.json")
     export_json_records(
@@ -83,7 +92,7 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     assert returned_record["pid"] == "271330163"
 
     PlaceMefRecord.flush_indexes()
-    # GND tests
+    # Test GND create
     gnd_record, action = PlaceGndRecord.create_or_update(
         data=place_gnd_data, dbcommit=True, reindex=True
     )
@@ -102,6 +111,7 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
         "type": "bf:Place",
     }
 
+    # Test IDREF create with GND ref
     idref_record = PlaceIdrefRecord.get_record_by_pid(idref_record.pid)
     idref_record.setdefault("identifiedBy", []).append(
         {"source": "GND", "value": "(DE-101)040754766", "type": "bf:Nbn"}
@@ -112,17 +122,42 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     m_idref_record, m_action = idref_record.create_or_update_mef(
         dbcommit=True, reindex=True
     )
-    assert m_action == {"1": Action.UPDATE, "2": Action.DELETE_AGENT}
+    assert m_action == {"1": Action.UPDATE, "2": Action.DELETE_ENTITY}
     assert m_idref_record == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
-        "deleted": "2022-09-03T07:07:32.526780+00:00",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
         "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/040754766"},
         "pid": "1",
         "type": "bf:Place",
     }
+    PlaceMefRecord.flush_indexes()
     assert PlaceMefSearch().filter("term", gnd__pid="040754766").count() == 1
 
+    # Retest IDREF and GND record MEF update
+    m_idref_record, m_action = idref_record.create_or_update_mef(
+        dbcommit=True, reindex=True
+    )
+    assert m_action == {"1": Action.UPDATE}
+    assert m_idref_record == {
+        "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
+        "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
+        "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/040754766"},
+        "pid": "1",
+        "type": "bf:Place",
+    }
+    m_gnd_record, m_action = gnd_record.create_or_update_mef(
+        dbcommit=True, reindex=True
+    )
+    assert m_action == {"1": Action.UPDATE}
+    assert m_gnd_record == {
+        "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
+        "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
+        "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/040754766"},
+        "pid": "1",
+        "type": "bf:Place",
+    }
+
+    # Test IDREF GND ref change
     for identified_by in idref_record["identifiedBy"]:
         if identified_by.get("source") == "GND":
             identified_by["value"] = "(DE-101)TEST"
@@ -135,7 +170,6 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     assert m_action == {"1": Action.UPDATE, "3": Action.CREATE}
     assert m_idref_record == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
-        "deleted": "2022-09-03T07:07:32.526780+00:00",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
         "pid": "1",
         "type": "bf:Place",
@@ -157,14 +191,15 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     assert gnd_record["pid"] == "TEST"
 
     PlaceIdrefRecord.flush_indexes()
+    PlaceGndRecord.flush_indexes()
     PlaceMefRecord.flush_indexes()
+
     m_gnd_record, m_action = gnd_record.create_or_update_mef(
         dbcommit=True, reindex=True
     )
     assert m_action == {"1": Action.UPDATE}
     assert m_gnd_record == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
-        "deleted": "2022-09-03T07:07:32.526780+00:00",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
         "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/TEST"},
         "pid": "1",

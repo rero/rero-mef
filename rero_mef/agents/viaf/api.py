@@ -25,14 +25,20 @@ from elasticsearch_dsl.query import Q
 from flask import current_app
 from invenio_search.api import RecordsSearch
 
+from rero_mef.filter import exists_filter
+from rero_mef.utils import (
+    add_md5,
+    get_entity_class,
+    progressbar,
+    requests_retry_session,
+)
+
+from .. import AgentGndRecord, AgentIdrefRecord, AgentMefRecord, AgentReroRecord
+from ..api import Action, EntityIndexer, EntityRecord
 from .fetchers import viaf_id_fetcher
 from .minters import viaf_id_minter
 from .models import ViafMetadata
 from .providers import ViafProvider
-from .. import AgentGndRecord, AgentIdrefRecord, AgentMefRecord, AgentReroRecord
-from ..api import Action, ReroIndexer, ReroMefRecord
-from ...filter import exists_filter
-from ...utils import add_md5, get_entity_class, progressbar, requests_retry_session
 
 
 class AgentViafSearch(RecordsSearch):
@@ -49,7 +55,7 @@ class AgentViafSearch(RecordsSearch):
         default_filter = None
 
 
-class AgentViafRecord(ReroMefRecord):
+class AgentViafRecord(EntityRecord):
     """VIAF agent class."""
 
     minter = viaf_id_minter
@@ -222,13 +228,13 @@ class AgentViafRecord(ReroMefRecord):
 
         actions = {}
         online = online or []
-        viaf_agents_data = self.get_agents_pids()
+        viaf_agents_data = self.get_entities_pids()
         viaf_agents_pids = [data["pid"] for data in viaf_agents_data]
         # Delete old agent entries from MEF records
         old_agents = {}
         for mef_record in AgentMefRecord.get_mef(self.pid, self.name):
             changed = False
-            for agent in mef_record.get_agents_records():
+            for agent in mef_record.get_entities_records():
                 if agent.pid not in viaf_agents_pids:
                     mef_record.pop(agent.name)
                     old_agents[agent.pid] = agent
@@ -276,14 +282,14 @@ class AgentViafRecord(ReroMefRecord):
         # Create Mef records for old agents
         if reindex:
             AgentMefRecord.flush_indexes()
-        for agent_pid, agent in old_agents.items():
+        for entity_pid, agent in old_agents.items():
             mef_record, mef_actions = agent.create_or_update_mef(
                 dbcommit=dbcommit, reindex=reindex
             )
-            actions.setdefault(agent_pid, {})
-            actions[agent_pid].setdefault("MEF", {})
+            actions.setdefault(entity_pid, {})
+            actions[entity_pid].setdefault("MEF", {})
             for pid, action in mef_actions.items():
-                actions[agent_pid]["MEF"][pid] = action
+                actions[entity_pid]["MEF"][pid] = action
         return actions
 
     def reindex(self, forceindex=False):
@@ -439,8 +445,8 @@ class AgentViafRecord(ReroMefRecord):
         :param reindex: Reindex record.
         :returns: MEF actions message.
         """
-        agents_records = self.get_agents_records()
-        mef_records = AgentMefRecord.get_mef(agent_pid=self.pid, agent_name=self.name)
+        agents_records = self.get_entities_records()
+        mef_records = AgentMefRecord.get_mef(entity_pid=self.pid, entity_name=self.name)
         # delete VIAF record
         result = super().delete(force=True, dbcommit=dbcommit, delindex=delindex)
 
@@ -449,7 +455,7 @@ class AgentViafRecord(ReroMefRecord):
         old_agent_records = {}
         for mef_record in mef_records:
             mef_actions[mef_record.pid] = {}
-            mef_agents_records = mef_record.get_agents_records()
+            mef_agents_records = mef_record.get_entities_records()
             if len(mef_agents_records):
                 mef_actions[mef_record.pid][mef_agents_records[0].name] = {
                     mef_agents_records[0].pid: Action.UPDATE
@@ -474,7 +480,7 @@ class AgentViafRecord(ReroMefRecord):
         AgentMefRecord.flush_indexes()
         return result, Action.DELETE, mef_actions
 
-    def get_agents_pids(self):
+    def get_entities_pids(self):
         """Get agent pids."""
         agents = []
         for source, record_class in self.sources_used.items():
@@ -484,10 +490,10 @@ class AgentViafRecord(ReroMefRecord):
                 )
         return agents
 
-    def get_agents_records(self, verbose=False):
+    def get_entities_records(self, verbose=False):
         """Get agent records."""
         agent_records = []
-        for agent in self.get_agents_pids():
+        for agent in self.get_entities_pids():
             record_class = agent["record_class"]
             if agent_record := record_class.get_record_by_pid(agent["pid"]):
                 agent_records.append(agent_record)
@@ -499,7 +505,7 @@ class AgentViafRecord(ReroMefRecord):
         return agent_records
 
     @classmethod
-    def get_missing_agent_pids(cls, agent, verbose=False):
+    def get_missing_entity_pids(cls, agent, verbose=False):
         """Get all missing pids defined in VIAF.
 
         :param agent: Agent to search for missing pids.
@@ -516,23 +522,23 @@ class AgentViafRecord(ReroMefRecord):
             )
             pids_db = set(progress)
 
-            agent_pid_name = f"{record_class.name}_pid"
+            entity_pid_name = f"{record_class.name}_pid"
             if verbose:
-                click.echo(f"Get pids from VIAF with {agent_pid_name} ...")
+                click.echo(f"Get pids from VIAF with {entity_pid_name} ...")
             query = AgentViafSearch().filter(
-                "bool", should=[Q("exists", field=agent_pid_name)]
+                "bool", should=[Q("exists", field=entity_pid_name)]
             )
             progress = progressbar(
-                items=query.source(["pid", agent_pid_name]).scan(),
+                items=query.source(["pid", entity_pid_name]).scan(),
                 length=query.count(),
                 verbose=verbose,
             )
             pids_viaf = []
             for hit in progress:
                 viaf_pid = hit.pid
-                agent_pid = hit.to_dict().get(agent_pid_name)
-                if agent_pid in pids_db:
-                    pids_db.discard(agent_pid)
+                entity_pid = hit.to_dict().get(entity_pid_name)
+                if entity_pid in pids_db:
+                    pids_db.discard(entity_pid)
                 else:
                     pids_viaf.append(viaf_pid)
             return list(pids_db), pids_viaf
@@ -572,7 +578,7 @@ class AgentViafRecord(ReroMefRecord):
         return cleaned_pids
 
 
-class AgentViafIndexer(ReroIndexer):
+class AgentViafIndexer(EntityIndexer):
     """Agent VIAF indexer."""
 
     record_cls = AgentViafRecord

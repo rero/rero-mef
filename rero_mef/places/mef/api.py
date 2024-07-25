@@ -22,26 +22,13 @@ from copy import deepcopy
 from flask import current_app
 from invenio_search.api import RecordsSearch
 
-from ...api import ReroIndexer
-from ...api_mef import EntityMefRecord
+from rero_mef.api import EntityIndexer
+from rero_mef.api_mef import EntityMefRecord
+
 from .fetchers import mef_id_fetcher
 from .minters import mef_id_minter
 from .models import PlaceMefMetadata
 from .providers import PlaceMefProvider
-
-
-def build_ref_string(place_pid, place):
-    """Build url for place's api.
-
-    :param place_pid: Pid of place.
-    :param place: Type of place.
-    :returns: Reference string to record.
-    """
-    with current_app.app_context():
-        return (
-            f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
-            f"/api/places/{place}/{place_pid}"
-        )
 
 
 class PlaceMefSearch(RecordsSearch):
@@ -155,7 +142,7 @@ class PlaceMefRecord(EntityMefRecord):
         return {}
 
 
-class PlaceMefIndexer(ReroIndexer):
+class PlaceMefIndexer(EntityIndexer):
     """Place MEF indexer."""
 
     record_cls = PlaceMefRecord

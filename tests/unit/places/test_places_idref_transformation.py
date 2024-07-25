@@ -58,7 +58,7 @@ def test_idref_identifier():
                 "source": "BNF",
                 "value": "http://catalogue.bnf.fr/ark:/12148/cb11931552b",
             },
-        ]
+        ],
     }
 
 
@@ -188,20 +188,24 @@ def test_idref_close_match():
             {
                 "authorized_access_point": "Fasting",
                 "source": "LCSH",
-                "identifiedBy": {
-                    "source": "LCSH",
-                    "type": "uri",
-                    "value": "http://id.loc.gov/authorities/subjects/sh85047403",
-                },
+                "identifiedBy": [
+                    {
+                        "source": "LCSH",
+                        "type": "uri",
+                        "value": "http://id.loc.gov/authorities/subjects/sh85047403",
+                    }
+                ],
             },
             {
                 "authorized_access_point": "Fasting -- Religious aspects",
                 "source": "LCSH",
-                "identifiedBy": {
-                    "source": "LCSH",
-                    "type": "uri",
-                    "value": "http://id.loc.gov/authorities/subjects/sh2003003108",
-                },
+                "identifiedBy": [
+                    {
+                        "source": "LCSH",
+                        "type": "uri",
+                        "value": "http://id.loc.gov/authorities/subjects/sh2003003108",
+                    }
+                ],
             },
             {"authorized_access_point": "Jeûne", "source": "RVMLaval"},
             {

@@ -22,27 +22,14 @@ from copy import deepcopy
 from flask import current_app
 from invenio_search.api import RecordsSearch
 
+from rero_mef.api import EntityIndexer
+from rero_mef.api_mef import EntityMefRecord
+
+from ..utils import get_concept_classes
 from .fetchers import mef_id_fetcher
 from .minters import mef_id_minter
 from .models import ConceptMefMetadata
 from .providers import ConceptMefProvider
-from ..utils import get_concept_classes
-from ...api import ReroIndexer
-from ...api_mef import EntityMefRecord
-
-
-def build_ref_string(concept_pid, concept):
-    """Build url for concept's api.
-
-    :param concept_pid: Pid of concept.
-    :param concept: Type of concept.
-    :returns: Reference string to record.
-    """
-    with current_app.app_context():
-        return (
-            f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
-            f"/api/concepts/{concept}/{concept_pid}"
-        )
 
 
 class ConceptMefSearch(RecordsSearch):
@@ -69,7 +56,7 @@ class ConceptMefRecord(EntityMefRecord):
     model_cls = ConceptMefMetadata
     search = ConceptMefSearch
     mef_type = "CONCEPTS"
-    entities = ["idref", "rero"]
+    entities = ["idref", "rero", "gnd"]
 
     @classmethod
     def _set_type(cls, data):
@@ -193,7 +180,7 @@ class ConceptMefRecord(EntityMefRecord):
         return {}
 
 
-class ConceptMefIndexer(ReroIndexer):
+class ConceptMefIndexer(EntityIndexer):
     """Concept MEF indexer."""
 
     record_cls = ConceptMefRecord
