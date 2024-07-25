@@ -31,7 +31,6 @@ def test_rero_identifier():
     trans.trans_rero_identifier()
     assert trans.json == {
         "pid": "A000070488",
-        "identifier": "http://data.rero.ch/02-A000070488",
         "identifiedBy": [
             {
                 "source": "RERO",

@@ -24,6 +24,7 @@ from datetime import datetime, timezone
 from rero_mef.marctojson.helper import (
     build_string_from_field,
     build_string_list_from_fields,
+    get_source_and_id,
 )
 
 RECORD_TYPES = {
@@ -37,7 +38,7 @@ RECORD_TYPES = {
 
 
 class Transformation(object):
-    """Transformation MARC21 to JSON for GND autority person."""
+    """Transformation MARC21 to JSON for GND autority place."""
 
     def __init__(self, marc, logger=None, verbose=False, transform=True):
         """Constructor."""
@@ -67,7 +68,7 @@ class Transformation(object):
     def _transform(self):
         """Call the transformation functions."""
         record_type = self.get_type()
-        if record_type in ["bf:Place"]:
+        if record_type in {"bf:Place"}:
             for func in dir(self):
                 if func.startswith("trans"):
                     func = getattr(self, func)
@@ -147,7 +148,7 @@ class Transformation(object):
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_gnd_authorized_access_point")
         tag = "151"
-        subfields = {"a": ", ", "g": " , "}
+        subfields = {"a": ", ", "g": " , ", "x": " - ", "z": " - "}
         tag_grouping = [
             {
                 "subtags": "g",
@@ -238,65 +239,68 @@ class Transformation(object):
                 self.json_dict[relation] = value
 
     def trans_gnd_classification(self):
-        """Transformation classification from field 550."""
+        """Transformation classification from field 686."""
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_gnd_classification")
-        classifications = []
-        for field_550 in self.marc.get_fields("550"):
-            if field_550.get("4"):
-                classification = {
-                    "type": "bf:ClassificationDdc",
-                    "classificationPortion": field_550["4"].strip(),
-                }
-                # TODO: find classification name in MARC21
-                if field_550.get("a"):
-                    classification["name"] = field_550["a"]
-                classifications.append(classification)
-        if classifications:
-            self.json_dict["classification"] = classifications
+        # TODO: find classification
 
-    def trans_gnd_close_match(self):
-        """Transformation closeMatch from field 751."""
+    def trans_gnd_match(self):
+        """Transformation closeMatch and exactMatch field 751."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_close_match")
-        close_matchs = []
+            self.logger.info("Call Function", "trans_gnd_match")
         for field_751 in self.marc.get_fields("751"):
             with contextlib.suppress(Exception):
-                close_match = {}
-                subfields = {"a": ", ", "g": " , "}
-                tag_grouping = [
-                    {
-                        "subtags": "g",
-                        "start": " (",
-                        "end": ")",
-                        "delimiter": "",
-                        "subdelimiter": ", ",
-                    }
-                ]
-                authorized_ap = build_string_from_field(
-                    field=field_751, subfields=subfields, tag_grouping=tag_grouping
-                )
-                close_match = {
-                    "authorized_access_point": authorized_ap,
-                    "source": "GND",
-                }
-                with contextlib.suppress(Exception):
-                    if field_751.get("0"):
-                        source, value = field_751["0"].split(")")
-                        close_match["identifiedBy"] = {
-                            "type": "bf:Nbn",
-                            "value": value,
-                            "source": source.replace("(", ""),
+                match_type = None
+                subfield_i = field_751["i"]
+                if subfield_i == "Aequivalenz":
+                    match_type = "closeMatch"
+                elif subfield_i == "exakte Aequivalenz":
+                    match_type = "exactMatch"
+                if match_type:
+                    subfields = {"a": ", ", "g": " , ", "x": " - ", "z": " - "}
+                    tag_grouping = [
+                        {
+                            "subtags": "g",
+                            "start": " (",
+                            "end": ")",
+                            "delimiter": "",
+                            "subdelimiter": ", ",
                         }
-                close_matchs.append(close_match)
-        if close_matchs:
-            self.json_dict["closeMatch"] = close_matchs
+                    ]
+                    if authorized_ap := build_string_from_field(
+                        field=field_751, subfields=subfields, tag_grouping=tag_grouping
+                    ):
+                        match = {
+                            "authorized_access_point": authorized_ap,
+                            "source": "GND",
+                        }
+                        for subfield_0 in field_751.get_subfields("0"):
+                            if subfield_0.startswith("http"):
+                                match.setdefault("identifiedBy", []).append(
+                                    {
+                                        "type": "uri",
+                                        "value": subfield_0,
+                                    }
+                                )
+                            else:
+                                source, id_ = get_source_and_id(subfield_0)
+                                if source:
+                                    match.setdefault("identifiedBy", []).append(
+                                        {
+                                            "source": source,
+                                            "type": "bf:Nbn",
+                                            "value": id_,
+                                        }
+                                    )
+                        self.json_dict.setdefault(match_type, []).append(match)
 
     def trans_gnd_note(self):
         """Transformation notes from field.
 
+        677 $a: general
         678 $a: general
-        670 $a - $u dataSource
+        670 $a - $u: dataSource
+        680 $a: general
         """
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_gnd_note")
@@ -306,7 +310,7 @@ class Transformation(object):
             "general": [],
             "seeReference": [],
         }
-        for field in self.marc.get_fields("678"):
+        for field in self.marc.get_fields("677", "678", "680"):
             if field.get("a"):
                 notes["general"].append(field["a"].strip())
             if field.get("b"):

@@ -7,32 +7,38 @@
 # OAI-PMH connection settings
 
 agents.idref:
-    # http://documentation.abes.fr/aideidrefoai/index.html
+    # https://documentation.abes.fr/aideidrefoai/index.html
     baseurl: https://www.idref.fr/OAI/oai.jsp
     metadataprefix: marc-xml
     comment: 'idref'
     setspecs: 'a b'
 agents.gnd:
     # https://www.dnb.de/EN/Professionell/Metadatendienste/Datenbezug/OAI/oai_node.html
-    baseurl: http://services.dnb.de/oai/repository
+    baseurl: https://services.dnb.de/oai/repository
     metadataprefix: MARC21-xml
     comment: 'gnd'
     setspecs: 'authorities:kongress authorities:koerperschaft authorities:person'
 concepts.idref:
-    # http://documentation.abes.fr/aideidrefoai/index.html
+    # https://documentation.abes.fr/aideidrefoai/index.html
     baseurl: https://www.idref.fr/OAI/oai.jsp
     metadataprefix: marc-xml
     comment: 'idref'
     setspecs: 'j l'
+concepts.gnd:
+    # https://www.dnb.de/EN/Professionell/Metadatendienste/Datenbezug/OAI/oai_node.html
+    baseurl: https://services.dnb.de/oai/repository
+    metadataprefix: MARC21-xml
+    comment: 'gnd'
+    setspecs: 'authorities:sachbegriff'
 places.idref:
-    # http://documentation.abes.fr/aideidrefoai/index.html
+    # https://documentation.abes.fr/aideidrefoai/index.html
     baseurl: https://www.idref.fr/OAI/oai.jsp
     metadataprefix: marc-xml
     comment: 'idref'
     setspecs: 'c'
 places.gnd:
     # https://www.dnb.de/EN/Professionell/Metadatendienste/Datenbezug/OAI/oai_node.html
-    baseurl: http://services.dnb.de/oai/repository
+    baseurl: https://services.dnb.de/oai/repository
     metadataprefix: MARC21-xml
     comment: 'gnd'
     setspecs: 'authorities:geografikum'

@@ -21,12 +21,12 @@ You need to install `poetry`, it will handle the virtual environment creation fo
 in order to sandbox the Python environment, as well as manage the dependency installation,
 among other things.
 
-Start all dependent services using docker-compose (this will start PostgreSQL,
+Start all dependent services using docker compose (this will start PostgreSQL,
 Elasticsearch 6, RabbitMQ and Redis):
 
 .. code-block:: console
 
-    $ docker-compose up -d
+    $ docker compose up -d
 
 .. note::
 
@@ -114,7 +114,7 @@ You can use simulate a full production environment using the
 .. code-block:: console
 
     $ docker build --rm -t rero-mef-base:latest -f Dockerfile.base .
-    $ docker-compose -f docker-compose.full.yml up -d
+    $ docker compose -f docker-compose.full.yml up -d
 
 In addition to the normal ``docker-compose.yml``, this one will start:
 

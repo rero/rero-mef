@@ -19,11 +19,11 @@
 
 from invenio_search.api import RecordsSearch
 
+from ..api import ConceptIndexer, ConceptRecord
 from .fetchers import rero_id_fetcher
 from .minters import rero_id_minter
 from .models import ConceptReroMetadata
 from .providers import ConceptReroProvider
-from ..api import ConceptIndexer, ConceptRecord
 
 
 class ConceptReroSearch(RecordsSearch):
@@ -51,6 +51,23 @@ class ConceptReroRecord(ConceptRecord):
     pid_type = "concept_rero_pid"
     model_cls = ConceptReroMetadata
     search = ConceptReroSearch
+
+    @property
+    def association_identifier(self):
+        """Get associated identifier from identifiedBy."""
+
+    @property
+    def association_info(self):
+        """Get associated record."""
+        from rero_mef.concepts import ConceptMefRecord
+
+        return {
+            "identifier": self.association_identifier,
+            "record": None,
+            "record_cls": None,
+            "search_cls": None,
+            "mef_cls": ConceptMefRecord,
+        }
 
 
 class ConceptReroIndexer(ConceptIndexer):

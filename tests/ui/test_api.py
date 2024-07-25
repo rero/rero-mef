@@ -27,8 +27,8 @@ from rero_mef.api import Action
 from rero_mef.tasks import process_bulk_queue
 
 
-def test_reromefrecord_api(app, agent_idref_record):
-    """Test ReroMefRecord api."""
+def test_entityrecord_api(app, agent_idref_record):
+    """Test EntityRecord api."""
     idref = agent_idref_record
     assert AgentIdrefRecord.count() == 1
     assert AgentIdrefRecord.index_all() == 1

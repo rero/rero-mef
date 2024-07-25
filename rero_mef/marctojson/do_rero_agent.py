@@ -67,7 +67,6 @@ class Transformation(object):
                 pid = fields_035[0]["a"]
                 identifier = f"http://data.rero.ch/02-{pid}"
                 self.json_dict["pid"] = pid
-                self.json_dict["identifier"] = identifier
                 identified_by = self.json_dict.get("identifiedBy", [])
                 identified_by.append(
                     {"source": "RERO", "type": "uri", "value": identifier}

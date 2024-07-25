@@ -25,6 +25,7 @@ You overwrite and set instance-specific configuration by either:
 
 from __future__ import absolute_import, print_function
 
+import sys
 from datetime import timedelta
 
 from invenio_records_rest.facets import terms_filter
@@ -38,6 +39,7 @@ from .concepts.idref.models import ConceptIdrefIdentifier
 from .concepts.rero.models import ConceptReroIdentifier
 from .filter import exists_filter
 from .marctojson.do_gnd_agent import Transformation as AgentGndTransformation
+from .marctojson.do_gnd_concepts import Transformation as ConceptGndTransformation
 from .marctojson.do_gnd_places import Transformation as PlaceGndTransformation
 from .marctojson.do_idref_agent import Transformation as AgentIdrefTransformation
 from .marctojson.do_idref_concepts import Transformation as ConceptIdrefTransformation
@@ -140,12 +142,6 @@ CELERY_BEAT_SCHEDULE = {
         "task": "invenio_accounts.tasks.clean_session_table",
         "schedule": timedelta(minutes=60),
     }
-    # We will harvest with a kubernetes cron job.
-    # 'idref-harvester': {
-    #     'task': 'rero_mef.agents.idref.tasks.process_records_from_dates',
-    #     'schedule': timedelta(minutes=360),
-    #     'kwargs': dict(name='idref'),
-    # }
 }
 CELERY_BROKER_HEARTBEAT = 0
 INDEXER_BULK_REQUEST_TIMEOUT = 60
@@ -205,6 +201,8 @@ TRANSFORMATION = {
     "agrero": AgentReroTransformation,
     "corero": ConceptReroTransformation,
     "cidref": ConceptIdrefTransformation,
+    "cognd": ConceptGndTransformation,
+    "pidref": PlaceIdrefTransformation,
     "pidref": PlaceIdrefTransformation,
     "plgnd": PlaceGndTransformation,
 }
@@ -230,6 +228,7 @@ RERO_MEF_AGENTS_GND_GET_RECORD = (
     "?version=1.1&operation=searchRetrieve&query=idn%3D{id}"
     "&recordSchema=MARC21-xml"
 )
+RERO_MEF_PLACES_GND_MATCHES = {"exactMatch": sys.maxsize, "closeMatch": 1}
 
 SEARCH_CLIENT_CONFIG = dict(
     timeout=60,
@@ -249,21 +248,14 @@ RECORDS_REST_ENDPOINTS = dict(
         record_class="rero_mef.agents.mef.api:AgentMefRecord",
         search_index="mef",
         record_serializers={
-            "application/json": (
-                "rero_mef.agents.mef.serializers" ":json_agent_mef_response"
-            ),
+            "application/json": "rero_mef.agents.mef.serializers:json_agent_mef_response",
         },
         search_serializers={
-            "application/json": (
-                "rero_mef.agents.mef.serializers" ":json_agent_mef_search"
-            ),
+            "application/json": "rero_mef.agents.mef.serializers:json_agent_mef_search",
         },
         search_factory_imp="rero_mef.query:and_search_factory",
         list_route="/agents/mef/",
-        item_route=(
-            "agents//mef/<pid(mef, record_class="
-            '"rero_mef.agents.mef.api:AgentMefRecord"):pid_value>'
-        ),
+        item_route="agents/mef/<pid(mef, record_class='rero_mef.agents.mef.api:AgentMefRecord'):pid_value>",
         default_media_type="application/json",
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers={},
@@ -277,21 +269,16 @@ RECORDS_REST_ENDPOINTS = dict(
         record_class="rero_mef.agents.viaf.api:AgentViafRecord",
         search_index="viaf",
         record_serializers={
-            "application/json": (
-                "rero_mef.agents.viaf.serializers" ":json_agent_viaf_response"
-            ),
+            "application/json": "rero_mef.agents.viaf.serializers"
+            ":json_agent_viaf_response",
         },
         search_serializers={
-            "application/json": (
-                "rero_mef.agents.viaf.serializers" ":json_agent_viaf_search"
-            ),
+            "application/json": "rero_mef.agents.viaf.serializers"
+            ":json_agent_viaf_search",
         },
         search_factory_imp="rero_mef.query:and_search_factory",
         list_route="/agents/viaf/",
-        item_route=(
-            "/agents/viaf/<pid(viaf, record_class="
-            '"rero_mef.agents.viaf.api:AgentViafRecord"):pid_value>'
-        ),
+        item_route="/agents/viaf/<pid(viaf, record_class='rero_mef.agents.viaf.api:AgentViafRecord'):pid_value>",
         default_media_type="application/json",
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers={},
@@ -305,17 +292,14 @@ RECORDS_REST_ENDPOINTS = dict(
         record_class="rero_mef.agents.gnd.api:AgentGndRecord",
         search_index="agents_gnd",
         record_serializers={
-            "application/json": ("rero_mef.agents.serializers" ":json_agent_response"),
+            "application/json": "rero_mef.agents.serializers:json_agent_response",
         },
         search_serializers={
-            "application/json": ("rero_mef.agents.serializers" ":json_agent_search"),
+            "application/json": "rero_mef.agents.serializers:json_agent_search",
         },
         search_factory_imp="rero_mef.query:and_search_factory",
         list_route="/agents/gnd/",
-        item_route=(
-            "/agents/gnd/<pid(aggnd, record_class="
-            '"rero_mef.agents.gnd.api:AgentGndRecord"):pid_value>'
-        ),
+        item_route="/agents/gnd/<pid(aggnd, record_class='rero_mef.agents.gnd.api:AgentGndRecord'):pid_value>",
         default_media_type="application/json",
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers={},
@@ -329,17 +313,14 @@ RECORDS_REST_ENDPOINTS = dict(
         record_class="rero_mef.agents.idref.api:AgentIdrefRecord",
         search_index="agents_idref",
         record_serializers={
-            "application/json": ("rero_mef.agents.serializers" ":json_agent_response"),
+            "application/json": "rero_mef.agents.serializers:json_agent_response",
         },
         search_serializers={
-            "application/json": ("rero_mef.agents.serializers" ":json_agent_search"),
+            "application/json": "rero_mef.agents.serializers:json_agent_search",
         },
         search_factory_imp="rero_mef.query:and_search_factory",
         list_route="/agents/idref/",
-        item_route=(
-            "/agents/idref/<pid(aidref, record_class="
-            '"rero_mef.agents.idref.api:AgentIdrefRecord"):pid_value>'
-        ),
+        item_route="/agents/idref/<pid(aidref, record_class='rero_mef.agents.idref.api:AgentIdrefRecord'):pid_value>",
         default_media_type="application/json",
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers={},
@@ -353,17 +334,14 @@ RECORDS_REST_ENDPOINTS = dict(
         record_class="rero_mef.agents.rero.api:AgentReroRecord",
         search_index="agents_rero",
         record_serializers={
-            "application/json": ("rero_mef.agents.serializers" ":json_agent_response"),
+            "application/json": "rero_mef.agents.serializers:json_agent_response",
         },
         search_serializers={
-            "application/json": ("rero_mef.agents.serializers" ":json_agent_search"),
+            "application/json": "rero_mef.agents.serializers:json_agent_search",
         },
         search_factory_imp="rero_mef.query:and_search_factory",
         list_route="/agents/rero/",
-        item_route=(
-            "/agents/rero/<pid(agrero, record_class="
-            '"rero_mef.agents.rero.api:AgentReroRecord"):pid_value>'
-        ),
+        item_route="/agents/rero/<pid(agrero, record_class='rero_mef.agents.rero.api:AgentReroRecord'):pid_value>",
         default_media_type="application/json",
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers={},
@@ -377,22 +355,14 @@ RECORDS_REST_ENDPOINTS = dict(
         record_class="rero_mef.concepts.mef.api:ConceptMefRecord",
         search_index="concepts_mef",
         record_serializers={
-            "application/json": (
-                "rero_mef.concepts.mef.serializers" ":json_concept_mef_response"
-            ),
+            "application/json": "rero_mef.concepts.mef.serializers:json_concept_mef_response",
         },
         search_serializers={
-            "application/json": (
-                "rero_mef.concepts.mef.serializers" ":json_concept_mef_search"
-            ),
+            "application/json": "rero_mef.concepts.mef.serializers:json_concept_mef_search",
         },
         search_factory_imp="rero_mef.query:and_search_factory",
         list_route="/concepts/mef/",
-        item_route=(
-            "/concepts/mef/<pid(comef, record_class="
-            '"rero_mef.concepts.mef.api:ConceptMefRecord")'
-            ":pid_value>"
-        ),
+        item_route="/concepts/mef/<pid(comef, record_class='rero_mef.concepts.mef.api:ConceptMefRecord'):pid_value>",
         default_media_type="application/json",
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers={},
@@ -406,21 +376,14 @@ RECORDS_REST_ENDPOINTS = dict(
         record_class="rero_mef.concepts.rero.api:ConceptReroRecord",
         search_index="concepts_rero",
         record_serializers={
-            "application/json": (
-                "rero_mef.concepts.serializers" ":json_concept_response"
-            ),
+            "application/json": "rero_mef.concepts.serializers:json_concept_response",
         },
         search_serializers={
-            "application/json": (
-                "rero_mef.concepts.serializers" ":json_concept_search"
-            ),
+            "application/json": "rero_mef.concepts.serializers:json_concept_search",
         },
         search_factory_imp="rero_mef.query:and_search_factory",
         list_route="/concepts/rero/",
-        item_route=(
-            "/concepts/rero/<pid(corero, record_class="
-            '"rero_mef.concepts.rero.api:ConceptReroRecord"):pid_value>'
-        ),
+        item_route="/concepts/rero/<pid(corero, record_class='rero_mef.concepts.rero.api:ConceptReroRecord'):pid_value>",
         default_media_type="application/json",
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers={},
@@ -434,21 +397,38 @@ RECORDS_REST_ENDPOINTS = dict(
         record_class="rero_mef.concepts.idref.api:ConceptIdrefRecord",
         search_index="concepts_idref",
         record_serializers={
-            "application/json": (
-                "rero_mef.concepts.serializers" ":json_concept_response"
-            ),
+            "application/json": "rero_mef.concepts.serializers"
+            ":json_concept_response",
         },
         search_serializers={
-            "application/json": (
-                "rero_mef.concepts.serializers" ":json_concept_search"
-            ),
+            "application/json": "rero_mef.concepts.serializers:json_concept_search",
         },
         search_factory_imp="rero_mef.query:and_search_factory",
         list_route="/concepts/idref/",
         item_route=(
-            "/concepts/idref/<pid(cidref, record_class="
-            '"rero_mef.concepts.idref.api:ConceptIdrefRecord"):pid_value>'
+            "/concepts/idref/<pid(cidref, record_class='rero_mef.concepts.idref.api:ConceptIdrefRecord'):pid_value>"
         ),
+        default_media_type="application/json",
+        max_result_window=MAX_RESULT_WINDOW,
+        error_handlers={},
+    ),
+    cognd=dict(
+        pid_type="cognd",
+        pid_minter="concept_gnd_id",
+        pid_fetcher="concept_gnd_id",
+        search_class="rero_mef.concepts.gnd.api:ConceptGndSearch",
+        indexer_class="rero_mef.concepts.gnd.api:ConceptGndIndexer",
+        record_class="rero_mef.concepts.gnd.api:ConceptGndRecord",
+        search_index="concepts_gnd",
+        record_serializers={
+            "application/json": "rero_mef.concepts.serializers:json_concept_response",
+        },
+        search_serializers={
+            "application/json": "rero_mef.concepts.serializers:json_concept_search",
+        },
+        search_factory_imp="rero_mef.query:and_search_factory",
+        list_route="/concepts/gnd/",
+        item_route="/concepts/gnd/<pid(cognd, record_class='rero_mef.concepts.gnd.api:ConceptGndRecord'):pid_value>",
         default_media_type="application/json",
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers={},
@@ -462,22 +442,14 @@ RECORDS_REST_ENDPOINTS = dict(
         record_class="rero_mef.places.mef.api:PlaceMefRecord",
         search_index="places_mef",
         record_serializers={
-            "application/json": (
-                "rero_mef.places.mef.serializers" ":json_place_mef_response"
-            ),
+            "application/json": "rero_mef.places.mef.serializers:json_place_mef_response",
         },
         search_serializers={
-            "application/json": (
-                "rero_mef.places.mef.serializers" ":json_place_mef_search"
-            ),
+            "application/json": "rero_mef.places.mef.serializers:json_place_mef_search",
         },
         search_factory_imp="rero_mef.query:and_search_factory",
         list_route="/places/mef/",
-        item_route=(
-            "/places/mef/<pid(plmef, record_class="
-            '"rero_mef.places.mef.api:PlaceMefRecord")'
-            ":pid_value>"
-        ),
+        item_route="/places/mef/<pid(plmef, record_class='rero_mef.places.mef.api:PlaceMefRecord'):pid_value>",
         default_media_type="application/json",
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers={},
@@ -491,17 +463,14 @@ RECORDS_REST_ENDPOINTS = dict(
         record_class="rero_mef.places.idref.api:PlaceIdrefRecord",
         search_index="places_idref",
         record_serializers={
-            "application/json": ("rero_mef.places.serializers" ":json_place_response"),
+            "application/json": "rero_mef.places.serializers:json_place_response",
         },
         search_serializers={
-            "application/json": ("rero_mef.places.serializers" ":json_place_search"),
+            "application/json": "rero_mef.places.serializers:json_place_search",
         },
         search_factory_imp="rero_mef.query:and_search_factory",
         list_route="/places/idref/",
-        item_route=(
-            "/places/idref/<pid(pidref, record_class="
-            '"rero_mef.places.idref.api:PlaceIdrefRecord"):pid_value>'
-        ),
+        item_route="/places/idref/<pid(pidref, record_class='rero_mef.places.idref.api:PlaceIdrefRecord'):pid_value>",
         default_media_type="application/json",
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers={},
@@ -515,17 +484,14 @@ RECORDS_REST_ENDPOINTS = dict(
         record_class="rero_mef.places.gnd.api:PlaceGndRecord",
         search_index="places_gnd",
         record_serializers={
-            "application/json": ("rero_mef.places.serializers" ":json_place_response"),
+            "application/json": "rero_mef.places.serializers:json_place_response",
         },
         search_serializers={
-            "application/json": ("rero_mef.places.serializers" ":json_place_search"),
+            "application/json": "rero_mef.places.serializers:json_place_search",
         },
         search_factory_imp="rero_mef.query:and_search_factory",
         list_route="/places/gnd/",
-        item_route=(
-            "/places/gnd/<pid(plgnd, record_class="
-            '"rero_mef.places.gnd.api:PlaceGndRecord"):pid_value>'
-        ),
+        item_route="/places/gnd/<pid(plgnd, record_class='rero_mef.places.gnd.api:PlaceGndRecord'):pid_value>",
         default_media_type="application/json",
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers={},
@@ -534,7 +500,7 @@ RECORDS_REST_ENDPOINTS = dict(
 
 RERO_AGENTS = ["aidref", "aggnd", "agrero"]
 
-RERO_CONCEPTS = ["cidref", "corero"]
+RERO_CONCEPTS = ["cidref", "corero", "cognd"]
 
 RERO_PLACES = ["pidref", "plgnd"]
 
@@ -546,6 +512,7 @@ RECORDS_JSON_SCHEMA = {
     "plgnd": "/places_gnd/gnd-place-v0.0.1.json",
     "corero": "/concepts_rero/rero-concept-v0.0.1.json",
     "cidref": "/concepts_idref/idref-concept-v0.0.1.json",
+    "cognd": "/concepts_gnd/gnd-concept-v0.0.1.json",
     "comef": "/concepts_mef/mef-concept-v0.0.1.json",
     "aggnd": "/agents_gnd/gnd-agent-v0.0.1.json",
     "agrero": "/agents_rero/rero-agent-v0.0.1.json",
@@ -631,6 +598,9 @@ RECORDS_REST_FACETS = dict(
             ),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
             identifiedBy_source=dict(terms=dict(field="identifiedBy.source", size=30)),
+            association_identifier=dict(
+                terms=dict(field="_association_identifier", size=30)
+            ),
         ),
         filters=dict(
             type=terms_filter("type"),
@@ -638,6 +608,7 @@ RECORDS_REST_FACETS = dict(
             classificationPortion=terms_filter("classification.classificationPortion"),
             deleted=exists_filter("deleted"),
             identifiedBy_source=terms_filter("identifiedBy.source"),
+            association_identifier=terms_filter("_association_identifier"),
         ),
     ),
     concepts_idref=dict(
@@ -649,6 +620,9 @@ RECORDS_REST_FACETS = dict(
             ),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
             identifiedBy_source=dict(terms=dict(field="identifiedBy.source", size=30)),
+            association_identifier=dict(
+                terms=dict(field="_association_identifier", size=30)
+            ),
         ),
         filters=dict(
             type=terms_filter("type"),
@@ -656,6 +630,29 @@ RECORDS_REST_FACETS = dict(
             classificationPortion=terms_filter("classification.classificationPortion"),
             deleted=exists_filter("deleted"),
             identifiedBy_source=terms_filter("identifiedBy.source"),
+            association_identifier=terms_filter("_association_identifier"),
+        ),
+    ),
+    concepts_gnd=dict(
+        aggs=dict(
+            type=dict(terms=dict(field="type", size=30)),
+            classification=dict(terms=dict(field="classification.name", size=30)),
+            classificationPortion=dict(
+                terms=dict(field="classification.classificationPortion", size=30)
+            ),
+            deleted=dict(filter=dict(exists=dict(field="deleted"))),
+            identifiedBy_source=dict(terms=dict(field="identifiedBy.source", size=30)),
+            association_identifier=dict(
+                terms=dict(field="_association_identifier", size=30)
+            ),
+        ),
+        filters=dict(
+            type=terms_filter("type"),
+            classification=terms_filter("classification.name"),
+            classificationPortion=terms_filter("classification.classificationPortion"),
+            deleted=exists_filter("deleted"),
+            identifiedBy_source=terms_filter("identifiedBy.source"),
+            association_identifier=terms_filter("_association_identifier"),
         ),
     ),
     places_mef=dict(
@@ -681,6 +678,9 @@ RECORDS_REST_FACETS = dict(
             ),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
             identifiedBy_source=dict(terms=dict(field="identifiedBy.source", size=30)),
+            association_identifier=dict(
+                terms=dict(field="_association_identifier", size=30)
+            ),
         ),
         filters=dict(
             type=terms_filter("type"),
@@ -688,6 +688,7 @@ RECORDS_REST_FACETS = dict(
             classificationPortion=terms_filter("classification.classificationPortion"),
             deleted=exists_filter("deleted"),
             identifiedBy_source=terms_filter("identifiedBy.source"),
+            association_identifier=terms_filter("_association_identifier"),
         ),
     ),
     places_gnd=dict(
@@ -699,6 +700,9 @@ RECORDS_REST_FACETS = dict(
             ),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
             identifiedBy_source=dict(terms=dict(field="identifiedBy.source", size=30)),
+            association_identifier=dict(
+                terms=dict(field="_association_identifier", size=30)
+            ),
         ),
         filters=dict(
             type=terms_filter("type"),
@@ -706,6 +710,7 @@ RECORDS_REST_FACETS = dict(
             classificationPortion=terms_filter("classification.classificationPortion"),
             deleted=exists_filter("deleted"),
             identifiedBy_source=terms_filter("identifiedBy.source"),
+            association_identifier=terms_filter("_association_identifier"),
         ),
     ),
 )

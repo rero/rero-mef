@@ -64,7 +64,6 @@ def test_view_agents_gnd(client, agent_gnd_record):
 def test_save_deleted_data(client, agent_gnd_record, agent_gnd_data):
     """Test save deleted data GND."""
     pid = agent_gnd_record.get("pid")
-    assert agent_gnd_record["identifier"] == "http://d-nb.info/gnd/12391664X"
     data = deepcopy(agent_gnd_data)
     data = {
         "deleted": "2022-01-31T10:44:22.552001+00:00",

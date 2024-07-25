@@ -27,7 +27,6 @@ def agent_gnd_data():
     """Agent GND record."""
     return {
         "$schema": "https://mef.rero.ch/schemas/agents_gnd/gnd-agent-v0.0.1.json",
-        "identifier": "http://d-nb.info/gnd/12391664X",
         "pid": "12391664X",
         "type": "bf:Person",
         "variant_name": [
@@ -72,7 +71,6 @@ def agent_gnd_redirect_data():
     """Agent GND record."""
     return {
         "$schema": "https://mef.rero.ch/schemas/agents_gnd/gnd-agent-v0.0.1.json",
-        "identifier": "https://d-nb.info/gnd/GND_REDIRECT",
         "pid": "GND_REDIRECT",
         "type": "bf:Person",
         "authorized_access_point": "Cavalieri, Giovanni Battista, 1525-1601",
@@ -395,7 +393,6 @@ def agent_rero_data():
             "Cavalleriis, Giovanni Battista de,",
             "Cavalieri, Gianbattista,",
         ],
-        "identifier": "https://data.rero.ch/02-A023655346",
         "pid": "A023655346",
         "preferred_name": "Cavalieri, Giovanni Battista,",
     }
@@ -476,7 +473,6 @@ def agent_idref_data():
         "date_of_birth": "....",
         "date_of_death": "1540",
         "language": ["fre"],
-        "identifier": "https://www.idref.fr/069774331",
         "biographical_information": ["Grammairien"],
         "preferred_name": "Briss\u00e9, Nicolas, grammairien",
         "authorized_access_point": "Briss\u00e9, Nicolas, ....-1540, grammairien",
@@ -494,7 +490,6 @@ def agent_idref_redirect_data():
         "date_of_birth": "....",
         "date_of_death": "1540",
         "language": ["fre"],
-        "identifier": "https://www.idref.fr/IDREF_REDIRECT",
         "preferred_name": "Briss\u00e9, Nicolas, grammairien",
         "authorized_access_point": "Briss\u00e9, Nicolas, ....-1540, grammairien",
         "gender": "male",
@@ -911,7 +906,6 @@ def aggnd_data_139205527():
         "type": "bf:Person",
         "country_associated": "it",
         "gender": "female",
-        "identifier": "http://d-nb.info/gnd/139205527",
         "identifiedBy": [
             {"source": "GND", "type": "uri", "value": "http://d-nb.info/gnd/139205527"}
         ],

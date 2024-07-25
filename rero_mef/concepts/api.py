@@ -16,12 +16,10 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 """API for manipulating records."""
 
-from rero_mef.concepts.mef.api import build_ref_string
-
-from ..api import Action, ReroIndexer, ReroMefRecord
+from ..api import ConceptPlaceRecord, EntityIndexer
 
 
-class ConceptRecord(ReroMefRecord):
+class ConceptRecord(ConceptPlaceRecord):
     """Concept record class."""
 
     name = None
@@ -56,50 +54,10 @@ class ConceptRecord(ReroMefRecord):
             mef_record.delete_ref(self, dbcommit=dbcommit, reindex=delindex)
         return super().delete(force=force, dbcommit=dbcommit, delindex=delindex)
 
-    def create_or_update_mef(self, dbcommit=False, reindex=False):
-        """Create or update MEF and VIAF record.
-
-        :param dbcommit: Commit changes to DB.
-        :param reindex: Reindex record.
-        :returns: MEF record, MEF action
-        """
-        from rero_mef.concepts import ConceptMefRecord
-
-        mef_data = {}
-        if mef_records := ConceptMefRecord.get_mef(self.pid, self.name):
-            mef_data = mef_records[0]
-
-        ref_string = build_ref_string(concept=self.name, concept_pid=self.pid)
-        mef_data[self.name] = {"$ref": ref_string}
-
-        if mef_records:
-            mef_action = Action.UPDATE
-            mef_record = mef_data.replace(
-                data=mef_data, dbcommit=dbcommit, reindex=reindex
-            )
-        else:
-            if self.deleted and not mef_data.get("deleted"):
-                mef_data["deleted"] = self.deleted
-            mef_action = Action.CREATE
-            mef_record = ConceptMefRecord.create(
-                data=mef_data,
-                dbcommit=dbcommit,
-                reindex=reindex,
-            )
-        if reindex:
-            ConceptMefRecord.flush_indexes()
-        return mef_record, {mef_record.pid: mef_action}
-
-    @classmethod
-    def get_online_record(cls, id_, debug=False):
-        """Get online Record.
-
-        :param id_: Id of online record.
-        :param debug: Debug print.
-        :returns: record or None
-        Has to be overloaded in agent class.
-        """
-        raise NotImplementedError()
+    @property
+    def ref_identifier(self):
+        """Get ref identifier."""
+        return f"bf:Nbn|(BNF){self.frbnf_pid}"
 
     def reindex(self, forceindex=False):
         """Reindex record."""
@@ -112,5 +70,5 @@ class ConceptRecord(ReroMefRecord):
         return result
 
 
-class ConceptIndexer(ReroIndexer):
+class ConceptIndexer(EntityIndexer):
     """Indexing class for concepts."""

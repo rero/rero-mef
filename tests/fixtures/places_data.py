@@ -62,7 +62,6 @@ def place_idref_data():
         ],
         "pid": "271330163",
         "type": "bf:Place",
-        "deleted": "2022-09-03T07:07:32.526780+00:00",
     }
 
 
@@ -142,11 +141,13 @@ def place_gnd_data():
             {
                 "authorized_access_point": "Nordschleswig",
                 "source": "GND",
-                "identifiedBy": {
-                    "type": "bf:Nbn",
-                    "value": "(DE-101)992404371",
-                    "source": "(DE-101)992404371",
-                },
+                "identifiedBy": [
+                    {
+                        "type": "bf:Nbn",
+                        "value": "(DE-101)992404371",
+                        "source": "(DE-101)992404371",
+                    }
+                ],
             }
         ],
         "identifiedBy": [

@@ -4,7 +4,6 @@
     "pid": "00401653X",
     "type": "bf:Organisation",
     "conference": false,
-    "identifier": "http://d-nb.info/gnd/1002606-X",
     "variant_name": [
       "Federal Association of Company Health Insurance Funds",
       "Association of Company Health Insurance Funds",
@@ -35,7 +34,6 @@
     "pid": "00402074X",
     "type": "bf:Organisation",
     "conference": false,
-    "identifier": "http://d-nb.info/gnd/1003478-X",
     "variant_name": [
       "Communaute\u0301 europe\u0301enne du charbon et de l'acier",
       "European coal and steel community",
@@ -103,7 +101,6 @@
     "pid": "00421952X",
     "type": "bf:Organisation",
     "conference": false,
-    "identifier": "http://d-nb.info/gnd/1034729-X",
     "variant_name": [
       "Universite\u0301 de Paris-Sorbonne. Institut de Recherche sur les Civilisations de l'Occident Moderne",
       "Universite\u0301 de Paris-Sorbonne. Institut de Recherches sur les Civilisations de l'Occident Moderne",
@@ -149,7 +146,6 @@
     "pid": "007430779",
     "type": "bf:Organisation",
     "conference": false,
-    "identifier": "http://d-nb.info/gnd/2094183-3",
     "variant_name": [
       "Generaldirektion Wissenschaft",
       "Direcc\u0327a\u0303o-Geral de Estudos",
@@ -190,7 +186,6 @@
     "pid": "008046662",
     "type": "bf:Organisation",
     "conference": true,
-    "identifier": "http://d-nb.info/gnd/804666-9",
     "preferred_name": "Congre\u0300s de Psychiatrie et de Neurologie de Langue Franc\u0327aise, 78",
     "country_associated": "fr",
     "authorized_access_point": "Congre\u0300s de Psychiatrie et de Neurologie de Langue Franc\u0327aise, 78, 1980, Reims"
@@ -200,7 +195,6 @@
     "pid": "050534696",
     "type": "bf:Organisation",
     "conference": false,
-    "identifier": "http://d-nb.info/gnd/5053469-5",
     "variant_name": [
       "Chemin de fer d'Orle\u0301ans",
       "Compagnie d'Orle\u0301ans",
@@ -222,7 +216,6 @@
     "pid": "051062763",
     "type": "bf:Organisation",
     "conference": false,
-    "identifier": "http://d-nb.info/gnd/16113016-1",
     "preferred_name": "Institut d'Administration des Entreprises",
     "country_associated": "fr",
     "authorized_access_point": "Institut d'Administration des Entreprises. Rennes"
@@ -233,7 +226,6 @@
     "gender": "male",
     "type": "bf:Person",
     "qualifier": "de Barbanson",
-    "identifier": "http://d-nb.info/gnd/100023754",
     "variant_name": [
       "Konstantin, von Barbanson",
       "Barbanson, Konstantin von",
@@ -282,7 +274,6 @@
     "pid": "1019749911",
     "gender": "male",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/1019749911",
     "variant_name": [
       "Bourbon, Charles de",
       "Charles, Soissons, Comte"
@@ -304,7 +295,6 @@
     "pid": "1020174943",
     "gender": "male",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/1020174943",
     "variant_name": [
       "Antin, Louis Antoine de Pardaillan de Gondrin d'",
       "Gondrin d'Antin, Louis Antoine de Pardaillan de",
@@ -329,7 +319,6 @@
     "pid": "1032371390",
     "type": "bf:Organisation",
     "conference": false,
-    "identifier": "http://d-nb.info/gnd/1032371390",
     "variant_name": [
       "Les Be\u0301laisie\u0300res et les Doudous de la Grande-Terre"
     ],
@@ -345,7 +334,6 @@
     "pid": "104189576",
     "type": "bf:Person",
     "qualifier": "Spanien, Ko\u0308nigin, 1662-1689",
-    "identifier": "http://d-nb.info/gnd/104189576",
     "variant_name": [
       "Marie Luise, Espagne, reine",
       "Marie-Louise, Espagne, reine",
@@ -376,7 +364,6 @@
     "md5": "79e50969e7f659769d8e7f7c922f3309",
     "pid": "1045857424",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/1045857424",
     "variant_name": [
       "Me\u0301rault De Bizy, Athanase Rene\u0301",
       "De Bizy, Athanase Rene\u0301 Me\u0301rault",
@@ -399,7 +386,6 @@
     "md5": "cc5b6e556728b5e7801e33bbafb9ad23",
     "pid": "1053083351",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/1053083351",
     "variant_name": [
       "Alfaro Lafuente, Manuel Ibo",
       "Alfaro y Lafuente, Manuel Ibo",
@@ -426,7 +412,6 @@
     "md5": "5dcc2a35d57dd302ab480b5fcdbc5381",
     "pid": "1055101586",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/1055101586",
     "variant_name": [
       "Ormonde, ... of",
       "Ormonde, James Edward William Theobald Butler of"
@@ -445,7 +430,6 @@
     "md5": "aacd4184aa47315350ac6e210af4856d",
     "pid": "1056901632",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/1056901632",
     "variant_name": [
       "Aranton D'Alex, Giovanni d'",
       "Alex, Jean d'Aranton d'",
@@ -477,7 +461,6 @@
     "md5": "b0385764c1529aa4d1762ae4ef521b1c",
     "pid": "1060580543",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/1060580543",
     "date_of_birth": "1851",
     "date_of_death": "1925",
     "preferred_name": "Avesne, E. d'",
@@ -489,7 +472,6 @@
     "pid": "1073132285",
     "gender": "male",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/1073132285",
     "date_of_birth": "08.10.1758",
     "date_of_death": "17.09.1832",
     "preferred_name": "Carelli, Francesco",
@@ -500,7 +482,6 @@
     "md5": "deea413c05bda81ca161f7726728f990",
     "pid": "1089786255",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/1089786255",
     "variant_name": [
       "Cailler, Rodolphe"
     ],
@@ -521,7 +502,6 @@
     "gender": "male",
     "type": "bf:Person",
     "qualifier": "da San Giuseppe",
-    "identifier": "http://d-nb.info/gnd/1117819884",
     "variant_name": [
       "Ange, de Saint-Joseph",
       "Angelo, da Utri",
@@ -563,7 +543,6 @@
     "pid": "11669355X",
     "gender": "male",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/11669355X",
     "variant_name": [
       "Franchi de Cavalieri, Pio",
       "Cavalieri, Pio Franchi de",
@@ -625,7 +604,6 @@
     "pid": "117513601",
     "gender": "male",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/117513601",
     "variant_name": [
       "Fleuriau de Belleville, Louis Benjamin",
       "Fleuriau de Bellevue, Louis",
@@ -652,7 +630,6 @@
     "pid": "117588768",
     "gender": "male",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/117588768",
     "variant_name": [
       "Bernard, William Baile",
       "Bernard, William B.",
@@ -674,7 +651,6 @@
     "pid": "117671533",
     "gender": "male",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/117671533",
     "variant_name": [
       "Bagnano, Georgio Libri-",
       "Libri Bagnano, Georgio"
@@ -693,7 +669,6 @@
     "md5": "36b20e443f8b5ba67f37ef7403cfbe83",
     "pid": "118095617",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/118095617",
     "variant_name": [
       "Ambly, Paul Boiteau d'",
       "Boiteau, Paul",
@@ -721,7 +696,6 @@
     "pid": "118666762",
     "gender": "male",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/118666762",
     "variant_name": [
       "Camerarius, Rudolf Jacob",
       "Camerarius, Rudolph Jakob",
@@ -772,7 +746,6 @@
     "gender": "female",
     "type": "bf:Person",
     "qualifier": "Preu\u00dfen, Ko\u0308nigin",
-    "identifier": "http://d-nb.info/gnd/119120674",
     "variant_name": [
       "Elisabeth Christine, Braunschweig-Bevern, Herzogin",
       "Elisabet Christine, Preu\u00dfen, Ko\u0308nigin",
@@ -815,7 +788,6 @@
       "lat"
     ],
     "qualifier": "Mamertus",
-    "identifier": "http://d-nb.info/gnd/119291088",
     "variant_name": [
       "Claudianus Ecdicius, Mamertus",
       "Claudianus, Viennensis",
@@ -875,7 +847,6 @@
     "md5": "02728606dfedd5e44e290637a2f15c31",
     "pid": "122101359",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/122101359",
     "variant_name": [
       "Chapron, Nicolas",
       "Chapperon, Nicolas",
@@ -901,7 +872,6 @@
     "md5": "56b1523e8b10cc5750ef98e9768a13e6",
     "pid": "12391664X",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/12391664X",
     "variant_name": [
       "Cavaleriis, Joannes Baptista de",
       "Cavalleris, Joannes Baptista de",
@@ -973,7 +943,6 @@
     "md5": "27e54e506f4dc18dd4d7ad7511e4126c",
     "pid": "124813844",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/124813844",
     "variant_name": [
       "Catalani, Josephus",
       "Catalano, Giuseppe",
@@ -998,7 +967,6 @@
     "md5": "f96f8bf5ff7ce5c8ce580e631f3fbc0d",
     "pid": "124981933",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/124981933",
     "variant_name": [
       "Saint-Morys, Etienne Bourgevin Vialard de",
       "Saint-Morys, E\u0301tienne Bourgelin Vialart de",
@@ -1046,7 +1014,6 @@
     "md5": "84e51d7ee7be9178f66a7585eb6aa6c5",
     "pid": "129943495",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/129943495",
     "variant_name": [
       "Arnoult, Alexis E\u0301tienne Pierre Henri",
       "Arnoult, Alexis E."
@@ -1067,7 +1034,6 @@
     "md5": "82270d369e01f3d91b8e9312a0225e58",
     "pid": "130672289",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/130672289",
     "variant_name": [
       "Cabannes Cauna, Bernard Augustin Henri Timothe\u0301e de",
       "Cabannes de Cauna, Bernard Augustin Henri Timothe\u0301e",
@@ -1092,7 +1058,6 @@
     "pid": "131543334",
     "gender": "male",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/131543334",
     "variant_name": [
       "Serge\u0304s, Manole\u0304s",
       "Serge\u0304s, M. G.",
@@ -1124,7 +1089,6 @@
     "md5": "a9da34766e9a6db0b5789665d1c39ade",
     "pid": "143032704",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/143032704",
     "variant_name": [
       "Soyarslan, Cigdem"
     ],
@@ -1140,7 +1104,6 @@
     "md5": "b1420914569198b30b43eee0c9d72ca9",
     "pid": "172759757",
     "type": "bf:Person",
-    "identifier": "http://d-nb.info/gnd/172759757",
     "variant_name": [
       "Arnoudt, Pierre Joseph",
       "Arnoudt, Pierre",
@@ -1190,7 +1153,6 @@
     "pid": "951795597",
     "type": "bf:Organisation",
     "conference": false,
-    "identifier": "http://d-nb.info/gnd/5230389-5",
     "variant_name": [
       "GN'R",
       "Guns and Roses"
@@ -1215,7 +1177,6 @@
     "pid": "969004222",
     "type": "bf:Organisation",
     "conference": true,
-    "identifier": "http://d-nb.info/gnd/1248506-8",
     "preferred_name": "Congre\u0300s Litte\u0301raire International",
     "country_associated": "fr",
     "authorized_access_point": "Congre\u0300s Litte\u0301raire International, 1878, Paris"

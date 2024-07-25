@@ -43,9 +43,9 @@ def test_create_agent_record_with_viaf_links(
     assert viaf_record["gnd_pid"] == "12391664X"
     assert viaf_record["rero_pid"] == "A023655346"
     assert viaf_record["idref_pid"] == "069774331"
-    assert len(viaf_record.get_agents_pids()) == 3
-    assert viaf_record.get_agents_records() == []
-    _, pids_viaf = viaf_record.get_missing_agent_pids("aidref")
+    assert len(viaf_record.get_entities_pids()) == 3
+    assert viaf_record.get_entities_records() == []
+    _, pids_viaf = viaf_record.get_missing_entity_pids("aidref")
     assert pids_viaf == ["66739143"]
 
     gnd_record, action = AgentGndRecord.create_or_update(
@@ -63,10 +63,10 @@ def test_create_agent_record_with_viaf_links(
         "type": "bf:Person",
         "viaf_pid": "66739143",
     }
-    assert viaf_record.get_agents_records() == [agent_gnd_data]
+    assert viaf_record.get_entities_records() == [agent_gnd_data]
     assert viaf_record.get_viaf(m_record) == [viaf_record]
     assert viaf_record.get_viaf(gnd_record) == [viaf_record]
-    pids_db, pids_viaf = viaf_record.get_missing_agent_pids("aggnd")
+    pids_db, pids_viaf = viaf_record.get_missing_entity_pids("aggnd")
     assert pids_db == []
     assert pids_viaf == []
 
@@ -85,7 +85,7 @@ def test_create_agent_record_with_viaf_links(
         "type": "bf:Person",
         "viaf_pid": "66739143",
     }
-    assert viaf_record.get_agents_records() == [agent_gnd_data, agent_rero_data]
+    assert viaf_record.get_entities_records() == [agent_gnd_data, agent_rero_data]
 
     idref_record, action = AgentIdrefRecord.create_or_update(
         data=agent_idref_data, dbcommit=True, reindex=True
@@ -103,7 +103,7 @@ def test_create_agent_record_with_viaf_links(
         "type": "bf:Person",
         "viaf_pid": "66739143",
     }
-    assert viaf_record.get_agents_records() == [
+    assert viaf_record.get_entities_records() == [
         agent_idref_data,
         agent_gnd_data,
         agent_rero_data,
@@ -112,17 +112,17 @@ def test_create_agent_record_with_viaf_links(
     assert (
         m_record
         == AgentMefRecord.get_mef(
-            agent_pid=idref_record.pid, agent_name=idref_record.name
+            entity_pid=idref_record.pid, entity_name=idref_record.name
         )[0]
     )
     assert (
         m_record.pid
         == AgentMefRecord.get_mef(
-            agent_pid=gnd_record.pid, agent_name=gnd_record.name, pid_only=True
+            entity_pid=gnd_record.pid, entity_name=gnd_record.name, pid_only=True
         )[0]
     )
     mef_rec_resolved = AgentMefRecord.get_mef(
-        agent_pid=viaf_record.pid, agent_name=viaf_record.name
+        entity_pid=viaf_record.pid, entity_name=viaf_record.name
     )[0]
     assert m_record == mef_rec_resolved
 
@@ -191,14 +191,14 @@ def test_create_agent_record_with_viaf_links(
     rero_pid = viaf_record.pop("rero_pid")
     viaf_record = viaf_record.update(data=viaf_record, dbcommit=True, reindex=True)
     viaf_record.create_mef_and_agents(dbcommit=True, reindex=True)
-    assert viaf_record.get_agents_pids() == [
+    assert viaf_record.get_entities_pids() == [
         {"pid": idref_record.pid, "source": "idref", "record_class": AgentIdrefRecord},
         {"pid": gnd_record.pid, "source": "gnd", "record_class": AgentGndRecord},
     ]
     mef_record_rero = AgentMefRecord.get_mef(
-        agent_pid=rero_record.pid, agent_name=rero_record.name
+        entity_pid=rero_record.pid, entity_name=rero_record.name
     )[0]
-    assert mef_record_rero.get_agents_pids() == [
+    assert mef_record_rero.get_entities_pids() == [
         {"pid": rero_record.pid, "record_class": AgentReroRecord}
     ]
 
@@ -207,7 +207,7 @@ def test_create_agent_record_with_viaf_links(
     viaf_record["rero_pid"] = rero_pid
     viaf_record = viaf_record.update(data=viaf_record, dbcommit=True, reindex=True)
     viaf_record.create_mef_and_agents(dbcommit=True, reindex=True)
-    assert viaf_record.get_agents_pids() == [
+    assert viaf_record.get_entities_pids() == [
         {"pid": idref_record.pid, "source": "idref", "record_class": AgentIdrefRecord},
         {"pid": gnd_record.pid, "source": "gnd", "record_class": AgentGndRecord},
         {"pid": rero_record.pid, "source": "rero", "record_class": AgentReroRecord},

@@ -21,7 +21,7 @@ import click
 from celery import shared_task
 from flask import current_app
 
-from .api import Action, ReroIndexer
+from .api import Action, EntityIndexer
 from .utils import get_entity_class
 
 
@@ -37,7 +37,7 @@ def process_bulk_queue(version_type=None, search_bulk_kwargs=None, stats_only=Tr
             successful and a list of error responses.
     Note: You can start multiple versions of this task.
     """
-    return ReroIndexer(version_type=version_type).process_bulk_queue(
+    return EntityIndexer(version_type=version_type).process_bulk_queue(
         search_bulk_kwargs=search_bulk_kwargs, stats_only=stats_only
     )
 

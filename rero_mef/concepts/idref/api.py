@@ -17,6 +17,7 @@
 
 """API for manipulating IdRef agent."""
 
+from flask import current_app
 from invenio_search.api import RecordsSearch
 
 from ..api import ConceptIndexer, ConceptRecord
@@ -59,11 +60,46 @@ class ConceptIdrefRecord(ConceptRecord):
         :param id_: Id of online record.
         :param debug: Debug print.
         :returns: record or None
-        Has to be overloaded in agent class.
         """
         from .tasks import idref_get_record
 
         return idref_get_record(id_=id_, debug=debug)
+
+    @property
+    def association_identifier(self):
+        """Get associated identifier from identifiedBy."""
+        if pids := [
+            identified_by.get("value")
+            for identified_by in self.get("identifiedBy", [])
+            if identified_by.get("source") == "BNF"
+            and identified_by.get("value", "").startswith("FRBNF")
+        ]:
+            if len(pids) > 1:
+                current_app.logger.error(
+                    f"MULTIPLE ASSOCIATIONS FOUND FOR: {self.name} {self.pid} | {', '.join(pids)}"
+                )
+            if pids:
+                return pids[-1]
+
+    @property
+    def association_info(self):
+        """Get associated record."""
+        from rero_mef.concepts import (
+            ConceptGndRecord,
+            ConceptGndSearch,
+            ConceptMefRecord,
+        )
+
+        ConceptGndRecord.flush_indexes()
+        return {
+            "identifier": self.association_identifier,
+            "record": self.get_association_record(
+                association_cls=ConceptGndRecord, association_search=ConceptGndSearch
+            ),
+            "record_cls": ConceptGndRecord,
+            "search_cls": ConceptGndSearch,
+            "mef_cls": ConceptMefRecord,
+        }
 
 
 class ConceptIdrefIndexer(ConceptIndexer):

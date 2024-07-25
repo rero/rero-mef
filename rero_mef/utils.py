@@ -1231,3 +1231,29 @@ def requests_retry_session(
     session.mount("http://", adapter)
     session.mount("https://", adapter)
     return session
+
+
+def make_identifier(identified_by):
+    """Make identifier `type|(source)value`.
+
+    :param identified_by: identifiedBy to create identifier
+    :return: identifier `type|(source)value` or `type|value`
+    """
+    if source := identified_by.get("source"):
+        return f"{identified_by['type']}|({source}){identified_by['value']}"
+    return f"{identified_by['type']}|{identified_by['value']}"
+
+
+def build_ref_string(entity_type, entity_name, entity_pid):
+    """Build url for  api.
+
+    :param entity_type: Type of entity (agents, concepts, places)
+    :param entity_name: Name of entity.
+    :param entity_pid: Pid of entity.
+    :returns: Reference string to record.
+    """
+    with current_app.app_context():
+        return (
+            f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
+            f"/api/{entity_type}/{entity_name}/{entity_pid}"
+        )

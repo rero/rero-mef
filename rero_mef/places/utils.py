@@ -27,3 +27,10 @@ def get_places_endpoints():
     return {
         endpoint: data for endpoint, data in endpoints.items() if endpoint in places
     }
+
+
+def make_identifier(identified_by):
+    """Make identifier `type|(source)value`."""
+    if source := identified_by.get("source"):
+        return f"{identified_by['type']}|({source}){identified_by['value']}"
+    return f"{identified_by['type']}:{identified_by['value']}"

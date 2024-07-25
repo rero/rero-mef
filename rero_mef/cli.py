@@ -219,7 +219,7 @@ def delete(entity, source, lazy, enqueue, verbose):
 def marc_to_json(entity, marc_file, json_file, error_file, verbose):
     """Entity MARC to JSON.
 
-    :param entity: entity [aidref, aggnd, agrero, corero].
+    :param entity: entity [aidref, aggnd, agrero, coidref, cognd, corero, plidref, plgnd].
     :param marc_file: MARC input file.
     :param json_file: JSON output file.
     :param verbose: Verbose.
@@ -555,8 +555,11 @@ def csv_diff(
     }
     compair_data = {}
     if sqlite_dict:
-        compair_data = SqliteDict(sqlite_dict, autocommit=True, outer_stack=False)
-    compair_data.clear()
+        compair_data = SqliteDict(
+            sqlite_dict, autocommit=False, outer_stack=False, journal_mode="OFF"
+        )
+        compair_data.clear()
+        compair_data.commit()
     if csv_metadata_file_compair:
         length = number_records_in_file(csv_metadata_file_compair, "csv")
         counts["compair"] = length
@@ -567,9 +570,13 @@ def csv_diff(
                 label=f"Loading: {compair}",
                 verbose=True,
             )
-            for metadata_line in progress_bar:
+            for idx, metadata_line in enumerate(progress_bar, 1):
                 pid, data = get_pid_data(metadata_line)
                 compair_data[pid] = data
+                if sqlite_dict and idx % 1000 == 0:
+                    compair_data.commit()
+            if sqlite_dict:
+                compair_data.commit()
     elif entity:
         entity_class = get_entity_class(entity)
         length = entity_class.count()
@@ -598,6 +605,8 @@ def csv_diff(
         for metadata_line in progress_bar:
             pid, data = get_pid_data(metadata_line)
             if existing_data := compair_data.pop(pid, None):
+                if sqlite_dict:
+                    compair_data.commit()
                 if existing_data != data:
                     counts["changed"] += 1
                     if verbose:
@@ -631,6 +640,8 @@ def csv_diff(
     file_new.close()
     file_diff.close()
     file_delete.close()
+    if sqlite_dict:
+        compair_data.close()
     click.echo(
         f'Compair: {counts["compair"]} | '
         f'Compair to: {counts["compair_to"]} || '

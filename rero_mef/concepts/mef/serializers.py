@@ -83,7 +83,7 @@ class ReroMefSerializer(JSONSerializer):
 
         concept_classes = get_entity_classes()
         for concept, concept_classe in concept_classes.items():
-            if concept in ["corero", "cidref"]:
+            if concept in ["corero", "cidref", "cognd"]:
                 local_link(concept, concept_classe.name, rec)
 
         return super(ReroMefSerializer, self).serialize(

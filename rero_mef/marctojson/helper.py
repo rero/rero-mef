@@ -1228,7 +1228,23 @@ LANGUAGE_SCRIPTS = [
 ]
 
 
+re_source_and_id = re.compile(r"\((.*)\)(.*)")
+
+
 # ---------------------------- Functions --------------------------------------
+def get_source_and_id(data):
+    """Get identifier and id from (identifier)id."""
+    if match := re_source_and_id.match(data):
+        with contextlib.suppress(IndexError):
+            source = match.group(1).upper().replace("FRPBN", "BNF")
+            value = match.group(2)
+            if source in {"DE-101", "DE-588"}:
+                value = f"({source}){value}"
+                source = "GND"
+            return source, value
+    return None, None
+
+
 def file_name(file_name):
     """Gets the filename without extention."""
     return ".".join(os.path.basename(file_name).split(".")[:-1])

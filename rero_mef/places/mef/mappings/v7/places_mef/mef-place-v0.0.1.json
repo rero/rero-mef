@@ -44,94 +44,6 @@
       "deleted": {
         "type": "date"
       },
-      "rero": {
-        "type": "object",
-        "properties": {
-          "$schema": {
-            "type": "keyword"
-          },
-          "pid": {
-            "type": "keyword"
-          },
-          "type": {
-            "type": "keyword"
-          },
-          "md5": {
-            "type": "keyword"
-          },
-          "bnf_type": {
-            "type": "keyword"
-          },
-          "identifier": {
-            "type": "keyword"
-          },
-          "authorized_access_point": {
-            "type": "text",
-            "copy_to": "autocomplete_name"
-          },
-          "variant_access_point": {
-            "type": "text"
-          },
-          "deleted": {
-            "type": "date"
-          },
-          "related": {
-            "type": "object",
-            "properties": {
-              "authorized_access_point": {
-                "type": "text"
-              }
-            }
-          },
-          "broader": {
-            "type": "object",
-            "properties": {
-              "authorized_access_point": {
-                "type": "text"
-              }
-            }
-          },
-          "narrower": {
-            "type": "object",
-            "properties": {
-              "authorized_access_point": {
-                "type": "text"
-              }
-            }
-          },
-          "closeMatch": {
-            "type": "object",
-            "properties": {
-              "authorized_access_point": {
-                "type": "text"
-              },
-              "source": {
-                "type": "keyword"
-              },
-              "identifiedBy": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "keyword"
-                  },
-                  "source": {
-                    "type": "keyword"
-                  },
-                  "value": {
-                    "type": "keyword"
-                  }
-                }
-              }
-            }
-          },
-          "_created": {
-            "type": "date"
-          },
-          "_updated": {
-            "type": "date"
-          }
-        }
-      },
       "idref": {
         "type": "object",
         "properties": {
@@ -150,7 +62,120 @@
           "bnf_type": {
             "type": "keyword"
           },
-          "identifier": {
+          "authorized_access_point": {
+            "type": "text",
+            "copy_to": "autocomplete_name"
+          },
+          "variant_access_point": {
+            "type": "text"
+          },
+          "deleted": {
+            "type": "date"
+          },
+          "related": {
+            "type": "object",
+            "properties": {
+              "authorized_access_point": {
+                "type": "text"
+              }
+            }
+          },
+          "broader": {
+            "type": "object",
+            "properties": {
+              "authorized_access_point": {
+                "type": "text"
+              }
+            }
+          },
+          "narrower": {
+            "type": "object",
+            "properties": {
+              "authorized_access_point": {
+                "type": "text"
+              }
+            }
+          },
+          "exactMatch": {
+            "type": "object",
+            "properties": {
+              "authorized_access_point": {
+                "type": "text"
+              },
+              "source": {
+                "type": "keyword"
+              },
+              "identifiedBy": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "keyword"
+                  },
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  },
+                  "_identifier": {
+                    "type": "keyword"
+                  }
+                }
+              }
+            }
+          },
+          "closeMatch": {
+            "type": "object",
+            "properties": {
+              "authorized_access_point": {
+                "type": "text"
+              },
+              "source": {
+                "type": "keyword"
+              },
+              "identifiedBy": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "keyword"
+                  },
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  },
+                  "_identifier": {
+                    "type": "keyword"
+                  }
+                }
+              }
+            }
+          },
+          "_created": {
+            "type": "date"
+          },
+          "_updated": {
+            "type": "date"
+          }
+        }
+      },
+      "gnd": {
+        "type": "object",
+        "properties": {
+          "$schema": {
+            "type": "keyword"
+          },
+          "pid": {
+            "type": "keyword"
+          },
+          "type": {
+            "type": "keyword"
+          },
+          "md5": {
+            "type": "keyword"
+          },
+          "bnf_type": {
             "type": "keyword"
           },
           "authorized_access_point": {
@@ -187,6 +212,34 @@
               }
             }
           },
+          "exactMatch": {
+            "type": "object",
+            "properties": {
+              "authorized_access_point": {
+                "type": "text"
+              },
+              "source": {
+                "type": "keyword"
+              },
+              "identifiedBy": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "keyword"
+                  },
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  },
+                  "_identifier": {
+                    "type": "keyword"
+                  }
+                }
+              }
+            }
+          },
           "closeMatch": {
             "type": "object",
             "properties": {
@@ -206,6 +259,9 @@
                     "type": "keyword"
                   },
                   "value": {
+                    "type": "keyword"
+                  },
+                  "_identifier": {
                     "type": "keyword"
                   }
                 }
