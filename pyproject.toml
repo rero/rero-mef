@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rero-mef"
-version = "0.15.0"
+version = "0.16.0"
 description = "Invenio digital library framework MEF."
 authors = ["RERO <software@rero.ch>"]
 license = "GNU Affero General Public License v3.0"
