@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.16.0](https://github.com/rero/rero-mef/tree/v0.16.0) (2024-10-29)
+
+[Full Changelog](https://github.com/rero/rero-mef/compare/v0.15.0...v0.16.0)
+
+**New features:**
+* concepts: Add GND [\#170](https://github.com/rero/rero-mef/pull/170) (by @rerowep)
+* places: add GND [\#169](https://github.com/rero/rero-mef/pull/169) (by @rerowep)
+
+**Enhancements:**
+* agents concepts places: add other identifiers [\#167](https://github.com/rero/rero-mef/pull/167) (by @rerowep)
+
 ## [v0.15.0](https://github.com/rero/rero-mef/tree/v0.15.0) (2024-06-13)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.14.0...v0.15.0)
