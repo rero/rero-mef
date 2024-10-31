@@ -153,17 +153,17 @@ def test_gnd_close_match():
         "exactMatch": [
             {
                 "authorized_access_point": "Venedig",
-                "source": "GND",
+                "source": "ZBW",
                 "identifiedBy": [
-                    {
-                        "source": "GND",
-                        "type": "bf:Nbn",
-                        "value": "(DE-101)997977663",
-                    },
                     {
                         "source": "ZBW",
                         "type": "bf:Nbn",
                         "value": "091419204",
+                    },
+                    {
+                        "source": "GND",
+                        "type": "bf:Nbn",
+                        "value": "(DE-101)997977663",
                     },
                 ],
             }

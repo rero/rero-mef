@@ -215,14 +215,8 @@ class Transformation(object):
             if value:
                 self.json_dict[relation] = value
 
-    def trans_gnd_classification(self):
-        """Transformation classification from field 686."""
-        if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_classification")
-        # TODO: find classification
-
     def trans_gnd_match(self):
-        """Transformation closeMatch and exactfrom field 750."""
+        """Transformation closeMatch and exactMatch from field 750."""
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_gnd_match")
         for field_750 in self.marc.get_fields("750"):
@@ -253,29 +247,42 @@ class Transformation(object):
                     if authorized_ap := build_string_from_field(
                         field=field_750, subfields=subfields, tag_grouping=tag_grouping
                     ):
-                        match = {
+                        match_data = {
                             "authorized_access_point": authorized_ap,
                             "source": "GND",
                         }
+                        identified_by = []
+                        other_source = None
                         for subfield_0 in field_750.get_subfields("0"):
                             if subfield_0.startswith("http"):
-                                match.setdefault("identifiedBy", []).append(
+                                identified_by.insert(
+                                    0,
                                     {
                                         "type": "uri",
                                         "value": subfield_0,
-                                    }
+                                    },
                                 )
+                                if other_source:
+                                    identified_by[0]["source"] = other_source
                             else:
                                 source, id_ = get_source_and_id(subfield_0)
                                 if source:
-                                    match.setdefault("identifiedBy", []).append(
+                                    insert_pos = -1
+                                    if source != "GND":
+                                        other_source = source
+                                        match_data["source"] = other_source
+                                        insert_pos = 0
+                                    identified_by.insert(
+                                        insert_pos,
                                         {
                                             "source": source,
                                             "type": "bf:Nbn",
                                             "value": id_,
-                                        }
+                                        },
                                     )
-                        self.json_dict.setdefault(match_type, []).append(match)
+                        if identified_by:
+                            match_data["identifiedBy"] = identified_by
+                        self.json_dict.setdefault(match_type, []).append(match_data)
 
     def trans_gnd_note(self):
         """Transformation notes from field.

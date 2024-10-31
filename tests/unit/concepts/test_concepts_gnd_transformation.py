@@ -174,12 +174,12 @@ def test_gnd_close_match():
         "closeMatch": [
             {
                 "authorized_access_point": "Atlases",
-                "source": "GND",
+                "source": "DLC",
                 "identifiedBy": [
                     {
-                        "source": "GND",
-                        "type": "bf:Nbn",
-                        "value": "(DE-101)1134384173",
+                        "source": "DLC",
+                        "type": "uri",
+                        "value": "http://id.loc.gov/authorities/subjects/sh85009231",
                     },
                     {
                         "source": "DLC",
@@ -187,8 +187,9 @@ def test_gnd_close_match():
                         "value": "sh85009231",
                     },
                     {
-                        "type": "uri",
-                        "value": "http://id.loc.gov/authorities/subjects/sh85009231",
+                        "source": "GND",
+                        "type": "bf:Nbn",
+                        "value": "(DE-101)1134384173",
                     },
                 ],
             }
@@ -196,11 +197,15 @@ def test_gnd_close_match():
         "exactMatch": [
             {
                 "authorized_access_point": "Atlas",
-                "source": "GND",
+                "source": "DNLM",
                 "identifiedBy": [
-                    {"source": "GND", "type": "bf:Nbn", "value": "(DE-101)125348144X"},
+                    {
+                        "source": "DNLM",
+                        "type": "uri",
+                        "value": "http://id.nlm.nih.gov/mesh/D020466",
+                    },
                     {"source": "DNLM", "type": "bf:Nbn", "value": "D020466"},
-                    {"type": "uri", "value": "http://id.nlm.nih.gov/mesh/D020466"},
+                    {"source": "GND", "type": "bf:Nbn", "value": "(DE-101)125348144X"},
                 ],
             },
         ],

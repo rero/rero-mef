@@ -64,7 +64,7 @@ def upgrade():
             ids.append(id_)
             rec = agent_cls.get_record(id_)
             rec.pop("identifier", None)
-            rec.update(data=rec, bcommit=False, reindex=True)
+            rec.update(data=rec, dbcommit=False, reindex=True)
             if idx % 1000 == 0:
                 print(f"  {idx} commit", end=" | ", flush=True)
                 db.session.commit()
@@ -102,7 +102,7 @@ def downgrade():
             ids.append(id_)
             rec = agent_cls.get_record(id_)
             rec["identifier"] = f'"{url}{rec.pid}"'
-            rec.update(data=rec, bcommit=False, reindex=True)
+            rec.update(data=rec, dbcommit=False, reindex=True)
             if idx % 1000 == 0:
                 print(f"  {idx} commit", end=" | ", flush=True)
                 db.session.commit()
