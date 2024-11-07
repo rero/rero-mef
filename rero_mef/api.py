@@ -613,11 +613,11 @@ class ConceptPlaceRecord(EntityRecord):
                     )
                 }
             if (
-                not mef_self_association_pid
-                and not mef_other_association_pid
-                and mef_other_pid
+                not bool(mef_self_association_pid)
+                and not bool(mef_other_association_pid)
+                and bool(mef_other_pid)
             ):
-                # Delete associated ref from MEF an create a new one
+                # Delete associated ref from MEF and create a new one
                 new_mef_record.pop(association_name)
                 if association_record := association_info[
                     "record_cls"
@@ -631,10 +631,10 @@ class ConceptPlaceRecord(EntityRecord):
                     )
                     actions |= action
             if (
-                mef_self_pid
-                and not mef_self_association_pid
-                and not mef_other_pid
-                and mef_other_association_pid
+                bool(mef_self_pid)
+                and not bool(mef_self_association_pid)
+                and not bool(mef_other_pid)
+                and bool(mef_other_association_pid)
             ):
                 # Delete entity from old MEF and add it to new MEF
                 ref = mef_associated_record.pop(association_name)
@@ -643,6 +643,20 @@ class ConceptPlaceRecord(EntityRecord):
                 )
                 actions[associated_mef_record.pid] = Action.DELETE_ENTITY
                 new_mef_record[association_name] = ref
+            if (
+                bool(mef_self_pid)
+                and not bool(mef_self_association_pid)
+                and bool(mef_other_pid)
+                and bool(mef_other_association_pid)
+            ):
+                # Delete entity from new MEF and add it to old MEF
+                ref = new_mef_record.pop(self.name)
+                new_mef_record.replace(
+                    data=new_mef_record, dbcommit=dbcommit, reindex=reindex
+                )
+                actions[new_mef_record.pid] = Action.DELETE_ENTITY
+                mef_associated_record[self.name] = ref
+                new_mef_record = mef_associated_record
 
             mef_record = new_mef_record.replace(
                 data=new_mef_record, dbcommit=dbcommit, reindex=reindex
