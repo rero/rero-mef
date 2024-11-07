@@ -205,3 +205,45 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
         "pid": "1",
         "type": "bf:Place",
     }
+
+    # test idref changes to other gnd
+    place_gnd_data["pid"] = "TEST2"
+    gnd_record_2 = PlaceGndRecord.create(
+        data=place_gnd_data, dbcommit=True, reindex=True, delete_pid=False
+    )
+    assert gnd_record_2.pid == "TEST2"
+    m_gnd_record_2, m_action = gnd_record_2.create_or_update_mef(
+        dbcommit=True, reindex=True
+    )
+    assert m_action == {"4": Action.CREATE}
+    assert m_gnd_record_2 == {
+        "$schema": "https://mef.rero.ch/schemas/places_mef/mef-place-v0.0.1.json",
+        "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/TEST2"},
+        "pid": "4",
+        "type": "bf:Place",
+    }
+
+    for identified_by in idref_record["identifiedBy"]:
+        if identified_by.get("source") == "GND":
+            identified_by["value"] = "(DE-101)TEST2"
+    idref_record = idref_record.update(data=idref_record, dbcommit=True, reindex=True)
+
+    PlaceMefRecord.flush_indexes()
+    m_idref_record, m_action = idref_record.create_or_update_mef(
+        dbcommit=True, reindex=True
+    )
+    assert m_action == {"1": Action.DELETE_ENTITY, "4": Action.UPDATE}
+    assert m_idref_record == {
+        "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
+        "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
+        "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/TEST2"},
+        "pid": "4",
+        "type": "bf:Place",
+    }
+    m_gnd_record = PlaceMefRecord.get_record_by_pid(m_gnd_record.pid)
+    assert m_gnd_record == {
+        "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
+        "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/TEST"},
+        "pid": "1",
+        "type": "bf:Place",
+    }
