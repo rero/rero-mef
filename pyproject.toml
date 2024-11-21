@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rero-mef"
-version = "0.16.0"
+version = "0.16.1"
 description = "Invenio digital library framework MEF."
 authors = ["RERO <software@rero.ch>"]
 license = "GNU Affero General Public License v3.0"
@@ -72,14 +72,13 @@ dojson = ">=1.4.0"
 # TODO: dojson problem = AttributeError: 'Group' object has no attribute 'resultcallback'
 click = "<8.1.0"
 
-## RERO ILS specific python modules
+## MEF specific python modules
 PyYAML = ">=5.3.1"
 ijson = ">=2.5.1"
+poethepoet = "*"
 # problem with marcxml `leader`
 pymarc = "<5.2.0"
 
-## RERO ILS specific python modules
-poethepoet = "*"
 # TODO: solve requires invenio-indexer (<2.0.0)
 rero-invenio-base = ">=0.2.0"
 sqlitedict = "^2.1.0"
