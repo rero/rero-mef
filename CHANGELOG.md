@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.16.1](https://github.com/rero/rero-mef/tree/v0.16.1) (2024-11-21)
+
+[Full Changelog](https://github.com/rero/rero-mef/compare/v0.16.0...v0.16.1)
+
+**Fixes:**
+* places, concepts: correct MEF creations/updates [\#175](https://github.com/rero/rero-mef/pull/175) (by @rerowep)
+* places, concepts: GND closeMatch corrections [\#174](https://github.com/rero/rero-mef/pull/174) (by @rerowep)
+
 ## [v0.16.0](https://github.com/rero/rero-mef/tree/v0.16.0) (2024-10-29)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.15.0...v0.16.0)
