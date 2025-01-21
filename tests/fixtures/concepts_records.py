@@ -18,9 +18,10 @@
 """Concepts records."""
 
 import pytest
-from utils import create_record
 
 from rero_mef.concepts import ConceptIdrefRecord, ConceptMefRecord, ConceptReroRecord
+
+from ..utils import create_record
 
 
 @pytest.fixture(scope="module")

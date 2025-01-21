@@ -20,10 +20,11 @@
 from os.path import dirname, join
 
 from click.testing import CliRunner
-from utils import create_and_login_monitoring_user
 
 from rero_mef.cli import create_or_update, delete, tokens_create
 from rero_mef.tasks import delete as task_delete
+
+from ..utils import create_and_login_monitoring_user
 
 
 def test_cli_access_token(app, client, script_info):

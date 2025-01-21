@@ -17,9 +17,9 @@
 
 """Test RERO auth contribution."""
 
-from places_helpers import trans_prep
-
 from rero_mef.marctojson.do_idref_places import Transformation
+
+from .places_helpers import trans_prep
 
 
 def test_idref_pid():

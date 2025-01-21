@@ -21,9 +21,10 @@ import json
 from datetime import datetime, timedelta, timezone
 
 from flask import url_for
-from utils import postdata
 
 from rero_mef.places import PlaceMefRecord
+
+from ..utils import postdata
 
 
 def test_view_places_mef(

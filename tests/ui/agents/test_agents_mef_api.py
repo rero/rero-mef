@@ -17,9 +17,9 @@
 
 """Test agents MEF api."""
 
-from utils import create_record
-
 from rero_mef.agents import AgentMefRecord
+
+from ...utils import create_record
 
 
 def test_get_all_pids_without_entities_and_viaf(app):

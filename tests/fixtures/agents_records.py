@@ -18,7 +18,6 @@
 """Agents records."""
 
 import pytest
-from utils import create_record
 
 from rero_mef.agents import (
     AgentGndRecord,
@@ -27,6 +26,8 @@ from rero_mef.agents import (
     AgentReroRecord,
     AgentViafRecord,
 )
+
+from ..utils import create_record
 
 
 @pytest.fixture(scope="module")

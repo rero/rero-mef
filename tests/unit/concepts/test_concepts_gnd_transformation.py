@@ -17,9 +17,9 @@
 
 """Test RERO auth contribution."""
 
-from concepts_helpers import trans_prep
-
 from rero_mef.marctojson.do_gnd_concepts import Transformation
+
+from .concepts_helpers import trans_prep
 
 
 def test_gnd_pid():

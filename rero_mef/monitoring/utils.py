@@ -16,9 +16,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Monitoring utilities."""
+from sqlalchemy import text
 
 
-DB_CONNECTION_COUNTS_QUERY = """
+DB_CONNECTION_COUNTS_QUERY = text(
+    """
         select
             max_conn, used, res_for_super,
             max_conn-used-res_for_super res_for_normal
@@ -38,9 +40,11 @@ DB_CONNECTION_COUNTS_QUERY = """
                 where name=$$max_connections$$
             ) t3
         """
+)
 
 
-DB_CONNECTION_QUERY = """
+DB_CONNECTION_QUERY = text(
+    """
         SELECT
             pid, application_name, client_addr, client_port, backend_start,
             xact_start, query_start,  wait_event, state, left(query, 64)
@@ -48,3 +52,4 @@ DB_CONNECTION_QUERY = """
             pg_stat_activity
         ORDER BY query_start DESC
     """
+)

@@ -21,9 +21,10 @@ import json
 from datetime import datetime, timedelta, timezone
 
 from flask import url_for
-from utils import postdata
 
 from rero_mef.agents import AgentMefRecord
+
+from ..utils import postdata
 
 
 def test_view_agents_mef(

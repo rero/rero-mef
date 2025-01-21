@@ -500,7 +500,7 @@ class ConceptPlaceRecord(EntityRecord):
                 return association_cls.get_record_by_pid(hit.pid)
 
     @property
-    def association_info(self):
+    def association_identifier(self):
         """Get associated record.
 
         Has to be overloaded in concept/place class.
@@ -515,7 +515,7 @@ class ConceptPlaceRecord(EntityRecord):
         :returns: MEF record, MEF action
         """
 
-        def mef_create(mef_cls, data, association_info, dbcommit, reindex):
+        def mef_create(mef_cls, data, association_identifier, dbcommit, reindex):
             """Crate MEF record."""
             mef_data = {
                 data.name: {
@@ -529,7 +529,7 @@ class ConceptPlaceRecord(EntityRecord):
             }
             if deleted := data.get("deleted"):
                 mef_data["deleted"] = deleted
-            if association_record := association_info.get("record"):
+            if association_record := association_identifier.get("record"):
                 ref = build_ref_string(
                     entity_type=RERO_ILS_ENTITY_TYPES[association_record["type"]],
                     entity_name=association_record.name,
@@ -576,7 +576,7 @@ class ConceptPlaceRecord(EntityRecord):
             mef_record, actions = mef_create(
                 mef_cls=association_info["mef_cls"],
                 data=self,
-                association_info=association_info,
+                association_identifier=association_info,
                 dbcommit=dbcommit,
                 reindex=reindex,
             )
@@ -625,7 +625,7 @@ class ConceptPlaceRecord(EntityRecord):
                     _, action = mef_create(
                         mef_cls=association_info["mef_cls"],
                         data=association_record,
-                        association_info={},
+                        association_identifier={},
                         dbcommit=dbcommit,
                         reindex=reindex,
                     )

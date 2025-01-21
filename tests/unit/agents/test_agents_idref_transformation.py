@@ -17,21 +17,21 @@
 
 """Test IDREF auth person."""
 
-from agents_helpers import trans_prep
+from .agents_helpers import trans_prep
 
 
 def test_idref_deleted():
     """Test deleted -> leader 6 == d."""
     xml_part_to_add = """
         <leader>     dx  a22     3  45  </leader>
-     """
+    """
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_deleted()
     assert "deleted" in trans.json
 
     xml_part_to_add = """
         <leader>     cx  a22     3  45  </leader>
-     """
+    """
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_deleted()
     assert not trans.json

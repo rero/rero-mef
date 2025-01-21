@@ -25,7 +25,6 @@ import pytest
 from click.testing import CliRunner
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PersistentIdentifier
-from utils import mock_response
 
 from rero_mef.agents import (
     Action,
@@ -36,6 +35,8 @@ from rero_mef.agents import (
 )
 from rero_mef.cli import init_oai_harvest_config
 from rero_mef.monitoring import Monitoring
+
+from ...utils import mock_response
 
 
 def test_get_pids_with_multiple_viaf(app, agent_viaf_record):
