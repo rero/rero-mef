@@ -21,10 +21,11 @@ import json
 import time
 
 from flask import url_for
-from utils import create_and_login_monitoring_user
 
 from rero_mef.agents.idref.api import AgentIdrefRecord
 from rero_mef.utils import get_timestamp, set_timestamp
+
+from ..utils import create_and_login_monitoring_user
 
 
 def test_monitoring_es_db_counts(client):

@@ -4,7 +4,7 @@ version = "0.16.2"
 description = "Invenio digital library framework MEF."
 authors = [{name = "RERO",email = "<software@rero.ch>"}]
 license = "GNU Affero General Public License v3.0"
-requires-python = ">= 3.9,<3.10"
+requires-python = ">= 3.9,<3.13"
 
 ## Python packages dependencies (order matters)
 #------------------------------------------------------------------------------
@@ -28,39 +28,38 @@ dependencies = [
     "uwsgitop (>=0.11)",
 
     "invenio-oaiharvester @ git+https://github.com/inveniosoftware/invenio-oaiharvester.git@v1.0.0a4",
-    "invenio-search [elasticsearch7] (>=2.1.0,<3.0.0)",
+    "invenio-search [elasticsearch7] (>=3.0.0,<4.0.0)",
 
     # Invenio core modules
-    "invenio-app (>=1.4.0,<2.0.0)",
-    "invenio-base (>=1.3.0,<2.0.0)",
-    "invenio-cache (>=1.3.0,<2.0.0)",
-    "invenio-celery (>=1.3.0,<2.0.0)",
+    "invenio-app (>=2.0.0,<3.0.0)",
+    "invenio-base (>=2.0.0,<3.0.0)",
+    "invenio-cache (>=2.0.0,<3.0.0)",
+    "invenio-celery (>=2.0.0,<3.0.0)",
     "invenio-config (>=1.0.3,<2.0.0)",
-    "invenio-i18n (>=2.0.0,<3.0.0)",
-    "invenio-db [postgresql] (>=1.1.0,<2.0.0)",
+    "invenio-i18n (>=3.0.0,<4.0.0)",
+    "invenio-db [postgresql] (>=2.0.0,<3.0.0)",
     # Invenio base bundle
-    "invenio-admin (>=1.4.0,<1.5.0)",
-    "invenio-assets (>=3.1.0,<4.0.0)",
-    "invenio-formatter (>=2.0.0,<3.0.0)",
-    "invenio-logging [sentry_sdk] (>=2.0.0,<3.0.0)",
+    "invenio-assets (>=4.0.0,<5.0.0)",
+    "invenio-formatter (>=3.0.0,<4.0.0)",
+    "invenio-logging [sentry] (>=4.0.0,<5.0.0)",
     "invenio-mail (>=2.0.0,<3.0.0)",
-    "invenio-rest (>=1.3.0,<2.0.0)",
-    "invenio-theme (>=3.0.0,<4.0.0)",
+    "invenio-rest (>=2.0.0,<3.0.0)",
+    "invenio-theme (>=4.0.0,<5.0.0)",
     # Invenio auth bundle
-    "invenio-access (>=3.0.0,<4.0.0)",
-    "invenio-accounts (>=5.0.0,<6.0.0)",
-    "invenio-oauth2server (>=2.0.0,<3.0.0)",
-    "invenio-oauthclient (>=4.0.0,<5.0.0)",
-    "invenio-userprofiles (>=3.0.0,<4.0.0)",
+    "invenio-access (>=4.0.0,<6.0.0)",
+    "invenio-accounts (>=6.0.0,<7.0.0)",
+    "invenio-oauth2server (>=3.0.0,<4.0.0)",
+    "invenio-oauthclient (>=5.0.0,<6.0.0)",
+    "invenio-userprofiles (>=4.0.0,<5.0.0)",
     # Invenio metadata bundle
-    "invenio-indexer (>=2.2.0,<3.0.0)",
-    "invenio-jsonschemas (>=1.1.4,<2.0.0)",
-    "invenio-oaiserver (>=2.2.0,<3.0.0)",
-    "invenio-pidstore (>=1.3.0,<2.0.0)",
-    "invenio-records-rest (>=2.2.0,<3.0.0)",
+    "invenio-indexer (>=3.0.0,<4.0.0)",
+    "invenio-jsonschemas (>=2.0.0,<3.0.0)",
+    "invenio-oaiserver (>=3.0.0,<4.0.0)",
+    "invenio-pidstore (>=2.0.0,<3.0.0)",
+    "invenio-records-rest (>=3.0.0,<4.0.0)",
     "invenio-records-ui (>=1.2.0,<2.0.0)",
-    "invenio-records (>=2.2.1,<3.0.0)",
-    #invenio-search-ui (>=2.4.0,<3.0.0)",
+    "invenio-records (>=3.0.0,<4.0.0)",
+    #invenio-search-ui (>=4.0.0,<5.0.0)",
     "python-dotenv (>=0.13.0)",
 
     ## MEF specific python modules
@@ -70,23 +69,23 @@ dependencies = [
     # problem with marcxml `leader`
     "pymarc (<5.2.0)",
 
-    # TODO: solve requires invenio-indexer (<2.0.0)
-    "rero-invenio-base (>=0.2.0)",
     "sqlitedict (==2.1.0)",
-    "setuptools (>=75.8.0,<76.0.0)",
+    "sentry-sdk",
+    "rero-invenio-base (>=0.3.1)",
+    "setuptools",
 ]
 
 [tool.poetry.group.dev.dependencies]
 ## Python packages development dependencies (order matters)
 #----------------------------------------------------------
 ## Default from Invenio
-pytest-invenio = ">=2.1.0,<3.0.0"
+pytest-invenio = ">=3.0.0,<4.0.0"
 pydocstyle = ">=6.1.1"
-pytest-black = ">=0.1.0"
+pytest-black = ">=0.4.0"
 pytest-black-ng = ">=0.4.0"
 Sphinx = ">=4.5.0"
 ## RERO ILS specific python packages
-safety = ">=1.8,<3.0.0"
+pip-audit = ">=2.8.0,<3.0.0"
 mock = ">=2.0.0"
 autoflake = ">=1.3.1"
 appnope = { version = "*", optional = true }
@@ -232,5 +231,4 @@ tests_debug = {cmd = "pytest -s -vv --no-cov", help = "pytest -s -vv --no-cov"}
 profile = "black"
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry>=2.0", "setuptools"]

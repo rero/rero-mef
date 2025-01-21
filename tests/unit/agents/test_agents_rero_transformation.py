@@ -17,7 +17,7 @@
 
 """Test RERO auth agent."""
 
-from agents_helpers import trans_prep
+from .agents_helpers import trans_prep
 
 
 def test_rero_identifier():
@@ -26,7 +26,7 @@ def test_rero_identifier():
         <datafield ind1=" " ind2=" " tag="035">
             <subfield code="a">A000070488</subfield>
         </datafield>
-     """
+    """
     trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_identifier()
     assert trans.json == {

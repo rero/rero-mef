@@ -23,7 +23,6 @@ import os
 
 import mock
 from sickle.response import OAIResponse
-from utils import mock_response
 
 from rero_mef.agents import Action, AgentGndRecord
 from rero_mef.agents.gnd.tasks import (
@@ -31,6 +30,8 @@ from rero_mef.agents.gnd.tasks import (
     save_records_from_dates,
 )
 from rero_mef.utils import add_oai_source, oai_get_last_run, oai_set_last_run
+
+from ..utils import mock_response
 
 
 def test_add_oai_source(app):

@@ -79,12 +79,12 @@ function db_init () {
     invenio users create -a admin@rero.ch --password administrator
     invenio users confirm admin@rero.ch
     invenio roles create -d 'Admins Group' admins
-    invenio access allow admin-access role admins
     invenio roles add admin@rero.ch admins
     # create new monitoring user
     invenio roles create -d 'Monitoring Group' monitoring
     invenio users create -a monitoring@rero.ch --password monitor
     invenio roles add admin@rero.ch monitoring
+    info_msg ""
     invenio roles add monitoring@rero.ch monitoring
     if [ -z ${INVENIO_RERO_ACCESS_TOKEN_MONITORING} ]
     then
@@ -114,20 +114,20 @@ function sample_load () {
 
     for ENTITY in aggnd aidref agrero
     do
-      info_msg "Importing ${ENTITY} records:"
-      dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY} -v
+        info_msg "Importing ${ENTITY} records:"
+        dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY} -v
     done
 
     for ENTITY in corero cidref cognd
     do
-      info_msg "Importing ${ENTITY} concept records:"
-      dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY} -v
+        info_msg "Importing ${ENTITY} concept records:"
+        dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY} -v
     done
 
     for ENTITY in pidref plgnd
     do
-      info_msg "Importing ${ENTITY} place records:"
-      dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY} -v
+        info_msg "Importing ${ENTITY} place records:"
+        dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY} -v
     done
     oai_init
 }

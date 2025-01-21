@@ -18,9 +18,10 @@
 """Places records."""
 
 import pytest
-from utils import create_record
 
 from rero_mef.places import PlaceGndRecord, PlaceIdrefRecord, PlaceMefRecord
+
+from ..utils import create_record
 
 
 @pytest.fixture(scope="module")

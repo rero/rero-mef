@@ -21,12 +21,12 @@ import pytest
 
 pytest_plugins = (
     "celery.contrib.pytest",
-    "fixtures.agents_data",
-    "fixtures.agents_records",
-    "fixtures.concepts_data",
-    "fixtures.concepts_records",
-    "fixtures.places_data",
-    "fixtures.places_records",
+    "tests.fixtures.agents_data",
+    "tests.fixtures.agents_records",
+    "tests.fixtures.concepts_data",
+    "tests.fixtures.concepts_records",
+    "tests.fixtures.places_data",
+    "tests.fixtures.places_records",
 )
 
 

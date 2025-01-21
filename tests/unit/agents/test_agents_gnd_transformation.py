@@ -19,10 +19,11 @@
 
 import os
 
-from agents_helpers import build_xml_record_file, trans_prep
 from pymarc import marcxml
 
 from rero_mef.marctojson.do_gnd_agent import Transformation
+
+from .agents_helpers import build_xml_record_file, trans_prep
 
 
 def test_no_person_or_organisation():

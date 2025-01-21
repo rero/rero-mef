@@ -21,9 +21,10 @@ import json
 from datetime import datetime, timedelta, timezone
 
 from flask import url_for
-from utils import postdata
 
 from rero_mef.concepts import ConceptMefRecord
+
+from ..utils import postdata
 
 
 def test_view_concepts_mef(
