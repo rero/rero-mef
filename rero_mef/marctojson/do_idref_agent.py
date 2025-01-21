@@ -82,7 +82,7 @@ def build_language_string_list_from_fields(
                 if isinstance(data, (list, set)):
                     data = subfields[code].join(data)
                 data = data.replace("\x98", "")
-                data = data.replace("\x9C", "")
+                data = data.replace("\x9c", "")
                 data = data.replace(",,", ",")
                 data = remove_trailing_punctuation(
                     data=data,

@@ -42,7 +42,7 @@ def process_records_from_dates(
     verbose=False,
     debug=False,
     viaf_online=False,
-    **kwargs
+    **kwargs,
 ):
     """Harvest multiple records from an OAI repo.
 

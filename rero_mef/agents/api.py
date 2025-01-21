@@ -126,19 +126,11 @@ class AgentRecord(EntityRecord):
                     old_pids.add(old_pid)
                     mef_actions[old_pid] = Action.DELETE
                 mef_record[self.name] = {"$ref": ref_string}
-                mef_record = mef_record.update(
-                    data=mef_record, dbcommit=dbcommit, reindex=reindex
-                )
-                mef_actions[mef_record.pid] = Action.UPDATE
-            elif mef_record.set_deleted():
-                mef_record = mef_record.update(
-                    data=mef_record, dbcommit=dbcommit, reindex=reindex
-                )
-                mef_actions[mef_record.pid] = Action.UPDATE
-            else:
-                if reindex:
-                    mef_record.reindex()
-                mef_actions[mef_record.pid] = Action.UPTODATE
+            mef_record.set_deleted()
+            mef_record = mef_record.update(
+                data=mef_record, dbcommit=dbcommit, reindex=reindex
+            )
+            mef_actions[mef_record.pid] = Action.UPDATE
         else:
             # No MEF record create one.
             mef_data = {self.name: {"$ref": ref_string}}

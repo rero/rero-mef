@@ -140,12 +140,12 @@ def test_create_mef_and_agents(
     actions = agent_viaf_record.create_mef_and_agents(dbcommit=True, reindex=True)
     assert actions == {
         "069774331": {
-            "MEF": {mef_pid: Action.UPTODATE},
+            "MEF": {mef_pid: Action.UPDATE},
             "action": Action.NOT_ONLINE,
             "source": "idref",
         },
         "12391664X": {
-            "MEF": {mef_pid: Action.UPTODATE},
+            "MEF": {mef_pid: Action.UPDATE},
             "action": Action.NOT_ONLINE,
             "source": "gnd",
         },
@@ -186,7 +186,7 @@ def test_create_mef_and_agents(
     actions = agent_viaf_record.create_mef_and_agents(dbcommit=True, reindex=True)
     assert actions == {
         "069774331": {
-            "MEF": {mef_pid: Action.UPTODATE},
+            "MEF": {mef_pid: Action.UPDATE},
             "action": Action.NOT_ONLINE,
             "source": "idref",
         },

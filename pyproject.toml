@@ -1,12 +1,11 @@
-[tool.poetry]
+[project]
 name = "rero-mef"
-version = "0.16.1"
+version = "0.16.2"
 description = "Invenio digital library framework MEF."
-authors = ["RERO <software@rero.ch>"]
+authors = [{name = "RERO",email = "<software@rero.ch>"}]
 license = "GNU Affero General Public License v3.0"
+requires-python = ">= 3.9,<3.10"
 
-[tool.poetry.dependencies]
-python = ">= 3.9, <3.10"
 ## Python packages dependencies (order matters)
 #------------------------------------------------------------------------------
 ## Note: poetry evaluates the package constraints from the top to the bottom
@@ -22,76 +21,68 @@ python = ">= 3.9, <3.10"
 ## when the python code will be executed a conflict exception will be raised.
 #------------------------------------------------------------------------------
 
-## Third party inven## Third party invenio modules used by RERO EBOOKS
-invenio-oaiharvester = { git = "https://github.com/inveniosoftware/invenio-oaiharvester.git", tag = "v1.0.0a4" }
-invenio-search = {version = ">=2.1.0,<3.0.0", extras = ["elasticsearch7"]}
+dependencies = [
+    ## Third party inven## Third party invenio modules used by RERO EBOOKS
+    "uwsgi (>=2.0)",
+    "uwsgi-tools (>=1.1.1)",
+    "uwsgitop (>=0.11)",
 
-# Invenio core modules
-invenio-app = ">=1.4.0,<2.0.0"
-invenio-base = ">=1.3.0,<2.0.0"
-invenio-cache = ">=1.1.1,<2.0.0"
-invenio-celery = ">=1.2.5,<2.0.0"
-invenio-config = ">=1.0.3,<2.0.0"
-invenio-i18n = ">=2.0.0,<3.0.0"
-invenio-db = {version = ">=1.1.0,<2.0.0", extras = ["postgresql"]}
-# Invenio base bundle
-invenio-admin = ">=1.4.0,<1.5.0"
-invenio-assets = ">=3.0.0,<4.0.0"
-invenio-formatter = ">=2.0.0,<3.0.0"
-invenio-logging = {version = ">=2.0.0,<3.0.0"}
-invenio-mail = ">=2.0.0,<3.0.0"
-invenio-rest = ">=1.3.0,<2.0.0"
-invenio-theme = ">=3.0.0,<4.0.0"
-# Invenio auth bundle
-invenio-access = ">=2.0.0,<3.0.0"
-invenio-accounts = ">=5.0.0,<5.1.0"
-invenio-oauth2server = ">=2.3.0,<3.0.0"
-invenio-oauthclient = ">=4.0.0,<5.0.0"
-invenio-userprofiles = ">=3.0.0,<4.0.0"
-# Invenio metadata bundle
-invenio-indexer = ">=2.2.0,<3.0.0"
-invenio-jsonschemas = ">=1.1.4,<2.0.0"
-invenio-oaiserver = ">=2.2.0,<3.0.0"
-invenio-pidstore = ">=1.3.0,<2.0.0"
-invenio-records-rest = ">=2.2.0,<3.0.0"
-invenio-records-ui = ">=1.2.0,<2.0.0"
-invenio-records = ">=2.1.0,<3.0.0"
-#invenio-search-ui = ">=2.4.0,<3.0.0"
-python-dotenv = ">=0.13.0"
+    "invenio-oaiharvester @ git+https://github.com/inveniosoftware/invenio-oaiharvester.git@v1.0.0a4",
+    "invenio-search [elasticsearch7] (>=2.1.0,<3.0.0)",
 
-# Default from Invenio
-lxml = ">=4.9.1"
-marshmallow = ">=3.0.0,<4.0.0"
-uwsgi = ">=2.0"
-uwsgi-tools = ">=1.1.1"
-uwsgitop = ">=0.11"
-# Pinned due to before_first_request deprecation https://flask.palletsprojects.com/en/2.2.x/api/#flask.Flask.before_first_request
-Flask = ">=2.2.0,<2.3.0"
-sentry-sdk = "<2.0.0"
-dojson = ">=1.4.0"
-# TODO: dojson problem = AttributeError: 'Group' object has no attribute 'resultcallback'
-click = "<8.1.0"
+    # Invenio core modules
+    "invenio-app (>=1.4.0,<2.0.0)",
+    "invenio-base (>=1.3.0,<2.0.0)",
+    "invenio-cache (>=1.3.0,<2.0.0)",
+    "invenio-celery (>=1.3.0,<2.0.0)",
+    "invenio-config (>=1.0.3,<2.0.0)",
+    "invenio-i18n (>=2.0.0,<3.0.0)",
+    "invenio-db [postgresql] (>=1.1.0,<2.0.0)",
+    # Invenio base bundle
+    "invenio-admin (>=1.4.0,<1.5.0)",
+    "invenio-assets (>=3.1.0,<4.0.0)",
+    "invenio-formatter (>=2.0.0,<3.0.0)",
+    "invenio-logging [sentry_sdk] (>=2.0.0,<3.0.0)",
+    "invenio-mail (>=2.0.0,<3.0.0)",
+    "invenio-rest (>=1.3.0,<2.0.0)",
+    "invenio-theme (>=3.0.0,<4.0.0)",
+    # Invenio auth bundle
+    "invenio-access (>=3.0.0,<4.0.0)",
+    "invenio-accounts (>=5.0.0,<6.0.0)",
+    "invenio-oauth2server (>=2.0.0,<3.0.0)",
+    "invenio-oauthclient (>=4.0.0,<5.0.0)",
+    "invenio-userprofiles (>=3.0.0,<4.0.0)",
+    # Invenio metadata bundle
+    "invenio-indexer (>=2.2.0,<3.0.0)",
+    "invenio-jsonschemas (>=1.1.4,<2.0.0)",
+    "invenio-oaiserver (>=2.2.0,<3.0.0)",
+    "invenio-pidstore (>=1.3.0,<2.0.0)",
+    "invenio-records-rest (>=2.2.0,<3.0.0)",
+    "invenio-records-ui (>=1.2.0,<2.0.0)",
+    "invenio-records (>=2.2.1,<3.0.0)",
+    #invenio-search-ui (>=2.4.0,<3.0.0)",
+    "python-dotenv (>=0.13.0)",
 
-## MEF specific python modules
-PyYAML = ">=5.3.1"
-ijson = ">=2.5.1"
-poethepoet = "*"
-# problem with marcxml `leader`
-pymarc = "<5.2.0"
+    ## MEF specific python modules
+    "PyYAML (>=5.3.1)",
+    "ijson (>=2.5.1)",
+    "poethepoet",
+    # problem with marcxml `leader`
+    "pymarc (<5.2.0)",
 
-# TODO: solve requires invenio-indexer (<2.0.0)
-rero-invenio-base = ">=0.2.0"
-sqlitedict = "^2.1.0"
-werkzeug = "<2.3.0"
-sqlalchemy-continuum = ">=1.3.12,<1.4.0"
+    # TODO: solve requires invenio-indexer (<2.0.0)
+    "rero-invenio-base (>=0.2.0)",
+    "sqlitedict (==2.1.0)",
+    "setuptools (>=75.8.0,<76.0.0)",
+]
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 ## Python packages development dependencies (order matters)
 #----------------------------------------------------------
 ## Default from Invenio
 pytest-invenio = ">=2.1.0,<3.0.0"
 pydocstyle = ">=6.1.1"
-pytest-black = ">=0.3.2"
+pytest-black = ">=0.1.0"
 pytest-black-ng = ">=0.4.0"
 Sphinx = ">=4.5.0"
 ## RERO ILS specific python packages
@@ -100,32 +91,32 @@ mock = ">=2.0.0"
 autoflake = ">=1.3.1"
 appnope = { version = "*", optional = true }
 
-[tool.poetry.plugins."console_scripts"]
+[project.entry-points."app.console_scripts"]
 rero-ils = "invenio_app.cli:cli"
 
-[tool.poetry.plugins."invenio_celery.tasks"]
+[project.entry-points."invenio_celery.tasks"]
 rero_mef = "rero_mef.tasks"
 agents = "rero_mef.agents.tasks"
 concepts = "rero_mef.concepts.tasks"
 places = "rero_mef.places.tasks"
 
 
-[tool.poetry.plugins."invenio_assets.webpack"]
+[project.entry-points."invenio_assets.webpack"]
 rero_mef_css = "rero_mef.theme.webpack:theme"
 
-[tool.poetry.plugins."invenio_base.apps"]
+[project.entry-points."invenio_base.apps"]
 rero-mef = "rero_mef.ext:REROMEFAPP"
 
-[tool.poetry.plugins."invenio_base.blueprints"]
+[project.entry-points."invenio_base.blueprints"]
 rero_mef = "rero_mef.theme.views:blueprint"
 
-[tool.poetry.plugins."invenio_config.module"]
+[project.entry-points."invenio_config.module"]
 rero_mef = "rero_mef.config"
 
-[tool.poetry.plugins."invenio_db.alembic"]
+[project.entry-points."invenio_db.alembic"]
 rero_mef = "rero_mef:alembic"
 
-[tool.poetry.plugins."invenio_db.models"]
+[project.entry-points."invenio_db.models"]
 mef = "rero_mef.agents.mef.models"
 viaf = "rero_mef.agents.viaf.models"
 agents_gnd = "rero_mef.agents.gnd.models"
@@ -139,7 +130,7 @@ places_mef = "rero_mef.places.mef.models"
 placets_idref = "rero_mef.places.idref.models"
 placets_gnd = "rero_mef.places.gnd.models"
 
-[tool.poetry.plugins."invenio_pidstore.minters"]
+[project.entry-points."invenio_pidstore.minters"]
 mef_id = "rero_mef.agents.mef.minters:mef_id_minter"
 viaf_id = "rero_mef.agents.viaf.minters:viaf_id_minter"
 agent_gnd_id = "rero_mef.agents.gnd.minters:gnd_id_minter"
@@ -153,7 +144,7 @@ place_mef_id = "rero_mef.places.mef.minters:mef_id_minter"
 place_idref_id = "rero_mef.places.idref.minters:idref_id_minter"
 place_gnd_id = "rero_mef.places.gnd.minters:gnd_id_minter"
 
-[tool.poetry.plugins."invenio_pidstore.fetchers"]
+[project.entry-points."invenio_pidstore.fetchers"]
 mef_id = "rero_mef.agents.mef.fetchers:mef_id_fetcher"
 viaf_id = "rero_mef.agents.viaf.fetchers:viaf_id_fetcher"
 agent_gnd_id = "rero_mef.agents.gnd.fetchers:gnd_id_fetcher"
@@ -167,7 +158,7 @@ place_mef_id = "rero_mef.places.mef.fetchers:mef_id_fetcher"
 place_idref_id = "rero_mef.places.idref.fetchers:idref_id_fetcher"
 place_gnd_id = "rero_mef.places.gnd.fetchers:gnd_id_fetcher"
 
-[tool.poetry.plugins."invenio_jsonschemas.schemas"]
+[project.entry-points."invenio_jsonschemas.schemas"]
 common = "rero_mef.jsonschemas"
 mef = "rero_mef.agents.mef.jsonschemas"
 viaf = "rero_mef.agents.viaf.jsonschemas"
@@ -182,7 +173,7 @@ places_mef = "rero_mef.places.mef.jsonschemas"
 places_idref = "rero_mef.places.idref.jsonschemas"
 places_gnd = "rero_mef.places.gnd.jsonschemas"
 
-[tool.poetry.plugins."invenio_search.mappings"]
+[project.entry-points."invenio_search.mappings"]
 mef = "rero_mef.agents.mef.mappings"
 viaf = "rero_mef.agents.viaf.mappings"
 agents_gnd = "rero_mef.agents.gnd.mappings"
@@ -196,7 +187,7 @@ places_mef = "rero_mef.places.mef.mappings"
 places_idref = "rero_mef.places.idref.mappings"
 places_gnd = "rero_mef.places.gnd.mappings"
 
-[tool.poetry.plugins."invenio_records.jsonresolver"]
+[project.entry-points."invenio_records.jsonresolver"]
 mef = "rero_mef.agents.mef.jsonresolvers.mef_resolver"
 viaf = "rero_mef.agents.viaf.jsonresolvers.viaf_resolver"
 agents_gnd = "rero_mef.agents.gnd.jsonresolvers.gnd_resolver"
@@ -210,21 +201,21 @@ places_mef = "rero_mef.places.mef.jsonresolvers.mef_resolver"
 places_idref = "rero_mef.places.idref.jsonresolvers.idref_resolver"
 places_gnd = "rero_mef.places.gnd.jsonresolvers.gnd_resolver"
 
-[tool.poetry.plugins."invenio_base.api_blueprints"]
+[project.entry-points."invenio_base.api_blueprints"]
 api_rero_mef = "rero_mef.theme.views:api_blueprint"
 api_monitoring = "rero_mef.monitoring.views:api_blueprint"
 api_blueprint = "rero_mef.views:api_blueprint"
 
-[tool.poetry.plugins."flask.commands"]
+[project.entry-points."flask.commands"]
 fixtures = "rero_mef.cli:fixtures"
 utils = "rero_mef.cli:utils"
 celery = "rero_mef.cli:celery"
 agents = "rero_mef.agents.cli:agents"
 monitoring = "rero_mef.monitoring.cli:monitoring"
 
-[tool.poetry.plugins."dojson.cli.rule"]
+[project.entry-points."dojson.cli.rule"]
 
-[tool.poetry.plugins."dojson.cli.dump"]
+[project.entry-points."dojson.cli.dump"]
 pjson = "rero_mef.dojson.utils:dump"
 
 [tool.poe.tasks]

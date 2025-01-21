@@ -934,11 +934,11 @@ def add_schema(record, entity):
 def create_csv_file(input_file, entity, pidstore, metadata):
     """Create entity CSV file to load."""
     count = 0
-    with open(input_file, "r", encoding="utf-8") as entity_file, open(
-        metadata, "w", encoding="utf-8"
-    ) as entity_metadata_file, open(
-        pidstore, "w", encoding="utf-8"
-    ) as entity_pids_file:
+    with (
+        open(input_file, "r", encoding="utf-8") as entity_file,
+        open(metadata, "w", encoding="utf-8") as entity_metadata_file,
+        open(pidstore, "w", encoding="utf-8") as entity_pids_file,
+    ):
 
         for record in ijson.items(entity_file, "item"):
             if entity == "viaf":
