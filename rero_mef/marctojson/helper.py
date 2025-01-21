@@ -1363,7 +1363,7 @@ def build_string_from_field(
             if isinstance(data, (list, set)):
                 data = subfields[code].join(data)
             data = data.replace("\x98", "")
-            data = data.replace("\x9C", "")
+            data = data.replace("\x9c", "")
             data = data.replace(",,", ",")
             data = remove_trailing_punctuation(
                 data=data,
