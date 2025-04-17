@@ -72,7 +72,7 @@ dependencies = [
     "sqlitedict (==2.1.0)",
     "sentry-sdk",
     "rero-invenio-base (>=0.3.1)",
-    "setuptools",
+    "setuptools"
 ]
 
 [tool.poetry.group.dev.dependencies]
