@@ -18,7 +18,7 @@
 """Test concepts api."""
 
 import os
-
+from copy import deepcopy
 from rero_mef.api import Action
 from rero_mef.concepts import (
     ConceptGndRecord,
@@ -167,7 +167,6 @@ def test_create_concept_frbnf_record(
 
     m_record, m_actions = gnd_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_actions == {m_record.pid: Action.UPDATE}
-
     assert m_record == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
         "gnd": {
@@ -297,6 +296,49 @@ def test_create_concept_frbnf_record(
             "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
         },
         "pid": m_record.pid,
+        "type": "bf:Topic",
+    }
+
+    # Add second GND with `FRBNF12352687` in close match
+    gnd_record_close_match = deepcopy(gnd_record)
+    gnd_record_close_match["pid"] = f"{gnd_record_close_match['pid']}_2"
+    match = gnd_record_close_match.pop("exactMatch")
+    gnd_record_close_match["closeMatch"] = match
+    gnd_record_close_match = ConceptGndRecord.create(
+        data=gnd_record_close_match, dbcommit=True, reindex=True
+    )
+    ConceptGndRecord.flush_indexes()
+    m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
+
+    assert m_actions == {m_record.pid: Action.UPDATE}
+    assert m_record == {
+        "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
+        "gnd": {
+            "$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_close['pid']}"
+        },
+        "idref": {
+            "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
+        },
+        "pid": f"{m_record.pid}",
+        "type": "bf:Topic",
+    }
+
+    # Change exact match to close match
+    match = gnd_record.pop("exactMatch")
+    gnd_record["closeMatch"] = match
+    gnd_record = ConceptGndRecord.create_or_update(
+        data=gnd_record, dbcommit=True, reindex=True
+    )
+    ConceptGndRecord.flush_indexes()
+    m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
+    mef_count = ConceptMefRecord.count()
+    assert m_actions == {m_record.pid: Action.UPDATE, str(mef_count): Action.CREATE}
+    assert m_record == {
+        "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
+        "idref": {
+            "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
+        },
+        "pid": f"{m_record.pid}",
         "type": "bf:Topic",
     }
 

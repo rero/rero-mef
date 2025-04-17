@@ -495,7 +495,7 @@ class ConceptPlaceRecord(EntityRecord):
                     f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
                     f"| {association_identifier}"
                 )
-            if query.count() == 1:
+            elif query.count() == 1:
                 hit = next(query.source("pid").scan())
                 return association_cls.get_record_by_pid(hit.pid)
 
