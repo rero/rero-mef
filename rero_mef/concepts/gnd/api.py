@@ -69,7 +69,7 @@ class ConceptGndRecord(ConceptRecord):
     def association_identifier(self):
         """Get associated identifier."""
         for match_type, max_count in current_app.config.get(
-            "RERO_MEF_PLACES_GND_MATCHES", {}
+            "RERO_MEF_CONCEPTS_GND_MATCHES", {}
         ).items():
             matches = self.get(match_type, [])
             match_count = 0
@@ -85,6 +85,48 @@ class ConceptGndRecord(ConceptRecord):
                         match_value = identified_by.get("value")
             if match_value and match_count <= max_count:
                 return match_value[:13]
+
+    def get_association_record(self, association_cls, association_search):
+        """Get associated record.
+
+        :params association_cls: Association class
+        :params association_search: Association search class.
+        :returns: Associated record.
+        """
+        if association_identifier := self.association_identifier:
+            # Test if my identifier is unique
+            exact_count = (
+                self.search()
+                .filter("term", exactMatch__identifiedBy__source="BNF")
+                .filter("term", exactMatch__identifiedBy__type="bf:Nbn")
+                .filter("term", exactMatch__identifiedBy__value=association_identifier)
+                .count()
+            )
+            if exact_count != 1:
+                # we have 0 or multiple exact matches
+                count = (
+                    self.search()
+                    .filter("term", _association_identifier=association_identifier)
+                    .count()
+                )
+                if count > 1:
+                    current_app.logger.error(
+                        f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
+                        f"| {association_identifier}"
+                    )
+                    return
+            # Get associated record
+            query = association_search().filter(
+                "term", _association_identifier=association_identifier
+            )
+            if query.count() > 1:
+                current_app.logger.error(
+                    f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
+                    f"| {association_identifier}"
+                )
+            elif query.count() == 1:
+                hit = next(query.source("pid").scan())
+                return association_cls.get_record_by_pid(hit.pid)
 
     @property
     def association_info(self):
