@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.16.2](https://github.com/rero/rero-mef/tree/v0.16.2) (2025-05-01)
+
+[Full Changelog](https://github.com/rero/rero-mef/compare/v0.16.1...v0.16.2)
+
+**Enhancements:**
+* concepts: MEF creation for one exact match [\#184](https://github.com/rero/rero-mef/pull/184) (by @rerowep)
+
+**Other changes:**
+* invenio: new version [\#180](https://github.com/rero/rero-mef/pull/180) (by @rerowep)
+* chore: update dependencies [\#179](https://github.com/rero/rero-mef/pull/179) (by @rerowep)
+
 ## [v0.16.1](https://github.com/rero/rero-mef/tree/v0.16.1) (2024-11-21)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.16.0...v0.16.1)
