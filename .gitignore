@@ -71,6 +71,9 @@ celerybeat-schedule
 # Environment variables
 .env
 
+# uv virtual enviroment
+.venv
+
 # VSCodium
 .vscode
 
