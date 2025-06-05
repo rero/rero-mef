@@ -57,7 +57,7 @@ set -e
 # Displays program name
 msg "PROGRAM: ${PROGRAM}"
 
-if ! options=$(getopt -o dsb -l -t deploy,ci -- "$@")
+if ! options=$(getopt -o ds -l -t deploy,ci -- "$@")
 then
     # something went wrong, getopt will put out an error message for us
     exit 1
@@ -86,33 +86,24 @@ done
 
 # uv is a mandatory condition to launch this program!
 if [[ -z "${VIRTUAL_ENV}" ]]; then
-  error_msg+exit "Error - Launch this script via uv command:\n\uv run ${PROGRAM}"
+  error_msg+exit "Error - Launch this script via uv command:\n\tuv run ${PROGRAM}"
 fi
 
 if $deploy ; then
   if ! $ci ; then
-      flags=("--no-dev")
+      flags=( "--no-group dev --group prod" )
   fi
-fi
-
-if ! $deploy ; then
+else
     if $ci ; then
         cmd="uv sync --upgrade"
     fi
 fi
 
-uv --version
-
+# BOOTSTRAP START
 # install the application and all the dependencies
-info_msg "Install with command: ${cmd} ${flags[@]}"
+flag="${flags[@]}"
+info_msg "Install with command: ${cmd} ${flag}"
 ${cmd} ${flags[@]}
-
-# # install the app itself
-# if ! $deploy ; then
-#     if $ci ; then
-#         poetry install
-#     fi
-# fi
 
 # build the web assets
 info_msg "Build web assets: collect"

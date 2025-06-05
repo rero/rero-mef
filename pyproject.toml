@@ -2,59 +2,57 @@
 name = "rero-mef"
 version = "0.16.2"
 description = "Invenio digital library framework MEF."
-authors = [{name = "RERO",email = "software@rero.ch"}]
+authors = [{name = "RERO+", email = "software@rero.ch"}]
 license = "AGPL-3.0"
 requires-python = ">= 3.9.2,<3.13"
 
 dependencies = [
-    ## Third party invenio modules used by RERO MEF
-    "uwsgi (>=2.0)",
-    "uwsgi-tools (>=1.1.1)",
-    "uwsgitop (>=0.11)",
     "invenio-oaiharvester @ git+https://github.com/inveniosoftware/invenio-oaiharvester.git@v1.0.0a4",
-    "invenio-search [elasticsearch7] (>=3.0.0,<4.0.0)",
+    "invenio-search [elasticsearch7] >=3.0.0,<4.0.0",
     # Invenio core modules
-    "invenio-app (>=2.0.0,<3.0.0)",
-    "invenio-base (>=2.0.0,<3.0.0)",
-    "invenio-cache (>=2.0.0,<3.0.0)",
-    "invenio-celery (>=2.0.0,<3.0.0)",
-    "invenio-config (>=1.0.3,<2.0.0)",
-    "invenio-i18n (>=3.0.0,<4.0.0)",
-    "invenio-db [postgresql] (>=2.0.0,<3.0.0)",
+    "invenio-app>=2.0.0,<3.0.0",
+    "invenio-base>=2.0.0,<3.0.0",
+    "invenio-cache>=2.0.0,<3.0.0",
+    "invenio-celery>=2.0.0,<3.0.0",
+    "invenio-config>=1.0.3,<2.0.0",
+    "invenio-i18n>=3.0.0,<4.0.0",
+    "invenio-db [postgresql] >=2.0.0,<3.0.0",
     # Invenio base bundle
-    "invenio-assets (>=4.0.0,<5.0.0)",
-    "invenio-formatter (>=3.0.0,<4.0.0)",
-    "invenio-logging [sentry] (>=4.0.0,<5.0.0)",
-    "invenio-mail (>=2.0.0,<3.0.0)",
-    "invenio-rest (>=2.0.0,<3.0.0)",
-    "invenio-theme (>=4.0.0,<5.0.0)",
+    "invenio-admin>=1.5.2,<2.0.0",
+    "invenio-assets>=4.0.0,<5.0.0",
+    "invenio-formatter>=3.0.0,<4.0.0",
+    "invenio-logging [sentry] >=4.0.0,<5.0.0",
+    "invenio-mail >=2.0.0,<3.0.0",
+    "invenio-rest >=2.0.0,<3.0.0",
+    "invenio-theme >=4.0.0,<5.0.0",
     # Invenio auth bundle
-    "invenio-access (>=4.0.0,<6.0.0)",
-    "invenio-accounts (>=6.0.0,<7.0.0)",
-    "invenio-oauth2server (>=3.0.0,<4.0.0)",
-    "invenio-oauthclient (>=5.0.0,<6.0.0)",
-    "invenio-userprofiles (>=4.0.0,<5.0.0)",
+    "invenio-access >=4.0.0,<6.0.0",
+    "invenio-accounts >=6.0.0,<7.0.0",
+    "invenio-oauth2server >=3.0.0,<4.0.0",
+    "invenio-oauthclient >=5.0.0,<6.0.0",
+    "invenio-userprofiles >=4.0.0,<5.0.0",
     # Invenio metadata bundle
-    "invenio-indexer (>=3.0.0,<4.0.0)",
-    "invenio-jsonschemas (>=2.0.0,<3.0.0)",
-    "invenio-oaiserver (>=3.0.0,<4.0.0)",
-    "invenio-pidstore (>=2.0.0,<3.0.0)",
-    "invenio-records-rest (>=3.0.0,<4.0.0)",
-    "invenio-records-ui (>=1.2.0,<2.0.0)",
-    "invenio-records (>=3.0.0,<4.0.0)",
-    #invenio-search-ui (>=4.0.0,<5.0.0)",
-    "python-dotenv (>=0.13.0)",
+    "invenio-indexer >=3.0.0,<4.0.0",
+    "invenio-jsonschemas >=2.0.0,<3.0.0",
+    # "invenio-oaiserver >=3.0.0,<4.0.0",
+    "invenio-pidstore >=2.0.0,<3.0.0",
+    "invenio-records-rest >=3.0.0,<4.0.0",
+    "invenio-records-ui >=1.2.0,<2.0.0",
+    "invenio-records >=3.0.0,<4.0.0",
+    # invenio-search-ui >=4.0.0,<5.0.0",
+    "python-dotenv >=0.13.0",
     ## MEF specific python modules
-    "PyYAML (>=5.3.1)",
-    "ijson (>=2.5.1)",
+    "PyYAML >=5.3.1",
+    "ijson >=2.5.1",
     "poethepoet",
     # problem with marcxml `leader`
-    "pymarc (<5.2.0)",
-
-    "sqlitedict (==2.1.0)",
-    "sentry-sdk",
-    "rero-invenio-base (>=0.3.1)",
-    "setuptools",
+    "pymarc<5.2.0",
+    "sqlitedict>=2.1.0",
+    "sentry-sdk<2.0.0",
+    "rero-invenio-base>=0.3.1",
+    "dojson>=1.7.0",
+    "setuptools>=80.9.0",
+    "flask-admin<2.0.0"
 ]
 
 [dependency-groups]
@@ -62,7 +60,12 @@ dev = [
     "pytest-invenio (>=3.0.0,<4.0.0)",
     "pip-audit (>=2.8.0,<3.0.0)",
     "mock>=2.0.0",
-    "ruff>=0.12.3",
+    "ruff>=0.12.5"
+]
+prod = [
+    "uwsgi>=2.0",
+    "uwsgi-tools>=1.1.1",
+    "uwsgitop>=0.11"
 ]
 
 [project.entry-points."app.console_scripts"]
