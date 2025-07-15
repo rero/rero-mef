@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2022 RERO
 #

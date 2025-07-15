@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -19,6 +17,7 @@
 
 import os
 from copy import deepcopy
+
 from rero_mef.api import Action
 from rero_mef.concepts import (
     ConceptGndRecord,
@@ -151,7 +150,7 @@ def test_create_concept_frbnf_record(
         "idref": {
             "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
         },
-        "pid": f"{mef_count+1}",
+        "pid": f"{mef_count + 1}",
         "type": "bf:Topic",
     }
 
@@ -175,7 +174,7 @@ def test_create_concept_frbnf_record(
         "idref": {
             "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
         },
-        "pid": f"{mef_count+1}",
+        "pid": f"{mef_count + 1}",
         "type": "bf:Topic",
     }
 
@@ -197,13 +196,13 @@ def test_create_concept_frbnf_record(
     # Create or update MEF record for IDREF.
     # We should update the old MEF IDREF record and recreate a new MEF GND record.
     m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
-    assert m_actions == {m_record.pid: Action.UPDATE, f"{mef_count+2}": Action.CREATE}
+    assert m_actions == {m_record.pid: Action.UPDATE, f"{mef_count + 2}": Action.CREATE}
     assert m_record == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
         "idref": {
             "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
         },
-        "pid": f"{mef_count+1}",
+        "pid": f"{mef_count + 1}",
         "type": "bf:Topic",
     }
 
@@ -234,7 +233,7 @@ def test_create_concept_frbnf_record(
     m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_actions == {
         m_record.pid: Action.UPDATE,
-        f"{mef_count+2}": Action.DELETE_ENTITY,
+        f"{mef_count + 2}": Action.DELETE_ENTITY,
     }
     assert m_record == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
@@ -244,7 +243,7 @@ def test_create_concept_frbnf_record(
         "gnd": {
             "$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_close['pid']}"
         },
-        "pid": f"{mef_count+1}",
+        "pid": f"{mef_count + 1}",
         "type": "bf:Topic",
     }
 
@@ -261,14 +260,14 @@ def test_create_concept_frbnf_record(
     m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_actions == {
         m_record.pid: Action.UPDATE,
-        f"{mef_count+3}": Action.CREATE,
+        f"{mef_count + 3}": Action.CREATE,
     }
     assert m_record == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
         "idref": {
             "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
         },
-        "pid": f"{mef_count+1}",
+        "pid": f"{mef_count + 1}",
         "type": "bf:Topic",
     }
 
@@ -285,7 +284,7 @@ def test_create_concept_frbnf_record(
     m_record, m_actions = gnd_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_actions == {
         m_record.pid: Action.UPDATE,
-        f"{mef_count+1}": Action.DELETE_ENTITY,
+        f"{mef_count + 1}": Action.DELETE_ENTITY,
     }
     assert m_record == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
@@ -374,6 +373,6 @@ def test_create_concept_frbnf_record_exact(
         "gnd": {
             "$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_exact['pid']}"
         },
-        "pid": f"{mef_count+1}",
+        "pid": f"{mef_count + 1}",
         "type": "bf:Topic",
     }

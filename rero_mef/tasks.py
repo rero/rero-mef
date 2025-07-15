@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -77,7 +75,7 @@ def create_or_update(
         id_type = "uuid:"
         rec_id = record.id
     if verbose:
-        msg = f"{idx:<10} {entity:<6} {id_type:<5} {rec_id:<25} " f"{agent_action.name}"
+        msg = f"{idx:<10} {entity:<6} {id_type:<5} {rec_id:<25} {agent_action.name}"
         if mef_record:
             for mef_pid, mef_action in mef_actions.items():
                 msg = f"{msg} | mef: {mef_pid} {mef_action.name}"

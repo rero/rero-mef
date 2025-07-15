@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -19,8 +17,8 @@
 
 import os
 from copy import deepcopy
+from unittest import mock
 
-import mock
 import pytest
 from click.testing import CliRunner
 from invenio_pidstore.errors import PIDDoesNotExistError
@@ -330,12 +328,10 @@ def test_create_mef_and_agents_online(
     oaisources = os.path.join(os.path.dirname(__file__), "../../data/oaisources.yml")
     res = runner.invoke(init_oai_harvest_config, [oaisources], obj=script_info)
     assert res.output.strip().split("\n") == [
-        "Add OAIHarvestConfig: "
-        "agents.gnd https://services.dnb.de/oai/repository Added",
-        "Add OAIHarvestConfig: " "agents.idref https://www.idref.fr/OAI/oai.jsp Added",
-        "Add OAIHarvestConfig: "
-        "concepts.idref https://www.idref.fr/OAI/oai.jsp Added",
-        "Add OAIHarvestConfig: " "places.idref https://www.idref.fr/OAI/oai.jsp Added",
+        "Add OAIHarvestConfig: agents.gnd https://services.dnb.de/oai/repository Added",
+        "Add OAIHarvestConfig: agents.idref https://www.idref.fr/OAI/oai.jsp Added",
+        "Add OAIHarvestConfig: concepts.idref https://www.idref.fr/OAI/oai.jsp Added",
+        "Add OAIHarvestConfig: places.idref https://www.idref.fr/OAI/oai.jsp Added",
     ]
     mock_get.return_value = mock_response(content="")
     mock_session_get.return_value = mock_response(content="")

@@ -1,4 +1,20 @@
-name: build
+
+# RERO MEF
+# Copyright (C) 2025 RERO.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+name: CI
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
@@ -6,7 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dependencies: ['development', 'deploy']
+        python-version: ["3.12"]
+        dependencies: ['dev', 'deploy']
     steps:
     - name: Cancel Previous Runs
       uses: styfle/cancel-workflow-action@0.12.0
@@ -23,27 +40,27 @@ jobs:
     - name: Docker compose up
       run: docker compose up -d
 
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v5
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
       with:
-        python-version: 3.12
+        enable-cache: true
+        cache-dependency-glob: uv.lock
 
-    - name: Install Poetry
-      uses: snok/install-poetry@v1
+    - name: Set up Python
+      run: uv python install ${{ matrix.python-version }}
 
     - name: Bootstrap
-      if: ${{ matrix.dependencies == 'development' }}
+      if: ${{ matrix.dependencies == 'dev' }}
       run: |
-        poetry run ./scripts/bootstrap --ci
-        pip install --upgrade coveralls
+        uv run ./scripts/bootstrap --ci
 
     - name: Bootstrap deploy
       if: ${{ matrix.dependencies == 'deploy' }}
       run: |
-        poetry run ./scripts/bootstrap --ci --deploy E2E=yes
+        uv run ./scripts/bootstrap --ci --deploy E2E=yes
 
     - name: Run Test
-      run: poetry run poe run_tests
+      run: uv run poe run_tests
 
     - name: Coveralls
       if: ${{ matrix.dependencies == 'development' }}

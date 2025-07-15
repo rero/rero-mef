@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -85,6 +83,7 @@ class ConceptGndRecord(ConceptRecord):
                         match_value = identified_by.get("value")
             if match_value and match_count <= max_count:
                 return match_value[:13]
+        return None
 
     def get_association_record(self, association_cls, association_search):
         """Get associated record.
@@ -114,7 +113,7 @@ class ConceptGndRecord(ConceptRecord):
                         f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
                         f"| {association_identifier}"
                     )
-                    return
+                    return None
             # Get associated record
             query = association_search().filter(
                 "term", _association_identifier=association_identifier
@@ -127,6 +126,7 @@ class ConceptGndRecord(ConceptRecord):
             elif query.count() == 1:
                 hit = next(query.source("pid").scan())
                 return association_cls.get_record_by_pid(hit.pid)
+        return None
 
     @property
     def association_info(self):

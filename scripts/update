@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -59,15 +57,15 @@ msg "PROGRAM: ${PROGRAM}"
 
 set -e
 
-# poetry is a mandatory condition to launch this program!
+# uv is a mandatory condition to launch this program!
 if [[ -z "${VIRTUAL_ENV}" ]]; then
-  error_msg+exit "Error - Launch this script via poetry command:\n\tpoetry run ${PROGRAM}"
+  error_msg+exit "Error - Launch this script via uv command:\n\tuv run ${PROGRAM}"
 fi
 
 script_path=$(dirname "$0")
 ./"$script_path"/bootstrap
 
-poetry run invenio  index create --verbose concepts_idref-idref-concept-v0.0.1 -b rero_mef/concepts/idref/mappings/v7/concepts_idref/idref-concept-v0.0.1.json
+uv run invenio  index create --verbose concepts_idref-idref-concept-v0.0.1 -b rero_mef/concepts/idref/mappings/v7/concepts_idref/idref-concept-v0.0.1.json
 invenio utils update_mapping
 invenio alembic upgrade
 

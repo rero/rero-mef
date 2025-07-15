@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -17,15 +15,13 @@
 
 """RERO MEF invenio module declaration."""
 
-from __future__ import absolute_import, print_function
-
 from invenio_indexer.signals import before_record_index
 
 from rero_mef.concepts.listener import enrich_concept_data
 from rero_mef.places.listener import enrich_place_data
 
 
-class REROMEFAPP(object):
+class REROMEFAPP:
     """rero-mef extension."""
 
     def __init__(self, app=None):

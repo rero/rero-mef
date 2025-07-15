@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -84,7 +82,7 @@ class ConceptIdrefRecord(ConceptRecord):
                     f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
                     f"| {association_identifier}"
                 )
-                return
+                return None
             # Get associated record
             query = association_search().filter(
                 "term", _association_identifier=association_identifier
@@ -116,6 +114,7 @@ class ConceptIdrefRecord(ConceptRecord):
             elif query.count() == 1:
                 hit = next(query.source("pid").scan())
                 return association_cls.get_record_by_pid(hit.pid)
+        return None
 
     @property
     def association_identifier(self):
@@ -132,6 +131,7 @@ class ConceptIdrefRecord(ConceptRecord):
                 )
             if pids:
                 return pids[-1]
+        return None
 
     @property
     def association_info(self):

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2022 RERO
 #
@@ -17,12 +15,9 @@
 
 """Persistent identifier fetchers."""
 
-
-from __future__ import absolute_import, print_function
-
 from functools import partial
 
-from .providers import PlaceIdrefProvider
 from ...fetchers import id_fetcher
+from .providers import PlaceIdrefProvider
 
 idref_id_fetcher = partial(id_fetcher, provider=PlaceIdrefProvider)

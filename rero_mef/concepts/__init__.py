@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -24,17 +22,17 @@ from .mef.api import ConceptMefIndexer, ConceptMefRecord, ConceptMefSearch
 from .rero.api import ConceptReroIndexer, ConceptReroRecord, ConceptReroSearch
 
 __all__ = (
+    "Action",
     "ConceptGndIndexer",
     "ConceptGndRecord",
     "ConceptGndSearch",
+    "ConceptIdrefIndexer",
+    "ConceptIdrefRecord",
+    "ConceptIdrefSearch",
     "ConceptMefIndexer",
     "ConceptMefRecord",
     "ConceptMefSearch",
     "ConceptReroIndexer",
     "ConceptReroRecord",
     "ConceptReroSearch",
-    "ConceptIdrefIndexer",
-    "ConceptIdrefRecord",
-    "ConceptIdrefSearch",
-    "Action",
 )

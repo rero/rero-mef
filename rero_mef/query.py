@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -16,8 +14,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Query factories for REST API."""
-
-from __future__ import absolute_import, print_function
 
 from elasticsearch_dsl.query import Q
 from flask import current_app, request
@@ -46,7 +42,7 @@ def and_search_factory(self, search, query_parser=None):
         search = search.query(query_parser(query_string))
     except SyntaxError:
         current_app.logger.debug(
-            f'Failed parsing query: {request.values.get("q", "")}',
+            f"Failed parsing query: {request.values.get('q', '')}",
             exc_info=True,
         )
         raise InvalidQueryRESTError()

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2021 RERO
 #
@@ -77,7 +75,7 @@ def init_entity_pids(input_directory, verbose):
                     length = number_records_in_file(file_name, "csv")
                     pids[name] = {}
                     progress = progressbar(
-                        items=open(file_name, "r"), length=length, verbose=verbose
+                        items=open(file_name), length=length, verbose=verbose
                     )
                     for line in progress:
                         pid = line.split("\t")[3]
@@ -120,14 +118,14 @@ def create_mef_files(
         base_url = current_app.config.get("RERO_MEF_APP_BASE_URL")
         schema = (
             f"{base_url}"
-            f'{current_app.config.get("JSONSCHEMAS_ENDPOINT")}'
-            f'{schemas["mef"]}'
+            f"{current_app.config.get('JSONSCHEMAS_ENDPOINT')}"
+            f"{schemas['mef']}"
         )
         # Create MEF with VIAF
         if verbose:
             click.echo(f"  Create MEF with VIAF pid: {viaf_metadata_file_name}")
         progress = progressbar(
-            items=open(str(viaf_metadata_file_name), "r", encoding="utf-8"),
+            items=open(str(viaf_metadata_file_name), encoding="utf-8"),
             length=number_records_in_file(viaf_metadata_file_name, "csv"),
             verbose=verbose,
         )
@@ -208,7 +206,7 @@ def create_viaf_files(
     with (
         open(viaf_pidstore_file_name, "w", encoding="utf-8") as viaf_pidstore,
         open(viaf_metadata_file_name, "w", encoding="utf-8") as viaf_metadata,
-        open(viaf_input_file_name, "r", encoding="utf-8") as viaf_in_file,
+        open(viaf_input_file_name, encoding="utf-8") as viaf_in_file,
     ):
         # get first viaf_pid
         row = viaf_in_file.readline()

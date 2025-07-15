@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -1272,7 +1270,7 @@ def nice_field(field, ctrl=False, tab=False):
     res = ""
     with contextlib.suppress(Exception):
         res = (
-            "tag[%s]\t%s" % (field.tag, nice_marc_field(field, ctrl, tab))
+            f"tag[{field.tag}]\t{nice_marc_field(field, ctrl, tab)}"
             if tab
             else f"tag[{field.tag}] {nice_marc_field(field, ctrl, tab)}"
         )
@@ -1304,7 +1302,7 @@ def nice_marc_field(field, ctrl=False, tab=False):
                     )
                 else:
                     if subfield[0] == "6":
-                        sub_data = "%-9s" % sub_data
+                        sub_data = f"{sub_data:9}"
                     if tab:
                         res += "\t$" + subfield[0] + "\t" + sub_data
                     else:
@@ -1325,7 +1323,6 @@ def nice_record(record, ctrl=False):
 
 def display_record(record, ctrl=False):
     """Displays the record pymarc like."""
-    print(nice_record(record, ctrl))
 
 
 def remove_trailing_punctuation(data, punctuation=",", spaced_punctuation=":;/-"):
@@ -1340,7 +1337,7 @@ def remove_trailing_punctuation(data, punctuation=",", spaced_punctuation=":;/-"
     in order to be removed.
     """
     return re.sub(
-        r"([{0}]|\s+[{1}])$".format(punctuation, spaced_punctuation), "", data.rstrip()
+        rf"([{punctuation}]|\s+[{spaced_punctuation}])$", "", data.rstrip()
     ).rstrip()
 
 
@@ -1353,7 +1350,7 @@ def build_string_from_field(
     the given separator is used as subfields delimiter.
     """
     if not field:
-        return
+        return None
     if not tag_grouping:
         tag_grouping = []
     grouping_data = []
@@ -1443,9 +1440,7 @@ def has_roman_number(string, befor="", after=""):
     """
     re_roman_number = re.compile(
         f"({befor}"
-        + r"M{0,3}(?:CM|CD|D?C{0,3})(?:XC|XL|L?X{0,3})(?:IX|IV|V?I{0,3})"
-        + after
-        + ")"
+        r"M{0,3}(?:CM|CD|D?C{0,3})(?:XC|XL|L?X{0,3})(?:IX|IV|V?I{0,3})" + after + ")"
     )
     roman_numbers = re_roman_number.findall(string)
     return [roman_number for roman_number in roman_numbers if roman_number]

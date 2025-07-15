@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -23,14 +21,14 @@ from .idref.api import PlaceIdrefIndexer, PlaceIdrefRecord, PlaceIdrefSearch
 from .mef.api import PlaceMefIndexer, PlaceMefRecord, PlaceMefSearch
 
 __all__ = (
-    "PlaceMefIndexer",
-    "PlaceMefRecord",
-    "PlaceMefSearch",
-    "PlaceIdrefIndexer",
-    "PlaceIdrefRecord",
-    "PlaceIdrefSearch",
+    "Action",
     "PlaceGndIndexer",
     "PlaceGndRecord",
     "PlaceGndSearch",
-    "Action",
+    "PlaceIdrefIndexer",
+    "PlaceIdrefRecord",
+    "PlaceIdrefSearch",
+    "PlaceMefIndexer",
+    "PlaceMefRecord",
+    "PlaceMefSearch",
 )

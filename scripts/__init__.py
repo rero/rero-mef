@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -30,5 +28,6 @@ import sys
 def run(prg_name, *args):  # python 3.7+, otherwise define each script manually
     def fn():
         # Replace current Python program by prg_name (same PID)
-        os.execvp(prg_name, [prg_name] + list(args) + sys.argv[1:])
+        os.execvp(prg_name, [prg_name, *list(args), *sys.argv[1:]])
+
     return fn

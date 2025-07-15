@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -45,7 +43,7 @@ RECORD_TYPES = {
 }
 
 
-class Transformation(object):
+class Transformation:
     """Transformation MARC21 to JSON for GND autority person."""
 
     def __init__(self, marc, logger=None, verbose=False, transform=True):
@@ -73,6 +71,7 @@ class Transformation(object):
         for field_075 in self.marc.get_fields("075") or []:
             if field_075.get("2") and field_075["2"] == "gndgen":
                 return RECORD_TYPES.get(field_075["b"])
+        return None
 
     def _transform(self):
         """Call the transformation functions."""
@@ -157,13 +156,14 @@ class Transformation(object):
         """Transformation language 377 $a."""
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_language")
-        if field_377 := self.marc.get_fields("377"):
-            if language_list := [
+        if (field_377 := self.marc.get_fields("377")) and (
+            language_list := [
                 language
                 for language in field_377[0].get_subfields("a")
                 if language in LANGUAGES
-            ]:
-                self.json_dict["language"] = language_list
+            ]
+        ):
+            self.json_dict["language"] = language_list
 
     def trans_gnd_pid(self):
         """Transformation pid from field 001."""
@@ -208,14 +208,13 @@ class Transformation(object):
             """Get date base on selector ('birth_date' or 'death_date')."""
             if "datx" in dates_per_tag and selector in dates_per_tag["datx"]:
                 return dates_per_tag["datx"][selector]
-            elif "datl" in dates_per_tag and selector in dates_per_tag["datl"]:
+            if "datl" in dates_per_tag and selector in dates_per_tag["datl"]:
                 return dates_per_tag["datl"][selector]
-            elif "datb" in dates_per_tag and selector in dates_per_tag["datb"]:
+            if "datb" in dates_per_tag and selector in dates_per_tag["datb"]:
                 return dates_per_tag["datb"][selector]
-            elif "100" in dates_per_tag and selector in dates_per_tag["100"]:
+            if "100" in dates_per_tag and selector in dates_per_tag["100"]:
                 return dates_per_tag["100"][selector]
-            else:
-                return None
+            return None
 
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_gnd_birth_and_death_dates")

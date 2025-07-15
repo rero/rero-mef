@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -16,7 +14,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """API for manipulating MEF records."""
-
 
 from copy import deepcopy
 from datetime import datetime, timezone
@@ -100,7 +97,7 @@ class EntityMefRecord(EntityRecord):
             mef_pids = mef_records if pid_only else [mef.pid for mef in mef_records]
             current_app.logger.error(
                 f"MULTIPLE MEF FOUND FOR: {entity_name} {entity_pid} | "
-                f'mef: {", ".join(mef_pids)}'
+                f"mef: {', '.join(mef_pids)}"
             )
         return mef_records
 
@@ -185,7 +182,7 @@ class EntityMefRecord(EntityRecord):
                         none_pids[record_type].append(mef_pid)
         # Get all entities pids and compare with MEF pids
         for record_type, info in entities.items():
-            click.echo(f'Get {info["name"]} ' f"MEF: {len(pids[record_type])}")
+            click.echo(f"Get {info['name']} MEF: {len(pids[record_type])}")
             progress = progressbar(
                 items=info["search"]
                 .params(preserve_order=True)

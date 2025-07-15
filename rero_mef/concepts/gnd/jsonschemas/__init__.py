@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -16,5 +14,3 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """JSON schemas."""
-
-from __future__ import absolute_import, print_function

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -132,7 +130,7 @@ def build_language_string_list_from_fields(
     return field_string_list
 
 
-class Transformation(object):
+class Transformation:
     """Transformation UNIMARC to JSON for IDREF autority person."""
 
     def __init__(self, marc, logger=None, verbose=False, transform=True):
@@ -221,13 +219,14 @@ class Transformation(object):
         """Transformation language 101 $a."""
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_idref_language")
-        if fields_101 := self.marc.get_fields("101"):
-            if language_list := [
+        if (fields_101 := self.marc.get_fields("101")) and (
+            language_list := [
                 language
                 for language in fields_101[0].get_subfields("a")
                 if language in LANGUAGES
-            ]:
-                self.json_dict["language"] = language_list
+            ]
+        ):
+            self.json_dict["language"] = language_list
 
     def trans_idref_pid(self):
         """Transformation pid from field 001."""
@@ -308,7 +307,7 @@ class Transformation(object):
         """Transformation biographical_information 300 $a 34x $a."""
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_idref_biographical_information")
-        tag_list = [300] + list(range(340, 349 + 1))  # 300, 340:349
+        tag_list = [300, *list(range(340, 349 + 1))]  # 300, 340:349
         biographical_information = []
         subfields = {"a": ", "}
         for tag in tag_list:

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -23,7 +21,7 @@ from .places_helpers import trans_prep
 
 
 def test_idref_pid():
-    """Test pid for 001"""
+    """Test pid for 001."""
     xml_part_to_add = """
         <controlfield tag="001">027227812</controlfield>
         <controlfield tag="008">Tg5</controlfield>
@@ -34,7 +32,7 @@ def test_idref_pid():
 
 
 def test_idref_identifier():
-    """Test identifier for person 003 033"""
+    """Test identifier for person 003 033."""
     xml_part_to_add = """
         <controlfield tag="008">Tg5</controlfield>
         <controlfield tag="003">http://www.idref.fr/027227812</controlfield>
@@ -63,7 +61,7 @@ def test_idref_identifier():
 
 
 def test_idref_authorized_access_point():
-    """Test authorized_access_point from field 215"""
+    """Test authorized_access_point from field 215."""
     xml_part_to_add = """
     <datafield tag="215" ind1=" " ind2=" ">
         <subfield code="7">ba0yba0y</subfield>
@@ -77,7 +75,7 @@ def test_idref_authorized_access_point():
 
 
 def test_idref_variant_access_point():
-    """Test variant_access_point from field 415"""
+    """Test variant_access_point from field 415."""
     xml_part_to_add = """
         <controlfield tag="008">Tg5</controlfield>
         <datafield tag="415" ind1=" " ind2=" ">
@@ -112,7 +110,7 @@ def test_idref_variant_access_point():
 
 
 def test_idref_relation():
-    """Test trans_idref_relation 515"""
+    """Test trans_idref_relation 515."""
     xml_part_to_add = """
         <controlfield tag="008">Tg5</controlfield>
         <datafield tag="515" ind1=" " ind2=" ">
@@ -155,7 +153,7 @@ def test_idref_classification():
 
 
 def test_idref_close_match():
-    """Test trans_idref_classification 822"""
+    """Test trans_idref_classification 822."""
     xml_part_to_add = """
         <controlfield tag="008">Tg5</controlfield>
         <datafield tag="822" ind1=" " ind2=" ">
@@ -217,7 +215,7 @@ def test_idref_close_match():
 
 
 def test_idref_notes():
-    """Test"""
+    """Test."""
     xml_part_to_add = """
         <controlfield tag="008">Tg5</controlfield>
         <datafield tag="810" ind1=" " ind2=" ">
@@ -253,7 +251,7 @@ def test_idref_notes():
             {
                 "label": [
                     "Grand Larousse universel",
-                    "Les langues du monde / M. Sala, I. Vintila-Radulescu, " "1984",
+                    "Les langues du monde / M. Sala, I. Vintila-Radulescu, 1984",
                 ],
                 "noteType": "dataSource",
             },

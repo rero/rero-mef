@@ -73,3 +73,5 @@ celerybeat-schedule
 
 # VSCodium
 .vscode
+
+.python-version

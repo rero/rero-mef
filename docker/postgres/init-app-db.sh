@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #

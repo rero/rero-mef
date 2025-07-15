@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2021 RERO
 #
@@ -16,7 +14,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Signals connector for Concepts."""
-
 
 from rero_mef.concepts import ConceptGndSearch, ConceptIdrefSearch
 from rero_mef.utils import make_identifier

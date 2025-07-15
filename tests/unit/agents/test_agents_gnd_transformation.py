@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -151,7 +149,7 @@ def test_gnd_gender_unknown():
 
 
 def test_gnd_gender_missing():
-    """Test gender 375 missing"""
+    """Test gender 375 missing."""
     xml_part_to_add = ""
     trans = trans_prep("gnd", xml_part_to_add)
     trans.trans_gnd_gender()
@@ -159,7 +157,7 @@ def test_gnd_gender_missing():
 
 
 def test_gnd_language():
-    """Test language of person 377 $a (language 3 characters) ISO 639-2b"""
+    """Test language of person 377 $a (language 3 characters) ISO 639-2b."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="377">
             <subfield code="a">fre</subfield>
@@ -172,7 +170,7 @@ def test_gnd_language():
 
 
 def test_gnd_language_missing():
-    """Test language of person 377 missing"""
+    """Test language of person 377 missing."""
     xml_part_to_add = ""
     trans = trans_prep("gnd", xml_part_to_add)
     trans.trans_gnd_language()
@@ -180,7 +178,7 @@ def test_gnd_language_missing():
 
 
 def test_gnd_identifier():
-    """Test identifier for person 001"""
+    """Test identifier for person 001."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="024">
             <subfield code="0">http://d-nb.info/gnd/100000193</subfield>
@@ -197,7 +195,7 @@ def test_gnd_identifier():
 
 
 def test_gnd_identifier_missing():
-    """Test identifier for person 001 missing"""
+    """Test identifier for person 001 missing."""
     xml_part_to_add = ""
     trans = trans_prep("gnd", xml_part_to_add)
     trans.trans_gnd_identifier()
@@ -205,7 +203,7 @@ def test_gnd_identifier_missing():
 
 
 def test_gnd_pid():
-    """Test pid for person"""
+    """Test pid for person."""
     xml_part_to_add = """
         <controlfield tag="001">118577166</controlfield>
      """
@@ -217,7 +215,7 @@ def test_gnd_pid():
 
 
 def test_gnd_establishment_termination_date():
-    """Test date of birth 100 $d YYYY-YYYY"""
+    """Test date of birth 100 $d YYYY-YYYY."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="d">1816-1855</subfield>
@@ -235,7 +233,7 @@ def test_gnd_establishment_termination_date():
 
 
 def test_gnd_birth_and_death_dates_year_birth_death():
-    """Test date of birth 100 $d YYYY-YYYY"""
+    """Test date of birth 100 $d YYYY-YYYY."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="d">1816-1855</subfield>
@@ -247,7 +245,7 @@ def test_gnd_birth_and_death_dates_year_birth_death():
 
 
 def test_gnd_birth_and_death_dates_year_birth():
-    """Test date of birth 100 $d YYYY-"""
+    """Test date of birth 100 $d YYYY-."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="d">1816-</subfield>
@@ -259,7 +257,7 @@ def test_gnd_birth_and_death_dates_year_birth():
 
 
 def test_gnd_birth_and_death_dates_year_death():
-    """Test date of birth 100 $d -YYYY"""
+    """Test date of birth 100 $d -YYYY."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="d">-1855</subfield>
@@ -271,7 +269,7 @@ def test_gnd_birth_and_death_dates_year_death():
 
 
 def test_gnd_birth_and_death_dates_year_date():
-    """Test date of birth 100 $d YYYYMMDD"""
+    """Test date of birth 100 $d YYYYMMDD."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="d">18551201</subfield>
@@ -283,7 +281,7 @@ def test_gnd_birth_and_death_dates_year_date():
 
 
 def test_gnd_birth_and_death_dates_birth_death_date():
-    """Test date of birth 548 $a DD.MM.YYYY-DD.MM.YYYY $4 datx"""
+    """Test date of birth 548 $a DD.MM.YYYY-DD.MM.YYYY $4 datx."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="548">
             <subfield code="a">06.06.1875-12.08.1955</subfield>
@@ -300,7 +298,7 @@ def test_gnd_birth_and_death_dates_birth_death_date():
 
 
 def test_gnd_birth_and_death_dates_birth_date_completed():
-    """Test date of birth 548 $a DD.MM.YYYY-DD.MM.YYYY $4 datx"""
+    """Test date of birth 548 $a DD.MM.YYYY-DD.MM.YYYY $4 datx."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="548">
             <subfield code="a">-26.11.1631</subfield>
@@ -317,7 +315,7 @@ def test_gnd_birth_and_death_dates_birth_date_completed():
 
 
 def test_gnd_birth_and_death_dates_birth():
-    """Test date of birth 548 $a DD.MM.YYYY- $4 datx"""
+    """Test date of birth 548 $a DD.MM.YYYY- $4 datx."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="548">
           <subfield code="a">06.06.1875-</subfield>
@@ -334,7 +332,7 @@ def test_gnd_birth_and_death_dates_birth():
 
 
 def test_gnd_birth_and_death_dates_death():
-    """Test date of birth 548 $a -DD.MM.YYYY $4 datx"""
+    """Test date of birth 548 $a -DD.MM.YYYY $4 datx."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="548">
           <subfield code="a">-12.08.1955</subfield>
@@ -351,7 +349,7 @@ def test_gnd_birth_and_death_dates_death():
 
 
 def test_gnd_birth_and_death_dates_missing():
-    """Test date of birth 100 AND 548 missing"""
+    """Test date of birth 100 AND 548 missing."""
     xml_part_to_add = ""
     trans = trans_prep("gnd", xml_part_to_add)
     trans.trans_gnd_birth_and_death_dates()
@@ -359,7 +357,7 @@ def test_gnd_birth_and_death_dates_missing():
 
 
 def test_gnd_conference():
-    """Test conference false: 075 $b = b true: 075 $b = f"""
+    """Test conference false: 075 $b = b true: 075 $b = f."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="075">
             <subfield code="b">b</subfield>
@@ -396,7 +394,7 @@ def test_gnd_conference():
 
 
 def test_gnd_biographical_information():
-    """Test biographical information 670 $abu"""
+    """Test biographical information 670 $abu."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="678">
             <subfield code="a">Dizionario Biografico (1960)</subfield>
@@ -418,7 +416,7 @@ def test_gnd_biographical_information():
 
 
 def test_gnd_biographical_information_missing():
-    """Test biographical information 678 missing"""
+    """Test biographical information 678 missing."""
     xml_part_to_add = ""
     trans = trans_prep("gnd", xml_part_to_add)
     trans.trans_gnd_biographical_information()
@@ -426,7 +424,7 @@ def test_gnd_biographical_information_missing():
 
 
 def test_gnd_preferred_name():
-    """Test Preferred Name for Person 100 $a"""
+    """Test Preferred Name for Person 100 $a."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="a">Bauer, Johann Gottfried</subfield>
@@ -438,7 +436,7 @@ def test_gnd_preferred_name():
 
 
 def test_gnd_preferred_name_organisation():
-    """Test Preferred Name for Organisation 110 $a"""
+    """Test Preferred Name for Organisation 110 $a."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="110">
             <subfield code="a">SBeurret Bailly Auktionen</subfield>
@@ -450,7 +448,7 @@ def test_gnd_preferred_name_organisation():
 
 
 def test_gnd_preferred_name_missing():
-    """Test Preferred Name for Person 100 $a missing"""
+    """Test Preferred Name for Person 100 $a missing."""
     xml_part_to_add = ""
     trans = trans_prep("gnd", xml_part_to_add)
     trans.trans_gnd_preferred_name()
@@ -458,7 +456,7 @@ def test_gnd_preferred_name_missing():
 
 
 def test_gnd_numeration():
-    """Test numeration for Person 100 $b"""
+    """Test numeration for Person 100 $b."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="b">II</subfield>
@@ -470,7 +468,7 @@ def test_gnd_numeration():
 
 
 def test_gnd_qualifier():
-    """Test numeration for Person 100 $c"""
+    """Test numeration for Person 100 $c."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="c">Jr.</subfield>
@@ -482,7 +480,7 @@ def test_gnd_qualifier():
 
 
 def test_gnd_variant_name():
-    """Test Variant Name for Person 400 $a"""
+    """Test Variant Name for Person 400 $a."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="400">
             <subfield code="a">Barbanson</subfield>
@@ -503,7 +501,7 @@ def test_gnd_variant_name():
 
 
 def test_gnd_variant_name_organisation():
-    """Test Variant Name for Person 410 $a"""
+    """Test Variant Name for Person 410 $a."""
     xml_part_to_add = """
         <datafield tag="410" ind1="2" ind2=" ">
             <subfield code="a">The Young Gods</subfield>
@@ -523,7 +521,7 @@ def test_gnd_variant_name_organisation():
 
 
 def test_gnd_variant_name_missing():
-    """Test Variant Name for Person 400 $a missing"""
+    """Test Variant Name for Person 400 $a missing."""
     xml_part_to_add = ""
     trans = trans_prep("gnd", xml_part_to_add)
     trans.trans_gnd_variant_name()
@@ -532,7 +530,7 @@ def test_gnd_variant_name_missing():
 
 
 def test_gnd_authorized_access_point():
-    """Test Authorized access point representing a person 100 $abcd"""
+    """Test Authorized access point representing a person 100 $abcd."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="a">Johannes Paul</subfield>
@@ -552,7 +550,7 @@ def test_gnd_authorized_access_point():
 
 
 def test_gnd_authorized_access_point_organisation():
-    """Test Authorized access point representing a person 100 $abcd"""
+    """Test Authorized access point representing a person 100 $abcd."""
     xml_part_to_add = """
         <datafield tag="110" ind1="2" ind2=" ">
             <subfield code="a">The Young Gods</subfield>
@@ -568,7 +566,7 @@ def test_gnd_authorized_access_point_organisation():
 
 
 def test_gnd_authorized_access_point_missing():
-    """Test Authorized access point representing a person 100 $abcd missing"""
+    """Test Authorized access point representing a person 100 $abcd missing."""
     xml_part_to_add = ""
     trans = trans_prep("gnd", xml_part_to_add)
     trans.trans_gnd_authorized_access_point()
@@ -576,7 +574,7 @@ def test_gnd_authorized_access_point_missing():
 
 
 def test_gnd_parallel_access_point():
-    """Test Authorized access point representing a person 100 $abcd"""
+    """Test Authorized access point representing a person 100 $abcd."""
     xml_part_to_add = """
         <datafield tag="700" ind1="1" ind2="7">
             <subfield code="a">Goethe, Johann Wolfgang von</subfield>
@@ -591,7 +589,7 @@ def test_gnd_parallel_access_point():
 
 
 def test_gnd_parallel_access_point_organisation():
-    """Test Authorized access point representing a person 100 $abcd"""
+    """Test Authorized access point representing a person 100 $abcd."""
     xml_part_to_add = """
         <datafield tag="710" ind1="1" ind2="7">
             <subfield code="a">Гёте, Йоҳанн Волфганг</subfield>

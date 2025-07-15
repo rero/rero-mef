@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -97,7 +95,7 @@ def test_monitoring_check_es_db_counts(app, client, agent_idref_data):
 
 
 def test_timestamps(app, client):
-    """Test timestamps"""
+    """Test timestamps."""
     time_stamp = set_timestamp("test", msg="test msg")
     assert get_timestamp("test") == {"time": time_stamp, "msg": "test msg"}
     res = client.get(url_for("api_monitoring.timestamps"))

@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -55,9 +53,9 @@ success_msg() {
 
 set -e
 
-# POETRY is a mandatory condition to launch this program!
+# uv is a mandatory condition to launch this program!
 if [[ -z "${VIRTUAL_ENV}" ]]; then
-  error_msg+exit "Error - Launch this script via poetry command:\n\tpoetry run ${PROGRAM}"
+  error_msg+exit "Error - Launch this script via uv command:\n\tuv run ${PROGRAM}"
 fi
 
 function db_init () {

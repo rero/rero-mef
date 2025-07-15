@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -81,7 +79,7 @@ class AgentRecord(EntityRecord):
         if len(viaf_records) > 1:
             current_app.logger.error(
                 f"MULTIPLE VIAF FOUND FOR: {self.name} {self.pid} | "
-                f'viaf: {", ".join([viaf.pid for viaf in viaf_records])}'
+                f"viaf: {', '.join([viaf.pid for viaf in viaf_records])}"
             )
         # get all VIAF associated MEF records.
         for viaf in viaf_records:
@@ -97,7 +95,7 @@ class AgentRecord(EntityRecord):
         if len(mef_records) > 1:
             current_app.logger.error(
                 f"MULTIPLE MEF FOUND FOR: {self.name} {self.pid} | "
-                f'mef: {", ".join([mef.pid for mef in mef_records])}'
+                f"mef: {', '.join([mef.pid for mef in mef_records])}"
             )
 
         ref_string = build_ref_string(

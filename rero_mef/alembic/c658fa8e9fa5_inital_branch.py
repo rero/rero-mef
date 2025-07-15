@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2022 RERO
 #
@@ -16,7 +14,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Inital branch."""
-
 
 # revision identifiers, used by Alembic.
 revision = "c658fa8e9fa5"

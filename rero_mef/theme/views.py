@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -17,8 +15,6 @@
 
 
 """Blueprint used for loading templates."""
-
-from __future__ import absolute_import, print_function
 
 from flask import Blueprint, render_template
 

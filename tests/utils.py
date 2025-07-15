@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2021 RERO
 #
@@ -18,10 +16,10 @@
 """Test utils."""
 
 import json
+from unittest.mock import Mock
 
 from flask import url_for
 from invenio_accounts.testutils import login_user_via_session
-from mock import Mock
 
 
 def create_record(cls, data, delete_pid=False):

@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -81,9 +79,9 @@ done
 set -e
 
 script_path=$(dirname "$0")
-# poetry is a mandatory condition to launch this program!
+# uv is a mandatory condition to launch this program!
 if [[ -z "${VIRTUAL_ENV}" ]]; then
-  error_msg+exit "Error - Launch this script via poetry command:\n\tpoetry run ${PROGRAM}"
+  error_msg+exit "Error - Launch this script via uv command:\n\tuv run ${PROGRAM}"
 fi
 
 export FLASK_DEBUG=True

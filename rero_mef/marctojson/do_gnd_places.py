@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -37,7 +35,7 @@ RECORD_TYPES = {
 }
 
 
-class Transformation(object):
+class Transformation:
     """Transformation MARC21 to JSON for GND autority place."""
 
     def __init__(self, marc, logger=None, verbose=False, transform=True):
@@ -64,6 +62,7 @@ class Transformation(object):
         for field_075 in self.marc.get_fields("075") or []:
             if field_075.get("2") and field_075["2"] == "gndgen":
                 return RECORD_TYPES.get(field_075["b"])
+        return None
 
     def _transform(self):
         """Call the transformation functions."""
@@ -132,9 +131,7 @@ class Transformation(object):
         for field_035 in self.marc.get_fields("035"):
             if field_035.get("a"):
                 subfield_a = field_035["a"]
-                if subfield_a.startswith("(DE-101)") or subfield_a.startswith(
-                    "(DE-588)"
-                ):
+                if subfield_a.startswith(("(DE-101)", "(DE-588)")):
                     self.json_dict.setdefault("identifiedBy", []).append(
                         {
                             "source": "GND",

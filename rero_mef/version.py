@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -20,7 +18,5 @@
 This file is imported by ``rero_mef.__init__``,
 and parsed by ``setup.py``.
 """
-
-from __future__ import absolute_import, print_function
 
 __version__ = "0.16.2"

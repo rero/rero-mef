@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -17,8 +15,6 @@
 
 """Simple test of version import."""
 
-from __future__ import absolute_import, print_function
-
 
 def test_version():
     """Test version import."""
@@ -28,4 +24,4 @@ def test_version():
 
 
 def test():
-    print(test)
+    """."""

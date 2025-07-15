@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -17,11 +15,9 @@
 
 """Identifier minters."""
 
-from __future__ import absolute_import, print_function, unicode_literals
-
 from functools import partial
 
-from .providers import AgentGndProvider
 from ...minters import id_minter
+from .providers import AgentGndProvider
 
 gnd_id_minter = partial(id_minter, provider=AgentGndProvider, recid_field="pid")

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -24,8 +22,7 @@ import pytest
 def place_idref_data():
     """Place IdRef data."""
     return {
-        "$schema": "https://mef.rero.ch/schemas/places_idref/"
-        "idref-place-v0.0.1.json",
+        "$schema": "https://mef.rero.ch/schemas/places_idref/idref-place-v0.0.1.json",
         "authorized_access_point": "Port-Valais (Suisse)",
         "bnf_type": "sujet Rameau",
         "classification": [
@@ -69,8 +66,7 @@ def place_idref_data():
 def place_idref_redirect_data():
     """Place IdRef data with redirect from."""
     return {
-        "$schema": "https://mef.rero.ch/schemas/places_idref/"
-        "idref-place-v0.0.1.json",
+        "$schema": "https://mef.rero.ch/schemas/places_idref/idref-place-v0.0.1.json",
         "authorized_access_point": "Port-Valais (Suisse)",
         "bnf_type": "sujet Rameau",
         "classification": [
@@ -115,7 +111,7 @@ def place_idref_redirect_data():
 def place_mef_idref_data():
     """Place MEF data with IdRef ref."""
     return {
-        "$schema": "https://mef.rero.ch/schemas/places_mef/" "mef-place-v0.0.1.json",
+        "$schema": "https://mef.rero.ch/schemas/places_mef/mef-place-v0.0.1.json",
         "deleted": "2022-09-03T07:07:32.545630+00:00",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
         "type": "bf:Place",
@@ -126,7 +122,7 @@ def place_mef_idref_data():
 def place_mef_idref_redirect_data():
     """Place MEF data with IdRef ref and redirect from."""
     return {
-        "$schema": "https://mef.rero.ch/schemas/places_mef/" "mef-place-v0.0.1.json",
+        "$schema": "https://mef.rero.ch/schemas/places_mef/mef-place-v0.0.1.json",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163x2"},
         "type": "bf:Place",
     }

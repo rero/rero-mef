@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2021 RERO
 #
@@ -16,8 +14,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Identifier minters."""
-
-from __future__ import absolute_import, print_function, unicode_literals
 
 from .providers import PlaceMefProvider
 

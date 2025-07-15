@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -16,8 +14,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Celery application for Invenio flavours."""
-
-from __future__ import absolute_import, print_function
 
 from dotenv import load_dotenv
 from flask_celeryext import create_celery_app

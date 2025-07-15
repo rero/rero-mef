@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2021 RERO
 #
@@ -140,9 +138,9 @@ class ConceptMefRecord(EntityMefRecord):
                 if concept_data.get("status"):
                     data.pop(concept)
                     current_app.logger.error(
-                        f'MEF replace refs {data.get("pid")} {concept}'
-                        f' status: {concept_data.get("status")}'
-                        f' {concept_data.get("message")}'
+                        f"MEF replace refs {data.get('pid')} {concept}"
+                        f" status: {concept_data.get('status')}"
+                        f" {concept_data.get('message')}"
                     )
                 else:
                     my_sources.append(concept)

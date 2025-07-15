@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -17,7 +15,6 @@
 
 """Views tests."""
 
-from __future__ import absolute_import, print_function
 
 # from flask import url_for
 
