@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -45,7 +43,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    command: poetry run uwsgi /invenio/var/instance/uwsgi_ui.ini
+    command: uv run uwsgi /invenio/var/instance/uwsgi_ui.ini
     image: rero-mef-web-ui
     ports:
       - "5000"
@@ -61,7 +59,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    command: poetry run uwsgi /invenio/var/instance/uwsgi_rest.ini
+    command: uv run uwsgi /invenio/var/instance/uwsgi_rest.ini
     image: rero-mef-web-api
     ports:
       - "5001"
@@ -78,7 +76,7 @@ services:
       file: docker-services.yml
       service: app
     restart: "always"
-    command: "poetry run celery -A rero_mef.celery worker --loglevel=INFO"
+    command: "uv run celery -A rero_mef.celery worker --loglevel=INFO"
     image: rero-mef-worker
     links:
       - cache
@@ -91,7 +89,7 @@ services:
       file: docker-services.yml
       service: app
     restart: "always"
-    command: "poetry run celery -A rero_mef.celery beat --loglevel=INFO"
+    command: "uv run celery -A rero_mef.celery beat --loglevel=INFO"
     image: rero-ils-beat
     links:
       - cache

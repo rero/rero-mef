@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -23,7 +21,7 @@ from .concepts_helpers import trans_prep
 
 
 def test_rero_identifier():
-    """Test identifier for person 035 016 679"""
+    """Test identifier for person 035 016 679."""
     xml_part_to_add = """
         <datafield tag="035" ind1=" " ind2=" ">
             <subfield code="a">A021029523</subfield>
@@ -52,7 +50,7 @@ def test_rero_identifier():
 
 
 def test_rero_bnf_type():
-    """Test bnf type"""
+    """Test bnf type."""
     xml_part_to_add = """
         <datafield tag="075" ind1=" " ind2=" ">
         <subfield code="a">Genre / Fiction</subfield>
@@ -65,7 +63,7 @@ def test_rero_bnf_type():
 
 
 def test_rero_authorized_access_point():
-    """Test authorized_access_point from field 150 155"""
+    """Test authorized_access_point from field 150 155."""
     xml_part_to_add = """
         <datafield tag="150" ind1=" " ind2=" ">
             <subfield code="a">
@@ -92,7 +90,7 @@ def test_rero_authorized_access_point():
 
 
 def test_rero_variant_access_point():
-    """Test variant_access_point from field 450 455"""
+    """Test variant_access_point from field 450 455."""
     xml_part_to_add = """
         <datafield tag="450" ind1=" " ind2=" ">
             <subfield code="a">
@@ -126,7 +124,7 @@ def test_rero_variant_access_point():
 
 
 def test_rero_relation():
-    """Test trans_rero_relation 550 555"""
+    """Test trans_rero_relation 550 555."""
     xml_part_to_add = """
         <datafield tag="550" ind1=" " ind2=" ">
           <subfield code="a">Bibliothèques - Services audiovisuels</subfield>
@@ -176,7 +174,7 @@ def test_rero_relation():
 
 
 def test_rero_classification():
-    """Test"""
+    """Test."""
     xml_part_to_add = """
         <datafield tag="072" ind1=" " ind2=" ">
           <subfield code="a">020 - Sciences de l'information</subfield>
@@ -196,7 +194,7 @@ def test_rero_classification():
 
 
 def test_rero_close_match():
-    """Test"""
+    """Test."""
     xml_part_to_add = """
         <datafield tag="682" ind1=" " ind2=" ">
           <subfield code="a">Public Libraries</subfield>
@@ -213,7 +211,7 @@ def test_rero_close_match():
 
 
 def test_rero_notes():
-    """Test"""
+    """Test."""
     xml_part_to_add = """
         <datafield tag="670" ind1=" " ind2=" ">
           <subfield code="a">
@@ -277,7 +275,7 @@ def test_rero_notes():
             },
             {"noteType": "dataNotFound", "label": ["Laval RVM (en ligne), 2004-11-23"]},
             {
-                "label": ["Mers profondément engagées dans la" " masse des continents"],
+                "label": ["Mers profondément engagées dans la masse des continents"],
                 "noteType": "general",
             },
             {"label": ["Note interne"], "noteType": "nonPublic"},
@@ -285,10 +283,9 @@ def test_rero_notes():
                 "label": [
                     "Voir le descripteur Opposition (science politique)",
                     "Combiner un des descripteurs Mouvements contestataires",
-                    "Voir les vedettes : Mouvements contestataires ; " "Opposition",
+                    "Voir les vedettes : Mouvements contestataires ; Opposition",
                     "Voir les vedettes du type : Antifascisme ; Mouvements",
-                    "Voir aux mouvements d'opposition particuliers, par ex. : "
-                    "Combat",
+                    "Voir aux mouvements d'opposition particuliers, par ex. : Combat",
                 ],
                 "noteType": "seeReference",
             },

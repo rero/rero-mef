@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2022 RERO
 #
@@ -27,9 +25,9 @@ from invenio_db import db
 from invenio_search import current_search_client
 from redis import Redis
 
+from ..permissions import monitoring_permission
 from .api import Monitoring
 from .utils import DB_CONNECTION_COUNTS_QUERY, DB_CONNECTION_QUERY
-from ..permissions import monitoring_permission
 
 api_blueprint = Blueprint("api_monitoring", __name__, url_prefix="/monitoring")
 

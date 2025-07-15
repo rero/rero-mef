@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -17,23 +15,21 @@
 
 """Click command-line interface for MEF record management."""
 
-from __future__ import absolute_import, print_function
-
 import os
 
 import click
 from flask.cli import with_appcontext
 
-from .mef.api import AgentMefRecord
-from .tasks import task_create_mef_and_agents_from_viaf
-from .utils import create_mef_files, create_viaf_files
-from .viaf.api import AgentViafRecord
 from ..utils import (
     get_entity_classes,
     number_records_in_file,
     progressbar,
     read_json_record,
 )
+from .mef.api import AgentMefRecord
+from .tasks import task_create_mef_and_agents_from_viaf
+from .utils import create_mef_files, create_viaf_files
+from .viaf.api import AgentViafRecord
 
 
 @click.group()
@@ -119,7 +115,7 @@ def create_from_viaf(
 
     if non_existing_pids:
         click.echo(f"Clean VIAF pids from MEF records: {len(non_existing_pids)}")
-        for pid, _ in non_existing_pids.items():
+        for pid in non_existing_pids:
             # TODO: clean MEF records with non existing VIAF pids:
             pass
 
@@ -130,14 +126,14 @@ def create_from_viaf(
         for name, agent_class in get_entity_classes(without_mef_viaf=False).items():
             counts[name]["new"] = agent_class.count()
         counts.pop("viaf", None)
-        msgs = [f'mef: {counts["mef"]["old"]}|{counts["mef"]["new"]}']
+        msgs = [f"mef: {counts['mef']['old']}|{counts['mef']['new']}"]
         counts.pop("mef", None)
         msgs.extend(
             f"{agent}: {value['old']}|{counts[agent]['new']}"
             for agent, value in counts.items()
         )
 
-        click.secho(f'COUNTS: {", ".join(msgs)}', fg="blue")
+        click.secho(f"COUNTS: {', '.join(msgs)}", fg="blue")
 
 
 @agents.command()

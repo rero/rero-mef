@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -30,7 +28,7 @@ __license__ = "Internal Use Only"
 class LoggerError:
     """Base class for errors in the Logger packages."""
 
-    class InvalidileName(Exception):
+    class InvalidNameError(Exception):
         """The given file name is not correct."""
 
 
@@ -62,7 +60,7 @@ class Logger:
         if log_master:
             self.logger.setLevel(log_level)
             formatter = logging.Formatter(
-                "%(id)9s" "\t%(levelname)8s" "\t%(error)25s" "\t%(message)s"
+                "%(id)9s\t%(levelname)8s\t%(error)25s\t%(message)s"
             )
             # create file handler logger
             if log_output_file is not None:
@@ -70,9 +68,9 @@ class Logger:
                     log_filehandler = logging.FileHandler(
                         log_output_file, mode="w", encoding="UTF-8"
                     )
-                except IOError:
-                    raise LoggerError.InvalidileName(
-                        "Output file: %s cannot be " "created." % log_output_file
+                except OSError:
+                    raise LoggerError.InvalidNameError(
+                        f"Output file: {log_output_file} cannot be created."
                     )
                 log_filehandler.setFormatter(formatter)
                 self.logger.addHandler(log_filehandler)
@@ -92,30 +90,30 @@ class Logger:
             self.logger.removeHandler(handler)
 
     # add id to logging
-    def _log_id(self, lvl, id, error, message):
+    def _log_id(self, lvl, id_, error, message):
         """Docstring."""
-        self.logger.log(lvl, message, extra={"id": id, "error": error})
+        self.logger.log(lvl, message, extra={"id": id_, "error": error})
 
     # with id---
-    def debug_id(self, id, error, message):
+    def debug_id(self, id_, error, message):
         """Docstring."""
-        self._log_id(logging.DEBUG, id, error, message)
+        self._log_id(logging.DEBUG, id_, error, message)
 
-    def info_id(self, id, error, message):
+    def info_id(self, id_, error, message):
         """Docstring."""
-        self._log_id(logging.INFO, id, error, message)
+        self._log_id(logging.INFO, id_, error, message)
 
-    def warning_id(self, id, error, message):
+    def warning_id(self, id_, error, message):
         """Docstring."""
-        self._log_id(logging.WARNING, id, error, message)
+        self._log_id(logging.WARNING, id_, error, message)
 
-    def error_id(self, id, error, message):
+    def error_id(self, id_, error, message):
         """Docstring."""
-        self._log_id(logging.ERROR, id, error, message)
+        self._log_id(logging.ERROR, id_, error, message)
 
-    def critical_id(self, id, error, message):
+    def critical_id(self, id_, error, message):
         """Docstring."""
-        self._log_id(logging.CRITICAL, id, error, message)
+        self._log_id(logging.CRITICAL, id_, error, message)
 
     # without id---
     def debug(self, error, message):

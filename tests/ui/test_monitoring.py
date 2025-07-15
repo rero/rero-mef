@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2021 RERO
 #
@@ -26,7 +24,6 @@ from rero_mef.monitoring.cli import es_db_counts_cli, es_db_missing_cli
 
 def test_monitoring(app, agent_idref_data, script_info):
     """Test monitoring."""
-
     cli_output = [
         "DB - ES    type      count                      index   count_es",
         "----------------------------------------------------------------",
@@ -70,7 +67,7 @@ def test_monitoring(app, agent_idref_data, script_info):
         "plmef": {"db": 0, "db-es": 0, "es": 0, "index": "places_mef"},
         "viaf": {"db": 0, "db-es": 0, "es": 0, "index": "viaf"},
     }
-    assert mon.__str__().split("\n") == cli_output + [""]
+    assert mon.__str__().split("\n") == [*cli_output, ""]
 
     runner = CliRunner()
     res = runner.invoke(es_db_missing_cli, ["aidref", "-d", 0], obj=script_info)
@@ -78,7 +75,8 @@ def test_monitoring(app, agent_idref_data, script_info):
 
     runner = CliRunner()
     res = runner.invoke(es_db_counts_cli, ["-m", "-d", 0], obj=script_info)
-    assert res.output.split("\n") == cli_output + [
+    assert res.output.split("\n") == [
+        *cli_output,
         "aidref: pids missing in ES:",
         "069774331",
         "",

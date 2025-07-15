@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -32,7 +30,7 @@ __license__ = "Internal Use Only"
 
 # ----------------------------------- Classes ---------------------------------
 # MrcIterator ----
-class Transformation(object):
+class Transformation:
     """Transformation skeleton for MARC to json."""
 
     def __init__(self, marc, logger=None, verbose=False, transform=True):

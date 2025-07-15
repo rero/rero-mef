@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2021 RERO
 #
@@ -46,13 +44,12 @@ def add_links(pid, record):
 # Nice to have direct working links in test server!
 def local_link(concept, name, record):
     """Change links to actual links."""
-    if name in record:
-        if ref := record[name].get("$ref"):
-            my_pid = ref.split("/")[-1]
-            url = url_for(
-                f"invenio_records_rest.{concept}_item", pid_value=my_pid, _external=True
-            )
-            record[name].update({"$ref": url})
+    if name in record and (ref := record[name].get("$ref")):
+        my_pid = ref.split("/")[-1]
+        url = url_for(
+            f"invenio_records_rest.{concept}_item", pid_value=my_pid, _external=True
+        )
+        record[name].update({"$ref": url})
 
 
 class ReroMefSerializer(JSONSerializer):
@@ -86,9 +83,7 @@ class ReroMefSerializer(JSONSerializer):
             if concept in ["corero", "cidref", "cognd"]:
                 local_link(concept, concept_classe.name, rec)
 
-        return super(ReroMefSerializer, self).serialize(
-            pid=pid, record=rec, links_factory=add_links, **kwargs
-        )
+        return super().serialize(pid=pid, record=rec, links_factory=add_links, **kwargs)
 
 
 _json = ReroMefSerializer(RecordSchemaJSONV1)

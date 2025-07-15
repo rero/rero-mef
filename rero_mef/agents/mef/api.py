@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -76,7 +74,7 @@ class AgentMefRecord(EntityMefRecord):
             verbose=verbose,
             label="VIAF all",
         )
-        missing_pids = {pid: 1 for pid in progress}
+        missing_pids = dict.fromkeys(progress, 1)
         if verbose:
             click.echo("Get pids from MEF and calculate missing ...")
         query = cls.search().filter("exists", field="viaf_pid")
@@ -155,9 +153,9 @@ class AgentMefRecord(EntityMefRecord):
                 if agent_data.get("status"):
                     data.pop(agent)
                     current_app.logger.error(
-                        f'MEF replace refs {data.get("pid")} {agent}'
-                        f' status: {agent_data.get("status")}'
-                        f' {agent_data.get("message")}'
+                        f"MEF replace refs {data.get('pid')} {agent}"
+                        f" status: {agent_data.get('status')}"
+                        f" {agent_data.get('message')}"
                     )
                 else:
                     my_sources.append(agent)

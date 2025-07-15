@@ -17,7 +17,7 @@
 Installation
 ============
 
-You need to install `poetry`, it will handle the virtual environment creation for the project
+You need to install `uv`, it will handle the virtual environment creation for the project
 in order to sandbox the Python environment, as well as manage the dependency installation,
 among other things.
 
@@ -50,7 +50,7 @@ build all static assets):
 
 .. code-block:: console
 
-    $ poetry run poe bootstrap
+    $ uv run poe bootstrap
 
 Next, create database tables, search indexes and message queues:
 
@@ -86,14 +86,14 @@ Run the test suite via the provided script:
 
 .. code-block:: console
 
-    $ poetry run poe run_tests
+    $ uv run poe run_tests
 
 By default, end-to-end tests are skipped. You can include the E2E tests like
 this:
 
 .. code-block:: console
 
-    $ env E2E=yes poetry run poe run_tests
+    $ env E2E=yes uv run poe run_tests
 
 For more information about end-to-end testing see `pytest-invenio
 <https://pytest-invenio.readthedocs.io/en/latest/usage.html#running-e2e-tests>`_
@@ -104,7 +104,7 @@ You can build the documentation with:
 
 .. code-block:: console
 
-    $ poetry run build_sphinx
+    $ uv run build_sphinx
 
 Production environment
 ----------------------

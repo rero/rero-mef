@@ -56,8 +56,6 @@ def upgrade():
             label=agent_cls.name,
             verbose=True,
         )
-        print("Process indexing: ...", end=" ", flush=True)
-        print(indexer.process_bulk_queue())
         ids = []
         for idx, hit in enumerate(progress_bar, 1):
             id_ = hit.meta.id
@@ -66,19 +64,13 @@ def upgrade():
             rec.pop("identifier", None)
             rec.update(data=rec, dbcommit=False, reindex=True)
             if idx % 1000 == 0:
-                print(f"  {idx} commit", end=" | ", flush=True)
                 db.session.commit()
-                print("indexing: ", end="", flush=True)
                 indexer.bulk_index(ids)
-                count = indexer.process_bulk_queue()
-                print(count)
+                indexer.process_bulk_queue()
                 ids = []
-        print(f"  {idx} commit", end=" | ", flush=True)
         db.session.commit()
-        print("indexing: ", end="", flush=True)
         indexer.bulk_index(ids)
-        count = indexer.process_bulk_queue()
-        print(count)
+        indexer.process_bulk_queue()
 
 
 def downgrade():
@@ -94,8 +86,6 @@ def downgrade():
             label=agent_cls.name,
             verbose=True,
         )
-        print("Process indexing: ...", end=" ", flush=True)
-        print(indexer.process_bulk_queue())
         ids = []
         for idx, hit in enumerate(progress_bar, 1):
             id_ = hit.meta.id
@@ -104,16 +94,10 @@ def downgrade():
             rec["identifier"] = f'"{url}{rec.pid}"'
             rec.update(data=rec, dbcommit=False, reindex=True)
             if idx % 1000 == 0:
-                print(f"  {idx} commit", end=" | ", flush=True)
                 db.session.commit()
-                print("indexing: ", end="", flush=True)
                 indexer.bulk_index(ids)
-                count = indexer.process_bulk_queue()
-                print(count)
+                indexer.process_bulk_queue()
                 ids = []
-        print(f"  {idx} commit", end=" | ", flush=True)
         db.session.commit()
-        print("indexing: ", end="", flush=True)
         indexer.bulk_index(ids)
-        count = indexer.process_bulk_queue()
-        print(count)
+        indexer.process_bulk_queue()

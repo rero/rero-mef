@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2022 RERO
 #
@@ -615,8 +613,7 @@ def agent_viaf_online_response():
                     "@count": "1",
                     "@tag": "951",
                     "sources": {"s": "BNF", "sid": "BNF|12544283"},
-                    "text": "Socie\\u0301te\\u0301 des gens de lettres de "
-                    "France Paris",
+                    "text": "Socie\\u0301te\\u0301 des gens de lettres de France Paris",
                 },
                 {
                     "@count": "1",
@@ -675,8 +672,7 @@ def agent_viaf_online_response():
                         "BNF|12544283",
                     ],
                 },
-                "text": "Congr\\u00e8s litt\\u00e9raire international "
-                "(1878 : Paris)",
+                "text": "Congr\\u00e8s litt\\u00e9raire international (1878 : Paris)",
             },
             "mainHeadingEl": [
                 {
@@ -768,8 +764,7 @@ def agent_viaf_online_response():
                         "@tag": "111",
                         "subfield": [
                             {
-                                "#text": "Congr\\u00e8s litt\\u00e9raire "
-                                "international",
+                                "#text": "Congr\\u00e8s litt\\u00e9raire international",
                                 "@code": "a",
                             },
                             {"#text": "(1878 :", "@code": "d"},
@@ -805,8 +800,7 @@ def agent_viaf_online_response():
                         "s": ["BNF", "BAV"],
                         "sid": ["BNF|12544283", "BAV|493_4879"],
                     },
-                    "text": "bureaux de la Socie\\u0301te\\u0301 des gens de "
-                    "lettres",
+                    "text": "bureaux de la Socie\\u0301te\\u0301 des gens de lettres",
                 },
                 {
                     "@count": "2",

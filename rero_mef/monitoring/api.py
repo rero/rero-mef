@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2022 RERO
 #
@@ -17,7 +15,6 @@
 
 """Monitoring utilities."""
 
-
 from datetime import datetime, timedelta, timezone
 
 import click
@@ -29,7 +26,7 @@ from invenio_search import RecordsSearch
 from ..utils import get_entity_class, get_mefs_endpoints, progressbar
 
 
-class Monitoring(object):
+class Monitoring:
     """Monitoring class.
 
     The main idea here is to check the consistency between the database and
@@ -56,17 +53,14 @@ class Monitoring(object):
             5. elasticsearch count
         """
         result = ""
-        msg_head = f'DB - ES  {"type":>6} {"count":>10}'
-        msg_head += f'  {"index":>25} {"count_es":>10}\n'
-        msg_head += f'{"":-^64s}\n'
+        msg_head = f"DB - ES  {'type':>6} {'count':>10}"
+        msg_head += f"  {'index':>25} {'count_es':>10}\n"
+        msg_head += f"{'':-^64s}\n"
 
         for doc_type, info in sorted(self.info().items()):
-            msg = (
-                f'{info.get("db-es", ""):>7}  {doc_type:>6} '
-                f'{info.get("db", ""):>10}'
-            )
+            msg = f"{info.get('db-es', ''):>7}  {doc_type:>6} {info.get('db', ''):>10}"
             if index := info.get("index", ""):
-                msg += f'  {index:>25} {info.get("es", ""):>10}'
+                msg += f"  {index:>25} {info.get('es', ''):>10}"
             result += msg + "\n"
         return msg_head + result
 
@@ -242,8 +236,7 @@ class Monitoring(object):
                 "ES": list(missing_in_es),
                 "ES duplicate": pids_es_double,
             }
-        else:
-            return {"ERROR": f"Document type not found: {doc_type}"}
+        return {"ERROR": f"Document type not found: {doc_type}"}
 
     def print_missing(self, doc_type):
         """Print missing pids for the given document type.

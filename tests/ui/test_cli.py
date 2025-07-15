@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -47,7 +45,7 @@ def test_cli_create_or_update_delete(app, script_info):
     outputs = res.output.strip().split("\n")
     assert outputs[0] == "Update records: aggnd"
     assert outputs[1] == (
-        "1          aggnd  pid:  00401653X" "                 CREATE | mef: 1 CREATE"
+        "1          aggnd  pid:  00401653X                 CREATE | mef: 1 CREATE"
     )
 
     aggnd_file_name = join(dirname(__file__), "../data/aggnd.json")

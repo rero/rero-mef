@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2021 RERO
 #
@@ -46,7 +44,7 @@ def add_links(pid, record):
             else:
                 links["mef"] = url
     viaf_url = current_app.config.get("RERO_MEF_VIAF_BASE_URL")
-    links["viaf.org"] = f"{viaf_url}/viaf/{str(viaf_pid)}"
+    links["viaf.org"] = f"{viaf_url}/viaf/{viaf_pid!s}"
     link_factory = default_links_factory_with_additional(links)
     return link_factory(pid)
 
@@ -54,13 +52,12 @@ def add_links(pid, record):
 # Nice to have direct working links in test server!
 def local_link(agent, name, record):
     """Change links to actual links."""
-    if name in record:
-        if ref := record[name].get("$ref"):
-            my_pid = ref.split("/")[-1]
-            url = url_for(
-                f"invenio_records_rest.{agent}_item", pid_value=my_pid, _external=True
-            )
-            record[name].update({"$ref": url})
+    if name in record and (ref := record[name].get("$ref")):
+        my_pid = ref.split("/")[-1]
+        url = url_for(
+            f"invenio_records_rest.{agent}_item", pid_value=my_pid, _external=True
+        )
+        record[name].update({"$ref": url})
 
 
 class ReroMefSerializer(JSONSerializer):
@@ -73,7 +70,7 @@ class ReroMefSerializer(JSONSerializer):
         :param record: Record instance.
         :param links_factory: Factory function for record links.
         """
-        return super(ReroMefSerializer, self).serialize(
+        return super().serialize(
             pid=pid, record=record, links_factory=add_links, **kwargs
         )
 

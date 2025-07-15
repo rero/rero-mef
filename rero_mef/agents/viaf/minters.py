@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -17,11 +15,9 @@
 
 """Identifier minters."""
 
-from __future__ import absolute_import, print_function, unicode_literals
-
 from functools import partial
 
-from .providers import ViafProvider
 from ...minters import id_minter
+from .providers import ViafProvider
 
 viaf_id_minter = partial(id_minter, provider=ViafProvider, recid_field="pid")

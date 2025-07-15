@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -15,8 +13,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 """Click command-line interface for MEF record management."""
-
-from __future__ import absolute_import, print_function
 
 import itertools
 import json
@@ -225,10 +221,10 @@ def marc_to_json(entity, marc_file, json_file, error_file, verbose):
     :param verbose: Verbose.
     """
     json_deleted_file_name = (
-        f"{os.path.splitext(json_file)[0]}" f"_deleted{os.path.splitext(json_file)[-1]}"
+        f"{os.path.splitext(json_file)[0]}_deleted{os.path.splitext(json_file)[-1]}"
     )
     click.secho(
-        f" Transform {entity} MARC to JSON. " f"{json_file} {json_deleted_file_name}",
+        f" Transform {entity} MARC to JSON. {json_file} {json_deleted_file_name}",
         err=True,
     )
     json_file = JsonWriter(json_file)
@@ -370,7 +366,7 @@ def load_csv(
 
     click.secho(
         "  Number of records in pidstore to load: "
-        f'{number_records_in_file(pidstore_file, "csv")}.',
+        f"{number_records_in_file(pidstore_file, 'csv')}.",
         fg="green",
         err=True,
     )
@@ -378,7 +374,7 @@ def load_csv(
 
     click.secho(
         f"  Number of records in metadata to load: "
-        f'{number_records_in_file(metadata_file, "csv")}.',
+        f"{number_records_in_file(metadata_file, 'csv')}.",
         fg="green",
         err=True,
     )
@@ -388,7 +384,7 @@ def load_csv(
     if ids_file:
         click.secho(
             "  Number of records in id to load: "
-            f'{number_records_in_file(ids_file, "csv")}',
+            f"{number_records_in_file(ids_file, 'csv')}",
             fg="green",
             err=True,
         )
@@ -488,7 +484,7 @@ def csv_to_json(csv_metadata_file, json_output_file, indent, verbose):
         for count, metadata_line in enumerate(progress_bar, 1):
             data = json.loads(metadata_line.split("\t")[3])
             if verbose:
-                click.echo(f'{count:<10}: {data["pid"]}\t{data}')
+                click.echo(f"{count:<10}: {data['pid']}\t{data}")
             output_file.write(data)
 
 
@@ -563,7 +559,7 @@ def csv_diff(
     if csv_metadata_file_compair:
         length = number_records_in_file(csv_metadata_file_compair, "csv")
         counts["compair"] = length
-        with open(csv_metadata_file_compair, "r", buffering=1) as meta_file:
+        with open(csv_metadata_file_compair, buffering=1) as meta_file:
             progress_bar = progressbar(
                 items=meta_file,
                 length=length,
@@ -593,7 +589,7 @@ def csv_diff(
                 compair_data[record.pid] = record
 
     db.session.close()
-    with open(csv_metadata_file, "r", buffering=1) as metadata_file:
+    with open(csv_metadata_file, buffering=1) as metadata_file:
         length = number_records_in_file(csv_metadata_file, "csv")
         counts["compair_to"] = length
         progress_bar = progressbar(
@@ -612,7 +608,7 @@ def csv_diff(
                     if verbose:
                         click.echo("DIFF: ")
                         click.echo(
-                            " old:\t" f"{json.dumps(existing_data, sort_keys=True)}"
+                            f" old:\t{json.dumps(existing_data, sort_keys=True)}"
                         )
                         click.echo(f" new:\t{json.dumps(data, sort_keys=True)}")
                     if output:
@@ -643,12 +639,12 @@ def csv_diff(
     if sqlite_dict:
         compair_data.close()
     click.echo(
-        f'Compair: {counts["compair"]} | '
-        f'Compair to: {counts["compair_to"]} || '
-        f'Changed: {counts["changed"]} | '
-        f'New: {counts["new"]} | '
-        f'Deleted: {counts["deleted"]} | '
-        f'Unchanged: {counts["unchanged"]} '
+        f"Compair: {counts['compair']} | "
+        f"Compair to: {counts['compair_to']} || "
+        f"Changed: {counts['changed']} | "
+        f"New: {counts['new']} | "
+        f"Deleted: {counts['deleted']} | "
+        f"Unchanged: {counts['unchanged']} "
     )
 
 
@@ -659,7 +655,7 @@ def csv_diff(
     "-m", "--metadataprefix", default="marc21", help="The prefix for the metadata"
 )
 @click.option(
-    "-s", "--setspecs", default="", help="The ‘set’ criteria for the harvesting"
+    "-s", "--setspecs", default="", help="The 'set' criteria for the harvesting"
 )
 @click.option("-c", "--comment", default="", help="Comment")
 @click.option("-u", "--update", is_flag=True, default=False, help="Update config")
@@ -1007,7 +1003,7 @@ def export(output_path, pid_type, verbose, indent, schema):
 @click.option(
     "--raise-on-error/--skip-errors",
     default=True,
-    help=("Controls if Elasticsearch bulk indexing" " errors raises an exception."),
+    help=("Controls if Elasticsearch bulk indexing errors raises an exception."),
 )
 @with_appcontext
 def run(
@@ -1187,7 +1183,7 @@ def reindex_missing(entities, verbose):
     """
     for entity in entities:
         click.secho(f"Reindex missing {entity} from ES.", fg="green")
-        entity_class = get_entity_class(entity)
+        get_entity_class(entity)
         pids_es, pids_db, pids_es_double, index = Monitoring().get_es_db_missing_pids(
             doc_type=entity, verbose=verbose
         )

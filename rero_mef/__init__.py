@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -17,9 +15,7 @@
 
 """RERO MEF."""
 
-from __future__ import absolute_import, print_function
-
 from .ext import REROMEFAPP
 from .version import __version__
 
-__all__ = ("__version__", "REROMEFAPP")
+__all__ = ("REROMEFAPP", "__version__")

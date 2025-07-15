@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2021 RERO
 #
@@ -51,7 +49,7 @@ class ReroMefSerializer(JSONSerializer):
         :param record: Record instance.
         :param links_factory: Factory function for record links.
         """
-        return super(ReroMefSerializer, self).serialize(
+        return super().serialize(
             pid=pid, record=record, links_factory=add_links, **kwargs
         )
 

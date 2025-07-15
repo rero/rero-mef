@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2022 RERO
 #
@@ -17,14 +15,15 @@
 
 """Agents."""
 
+from ..api import Action
 from .gnd.api import AgentGndIndexer, AgentGndRecord, AgentGndSearch
 from .idref.api import AgentIdrefIndexer, AgentIdrefRecord, AgentIdrefSearch
 from .mef.api import AgentMefIndexer, AgentMefRecord, AgentMefSearch
 from .rero.api import AgentReroIndexer, AgentReroRecord, AgentReroSearch
 from .viaf.api import AgentViafIndexer, AgentViafRecord, AgentViafSearch
-from ..api import Action
 
 __all__ = (
+    "Action",
     "AgentGndIndexer",
     "AgentGndRecord",
     "AgentGndSearch",
@@ -40,5 +39,4 @@ __all__ = (
     "AgentViafIndexer",
     "AgentViafRecord",
     "AgentViafSearch",
-    "Action",
 )

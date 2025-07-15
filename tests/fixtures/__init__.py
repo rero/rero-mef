@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -29,6 +27,6 @@ class FixturesEngine:
         """Run the fixtures loading."""
         dir_ = Path(__file__).parent
         app_data_folder = Path(current_app.instance_path) / "app_data"
-        app_pages_folder = app_data_folder / "pages"
-        data_folder = dir_ / "data"
-        pages_folder = dir_ / "pages"
+        app_data_folder / "pages"
+        dir_ / "data"
+        dir_ / "pages"

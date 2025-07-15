@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -104,9 +102,9 @@ class PlaceMefRecord(EntityMefRecord):
                 if place_data.get("status"):
                     data.pop(place)
                     current_app.logger.error(
-                        f'MEF replace refs {data.get("pid")} {place}'
-                        f' status: {place_data.get("status")}'
-                        f' {place_data.get("message")}'
+                        f"MEF replace refs {data.get('pid')} {place}"
+                        f" status: {place_data.get('status')}"
+                        f" {place_data.get('message')}"
                     )
                 else:
                     my_sources.append(place)

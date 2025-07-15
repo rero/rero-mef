@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -17,13 +15,12 @@
 
 """Marctojsons transformer for RERO records."""
 
-
 import re
 
 from rero_mef.marctojson.helper import build_string_list_from_fields
 
 
-class Transformation(object):
+class Transformation:
     """Transformation MARC21 to JSON for RERO autority person."""
 
     def __init__(self, marc, logger=None, verbose=False, transform=True):

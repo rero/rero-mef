@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2022 RERO
 #
@@ -63,17 +61,17 @@ def es_db_counts_cli(missing, delay):
     """
     missing_doc_types = []
     mon = Monitoring(time_delta=delay)
-    msg_head = f'DB - ES  {"type":>6} {"count":>10}'
-    msg_head += f'  {"index":>25} {"count_es":>10}\n'
-    msg_head += f'{"":-^64s}'
+    msg_head = f"DB - ES  {'type':>6} {'count':>10}"
+    msg_head += f"  {'index':>25} {'count_es':>10}\n"
+    msg_head += f"{'':-^64s}"
     click.echo(msg_head)
     info = mon.info(with_deleted=False, difference_db_es=False)
     for doc_type in sorted(info):
         db_es = info[doc_type].get("db-es", "")
-        msg = f'{db_es:>7}  {doc_type:>6} {info[doc_type].get("db", ""):>10}'
+        msg = f"{db_es:>7}  {doc_type:>6} {info[doc_type].get('db', ''):>10}"
         index = info[doc_type].get("index", "")
         if index:
-            msg += f'  {index:>25} {info[doc_type].get("es", ""):>10}'
+            msg += f"  {index:>25} {info[doc_type].get('es', ''):>10}"
         if db_es not in [0, ""]:
             click.secho(msg, fg="red")
         else:
@@ -104,7 +102,7 @@ def mef_counts_cli(delay):
     5. MEF count
     """
     mon = Monitoring(time_delta=delay)
-    msg_head = f'MEF - DB  {"type":>6} {"DB":>10}  {"MEF":>10}'
+    msg_head = f"MEF - DB  {'type':>6} {'DB':>10}  {'MEF':>10}"
     click.echo(msg_head)
     for entity, data in mon.check_mef().items():
         mef_db = data.get("mef-db", "")
@@ -168,7 +166,7 @@ def db_connection_counts():
     except Exception as error:
         click.secho(f"ERROR: {error}", fg="red")
     return click.secho(
-        f"max: {max_conn}, used: {used}, " f"res_super: {res_for_super}, free: {free}"
+        f"max: {max_conn}, used: {used}, res_super: {res_for_super}, free: {free}"
     )
 
 

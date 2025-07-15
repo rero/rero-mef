@@ -37,7 +37,7 @@ def upgrade():
 
     Delete all remaining bf:Agents from agents in database.
     """
-    for agent, name in agents.items():
+    for agent in agents:
         agent_class = get_entity_class(agent)
 
         count = agent_class.model_cls.query.filter(
@@ -56,7 +56,7 @@ def downgrade():
 
     Adds bf:Agents to agents in database.
     """
-    for agent, name in agents.items():
+    for agent in agents:
         agent_class = get_entity_class(agent)
 
         count = agent_class.model_cls.query.filter(

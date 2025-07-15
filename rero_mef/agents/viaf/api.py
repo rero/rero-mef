@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -101,10 +99,10 @@ class AgentViafRecord(EntityRecord):
         # 'EGAXA': 'egaxa',  # Library of Alexandria, Egypt
         # 'BAV': 'bav',  # Vatican Library
         # 'CAOONL': 'caoonl',  # Library and Archives Canada/PFAN
-        # 'JPG': 'jpg',  # Union List of Artist Names [Getty Research Institute]  # noqa
+        # 'JPG': 'jpg',  # Union List of Artist Names [Getty Research Institute]
         # 'NUKAT': 'nukat',  # NUKAT Center of Warsaw University Library
         # 'NSZL': 'NSZL',  # National Széchényi Library, Hungary
-        # 'VLACC': 'vlacc',  # Flemish Public Libraries National Library of Russia  # noqa
+        # 'VLACC': 'vlacc',  # Flemish Public Libraries National Library of Russia
         # 'NTA': 'nta',  # National Library of Netherlands
         # 'BIBSYS': 'bibsys',  # BIBSYS
         # 'GRATEVE': 'grateve',  # National Library of Greece
@@ -133,8 +131,8 @@ class AgentViafRecord(EntityRecord):
         # 'FAST': 'fast',  # FAST Subjects
         # 'ERRR': 'errr',  # National Library of Estonia
         # 'UIY': 'uiy',  # National and University Library of Iceland (NULI)
-        # 'NYNYRILM': 'nynyrilm',  # Repertoire International de Litterature Musicale, Inc. (RILM)  # noqa
-        # 'DE663': 'de663',  # International Inventory of Musical Sources (RISM)  # noqa
+        # 'NYNYRILM': 'nynyrilm',  # Repertoire International de Litterature Musicale, Inc. (RILM)
+        # 'DE663': 'de663',  # International Inventory of Musical Sources (RISM)
         # 'SIMACOB': 'simacob',  # NUK/COBISS.SI, Slovenia
         # 'LIH': 'lih',  # National Library of Lithuania
         # 'SKMASNL': 'skmasnl',  # Slovak National Library
@@ -157,7 +155,7 @@ class AgentViafRecord(EntityRecord):
     def filters(cls):
         """Filters for sources."""
         return {
-            source["name"]: exists_filter(f'{source["name"]}_pid')
+            source["name"]: exists_filter(f"{source['name']}_pid")
             for source in cls.sources.values()
         }
 
@@ -165,9 +163,7 @@ class AgentViafRecord(EntityRecord):
     def aggregations(cls):
         """Aggregations for sources."""
         return {
-            source["name"]: dict(
-                filter=dict(exists=dict(field=f'{source["name"]}_pid'))
-            )
+            source["name"]: {"filter": {"exists": {"field": f"{source['name']}_pid"}}}
             for source in cls.sources.values()
         }
 
@@ -361,7 +357,7 @@ class AgentViafRecord(EntityRecord):
             if result.get("pid") == pid:
                 return result, msg
         elif (
-            result.get(f'{cls.sources.get(viaf_source_code, {}).get("name")}_pid')
+            result.get(f"{cls.sources.get(viaf_source_code, {}).get('name')}_pid")
             == pid
         ):
             return result, msg
@@ -380,11 +376,10 @@ class AgentViafRecord(EntityRecord):
             online_data = add_md5(online_data)
             if online_data["md5"] == self.get("md5"):
                 return self, Action.UPTODATE
-            else:
-                return (
-                    self.replace(data=online_data, dbcommit=dbcommit, reindex=reindex),
-                    Action.UPDATE,
-                )
+            return (
+                self.replace(data=online_data, dbcommit=dbcommit, reindex=reindex),
+                Action.UPDATE,
+            )
         return None, Action.DISCARD
 
     @classmethod
@@ -411,7 +406,7 @@ class AgentViafRecord(EntityRecord):
         if len(viaf_records) > 1:
             current_app.logger.error(
                 f"MULTIPLE VIAF FOUND FOR: {agent.name} {agent.pid} | "
-                f'viaf: {", ".join([viaf.pid for viaf in viaf_records])}'
+                f"viaf: {', '.join([viaf.pid for viaf in viaf_records])}"
             )
         return viaf_records
 
@@ -500,7 +495,7 @@ class AgentViafRecord(EntityRecord):
             elif verbose:
                 current_app.logger.warning(
                     f"Record not found VIAF: {self.pid} "
-                    f'{agent["record_class"].name}: {agent["pid"]}'
+                    f"{agent['record_class'].name}: {agent['pid']}"
                 )
         return agent_records
 

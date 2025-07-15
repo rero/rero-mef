@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -15,6 +13,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 """API for manipulating records."""
+
 from copy import deepcopy
 from enum import Enum
 from uuid import uuid4
@@ -188,7 +187,7 @@ class EntityRecord(Record):
                 action = Action.CREATE
             except Exception as err:
                 current_app.logger.error(
-                    f"ERROR create_or_update {cls.name} " f'{data.get("pid")} {err}'
+                    f"ERROR create_or_update {cls.name} {data.get('pid')} {err}"
                 )
                 action = Action.ERROR
         if reindex:
@@ -291,9 +290,10 @@ class EntityRecord(Record):
                 return None
             except OperationalError:
                 get_record_error_count += 1
-                msg = f"Get record OperationalError: " f"{get_record_error_count} {pid}"
+                msg = f"Get record OperationalError: {get_record_error_count} {pid}"
                 current_app.logger.error(msg)
                 db.session.rollback()
+        return None
 
     @classmethod
     def get_pid_by_id(cls, id_):
@@ -435,9 +435,7 @@ class EntityRecord(Record):
             indexer().delete(self)
         except NotFoundError:
             current_app.logger.warning(
-                "Can not delete from index {class_name}: {pid}".format(
-                    class_name=self.__class__.__name__, pid=self.pid
-                )
+                f"Can not delete from index {self.__class__.__name__}: {self.pid}"
             )
 
     @property
@@ -485,7 +483,7 @@ class ConceptPlaceRecord(EntityRecord):
                     f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
                     f"| {association_identifier}"
                 )
-                return
+                return None
             # Get associated record
             query = association_search().filter(
                 "term", _association_identifier=association_identifier
@@ -498,6 +496,7 @@ class ConceptPlaceRecord(EntityRecord):
             elif query.count() == 1:
                 hit = next(query.source("pid").scan())
                 return association_cls.get_record_by_pid(hit.pid)
+        return None
 
     @property
     def association_identifier(self):
@@ -554,6 +553,7 @@ class ConceptPlaceRecord(EntityRecord):
                 )
             if len(mef_records) == 1:
                 return mef_records[0]
+            return None
 
         association_info = self.association_info
         # Get direct MEF record
@@ -781,7 +781,12 @@ class EntityIndexer(RecordIndexer):
         """
         with self.create_producer() as producer:
             for rec in record_id_iterator:
-                data = dict(id=str(rec), op=op_type, index=index, doc_type=doc_type)
+                data = {
+                    "id": str(rec),
+                    "op": op_type,
+                    "index": index,
+                    "doc_type": doc_type,
+                }
                 producer.publish(
                     data,
                     declare=[self.mq_queue],

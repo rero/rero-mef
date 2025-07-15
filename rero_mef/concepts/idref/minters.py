@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2022 RERO
 #
@@ -16,11 +14,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 """Identifier minters."""
 
-from __future__ import absolute_import, print_function, unicode_literals
-
 from functools import partial
 
-from .providers import ConceptIdrefProvider
 from ...minters import id_minter
+from .providers import ConceptIdrefProvider
 
 idref_id_minter = partial(id_minter, provider=ConceptIdrefProvider, recid_field="pid")

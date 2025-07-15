@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -23,7 +21,7 @@ from .concepts_helpers import trans_prep
 
 
 def test_gnd_pid():
-    """Test pid for 001"""
+    """Test pid for 001."""
     xml_part_to_add = """
         <controlfield tag="001">976573474</controlfield>
     """
@@ -33,7 +31,7 @@ def test_gnd_pid():
 
 
 def test_gnd_identifier():
-    """Test identifier for person 024, 035"""
+    """Test identifier for person 024, 035."""
     xml_part_to_add = """
         <datafield tag="024" ind1=" " ind2=" ">
             <subfield code="a">4844250-1</subfield>
@@ -75,7 +73,7 @@ def test_gnd_identifier():
 
 
 def test_gnd_authorized_access_point():
-    """Test authorized_access_point from field 150"""
+    """Test authorized_access_point from field 150."""
     xml_part_to_add = """
     <datafield tag="150" ind1=" " ind2=" ">
         <subfield code="a">Magnet</subfield>
@@ -90,7 +88,7 @@ def test_gnd_authorized_access_point():
 
 
 def test_gnd_variant_access_point():
-    """Test variant_access_point from field 450"""
+    """Test variant_access_point from field 450."""
     xml_part_to_add = """
         <datafield tag="450" ind1=" " ind2=" ">
             <subfield code="a">Ohio</subfield>
@@ -103,7 +101,7 @@ def test_gnd_variant_access_point():
 
 
 def test_gnd_relation():
-    """Test trans_gnd_relation 550"""
+    """Test trans_gnd_relation 550."""
     xml_part_to_add = """
         <datafield tag="550" ind1=" " ind2=" ">
             <subfield code="0">(DE-101)041994493</subfield>
@@ -143,7 +141,7 @@ def test_gnd_classification():
 
 
 def test_gnd_close_match():
-    """Test trans_gnd_classification 750"""
+    """Test trans_gnd_classification 750."""
     xml_part_to_add = """
         <datafield tag="750" ind1=" " ind2=" ">
             <subfield code="0">(DE-101)1134384173</subfield>
@@ -213,7 +211,7 @@ def test_gnd_close_match():
 
 
 def test_gnd_notes():
-    """Test trans_gnd_note 670 677 678 680"""
+    """Test trans_gnd_note 670 677 678 680."""
     xml_part_to_add = """
         <datafield tag="670" ind1=" " ind2=" ">
             <subfield code="a">Vorlage; Internet</subfield>

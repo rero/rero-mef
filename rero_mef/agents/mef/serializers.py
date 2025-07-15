@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -35,7 +33,7 @@ def add_links(pid, record):
     if viaf_pid := record.get("viaf_pid"):
         links["viaf"] = "{scheme}://{host}/api/agents/viaf/" + str(viaf_pid)
         viaf_url = current_app.config.get("RERO_MEF_VIAF_BASE_URL")
-        links["viaf.org"] = f"{viaf_url}/viaf/{str(viaf_pid)}"
+        links["viaf.org"] = f"{viaf_url}/viaf/{viaf_pid!s}"
 
     link_factory = default_links_factory_with_additional(links)
     return link_factory(pid)
@@ -44,13 +42,12 @@ def add_links(pid, record):
 # Nice to have direct working links in test server!
 def local_link(agent, name, record):
     """Change links to actual links."""
-    if name in record:
-        if ref := record[name].get("$ref"):
-            my_pid = ref.split("/")[-1]
-            url = url_for(
-                f"invenio_records_rest.{agent}_item", pid_value=my_pid, _external=True
-            )
-            record[name].update({"$ref": url})
+    if name in record and (ref := record[name].get("$ref")):
+        my_pid = ref.split("/")[-1]
+        url = url_for(
+            f"invenio_records_rest.{agent}_item", pid_value=my_pid, _external=True
+        )
+        record[name].update({"$ref": url})
 
 
 class ReroMefSerializer(JSONSerializer):
@@ -80,9 +77,7 @@ class ReroMefSerializer(JSONSerializer):
             if agent in ["aidref", "aggnd", "agrero"]:
                 local_link(agent, agent_classe.name, rec)
 
-        return super(ReroMefSerializer, self).serialize(
-            pid=pid, record=rec, links_factory=add_links, **kwargs
-        )
+        return super().serialize(pid=pid, record=rec, links_factory=add_links, **kwargs)
 
 
 json_ = ReroMefSerializer(RecordSchemaJSONV1)

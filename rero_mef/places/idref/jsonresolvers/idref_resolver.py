@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2022 RERO
 #
@@ -18,12 +16,10 @@
 
 """Json resolvers."""
 
-from __future__ import absolute_import, print_function, unicode_literals
-
 import jsonresolver
 
-from ..api import PlaceIdrefRecord
 from ....utils import get_host, resolve_record
+from ..api import PlaceIdrefRecord
 
 
 @jsonresolver.route("/api/places/idref/<path:path>", host=get_host())

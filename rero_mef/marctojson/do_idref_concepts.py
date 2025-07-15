@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -25,7 +23,7 @@ from rero_mef.marctojson.helper import (
 )
 
 
-class Transformation(object):
+class Transformation:
     """Transformation MARC21 to JSON for Idref concept."""
 
     def __init__(self, marc, logger=None, verbose=False, transform=True):
@@ -162,7 +160,7 @@ class Transformation(object):
         try:
             if authorized_ap := build_string_from_field(self.marc[tag], subfields):
                 self.json_dict["authorized_access_point"] = authorized_ap
-        except Exception as err:
+        except Exception:
             self.json_dict["authorized_access_point"] = f"TAG: {tag} NOT FOUND"
 
     def trans_idref_variant_access_point(self):

@@ -135,7 +135,7 @@ def upgrade():
 
 def downgrade():
     """Downgrade database."""
-    for agent, _ in agents.items():
+    for agent in agents:
         agent_class = get_entity_class(agent.lower())
         click.echo(f"Remove identifiedBy from {agent}: {agent_class.count()}")
         progress_bar = progressbar(

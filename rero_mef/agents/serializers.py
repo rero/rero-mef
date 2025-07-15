@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -16,7 +14,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Record serialization."""
-
 
 import contextlib
 
@@ -53,7 +50,7 @@ def add_links(pid, record):
         viaf_pid = next(query.scan()).pid
         links["viaf"] = "{scheme}://{host}/api/agents/viaf/" + str(viaf_pid)
         viaf_url = current_app.config.get("RERO_MEF_VIAF_BASE_URL")
-        links["viaf.org"] = f"{viaf_url}/viaf/{str(viaf_pid)}"
+        links["viaf.org"] = f"{viaf_url}/viaf/{viaf_pid!s}"
     link_factory = default_links_factory_with_additional(links)
     return link_factory(pid)
 
@@ -68,7 +65,7 @@ class ReroMefSerializer(JSONSerializer):
         :param record: Record instance.
         :param links_factory: Factory function for record links.
         """
-        return super(ReroMefSerializer, self).serialize(
+        return super().serialize(
             pid=pid, record=record, links_factory=add_links, **kwargs
         )
 

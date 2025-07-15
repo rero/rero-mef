@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -84,6 +82,7 @@ class PlaceIdrefRecord(PlaceRecord):
             )
         if len(pids) == 1:
             return pids[0]
+        return None
 
     @property
     def association_info(self):

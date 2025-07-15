@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2022 RERO
 #
@@ -24,8 +22,7 @@ import pytest
 def concept_rero_data():
     """Concept RERO data."""
     return {
-        "$schema": "http://mef.rero.ch/schemas/"
-        "concepts_rero/rero-concept-v0.0.1.json",
+        "$schema": "http://mef.rero.ch/schemas/concepts_rero/rero-concept-v0.0.1.json",
         "authorized_access_point": "Activités d'éveil",
         "broader": [{"authorized_access_point": "Enseignement primaire"}],
         "identifiedBy": [
@@ -219,8 +216,7 @@ def concept_idref_redirect_data():
 def concept_mef_rero_data():
     """Concept MEF data with RERO ref."""
     return {
-        "$schema": "https://mef.rero.ch/schemas/concepts_mef/"
-        "mef-concept-v0.0.1.json",
+        "$schema": "https://mef.rero.ch/schemas/concepts_mef/mef-concept-v0.0.1.json",
         "rero": {"$ref": "https://mef.rero.ch/api/concepts/rero/A021001006"},
         "type": "bf:Topic",
     }
@@ -230,8 +226,7 @@ def concept_mef_rero_data():
 def concept_mef_idref_data():
     """Concept MEF data with IdRef ref."""
     return {
-        "$schema": "https://mef.rero.ch/schemas/concepts_mef/"
-        "mef-concept-v0.0.1.json",
+        "$schema": "https://mef.rero.ch/schemas/concepts_mef/mef-concept-v0.0.1.json",
         "deleted": "2022-09-03T07:07:32.545630+00:00",
         "idref": {"$ref": "https://mef.rero.ch/api/concepts/idref/050548115"},
         "type": "bf:Topic",
@@ -242,8 +237,7 @@ def concept_mef_idref_data():
 def concept_mef_idref_redirect_data():
     """Concept MEF data with IdRef ref and redirect from."""
     return {
-        "$schema": "https://mef.rero.ch/schemas/concepts_mef/"
-        "mef-concept-v0.0.1.json",
+        "$schema": "https://mef.rero.ch/schemas/concepts_mef/mef-concept-v0.0.1.json",
         "idref": {"$ref": "https://mef.rero.ch/api/concepts/idref/027276694"},
         "type": "bf:Topic",
     }

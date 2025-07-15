@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -17,11 +15,9 @@
 
 """Views tests."""
 
-from __future__ import absolute_import, print_function
-
 import os
+from unittest import mock
 
-import mock
 from sickle.response import OAIResponse
 
 from rero_mef.agents import Action, AgentGndRecord
@@ -66,8 +62,7 @@ def test_oai_date(app, init_oai, capsys):
     oai_set_last_run("agents.gnd", "wrong_date", verbose=True)
     captured = capsys.readouterr()
     assert captured.out == (
-        "OAI set lastrun agents.gnd: invalid literal for int() "
-        "with base 10: b'wron'\n"
+        "OAI set lastrun agents.gnd: invalid literal for int() with base 10: b'wron'\n"
     )
 
     date = oai_set_last_run("agents.gnd", "2023-01-01")
@@ -90,7 +85,7 @@ def test_oai_get_record(
     )
 
 
-class MockResponse(object):
+class MockResponse:
     """Mimics the response object returned by HTTP requests."""
 
     def __init__(self, text):
@@ -100,7 +95,7 @@ class MockResponse(object):
         self.content = text
 
 
-class MultipleResponses(object):
+class MultipleResponses:
     """Make multiple responses."""
 
     def __init__(self, empty, response):

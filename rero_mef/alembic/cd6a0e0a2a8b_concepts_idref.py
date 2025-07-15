@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2022 RERO
 #
@@ -78,7 +76,7 @@ def init_oai_harvest_config():
 
 def update_mapping():
     """Update the mapping of a given alias."""
-    for alias in current_search.aliases.keys():
+    for alias in current_search.aliases:
         for index, f_mapping in iter(current_search.aliases.get(alias).items()):
             mapping = json.load(open(f_mapping))
             try:

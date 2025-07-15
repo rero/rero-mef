@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -117,7 +115,7 @@ def test_idref_gender_unknown():
 
 
 def test_idref_gender_missing():
-    """Test gender 120 missing"""
+    """Test gender 120 missing."""
     xml_part_to_add = ""
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_gender()
@@ -125,7 +123,7 @@ def test_idref_gender_missing():
 
 
 def test_idref_language():
-    """Test language of person 101 $a (language 3 characters) ISO 639-2"""
+    """Test language of person 101 $a (language 3 characters) ISO 639-2."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="101">
             <subfield code="a">fre</subfield>
@@ -138,7 +136,7 @@ def test_idref_language():
 
 
 def test_idref_language_of_perso__missing():
-    """Test language of person 101 missing"""
+    """Test language of person 101 missing."""
     xml_part_to_add = ""
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_language()
@@ -146,7 +144,7 @@ def test_idref_language_of_perso__missing():
 
 
 def test_idref_identifier():
-    """Test identifier for person"""
+    """Test identifier for person."""
     xml_part_to_add = """
         <controlfield
         tag="003">http://www.idref.fr/069774331</controlfield>
@@ -161,7 +159,7 @@ def test_idref_identifier():
 
 
 def test_idref_identifier_missing():
-    """Test identifier for person 001 missing"""
+    """Test identifier for person 001 missing."""
     xml_part_to_add = ""
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_identifier()
@@ -169,7 +167,7 @@ def test_idref_identifier_missing():
 
 
 def test_idref_pid():
-    """Test pid for person"""
+    """Test pid for person."""
     xml_part_to_add = """
         <controlfield tag="001">069774331</controlfield>
      """
@@ -179,7 +177,7 @@ def test_idref_pid():
 
 
 def test_idref_birth_and_death_from_field_103():
-    """Test date of birth 103 $a pos. 1-8 YYYYMMDD"""
+    """Test date of birth 103 $a pos. 1-8 YYYYMMDD."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="103">
             <subfield code="a">18160421</subfield>
@@ -202,7 +200,7 @@ def test_idref_birth_and_death_from_field_103():
 
 
 def test_idref_birth_and_death_dates_year_birth():
-    """Test date of birth 103 $a pos. 1-8 YYYYMMDD"""
+    """Test date of birth 103 $a pos. 1-8 YYYYMMDD."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="103">
             <subfield code="a">1816?</subfield>
@@ -214,7 +212,7 @@ def test_idref_birth_and_death_dates_year_birth():
 
 
 def test_idref_birth_and_death_from_field_200():
-    """Test date of birth 200 $f pos. 1-4"""
+    """Test date of birth 200 $f pos. 1-4."""
     xml_part_to_add = """
           <datafield ind1=" " ind2=" " tag="200">
             <subfield code="f">1816-1855</subfield>
@@ -286,7 +284,7 @@ def test_idref_birth_and_death_from_field_200():
 
 
 def test_idref_birth_and_death_dates_in_two_fields():
-    """Test date of birth 103 $a pos. 1-8 YYYYMMDD AND 200 $f pos. 1-4"""
+    """Test date of birth 103 $a pos. 1-8 YYYYMMDD AND 200 $f pos. 1-4."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="103">
             <subfield code="a">18160421</subfield>
@@ -328,7 +326,7 @@ def test_idref_birth_and_death_dates_in_two_fields():
 
 
 def test_idref_establishment_termination_date():
-    """Test date of birth 103 $a YYYY-YYYY with tag 210"""
+    """Test date of birth 103 $a YYYY-YYYY with tag 210."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="200">
             <subfield code="f">1816-1855</subfield>
@@ -346,7 +344,7 @@ def test_idref_establishment_termination_date():
 
 
 def test_idref_birth_and_death_dates_missing():
-    """Test date of birth 103 AND 200 missing"""
+    """Test date of birth 103 AND 200 missing."""
     xml_part_to_add = ""
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_birth_and_death_dates()
@@ -354,7 +352,7 @@ def test_idref_birth_and_death_dates_missing():
 
 
 def test_idref_biographical_information():
-    """Test biographical information 300 $a 34x $a"""
+    """Test biographical information 300 $a 34x $a."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="300">
             <subfield code="a">Giacomo Nicolini da Sabbio.</subfield>
@@ -375,7 +373,7 @@ def test_idref_biographical_information():
 
 
 def test_idref_biographical_information_missing():
-    """Test biographical information 300 $a 34x $a. missing"""
+    """Test biographical information 300 $a 34x $a. missing."""
     xml_part_to_add = ""
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_biographical_information()
@@ -383,7 +381,7 @@ def test_idref_biographical_information_missing():
 
 
 def test_idref_preferred_name_1():
-    """Test Preferred Name for Person 200 $ab"""
+    """Test Preferred Name for Person 200 $ab."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="200">
             <subfield code="a">Brontë</subfield>
@@ -396,15 +394,7 @@ def test_idref_preferred_name_1():
 
 
 def test_idref_preferred_name_missing():
-    """Test Preferred Name for Person 200 $ab missing"""
-    xml_part_to_add = ""
-    trans = trans_prep("idref", xml_part_to_add)
-    trans.trans_idref_preferred_name()
-    assert not trans.json
-
-
-def test_idref_preferred_name_missing():
-    """Test Preferred Name for Person 100 $a missing"""
+    """Test Preferred Name for Person 100 $a missing."""
     xml_part_to_add = ""
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_preferred_name()
@@ -412,7 +402,7 @@ def test_idref_preferred_name_missing():
 
 
 def test_trans_idref_numeration():
-    """Test numeration for Person 200 $d"""
+    """Test numeration for Person 200 $d."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="200">
             <subfield code="d">II</subfield>
@@ -424,7 +414,7 @@ def test_trans_idref_numeration():
 
 
 def test_trans_idref_qualifier():
-    """Test numeration for Person 200 $c"""
+    """Test numeration for Person 200 $c."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="200">
             <subfield code="c">Jr.</subfield>
@@ -436,7 +426,7 @@ def test_trans_idref_qualifier():
 
 
 def test_idref_variant_name():
-    """Test Variant Name for Person 400 $ab"""
+    """Test Variant Name for Person 400 $ab."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="400">
             <subfield code="a">Bell</subfield>
@@ -457,7 +447,7 @@ def test_idref_variant_name():
 
 
 def test_idref_variant_name_missing():
-    """Test Variant Name for Person 400 $ab missing"""
+    """Test Variant Name for Person 400 $ab missing."""
     xml_part_to_add = ""
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_variant_name()
@@ -466,7 +456,7 @@ def test_idref_variant_name_missing():
 
 
 def test_idref_authorized_access_point():
-    """Test Authorized access point representing a person 200 $abcdf"""
+    """Test Authorized access point representing a person 200 $abcdf."""
     xml_part_to_add = """
 
         <datafield ind1=" " ind2=" " tag="200">
@@ -487,7 +477,7 @@ def test_idref_authorized_access_point():
 
 
 def test_idref_authorized_access_point_missing():
-    """Test Authorized access point representing a person 200 $abcdf missing"""
+    """Test Authorized access point representing a person 200 $abcdf missing."""
     xml_part_to_add = ""
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_authorized_access_point()
@@ -495,7 +485,7 @@ def test_idref_authorized_access_point_missing():
 
 
 def test_authorized_access_point_diff_order():
-    """Test Authorized access point representing a person 200 $abdfc"""
+    """Test Authorized access point representing a person 200 $abdfc."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="200">
             <subfield code="f">1816-1855</subfield>
@@ -514,7 +504,7 @@ def test_authorized_access_point_diff_order():
 
 
 def test_authorized_access_point_multiple():
-    """Test Authorized access with multiple 200"""
+    """Test Authorized access with multiple 200."""
     xml_part_to_add = """
         <datafield tag="200" ind1=" " ind2="1">
             <subfield code="6">a01</subfield>
@@ -543,7 +533,7 @@ def test_authorized_access_point_multiple():
 
 
 def test_authorized_access_point_general_order():
-    """Test Authorized access point representing a person 200 $abdfc"""
+    """Test Authorized access point representing a person 200 $abdfc."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="200">
             <subfield code="7">ba0yba0y</subfield>

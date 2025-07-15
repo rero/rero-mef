@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -28,7 +26,7 @@ except ImportError:
     from functools32 import lru_cache
 
 
-class JsonLoader(object):
+class JsonLoader:
     """JsonLoader.
 
     Provides a callable which takes a URI, and returns the loaded JSON referred

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -21,7 +19,7 @@ from .agents_helpers import trans_prep
 
 
 def test_rero_identifier():
-    """Test identifier for person 035"""
+    """Test identifier for person 035."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="035">
             <subfield code="a">A000070488</subfield>
@@ -42,7 +40,7 @@ def test_rero_identifier():
 
 
 def test_rero_birth_and_death_dates():
-    """Test date of birth 100 $d"""
+    """Test date of birth 100 $d."""
     xml_part_to_add = ""
     trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_birth_and_death_dates()
@@ -85,7 +83,7 @@ def test_rero_birth_and_death_dates():
 
 
 def test_rero_biographical_information():
-    """Test biographical information 680 $a"""
+    """Test biographical information 680 $a."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="680">
             <subfield code="a">Romancière. - Charlotte Brontë.</subfield>
@@ -99,7 +97,7 @@ def test_rero_biographical_information():
 
 
 def test_rero_preferred_name():
-    """Test Preferred Name for Person 100 $a"""
+    """Test Preferred Name for Person 100 $a."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="a">Brontë, Charlotte</subfield>
@@ -111,7 +109,7 @@ def test_rero_preferred_name():
 
 
 def test_rero_preferred_name_organisation():
-    """Test Preferred Name for Person 110 $a"""
+    """Test Preferred Name for Person 110 $a."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="110">
             <subfield code="a">Brontë, Charlotte</subfield>
@@ -123,7 +121,7 @@ def test_rero_preferred_name_organisation():
 
 
 def test_trans_rero_numeration():
-    """Test numeration for Person 100 $b"""
+    """Test numeration for Person 100 $b."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="b">II</subfield>
@@ -135,7 +133,7 @@ def test_trans_rero_numeration():
 
 
 def test_trans_rero_qualifier():
-    """Test numeration for Person 100 $c"""
+    """Test numeration for Person 100 $c."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="c">Jr.</subfield>
@@ -147,7 +145,7 @@ def test_trans_rero_qualifier():
 
 
 def test_rero_variant_name():
-    """Test Variant Name for Person 400 $a"""
+    """Test Variant Name for Person 400 $a."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="400">
             <subfield code="a">Bell, Currer</subfield>
@@ -192,7 +190,7 @@ def test_rero_variant_name():
 
 
 def test_rero_authorized_access_point():
-    """Test Authorized access point representing a person 100 $adc"""
+    """Test Authorized access point representing a person 100 $adc."""
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="100">
             <subfield code="a">Brontë, Charlotte,</subfield>

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2024 RERO
 #
@@ -15,14 +13,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-# -*- coding: utf-8 -*-
-#
 # Copyright (C) 2018 RERO.
 #
 # RERO Ebooks is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Utilities."""
+
 import gc
 import hashlib
 import json
@@ -112,7 +109,7 @@ def add_oai_source(
             source.save()
             db.session.commit()
             return "Added"
-        elif update:
+        if update:
             source.name = name
             source.baseurl = baseurl
             source.metadataprefix = metadataprefix
@@ -139,7 +136,7 @@ def oai_get_last_run(name, verbose=False):
         return lastrun_date
     except InvenioOAIHarvesterConfigNotFound:
         if verbose:
-            click.echo((f"ERROR OAI config not found: {name}"))
+            click.echo(f"ERROR OAI config not found: {name}")
         return None
 
 
@@ -288,7 +285,7 @@ def oai_process_records_from_dates(
             params["set"] = spec
 
         from_date = parser.isoparse(dates_initial["from"])
-        real_until_date = parser.isoparse(f'{dates_initial["until"]} 23:59:59.999999')
+        real_until_date = parser.isoparse(f"{dates_initial['until']} 23:59:59.999999")
         while from_date < real_until_date:
             until_date = from_date + timedelta(days=days_span)
             until_date = min(until_date, real_until_date)
@@ -299,7 +296,7 @@ def oai_process_records_from_dates(
             params |= dates
             if verbose:
                 click.secho(
-                    f"OAI {name} spec({spec}): " f'{dates["from"]} .. {dates["until"]}',
+                    f"OAI {name} spec({spec}): {dates['from']} .. {dates['until']}",
                     fg="cyan",
                 )
             try:
@@ -320,7 +317,7 @@ def oai_process_records_from_dates(
                                 if verbose:
                                     click.secho(
                                         f"OAI {name} spec({spec}): "
-                                        f'{idx} {rec.get("pid", "???")}'
+                                        f"{idx} {rec.get('pid', '???')}"
                                         f"NO TRANSFORMATION: {msg}",
                                         fg="yellow",
                                     )
@@ -360,10 +357,7 @@ def oai_process_records_from_dates(
                                         f" updated: {updated} {action.value}"
                                     )
                                     for mef_pid, m_action in m_actions.items():
-                                        msg = (
-                                            f"{msg} | mef: {mef_pid} "
-                                            f"{m_action.value}"
-                                        )
+                                        msg = f"{msg} | mef: {mef_pid} {m_action.value}"
                                     if viaf_pid := m_record.get("viaf_pid"):
                                         msg = f"{msg} | viaf: {viaf_pid}"
                                     click.echo(msg)
@@ -440,7 +434,7 @@ def oai_save_records_from_dates(
 
             from_date = parser.isoparse(dates_initial["from"])
             real_until_date = parser.isoparse(
-                f'{dates_initial["until"]} 23:59:59.999999'
+                f"{dates_initial['until']} 23:59:59.999999"
             )
             while from_date < real_until_date:
                 until_date = from_date + timedelta(days=days_span)
@@ -451,8 +445,7 @@ def oai_save_records_from_dates(
                 }
                 if verbose:
                     click.secho(
-                        f"OAI {name} spec({spec}): "
-                        f'{dates["from"]} .. {dates["until"]}',
+                        f"OAI {name} spec({spec}): {dates['from']} .. {dates['until']}",
                         fg="cyan",
                     )
                 params |= dates
@@ -465,7 +458,7 @@ def oai_save_records_from_dates(
                             click.echo(
                                 f"OAI {name} spec({spec}): "
                                 f"{from_date.strftime(TIME_FORMAT)} "
-                                f'count:{count:>10} = {rec["001"].data}'
+                                f"count:{count:>10} = {rec['001'].data}"
                             )
                         rec.leader = f"{rec.leader[:9]}a{rec.leader[10:]}"
                         output_file.write(rec.as_marc())
@@ -507,7 +500,7 @@ def oai_get_record(
     try:
         record = request.GetRecord(**params)
         msg = f"OAI-{name:<12} get: {id_:<15} {full_url} | OK"
-    except Exception as err:
+    except Exception:
         msg = f"OAI-{name:<12} get: {id_:<15} {full_url} | NO RECORD"
         if debug:
             raise
@@ -582,9 +575,8 @@ def export_json_records(
             if not schema:
                 rec.pop("$schema", None)
                 for source in ("idref", "gnd", "rero"):
-                    if source in rec:
-                        if isinstance(source, dict):
-                            rec[source].pop("$schema", None)
+                    if source in rec and isinstance(source, dict):
+                        rec[source].pop("$schema", None)
             outfile.write(rec)
         except Exception as err:
             click.echo(err)
@@ -594,9 +586,9 @@ def export_json_records(
 def number_records_in_file(json_file, file_type):
     """Get number of records per file."""
     count = 0
-    with open(json_file, "r", buffering=1) as file:
+    with open(json_file, buffering=1) as file:
         for line in file:
-            if file_type == "json" and '"pid"' in line or file_type == "csv":
+            if (file_type == "json" and '"pid"' in line) or file_type == "csv":
                 count += 1
     return count
 
@@ -671,8 +663,8 @@ def pidstore_csv_line(entity, entity_pid, record_uuid, date):
 def raw_connection():
     """Return a raw connection to the database."""
     with current_app.app_context():
-        URI = current_app.config.get("SQLALCHEMY_DATABASE_URI")
-        engine = sqlalchemy.create_engine(URI)
+        uri = current_app.config.get("SQLALCHEMY_DATABASE_URI")
+        engine = sqlalchemy.create_engine(uri)
         # conn = engine.connect()
         connection = engine.raw_connection()
         connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -740,7 +732,7 @@ def bulk_load_entity(
     buffer_uuid = []
     index = columns.index("id") if "id" in columns else -1
     start_time = datetime.now(timezone.utc)
-    with open(data, "r", encoding="utf-8", buffering=1) as input_file:
+    with open(data, encoding="utf-8", buffering=1) as input_file:
         for line in input_file:
             count += 1
             buffer.write(line)
@@ -754,7 +746,7 @@ def bulk_load_entity(
                     diff_time = end_time - start_time
                     start_time = end_time
                     click.echo(
-                        f"{entity} copy from file: " f"{count} {diff_time.seconds}s",
+                        f"{entity} copy from file: {count} {diff_time.seconds}s",
                         nl=False,
                     )
                 db_copy_from(buffer=buffer, table=table, columns=columns)
@@ -883,9 +875,8 @@ def bulk_save_pids(entity, file_name, verbose=False):
         file_name=tmp_file_name, table=table, columns=columns, verbose=verbose
     )
     # clean pid file
-    with open(tmp_file_name, "r") as file_in:
-        with open(file_name, "w") as file_out:
-            file_out.writelines(line for line in file_in if entity in line)
+    with open(tmp_file_name) as file_in, open(file_name, "w") as file_out:
+        file_out.writelines(line for line in file_in if entity in line)
     os.remove(tmp_file_name)
 
 
@@ -935,11 +926,10 @@ def create_csv_file(input_file, entity, pidstore, metadata):
     """Create entity CSV file to load."""
     count = 0
     with (
-        open(input_file, "r", encoding="utf-8") as entity_file,
+        open(input_file, encoding="utf-8") as entity_file,
         open(metadata, "w", encoding="utf-8") as entity_metadata_file,
         open(pidstore, "w", encoding="utf-8") as entity_pids_file,
     ):
-
         for record in ijson.items(entity_file, "item"):
             if entity == "viaf":
                 record["pid"] = record["viaf_pid"]
@@ -981,24 +971,28 @@ def get_endpoint_class(entity, class_name):
     endpoints = current_app.config.get("RECORDS_REST_ENDPOINTS", {})
     if endpoint := endpoints.get(entity, {}):
         return obj_or_import_string(endpoint.get(class_name))
+    return None
 
 
 def get_entity_class(entity):
     """Get entity record class from config."""
     if entity := get_endpoint_class(entity=entity, class_name="record_class"):
         return entity
+    return None
 
 
 def get_entity_search_class(entity):
     """Get entity search class from config."""
     if search := get_endpoint_class(entity=entity, class_name="search_class"):
         return search
+    return None
 
 
 def get_entity_indexer_class(entity):
     """Get entity indexer class from config."""
     if search := get_endpoint_class(entity=entity, class_name="indexer_class"):
         return search
+    return None
 
 
 def write_viaf_json(
@@ -1082,7 +1076,7 @@ def get_timestamp(name):
     return time_stamps.get(name) if time_stamps else None
 
 
-class JsonWriter(object):
+class JsonWriter:
     """Json Writer."""
 
     count = 0
@@ -1129,7 +1123,7 @@ class JsonWriter(object):
             self.file_handle.write(",")
         if self.indent:
             for line in dumps(data, indent=self.indent).split("\n"):
-                self.file_handle.write(f'\n{" ".ljust(self.indent)}')
+                self.file_handle.write(f"\n{' '.ljust(self.indent)}")
                 self.file_handle.write(line)
         else:
             self.file_handle.write(dumps(data), separators=(",", ":"))
@@ -1156,7 +1150,7 @@ def mef_get_all_missing_entity_pids(mef_class, entity, verbose=False):
     progress = progressbar(
         items=record_class.get_all_pids(), length=record_class.count(), verbose=verbose
     )
-    missing_pids = {pid: 1 for pid in progress}
+    missing_pids = dict.fromkeys(progress, 1)
     name = record_class.name
     if verbose:
         click.echo(f"Get pids for {name} from MEF and calculate missing ...")
@@ -1254,6 +1248,6 @@ def build_ref_string(entity_type, entity_name, entity_pid):
     """
     with current_app.app_context():
         return (
-            f'{current_app.config.get("RERO_MEF_APP_BASE_URL")}'
+            f"{current_app.config.get('RERO_MEF_APP_BASE_URL')}"
             f"/api/{entity_type}/{entity_name}/{entity_pid}"
         )

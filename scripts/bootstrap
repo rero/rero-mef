@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -68,7 +66,7 @@ fi
 # The real bootstrap script starts 20 lines below ;-)
 flags=()
 deploy=false
-cmd="poetry install"
+cmd="uv sync --frozen"
 ci=false
 while test $# -gt 0
 do
@@ -86,42 +84,35 @@ do
     shift
 done
 
-# Poetry is a mandatory condition to launch this program!
+# uv is a mandatory condition to launch this program!
 if [[ -z "${VIRTUAL_ENV}" ]]; then
-  error_msg+exit "Error - Launch this script via poetry command:\n\tpoetry run ${PROGRAM}"
+  error_msg+exit "Error - Launch this script via uv command:\n\uv run ${PROGRAM}"
 fi
 
 if $deploy ; then
   if ! $ci ; then
-      flags=("--only main")
+      flags=("--no-dev")
   fi
 fi
 
 if ! $deploy ; then
     if $ci ; then
-        cmd="poetry update"
+        cmd="uv sync --upgrade"
     fi
 fi
 
-poetry --version
-
-# create virtualenv and upgrade pip
-info_msg "Upgrade pip"
-poetry run pip install --upgrade pip
-
-info_msg "Install poethepoet"
-poetry run pip install poethepoet
+uv --version
 
 # install the application and all the dependencies
 info_msg "Install with command: ${cmd} ${flags[@]}"
 ${cmd} ${flags[@]}
 
-# install the app itself
-if ! $deploy ; then
-    if $ci ; then
-        poetry install
-    fi
-fi
+# # install the app itself
+# if ! $deploy ; then
+#     if $ci ; then
+#         poetry install
+#     fi
+# fi
 
 # build the web assets
 info_msg "Build web assets: collect"

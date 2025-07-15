@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2020 RERO
 #
@@ -33,7 +31,7 @@ __license__ = "Internal Use Only"
 
 # ----------------------------------- Classes ---------------------------------
 # MrcIterator ----
-class MrcIterator(object):
+class MrcIterator:
     """Iterator to get MARC records from mrc file."""
 
     def __init__(self, file_name, exceptions=False):

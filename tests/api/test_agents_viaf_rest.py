@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # RERO MEF
 # Copyright (C) 2021 RERO
 #
@@ -24,7 +22,6 @@ from flask import url_for
 
 def test_view_agents_viaf(client, agent_viaf_record):
     """Test redirect VIAF."""
-
     pid = agent_viaf_record.get("pid")
     url = url_for("invenio_records_rest.viaf_list")
     res = client.get(url)
