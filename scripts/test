@@ -66,8 +66,8 @@ add_exceptions() {
 
 set -e
 info_msg "Check vulnerabilities:"
-# py   1.11.0  PYSEC-2022-42969
-add_exceptions "PYSEC-2022-42969"
+# pip     25.2    GHSA-4xh5-x5gv-qwph
+add_exceptions "GHSA-4xh5-x5gv-qwph"
 # urllib3 1.26.20 GHSA-pq67-6m6q-mj2v 2.5.0
 add_exceptions "GHSA-pq67-6m6q-mj2v"
 pip-audit ${pip_audit_exceptions}
