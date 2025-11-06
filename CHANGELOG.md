@@ -1,134 +1,162 @@
 # Changelog
 
+## [v0.17.0](https://github.com/rero/rero-mef/tree/v0.17.0) (2025-11-06)
+
+[Full Changelog](https://github.com/rero/rero-mef/compare/v0.16.2...v0.17.0)
+
+**Enhancements:**
+
+- feat(dev): add uv and ruff [#192](https://github.com/rero/rero-mef/pull/192) (by @PascalRepond)
+
+**Changes:**
+
+- chore: update dependencies [#188](https://github.com/rero/rero-mef/pull/188) (by @rerowep)
+- chore: update dependencies and auto-assign PRs [#193](https://github.com/rero/rero-mef/pull/193) (by @PascalRepond)
+
 ## [v0.16.2](https://github.com/rero/rero-mef/tree/v0.16.2) (2025-05-01)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.16.1...v0.16.2)
 
 **Enhancements:**
-* concepts: MEF creation for one exact match [\#184](https://github.com/rero/rero-mef/pull/184) (by @rerowep)
+
+- concepts: MEF creation for one exact match [\#184](https://github.com/rero/rero-mef/pull/184) (by @rerowep)
 
 **Other changes:**
-* invenio: new version [\#180](https://github.com/rero/rero-mef/pull/180) (by @rerowep)
-* chore: update dependencies [\#179](https://github.com/rero/rero-mef/pull/179) (by @rerowep)
+
+- invenio: new version [\#180](https://github.com/rero/rero-mef/pull/180) (by @rerowep)
+- chore: update dependencies [\#179](https://github.com/rero/rero-mef/pull/179) (by @rerowep)
 
 ## [v0.16.1](https://github.com/rero/rero-mef/tree/v0.16.1) (2024-11-21)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.16.0...v0.16.1)
 
 **Fixes:**
-* places, concepts: correct MEF creations/updates [\#175](https://github.com/rero/rero-mef/pull/175) (by @rerowep)
-* places, concepts: GND closeMatch corrections [\#174](https://github.com/rero/rero-mef/pull/174) (by @rerowep)
+
+- places, concepts: correct MEF creations/updates [\#175](https://github.com/rero/rero-mef/pull/175) (by @rerowep)
+- places, concepts: GND closeMatch corrections [\#174](https://github.com/rero/rero-mef/pull/174) (by @rerowep)
 
 ## [v0.16.0](https://github.com/rero/rero-mef/tree/v0.16.0) (2024-10-29)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.15.0...v0.16.0)
 
 **New features:**
-* concepts: Add GND [\#170](https://github.com/rero/rero-mef/pull/170) (by @rerowep)
-* places: add GND [\#169](https://github.com/rero/rero-mef/pull/169) (by @rerowep)
+
+- concepts: Add GND [\#170](https://github.com/rero/rero-mef/pull/170) (by @rerowep)
+- places: add GND [\#169](https://github.com/rero/rero-mef/pull/169) (by @rerowep)
 
 **Enhancements:**
-* agents concepts places: add other identifiers [\#167](https://github.com/rero/rero-mef/pull/167) (by @rerowep)
+
+- agents concepts places: add other identifiers [\#167](https://github.com/rero/rero-mef/pull/167) (by @rerowep)
 
 ## [v0.15.0](https://github.com/rero/rero-mef/tree/v0.15.0) (2024-06-13)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.14.0...v0.15.0)
 
 **Enhancements:**
-* agent: remove bf:Agent [\#158](https://github.com/rero/rero-mef/pull/158) (by @rerowep)
+
+- agent: remove bf:Agent [\#158](https://github.com/rero/rero-mef/pull/158) (by @rerowep)
 
 **Fixes:**
-* mef: corrects deleted [\#162](https://github.com/rero/rero-mef/pull/162) (by @rerowep)
-* concepts: correct type [\#161](https://github.com/rero/rero-mef/pull/161) (by @rerowep)
-* api: fix sources filter [\#149](https://github.com/rero/rero-mef/pull/149) (by @rerowep)
+
+- mef: corrects deleted [\#162](https://github.com/rero/rero-mef/pull/162) (by @rerowep)
+- concepts: correct type [\#161](https://github.com/rero/rero-mef/pull/161) (by @rerowep)
+- api: fix sources filter [\#149](https://github.com/rero/rero-mef/pull/149) (by @rerowep)
 
 **Other changes:**
-* pytest use black [\#164](https://github.com/rero/rero-mef/pull/164) (by @rerowep)
-* dependencies: fix security issues [\#163](https://github.com/rero/rero-mef/pull/163) (by @rerowep)
-* dependencies: fix security issues [\#157](https://github.com/rero/rero-mef/pull/157) (by @rerowep)
-* dependencies: fix security issues [\#154](https://github.com/rero/rero-mef/pull/154) (by @rerowep)
+
+- pytest use black [\#164](https://github.com/rero/rero-mef/pull/164) (by @rerowep)
+- dependencies: fix security issues [\#163](https://github.com/rero/rero-mef/pull/163) (by @rerowep)
+- dependencies: fix security issues [\#157](https://github.com/rero/rero-mef/pull/157) (by @rerowep)
+- dependencies: fix security issues [\#154](https://github.com/rero/rero-mef/pull/154) (by @rerowep)
 
 ## [v0.14.0](https://github.com/rero/rero-mef/tree/v0.14.0) (2023-09-06)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.12.0...v0.14.0)
 
 **New features:**
-* places: new resource bf:Place [\#145](https://github.com/rero/rero-mef/pull/145) (by @rerowep)
-* concepts: Add bf:Temporal [\#140](https://github.com/rero/rero-mef/pull/140) (by @rerowep)
+
+- places: new resource bf:Place [\#145](https://github.com/rero/rero-mef/pull/145) (by @rerowep)
+- concepts: Add bf:Temporal [\#140](https://github.com/rero/rero-mef/pull/140) (by @rerowep)
 
 **Enhancements:**
-* chore: update services on home page [\#144](https://github.com/rero/rero-mef/pull/144) (by @Garfield-fr)
+
+- chore: update services on home page [\#144](https://github.com/rero/rero-mef/pull/144) (by @Garfield-fr)
 
 **Fixes:**
-* fix: logo on header [\#146](https://github.com/rero/rero-mef/pull/146) (by @Garfield-fr)
-* viaf: fix update [\#143](https://github.com/rero/rero-mef/pull/143) (by @rerowep)
-* indexer: fix bulk indexing [\#139](https://github.com/rero/rero-mef/pull/139) (by @rerowep)
-* concept: change bf:Concept to bf:Topic [\#138](https://github.com/rero/rero-mef/pull/138) (by @rerowep)
+
+- fix: logo on header [\#146](https://github.com/rero/rero-mef/pull/146) (by @Garfield-fr)
+- viaf: fix update [\#143](https://github.com/rero/rero-mef/pull/143) (by @rerowep)
+- indexer: fix bulk indexing [\#139](https://github.com/rero/rero-mef/pull/139) (by @rerowep)
+- concept: change bf:Concept to bf:Topic [\#138](https://github.com/rero/rero-mef/pull/138) (by @rerowep)
 
 ## [v0.12.0](https://github.com/rero/rero-mef/tree/v0.12.0) (2023-07-25)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.11.0...v0.12.0)
 
 **Enhancements:**
-* contributions concepts: type and identifiedBy [\#131](https://github.com/rero/rero-mef/pull/131) (by @rerowep)
-* concepts: unified pid [\#132](https://github.com/rero/rero-mef/pull/132) (by @rerowep)
-* VIAF: add sources [\#123](https://github.com/rero/rero-mef/pull/123) (by @rerowep)
+
+- contributions concepts: type and identifiedBy [\#131](https://github.com/rero/rero-mef/pull/131) (by @rerowep)
+- concepts: unified pid [\#132](https://github.com/rero/rero-mef/pull/132) (by @rerowep)
+- VIAF: add sources [\#123](https://github.com/rero/rero-mef/pull/123) (by @rerowep)
 
 **Fixes:**
-* VIAF: fixes [\#136](https://github.com/rero/rero-mef/pull/136) (by @rerowep)
-* dependencies: fix security issues [\#130](https://github.com/rero/rero-mef/pull/130) (by @rerowep)
-* concepts: fix MEF links [\#133](https://github.com/rero/rero-mef/pull/133) (by @rerowep)
+
+- VIAF: fixes [\#136](https://github.com/rero/rero-mef/pull/136) (by @rerowep)
+- dependencies: fix security issues [\#130](https://github.com/rero/rero-mef/pull/130) (by @rerowep)
+- concepts: fix MEF links [\#133](https://github.com/rero/rero-mef/pull/133) (by @rerowep)
 
 ## [v0.11.0](https://github.com/rero/rero-mef/tree/v0.11.0) (2023-03-16)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.10.0...v0.11.0)
 
 **Changes:**
-* agents GND: Get online record by SRU [\#124](https://github.com/rero/rero-mef/pull/124) (by @rerowep)
-* agents: fix MEF and VIAF [\#117](https://github.com/rero/rero-mef/pull/117) (by @rerowep)
-* agents: fix gnd person [\#121](https://github.com/rero/rero-mef/pull/121) (by @rerowep)
-* dependencies: update the dependencies lock file [\#115](https://github.com/rero/rero-mef/pull/115) (by @rerowep)
-* MEF: fix get updated [\#119](https://github.com/rero/rero-mef/pull/119) (by @rerowep)
-* fix dnb redirect to [\#116](https://github.com/rero/rero-mef/pull/116) (by @rerowep)
-* dependencies: update the dependencies lock file [\#109](https://github.com/rero/rero-mef/pull/109) (by @rerowep)
-* agents, concepts: better changed api [\#114](https://github.com/rero/rero-mef/pull/114) (by @rerowep)
-* cli : fix wait_empty_tasks [\#112](https://github.com/rero/rero-mef/pull/112) (by @rerowep)
-* dojson: fix error logging [\#111](https://github.com/rero/rero-mef/pull/111) (by @rerowep)
-* idref: fix agent IdRef redirection [\#110](https://github.com/rero/rero-mef/pull/110) (by @rerowep)
+
+- agents GND: Get online record by SRU [\#124](https://github.com/rero/rero-mef/pull/124) (by @rerowep)
+- agents: fix MEF and VIAF [\#117](https://github.com/rero/rero-mef/pull/117) (by @rerowep)
+- agents: fix gnd person [\#121](https://github.com/rero/rero-mef/pull/121) (by @rerowep)
+- dependencies: update the dependencies lock file [\#115](https://github.com/rero/rero-mef/pull/115) (by @rerowep)
+- MEF: fix get updated [\#119](https://github.com/rero/rero-mef/pull/119) (by @rerowep)
+- fix dnb redirect to [\#116](https://github.com/rero/rero-mef/pull/116) (by @rerowep)
+- dependencies: update the dependencies lock file [\#109](https://github.com/rero/rero-mef/pull/109) (by @rerowep)
+- agents, concepts: better changed api [\#114](https://github.com/rero/rero-mef/pull/114) (by @rerowep)
+- cli : fix wait_empty_tasks [\#112](https://github.com/rero/rero-mef/pull/112) (by @rerowep)
+- dojson: fix error logging [\#111](https://github.com/rero/rero-mef/pull/111) (by @rerowep)
+- idref: fix agent IdRef redirection [\#110](https://github.com/rero/rero-mef/pull/110) (by @rerowep)
 
 ## [v0.10.0](https://github.com/rero/rero-mef/tree/v0.10.0) (2022-09-19)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.9.0...v0.10.0)
 
 **Merged pull requests:**
-* agents: better create_mef_and_agents [\#107](https://github.com/rero/rero-mef/pull/107) (by @rerowep)
-* api: fix updated [\#106](https://github.com/rero/rero-mef/pull/106) (by @rerowep)
-* MEF: REST API latest and updated [\#105](https://github.com/rero/rero-mef/pull/105) (by @rerowep)
-* concepts: add idref [\#96](https://github.com/rero/rero-mef/pull/96) (by @rerowep)
-* dependencies: update the dependencies lock file [\#104](https://github.com/rero/rero-mef/pull/104) (by @rerowep)
-* indexer: better code [\#87](https://github.com/rero/rero-mef/pull/87) (by @rerowep)
-* dependencies: update the dependencies lock file [\#95](https://github.com/rero/rero-mef/pull/95) (by @rerowep)
-* entities: save old date if deleted [\#101](https://github.com/rero/rero-mef/pull/101) (by @rerowep)
-* various: better UTC times [\#102](https://github.com/rero/rero-mef/pull/102) (by @rerowep)
-* monitoring: varius changes [\#99](https://github.com/rero/rero-mef/pull/99) (by @rerowep)
-* concepts: fix create_mef [\#98](https://github.com/rero/rero-mef/pull/98) (by @rerowep)
-* tests: add record fixtures [\#100](https://github.com/rero/rero-mef/pull/100) (by @jma)
-* alembic: inital branch [\#97](https://github.com/rero/rero-mef/pull/97) (by @rerowep)
-* mef: reindex during entities reindexing [\#90](https://github.com/rero/rero-mef/pull/90) (by @rerowep)
-* dojson: fix parentheses with spaces [\#93](https://github.com/rero/rero-mef/pull/93) (by @rerowep)
-* tests: fix pytest-invenio>1.4.11 [\#94](https://github.com/rero/rero-mef/pull/94) (by @rerowep)
-* templates: update footer and front page links [\#92](https://github.com/rero/rero-mef/pull/92) (by @PascalRepond)
-* dojson: fix script code [\#89](https://github.com/rero/rero-mef/pull/89) (by @rerowep)
+
+- agents: better create_mef_and_agents [\#107](https://github.com/rero/rero-mef/pull/107) (by @rerowep)
+- api: fix updated [\#106](https://github.com/rero/rero-mef/pull/106) (by @rerowep)
+- MEF: REST API latest and updated [\#105](https://github.com/rero/rero-mef/pull/105) (by @rerowep)
+- concepts: add idref [\#96](https://github.com/rero/rero-mef/pull/96) (by @rerowep)
+- dependencies: update the dependencies lock file [\#104](https://github.com/rero/rero-mef/pull/104) (by @rerowep)
+- indexer: better code [\#87](https://github.com/rero/rero-mef/pull/87) (by @rerowep)
+- dependencies: update the dependencies lock file [\#95](https://github.com/rero/rero-mef/pull/95) (by @rerowep)
+- entities: save old date if deleted [\#101](https://github.com/rero/rero-mef/pull/101) (by @rerowep)
+- various: better UTC times [\#102](https://github.com/rero/rero-mef/pull/102) (by @rerowep)
+- monitoring: varius changes [\#99](https://github.com/rero/rero-mef/pull/99) (by @rerowep)
+- concepts: fix create_mef [\#98](https://github.com/rero/rero-mef/pull/98) (by @rerowep)
+- tests: add record fixtures [\#100](https://github.com/rero/rero-mef/pull/100) (by @jma)
+- alembic: inital branch [\#97](https://github.com/rero/rero-mef/pull/97) (by @rerowep)
+- mef: reindex during entities reindexing [\#90](https://github.com/rero/rero-mef/pull/90) (by @rerowep)
+- dojson: fix parentheses with spaces [\#93](https://github.com/rero/rero-mef/pull/93) (by @rerowep)
+- tests: fix pytest-invenio>1.4.11 [\#94](https://github.com/rero/rero-mef/pull/94) (by @rerowep)
+- templates: update footer and front page links [\#92](https://github.com/rero/rero-mef/pull/92) (by @PascalRepond)
+- dojson: fix script code [\#89](https://github.com/rero/rero-mef/pull/89) (by @rerowep)
 
 ## [v0.9.0](https://github.com/rero/rero-mef/tree/v0.9.0) (2022-06-14)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.8.0...v0.9.0)
 
-* Fix handling of agents that have been deleted from source [\#79](https://github.com/rero/rero-mef/pull/79)
+- Fix handling of agents that have been deleted from source [\#79](https://github.com/rero/rero-mef/pull/79)
 and [\#84](https://github.com/rero/rero-mef/pull/84) (by @rerowep)
-* Fix authorized access points [\#83](https://github.com/rero/rero-mef/pull/83) (by @rerowep)
-* Update dependencies [\#82](https://github.com/rero/rero-mef/pull/82) (by @rerowep)
-* Upgrade Poetry to `>=1.1.0` [\#78](https://github.com/rero/rero-mef/pull/78) (by @rerowep)
+- Fix authorized access points [\#83](https://github.com/rero/rero-mef/pull/83) (by @rerowep)
+- Update dependencies [\#82](https://github.com/rero/rero-mef/pull/82) (by @rerowep)
+- Upgrade Poetry to `>=1.1.0` [\#78](https://github.com/rero/rero-mef/pull/78) (by @rerowep)
 
 ## [v0.8.0](https://github.com/rero/rero-mef/tree/v0.8.0) (2022-02-08)
 
@@ -214,7 +242,5 @@ and [\#84](https://github.com/rero/rero-mef/pull/84) (by @rerowep)
 - oai config [\#3](https://github.com/rero/rero-mef/pull/3) ([rerowep](https://github.com/rerowep))
 - feat: ebook record dedup [\#2](https://github.com/rero/rero-mef/pull/2) ([BadrAly](https://github.com/BadrAly))
 - clean: remove not necessary modules and remove view [\#1](https://github.com/rero/rero-mef/pull/1) ([Garfield-fr](https://github.com/Garfield-fr))
-
-
 
 \* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
