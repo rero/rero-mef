@@ -31,10 +31,6 @@ def test_entityrecord_api(app, agent_idref_record):
     assert AgentIdrefRecord.count() == 1
     assert AgentIdrefRecord.index_all() == 1
 
-    assert len(list(AgentIdrefRecord.get_all_records())) == len(
-        list(AgentIdrefRecord.get_all_records(limit=0))
-    )
-
     assert AgentIdrefRecord.get_metadata_identifier_names() == (
         "agent_idref_metadata",
         "agent_idref_id",

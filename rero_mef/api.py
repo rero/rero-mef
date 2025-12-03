@@ -31,7 +31,7 @@ from invenio_records_rest.utils import obj_or_import_string
 from invenio_search import current_search
 from invenio_search.engine import search
 from kombu.compat import Consumer
-from sqlalchemy import func, text
+from sqlalchemy import func
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -80,7 +80,7 @@ class EntityRecordError:
     class PidChange(Exception):
         """Record pid change."""
 
-    class PidAlradyUsed(Exception):
+    class PidAlreadyUsed(Exception):
         """Record pid already used."""
 
     class PidDoesNotExist(Exception):
@@ -319,67 +319,43 @@ class EntityRecord(Record):
         return query
 
     @classmethod
-    def get_all_pids(cls, with_deleted=False, limit=100000, date=None):
+    def get_all_pids(cls, with_deleted=False, batch_size=1000, date=None):
         """Get all records pids. Return a generator iterator."""
         query = cls._get_all(with_deleted=with_deleted, date=date)
-        if limit:
-            # slower, less memory
-            query = query.order_by(text("pid_value")).limit(limit)
-            offset = 0
-            count = cls.count(with_deleted=with_deleted)
-            while offset < count:
-                for identifier in query.offset(offset):
-                    yield identifier.pid_value
-                offset += limit
-        else:
-            # faster, more memory
-            for identifier in query:
+        offset = 0
+        while batch := query.limit(batch_size).offset(offset).all():
+            for identifier in batch:
                 yield identifier.pid_value
+            offset += batch_size
 
     @classmethod
-    def get_all_deleted_pids(cls, limit=100000, from_date=None):
+    def get_all_deleted_pids(cls, batch_size=1000, from_date=None):
         """Get all records pids. Return a generator iterator."""
         query = PersistentIdentifier.query.filter_by(
             pid_type=cls.provider.pid_type
         ).filter_by(status=PIDStatus.DELETED)
         if from_date:
             query = query.filter(func.DATE(PersistentIdentifier.updated) >= from_date)
-        if limit:
-            # slower, less memory
-            count = query.count()
-            query = query.order_by(text("pid_value")).limit(limit)
-            offset = 0
-            while offset < count:
-                for identifier in query.offset(offset):
-                    yield identifier.pid_value
-                offset += limit
-        else:
-            # faster, more memory
-            for identifier in query:
+        offset = 0
+        while batch := query.limit(batch_size).offset(offset).all():
+            for identifier in batch:
                 yield identifier.pid_value
+            offset += batch_size
 
     @classmethod
-    def get_all_ids(cls, with_deleted=False, limit=100000, date=None):
+    def get_all_ids(cls, with_deleted=False, batch_size=1000, date=None):
         """Get all records uuids. Return a generator iterator."""
         query = cls._get_all(with_deleted=with_deleted, date=date)
-        if limit:
-            # slower, less memory
-            query = query.order_by(text("pid_value")).limit(limit)
-            offset = 0
-            count = cls.count(with_deleted=with_deleted)
-            while offset < count:
-                for identifier in query.limit(limit).offset(offset):
-                    yield identifier.object_uuid
-                offset += limit
-        else:
-            # faster, more memory
-            for identifier in query:
+        offset = 0
+        while batch := query.limit(batch_size).offset(offset).all():
+            for identifier in batch:
                 yield identifier.object_uuid
+            offset += batch_size
 
     @classmethod
-    def get_all_records(cls, with_deleted=False, limit=100000):
+    def get_all_records(cls, with_deleted=False, batch_size=1000):
         """Get all records. Return a generator iterator."""
-        for id_ in cls.get_all_ids(with_deleted=with_deleted, limit=limit):
+        for id_ in cls.get_all_ids(with_deleted=with_deleted, batch_size=batch_size):
             yield cls.get_record(id_)
 
     @classmethod
@@ -515,7 +491,7 @@ class ConceptPlaceRecord(EntityRecord):
         """
 
         def mef_create(mef_cls, data, association_identifier, dbcommit, reindex):
-            """Crate MEF record."""
+            """Create MEF record."""
             mef_data = {
                 data.name: {
                     "$ref": build_ref_string(

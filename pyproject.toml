@@ -3,7 +3,7 @@ name = "rero-mef"
 version = "0.17.0"
 description = "Invenio digital library framework MEF."
 authors = [{name = "RERO+", email = "software@rero.ch"}]
-license = "AGPL-3.0"
+license = "AGPL-3.0-or-later"
 requires-python = ">= 3.9.2,<3.13"
 
 dependencies = [
