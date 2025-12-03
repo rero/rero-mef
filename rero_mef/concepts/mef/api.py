@@ -183,11 +183,15 @@ class ConceptMefIndexer(EntityIndexer):
 
     record_cls = ConceptMefRecord
 
-    def bulk_index(self, record_id_iterator):
+    def bulk_index(self, record_id_iterator, index=None, doc_type=None):
         """Bulk index records.
 
         :param record_id_iterator: Iterator yielding record UUIDs.
+        :param index: Index name (optional).
+        :param doc_type: Document type (optional).
         """
         super().bulk_index(
-            record_id_iterator, index=ConceptMefSearch.Meta.index, doc_type="comef"
+            record_id_iterator,
+            index=index or ConceptMefSearch.Meta.index,
+            doc_type=doc_type or "comef",
         )

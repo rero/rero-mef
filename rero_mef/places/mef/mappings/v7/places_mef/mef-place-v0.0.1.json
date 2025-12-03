@@ -152,6 +152,17 @@
               }
             }
           },
+          "relation_pid": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "keyword"
+              },
+              "type": {
+                "type": "keyword"
+              }
+            }
+          },
           "_created": {
             "type": "date"
           },
@@ -265,6 +276,17 @@
                     "type": "keyword"
                   }
                 }
+              }
+            }
+          },
+          "relation_pid": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "keyword"
+              },
+              "type": {
+                "type": "keyword"
               }
             }
           },
