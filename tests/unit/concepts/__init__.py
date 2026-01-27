@@ -13,4 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Tests unit concepts."""
+"""Unit tests for concept entity functionality.
+
+Tests concept record classes, indexing, serialization, and business logic
+across all authority sources (MEF, IdRef, GND, RERO).
+"""

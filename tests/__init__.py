@@ -13,4 +13,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Tests."""
+"""Test suite for RERO MEF system.
+
+Provides comprehensive test coverage for entity management, API endpoints,
+data conversion, and system integration. Includes unit tests, API tests,
+and end-to-end tests.
+"""

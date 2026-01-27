@@ -22,19 +22,39 @@ from rero_mef.places.listener import enrich_place_data
 
 
 class REROMEFAPP:
-    """rero-mef extension."""
+    """RERO MEF Flask extension.
+
+    Provides initialization and setup for the RERO MEF application,
+    including signal registration for data enrichment during indexing.
+    """
 
     def __init__(self, app=None):
-        """RERO MEF App module."""
+        """Initialize the RERO MEF extension.
+
+        :param app: Flask application instance. If provided, initializes
+                   the extension immediately.
+        """
         if app:
             self.init_app(app)
-            self.register_signals(app)
 
     def init_app(self, app):
-        """Flask application initialization."""
+        """Initialize Flask application with RERO MEF extension.
+
+        Registers this extension with the Flask application's
+        extension registry and connects signal handlers.
+
+        :param app: Flask application instance.
+        """
         app.extensions["rero-mef"] = self
+        self.register_signals(app)
 
     def register_signals(self, app):
-        """Register signals."""
+        """Register signal handlers for data enrichment.
+
+        Connects enrichment functions to the before_record_index signal
+        to enhance concept and place data before indexing in Elasticsearch.
+
+        :param app: Flask application instance.
+        """
         before_record_index.connect(enrich_concept_data, sender=app)
         before_record_index.connect(enrich_place_data, sender=app)

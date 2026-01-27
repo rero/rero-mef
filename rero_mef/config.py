@@ -35,7 +35,7 @@ from .agents.rero.models import AgentReroIdentifier
 from .agents.viaf.models import ViafIdentifier
 from .concepts.idref.models import ConceptIdrefIdentifier
 from .concepts.rero.models import ConceptReroIdentifier
-from .filter import exists_filter
+from .filter import deleted_entities_agg, exists_filter, multi_exists_filter
 from .marctojson.do_gnd_agent import Transformation as AgentGndTransformation
 from .marctojson.do_gnd_concepts import Transformation as ConceptGndTransformation
 from .marctojson.do_gnd_places import Transformation as PlaceGndTransformation
@@ -200,7 +200,6 @@ TRANSFORMATION = {
     "corero": ConceptReroTransformation,
     "cidref": ConceptIdrefTransformation,
     "cognd": ConceptGndTransformation,
-    "pidref": PlaceIdrefTransformation,
     "pidref": PlaceIdrefTransformation,
     "plgnd": PlaceGndTransformation,
 }
@@ -519,19 +518,23 @@ RECORDS_JSON_SCHEMA = {
     "viaf": "/viaf/viaf-v0.0.1.json",
 }
 
+_MEF_DELETED_FIELDS = ["idref.deleted", "gnd.deleted", "rero.deleted"]
+_CONCEPTS_MEF_DELETED_FIELDS = ["idref.deleted", "gnd.deleted", "rero.deleted"]
+_PLACES_MEF_DELETED_FIELDS = ["idref.deleted", "gnd.deleted"]
+
 RECORDS_REST_FACETS = dict(
     mef=dict(
         aggs=dict(
             type=dict(terms=dict(field="type", size=30)),
             source=dict(terms=dict(field="sources", size=30)),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
-            deleted_entities=dict(filter=dict(exists=dict(field="*.deleted"))),
+            deleted_entities=deleted_entities_agg(_MEF_DELETED_FIELDS),
         ),
         filters=dict(
             type=terms_filter("type"),
             source=terms_filter("sources"),
             deleted=exists_filter("deleted"),
-            deleted_entities=exists_filter("*.deleted"),
+            deleted_entities=multi_exists_filter(_MEF_DELETED_FIELDS),
             rero_double=terms_filter("rero.pid"),
         ),
     ),
@@ -577,13 +580,13 @@ RECORDS_REST_FACETS = dict(
             type=dict(terms=dict(field="type", size=30)),
             source=dict(terms=dict(field="sources", size=30)),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
-            deleted_entities=dict(filter=dict(exists=dict(field="*.deleted"))),
+            deleted_entities=deleted_entities_agg(_CONCEPTS_MEF_DELETED_FIELDS),
         ),
         filters=dict(
             type=terms_filter("type"),
             source=terms_filter("sources"),
             deleted=exists_filter("deleted"),
-            deleted_entities=exists_filter("*.deleted"),
+            deleted_entities=multi_exists_filter(_CONCEPTS_MEF_DELETED_FIELDS),
             rero_double=terms_filter("rero.pid"),
         ),
     ),
@@ -658,13 +661,13 @@ RECORDS_REST_FACETS = dict(
             type=dict(terms=dict(field="type", size=30)),
             source=dict(terms=dict(field="sources", size=30)),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
-            deleted_entities=dict(filter=dict(exists=dict(field="*.deleted"))),
+            deleted_entities=deleted_entities_agg(_PLACES_MEF_DELETED_FIELDS),
         ),
         filters=dict(
             type=terms_filter("type"),
             source=terms_filter("sources"),
             deleted=exists_filter("deleted"),
-            deleted_entities=exists_filter("*.deleted"),
+            deleted_entities=multi_exists_filter(_PLACES_MEF_DELETED_FIELDS),
         ),
     ),
     places_idref=dict(

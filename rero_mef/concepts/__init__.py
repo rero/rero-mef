@@ -13,7 +13,24 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Concepts."""
+"""Concept entity management for subject authorities.
+
+This module provides classes and functionality for managing concept entities
+(subjects, topics, genres) from multiple authority sources. Concepts are
+aggregated into MEF records that link equivalent subject headings across
+different authority files.
+
+Supported authority sources:
+    - IdRef (French bibliographic agency)
+    - GND (German National Library)
+    - RERO (Swiss library network)
+
+Main components:
+    - ConceptMefRecord: Aggregated MEF records for concepts
+    - Concept*Record classes: Authority-specific concept records
+    - Concept*Indexer classes: Elasticsearch indexing
+    - Concept*Search classes: Search and retrieval functionality
+"""
 
 from ..api import Action
 from .gnd.api import ConceptGndIndexer, ConceptGndRecord, ConceptGndSearch

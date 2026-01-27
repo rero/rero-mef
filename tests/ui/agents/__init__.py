@@ -13,4 +13,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Tests ui agents."""
+"""User interface tests for agent entities.
+
+Tests UI functionality specific to agent entity display, search, and interaction.
+"""

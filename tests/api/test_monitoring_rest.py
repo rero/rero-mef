@@ -17,8 +17,10 @@
 
 import json
 import time
+from unittest.mock import MagicMock, patch
 
 from flask import url_for
+from invenio_accounts.testutils import login_user_via_session
 
 from rero_mef.agents.idref.api import AgentIdrefRecord
 from rero_mef.utils import get_timestamp, set_timestamp
@@ -114,3 +116,89 @@ def test_timestamps(app, client):
             }
         }
     }
+
+
+def test_monitoring_forbidden(app, client):
+    """Authenticated user without monitoring role receives 403."""
+    datastore = app.extensions["invenio-accounts"].datastore
+    user = datastore.create_user(email="noperm@test.ch", password="1234", active=True)
+    datastore.commit()
+    login_user_via_session(client, user=user)
+    res = client.get(url_for("api_monitoring.missing_pids", doc_type="aidref"))
+    assert res.status_code == 403
+
+
+def test_monitoring_mef_counts(client):
+    """mef_counts endpoint returns data dict with entity counts."""
+    res = client.get(url_for("api_monitoring.mef_counts"))
+    assert res.status_code == 200
+    body = json.loads(res.get_data(as_text=True))
+    assert "data" in body
+
+
+def test_monitoring_missing_pids_invalid_type(app, client):
+    """missing_pids with an unregistered doc_type returns an error body."""
+    create_and_login_monitoring_user(app, client)
+    res = client.get(url_for("api_monitoring.missing_pids", doc_type="invalid_xyz"))
+    assert res.status_code == 200
+    body = json.loads(res.get_data(as_text=True))
+    assert "error" in body
+    assert body["error"]["id"] == "DOCUMENT_TYPE_NOT_FOUND"
+
+
+def test_monitoring_db_connection_counts(app, client):
+    """db_connection_counts returns connection stats (mocked DB query)."""
+    create_and_login_monitoring_user(app, client)
+    mock_result = MagicMock()
+    mock_result.first.return_value = (100, 5, 3, 92)
+    with patch("rero_mef.monitoring.views.db") as mock_db:
+        mock_db.session.execute.return_value = mock_result
+        res = client.get(url_for("api_monitoring.db_connection_counts"))
+    assert res.status_code == 200
+    body = json.loads(res.get_data(as_text=True))
+    assert body["data"]["max"] == 100
+
+
+def test_monitoring_db_connections(app, client):
+    """db_connections returns per-connection details (mocked DB query)."""
+    create_and_login_monitoring_user(app, client)
+    mock_result = MagicMock()
+    mock_result.fetchall.return_value = []
+    with patch("rero_mef.monitoring.views.db") as mock_db:
+        mock_db.session.execute.return_value = mock_result
+        res = client.get(url_for("api_monitoring.db_connections"))
+    assert res.status_code == 200
+    body = json.loads(res.get_data(as_text=True))
+    assert body["data"] == {}
+
+
+def test_monitoring_redis(app, client):
+    """Redis endpoint returns Redis info (mocked)."""
+    create_and_login_monitoring_user(app, client)
+    mock_redis = MagicMock()
+    mock_redis.info.return_value = {"redis_version": "6.0.0"}
+    with patch("rero_mef.monitoring.views.Redis") as mock_redis_cls:
+        mock_redis_cls.from_url.return_value = mock_redis
+        res = client.get(url_for("api_monitoring.redis"))
+    assert res.status_code == 200
+    body = json.loads(res.get_data(as_text=True))
+    assert body["data"]["redis_version"] == "6.0.0"
+
+
+def test_monitoring_es_indices(app, client):
+    """es_indices endpoint returns index listing."""
+    create_and_login_monitoring_user(app, client)
+    res = client.get(url_for("api_monitoring.elastic_search_indices"))
+    assert res.status_code == 200
+    body = json.loads(res.get_data(as_text=True))
+    assert "data" in body
+
+
+def test_monitoring_es(app, client):
+    """Es endpoint returns cluster health."""
+    create_and_login_monitoring_user(app, client)
+    res = client.get(url_for("api_monitoring.elastic_search"))
+    assert res.status_code == 200
+    body = json.loads(res.get_data(as_text=True))
+    assert "data" in body
+    assert "status" in body["data"]

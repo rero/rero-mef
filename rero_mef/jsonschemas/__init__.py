@@ -13,4 +13,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""JSON schemas common."""
+"""JSON schema definitions for entity validation.
+
+This module provides JSON schema definitions used to validate the structure
+and content of entity records (agents, concepts, places) from different
+authority sources. Schemas ensure data consistency and integrity across
+the MEF system.
+"""

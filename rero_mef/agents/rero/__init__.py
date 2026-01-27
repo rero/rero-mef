@@ -13,4 +13,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""RERO."""
+"""RERO agent records.
+
+This module provides classes for managing agent entities from the RERO
+authority file, maintained by the RERO network (Réseau des bibliothèques
+de Suisse occidentale), the Swiss Western library network.
+
+RERO provides authority control for persons and organizations in
+Romandy (French-speaking Switzerland) libraries.
+"""

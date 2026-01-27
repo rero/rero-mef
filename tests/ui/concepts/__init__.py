@@ -13,4 +13,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Tests ui concepts."""
+"""User interface tests for concept entities.
+
+Tests UI functionality specific to concept entity display, search, and interaction.
+"""

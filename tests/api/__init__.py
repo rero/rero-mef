@@ -13,4 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Tests api."""
+"""API integration tests.
+
+Tests for REST API endpoints, entity CRUD operations, search functionality,
+and API response formats.
+"""

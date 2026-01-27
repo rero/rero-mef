@@ -13,4 +13,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""IdRef."""
+"""IdRef place records.
+
+This module provides classes for managing place entities from the IdRef
+authority file (Identifiants et Référentiels), maintained by the French
+bibliographic agency ABES.
+
+IdRef provides geographic authority control for places, jurisdictions, and
+other geographic entities in French academic and research libraries.
+"""

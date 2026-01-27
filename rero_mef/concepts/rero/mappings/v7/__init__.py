@@ -13,4 +13,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Elasticsearch mappings."""
+"""Elasticsearch 7.x mappings for RERO concept records.
+
+Provides version-specific mapping definitions for Elasticsearch 7.x indices.
+"""

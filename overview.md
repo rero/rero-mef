@@ -1,141 +1,257 @@
-https://mermaid.live
+# RERO MEF Data Model Overview
+
+View and edit diagrams at: [mermaid.live](https://mermaid.live)
+
+## Agent Records
 
 ```mermaid
 classDiagram
+    direction TB
+
     class AgentMefRecord {
-        pid
-        +idref: $ref
-        +gnd: $ref
-        +rero: $ref
-        +viaf_pid
+        <<MEF Aggregator>>
+        +String pid
+        +Reference idref
+        +Reference gnd
+        +Reference rero
+        +String viaf_pid
+        +String type
     }
 
     class AgentViafRecord {
-        pid: VIAF_ID
-        +idref_pid
-        +gnd_pid
-        +rero_pid
+        <<VIAF Aggregator>>
+        +String pid
+        +String idref_pid
+        +String gnd_pid
+        +String rero_pid
     }
 
     class AgentIdrefRecord {
-        pid: IDREF_ID
-        identifier
-        authorized_access_point[]
-        +md5
-        +language[]
-        +gender
-        +date_of_birth
-        +date_of_death
-        +biographical_information[]
-        +preferred_name
-        +qualifier
-        +numeration
-        +variant_name[]
-        +date_of_establishment
-        +date_of_termination
-        +conference
-        +variant_access_point
-        +parallel_access_point[]
-        +country_associated
-        +deleted
-        +relation_pid
-}
+        <<IdRef Source>>
+        +String pid
+        +Object[] identifiedBy
+        +String[] authorized_access_point
+        +String md5
+        +String[] language
+        +String gender
+        +String date_of_birth
+        +String date_of_death
+        +String[] biographical_information
+        +String preferred_name
+        +String qualifier
+        +String numeration
+        +String[] variant_name
+        +String date_of_establishment
+        +String date_of_termination
+        +Boolean conference
+        +String[] variant_access_point
+        +String[] parallel_access_point
+        +String country_associated
+        +String deleted
+        +Object relation_pid
+    }
 
     class AgentGndRecord {
-        pid: GND_ID
-        identifier
-        authorized_access_point[]
-        +md5
-        +language[]
-        +gender
-        +date_of_birth
-        +date_of_death
-        +biographical_information[]
-        +preferred_name
-        +qualifier
-        +numeration
-        +variant_name[]
-        +date_of_establishment
-        +date_of_termination
-        +conference
-        +variant_access_point
-        +parallel_access_point[]
-        +country_associated
-        +deleted
-        +relation_pid
+        <<GND Source>>
+        +String pid
+        +Object[] identifiedBy
+        +String[] authorized_access_point
+        +String md5
+        +String[] language
+        +String gender
+        +String date_of_birth
+        +String date_of_death
+        +String[] biographical_information
+        +String preferred_name
+        +String qualifier
+        +String numeration
+        +String[] variant_name
+        +String date_of_establishment
+        +String date_of_termination
+        +Boolean conference
+        +String[] variant_access_point
+        +String[] parallel_access_point
+        +String country_associated
+        +String deleted
+        +Object relation_pid
     }
 
     class AgentReroRecord {
-        pid: RERO_ID
-        identifier
-        authorized_access_point[]
-        +md5
-        +language[]
-        +gender
-        +date_of_birth
-        +date_of_death
-        +biographical_information[]
-        +preferred_name
-        +qualifier
-        +numeration
-        +variant_name[]
-        +date_of_establishment
-        +date_of_termination
-        +conference
-        +variant_access_point
-        +parallel_access_point[]
-        +country_associated
-        +deleted
-        +relation_pid
+        <<RERO Source>>
+        +String pid
+        +Object[] identifiedBy
+        +String[] authorized_access_point
+        +String md5
+        +String[] language
+        +String gender
+        +String date_of_birth
+        +String date_of_death
+        +String[] biographical_information
+        +String preferred_name
+        +String qualifier
+        +String numeration
+        +String[] variant_name
+        +String date_of_establishment
+        +String date_of_termination
+        +Boolean conference
+        +String[] variant_access_point
+        +String[] parallel_access_point
+        +String country_associated
+        +String deleted
+        +Object relation_pid
     }
 
-    AgentIdrefRecord  -- AgentMefRecord : with other Agents if in VIAF
-    AgentGndRecord  -- AgentMefRecord : with other Agents if in VIAF
-    AgentReroRecord  -- AgentMefRecord : with other Agents if in VIAF
-    AgentViafRecord  .. AgentMefRecord
+    AgentIdrefRecord --> AgentMefRecord : aggregated via VIAF
+    AgentGndRecord --> AgentMefRecord : aggregated via VIAF
+    AgentReroRecord --> AgentMefRecord : aggregated via VIAF
+    AgentViafRecord ..> AgentMefRecord : provides linking
+    AgentViafRecord --> AgentIdrefRecord : links via idref_pid
+    AgentViafRecord --> AgentGndRecord : links via gnd_pid
+    AgentViafRecord --> AgentReroRecord : links via rero_pid
+```
 
+## Concept Records
 
-    class ConceptMefRecord{
-        pid
-        +idref: $ref
-        +rero: $ref
+> **No VIAF integration:** VIAF (Virtual International Authority File) only aggregates
+> name authority records — persons, corporate bodies, and families. It does not cover
+> subject/concept authority records, so there is no `ConceptViafRecord` equivalent and
+> `ConceptMefRecord` carries no `viaf_pid` field.
+>
+> **Linking mechanism:** Concept records are linked directly via cross-reference
+> identifiers embedded in each source record's `identifiedBy` field (e.g. a BNF code
+> such as `FRBNF12345678` stored by an IdRef record, or a GND code stored by a GND
+> record). The `association_identifier` property extracts this identifier and
+> `get_association_record()` uses it to locate the counterpart record in another source.
+> Both are then stored as `$ref` links inside a shared `ConceptMefRecord`.
+
+```mermaid
+classDiagram
+    direction TB
+
+    class ConceptMefRecord {
+        <<MEF Aggregator>>
+        +String pid
+        +Reference idref
+        +Reference gnd
+        +Reference rero
+        +String type
     }
 
-
-    class ConceptIdrefRecord{
-        pid: IDREF_ID
-        +md5
-        +identifiedBy[]
-        +bnf_type
-        +authorized_access_point[]
-        +variant_access_point[]
-        +broader[]
-        +related[]
-        +narrower[]
-        +classification[]
-        +note[]
-        +closeMatch[]
-        +deleted
-        +relation_pid
-}
-
-    class ConceptReroRecord{
-        pid: RERO_ID
-        +md5
-        +identifiedBy[]
-        +bnf_type
-        +authorized_access_point[]
-        +variant_access_point[]
-        +broader[]
-        +related[]
-        +narrower[]
-        +classification[]
-        +note[]
-        +closeMatch[]
-        +deleted
-        +relation_pid
+    class ConceptIdrefRecord {
+        <<IdRef Source>>
+        +String pid
+        +String md5
+        +Object[] identifiedBy
+        +String bnf_type
+        +String[] authorized_access_point
+        +String[] variant_access_point
+        +Object[] broader
+        +Object[] related
+        +Object[] narrower
+        +Object[] classification
+        +String[] note
+        +String[] closeMatch
+        +String deleted
+        +Object relation_pid
     }
 
-    ConceptIdrefRecord -- ConceptMefRecord: not grouped with other Concepts
-    ConceptReroRecord -- ConceptMefRecord: not grouped with other
+    class ConceptGndRecord {
+        <<GND Source>>
+        +String pid
+        +String md5
+        +Object[] identifiedBy
+        +String[] authorized_access_point
+        +String[] variant_access_point
+        +Object[] broader
+        +Object[] related
+        +Object[] narrower
+        +Object[] classification
+        +String[] note
+        +String[] closeMatch
+        +String deleted
+        +Object relation_pid
+    }
+
+    class ConceptReroRecord {
+        <<RERO Source>>
+        +String pid
+        +String md5
+        +Object[] identifiedBy
+        +String bnf_type
+        +String[] authorized_access_point
+        +String[] variant_access_point
+        +Object[] broader
+        +Object[] related
+        +Object[] narrower
+        +Object[] classification
+        +String[] note
+        +String[] closeMatch
+        +String deleted
+        +Object relation_pid
+    }
+
+    ConceptIdrefRecord --> ConceptMefRecord : linked via association identifier
+    ConceptGndRecord --> ConceptMefRecord : linked via association identifier
+    ConceptReroRecord --> ConceptMefRecord : linked via association identifier
+```
+
+## Place Records
+
+> **Note:** RERO does not publish place authority data, so there is no PlaceReroRecord
+> and `PlaceMefRecord` has no `rero` reference field. This is intentional and differs
+> from the Agent and Concept sections where all three sources (IdRef, GND, RERO) exist.
+>
+> **Linking mechanism:** Same association-identifier pattern as Concept records. An
+> IdRef place record carries a GND code in its `identifiedBy` field (source `"GND"`,
+> value prefixed with `"(DE-101)"`). The `association_identifier` property strips the
+> prefix and uses it to locate the matching `PlaceGndRecord`, which is then stored
+> together with the IdRef record as `$ref` links inside a shared `PlaceMefRecord`.
+
+```mermaid
+classDiagram
+    direction TB
+
+    class PlaceMefRecord {
+        <<MEF Aggregator>>
+        +String pid
+        +Reference idref
+        +Reference gnd
+        +String type
+    }
+
+    class PlaceIdrefRecord {
+        <<IdRef Source>>
+        +String pid
+        +String md5
+        +Object[] identifiedBy
+        +String bnf_type
+        +String[] authorized_access_point
+        +String[] variant_access_point
+        +Object[] broader
+        +Object[] related
+        +Object[] narrower
+        +String[] note
+        +String[] closeMatch
+        +String deleted
+        +Object relation_pid
+    }
+
+    class PlaceGndRecord {
+        <<GND Source>>
+        +String pid
+        +String md5
+        +Object[] identifiedBy
+        +String[] authorized_access_point
+        +String[] variant_access_point
+        +Object[] broader
+        +Object[] related
+        +Object[] narrower
+        +String[] note
+        +String[] closeMatch
+        +String deleted
+        +Object relation_pid
+    }
+
+    PlaceIdrefRecord --> PlaceMefRecord : linked via association identifier
+    PlaceGndRecord --> PlaceMefRecord : linked via association identifier
 ```

@@ -15,31 +15,21 @@ dependencies = [
     "invenio-cache>=2.0.0,<3.0.0",
     "invenio-celery>=2.0.0,<3.0.0",
     "invenio-config>=1.0.3,<2.0.0",
-    "invenio-i18n>=3.0.0,<4.0.0",
     "invenio-db [postgresql] >=2.0.0,<3.0.0",
     # Invenio base bundle
-    "invenio-admin>=1.5.2,<2.0.0",
     "invenio-assets>=4.0.0,<5.0.0",
-    "invenio-formatter>=3.0.0,<4.0.0",
     "invenio-logging [sentry] >=4.0.0,<5.0.0",
-    "invenio-mail >=2.0.0,<3.0.0",
-    "invenio-rest >=2.0.0,<3.0.0",
     "invenio-theme >=4.0.0,<5.0.0",
     # Invenio auth bundle
     "invenio-access >=4.0.0,<6.0.0",
     "invenio-accounts >=6.0.0,<7.0.0",
     "invenio-oauth2server >=3.0.0,<4.0.0",
-    "invenio-oauthclient >=5.0.0,<6.0.0",
-    "invenio-userprofiles >=4.0.0,<5.0.0",
     # Invenio metadata bundle
     "invenio-indexer >=3.0.0,<4.0.0",
     "invenio-jsonschemas >=2.0.0,<3.0.0",
-    # "invenio-oaiserver >=3.0.0,<4.0.0",
     "invenio-pidstore >=2.0.0,<3.0.0",
     "invenio-records-rest >=3.0.0,<4.0.0",
-    "invenio-records-ui >=1.2.0,<2.0.0",
     "invenio-records >=3.0.0,<4.0.0",
-    # invenio-search-ui >=4.0.0,<5.0.0",
     "python-dotenv >=0.13.0",
     ## MEF specific python modules
     "PyYAML >=5.3.1",
@@ -48,11 +38,10 @@ dependencies = [
     # problem with marcxml `leader`
     "pymarc<5.2.0",
     "sqlitedict>=2.1.0",
-    "sentry-sdk<2.0.0",
     "rero-invenio-base>=0.3.1",
     "dojson>=1.7.0",
-    "setuptools>=80.9.0",
-    "flask-admin<2.0.0"
+    # problems pkg_resources, removed in setuptools 82
+    "setuptools (<82)",
 ]
 
 [dependency-groups]
@@ -104,8 +93,8 @@ concepts_rero = "rero_mef.concepts.rero.models"
 concepts_idref = "rero_mef.concepts.idref.models"
 concepts_gnd = "rero_mef.concepts.gnd.models"
 places_mef = "rero_mef.places.mef.models"
-placets_idref = "rero_mef.places.idref.models"
-placets_gnd = "rero_mef.places.gnd.models"
+places_idref = "rero_mef.places.idref.models"
+places_gnd = "rero_mef.places.gnd.models"
 
 [project.entry-points."invenio_pidstore.minters"]
 mef_id = "rero_mef.agents.mef.minters:mef_id_minter"
@@ -142,10 +131,10 @@ viaf = "rero_mef.agents.viaf.jsonschemas"
 agents_gnd = "rero_mef.agents.gnd.jsonschemas"
 agents_idref = "rero_mef.agents.idref.jsonschemas"
 agents_rero = "rero_mef.agents.rero.jsonschemas"
-cocepts_mef = "rero_mef.concepts.mef.jsonschemas"
-cocepts_rero = "rero_mef.concepts.rero.jsonschemas"
-cocepts_idref = "rero_mef.concepts.idref.jsonschemas"
-cocepts_gnd = "rero_mef.concepts.gnd.jsonschemas"
+concepts_mef = "rero_mef.concepts.mef.jsonschemas"
+concepts_rero = "rero_mef.concepts.rero.jsonschemas"
+concepts_idref = "rero_mef.concepts.idref.jsonschemas"
+concepts_gnd = "rero_mef.concepts.gnd.jsonschemas"
 places_mef = "rero_mef.places.mef.jsonschemas"
 places_idref = "rero_mef.places.idref.jsonschemas"
 places_gnd = "rero_mef.places.gnd.jsonschemas"
@@ -190,10 +179,6 @@ celery = "rero_mef.cli:celery"
 agents = "rero_mef.agents.cli:agents"
 monitoring = "rero_mef.monitoring.cli:monitoring"
 
-[project.entry-points."dojson.cli.rule"]
-
-[project.entry-points."dojson.cli.dump"]
-pjson = "rero_mef.dojson.utils:dump"
 
 [tool.poe.tasks]
 bootstrap = {cmd = "./scripts/bootstrap", help = "Runs bootstrap"}
@@ -209,7 +194,7 @@ tests_debug = {cmd = "pytest -s -vv --no-cov", help = "pytest -s -vv --no-cov"}
 
 [tool.pytest.ini_options]
 live_server_scope = "module"
-addopts = "--color=yes --doctest-glob='*.rst' --doctest-modules --exclude-warning-annotations --cov=rero_mef --cov-report=term-missing --ignore=setup.py --ignore=docs/conf.py"
+addopts = "--color=yes --doctest-glob='*.rst' --doctest-modules --exclude-warning-annotations --ignore=setup.py --ignore=docs/conf.py"
 testpaths = "docs tests rero_mef"
 # not displaying all the PendingDeprecationWarnings from invenio
 filterwarnings = "ignore::PendingDeprecationWarning"
@@ -221,8 +206,29 @@ extend-exclude = ["config.py", "conf.py"]
 extend-select = ["A", "C4", "INT", "ISC", "T20", "PIE", "Q", "RET", "SIM", "I", "N", "PERF", "W", "D", "F", "UP", "RUF"]
 ignore = ["D103", "D105", "D107", "D401", "N818", "PERF203", "PERF401", "RUF012", "RUF059", "SIM102", "SIM115"]
 
+[tool.ruff.lint.per-file-ignores]
+"rero_mef/alembic/*.py" = ["N999"]
+
 [tool.ruff.lint.pydocstyle]
 convention = "pep257"
+
+[tool.coverage.run]
+relative_files = true
+omit = [
+    "rero_mef/cli.py",
+    # filter.py builds Elasticsearch DSL callables; testing requires a live ES
+    # cluster and is covered implicitly through integration tests in config.py.
+    "rero_mef/filter.py",
+    "rero_mef/alembic/*",
+    "rero_mef/jsonschemas/*",
+    "rero_mef/marctojson/logger.py",
+    "rero_mef/marctojson/helper.py",
+    "rero_mef/marctojson/records.py",
+    "rero_mef/marctojson/do_skeleton.py",
+]
+
+[tool.coverage.report]
+precision = 2
 
 [build-system]
 requires = ["setuptools"]

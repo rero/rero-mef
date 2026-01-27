@@ -13,4 +13,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""MEF."""
+"""Place MEF aggregated records.
+
+This module provides the MEF (Multilingual Entity File) aggregation layer for
+place entities. MEF records combine and link place records from multiple
+authority sources (IdRef, GND) into unified geographic entities.
+
+The MEF record serves as the central hub that maintains relationships between
+equivalent place entities across different authority files, enabling
+multilingual geographic access and consistent indexing.
+"""

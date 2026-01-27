@@ -44,15 +44,14 @@ class Logger:
         log_level=logging.DEBUG,
         log_master=True,
     ):
-        """
-        Create an Looger object for messages logging.
+        """Create a Logger object for messages logging.
 
-        Keyword arguments:
-        name  -- string : message application name
-        log_output_file  -- string : name of the output file
-        log_console  -- string : print message on the console
-        log_level  -- logging.level : level of the log messages
-
+        :param name: Message application name.
+        :param log_output_file: Name of the output file.
+        :param log_console: If True, print messages on the console.
+        :param log_level: Level of the log messages (default: logging.DEBUG).
+        :param log_master: If True, set as master logger.
+        :raises LoggerError.InvalidNameError: If ``log_output_file`` cannot be created.
         """
         self.name = name
         # create logger
@@ -81,57 +80,104 @@ class Logger:
                 log_console.setFormatter(formatter)
                 self.logger.addHandler(log_console)
 
-    # close the logger
     def close(self):
-        """Docstring."""
+        """Close all handlers and remove them from the logger."""
         handlers = self.logger.handlers[:]
         for handler in handlers:
             handler.close()
             self.logger.removeHandler(handler)
 
-    # add id to logging
     def _log_id(self, lvl, id_, error, message):
-        """Docstring."""
+        """Emit a log record with an identifier and error context.
+
+        :param lvl: Logging level (e.g. ``logging.DEBUG``).
+        :param id_: Record identifier included in the log output.
+        :param error: Error context string included in the log output.
+        :param message: Log message body.
+        """
         self.logger.log(lvl, message, extra={"id": id_, "error": error})
 
-    # with id---
     def debug_id(self, id_, error, message):
-        """Docstring."""
+        """Log a DEBUG message with a record identifier.
+
+        :param id_: Record identifier.
+        :param error: Error context string.
+        :param message: Log message body.
+        """
         self._log_id(logging.DEBUG, id_, error, message)
 
     def info_id(self, id_, error, message):
-        """Docstring."""
+        """Log an INFO message with a record identifier.
+
+        :param id_: Record identifier.
+        :param error: Error context string.
+        :param message: Log message body.
+        """
         self._log_id(logging.INFO, id_, error, message)
 
     def warning_id(self, id_, error, message):
-        """Docstring."""
+        """Log a WARNING message with a record identifier.
+
+        :param id_: Record identifier.
+        :param error: Error context string.
+        :param message: Log message body.
+        """
         self._log_id(logging.WARNING, id_, error, message)
 
     def error_id(self, id_, error, message):
-        """Docstring."""
+        """Log an ERROR message with a record identifier.
+
+        :param id_: Record identifier.
+        :param error: Error context string.
+        :param message: Log message body.
+        """
         self._log_id(logging.ERROR, id_, error, message)
 
     def critical_id(self, id_, error, message):
-        """Docstring."""
+        """Log a CRITICAL message with a record identifier.
+
+        :param id_: Record identifier.
+        :param error: Error context string.
+        :param message: Log message body.
+        """
         self._log_id(logging.CRITICAL, id_, error, message)
 
-    # without id---
     def debug(self, error, message):
-        """Docstring."""
+        """Log a DEBUG message without a record identifier.
+
+        :param error: Error context string.
+        :param message: Log message body.
+        """
         self.debug_id("", error, message)
 
     def info(self, error, message):
-        """Docstring."""
+        """Log an INFO message without a record identifier.
+
+        :param error: Error context string.
+        :param message: Log message body.
+        """
         self.info_id("", error, message)
 
     def warning(self, error, message):
-        """Docstring."""
+        """Log a WARNING message without a record identifier.
+
+        :param error: Error context string.
+        :param message: Log message body.
+        """
         self.warning_id("", error, message)
 
     def error(self, error, message):
-        """Docstring."""
+        """Log an ERROR message without a record identifier.
+
+        :param error: Error context string.
+        :param message: Log message body.
+        """
         self.error_id("", error, message)
 
     def critical(self, error, message):
-        """Docstring."""
+        """Log a CRITICAL message without a record identifier.
+
+        :param error: Error context string.
+        :param message: Log message body.
+        """
         self.critical_id("", error, message)

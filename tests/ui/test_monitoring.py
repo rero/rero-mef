@@ -15,11 +15,32 @@
 
 """Test monitoring."""
 
+from unittest.mock import MagicMock, patch
+
 from click.testing import CliRunner
 
 from rero_mef.agents.idref.api import AgentIdrefRecord
 from rero_mef.monitoring.api import Monitoring
-from rero_mef.monitoring.cli import es_db_counts_cli, es_db_missing_cli
+from rero_mef.monitoring.cli import (
+    db_connection_counts as db_conn_counts_cmd,
+)
+from rero_mef.monitoring.cli import (
+    db_connections as db_conns_cmd,
+)
+from rero_mef.monitoring.cli import (
+    es as es_cli,
+)
+from rero_mef.monitoring.cli import (
+    es_db_counts_cli,
+    es_db_missing_cli,
+    mef_counts_cli,
+)
+from rero_mef.monitoring.cli import (
+    es_indices as es_indices_cli,
+)
+from rero_mef.monitoring.cli import (
+    redis as redis_cli,
+)
 
 
 def test_monitoring(app, agent_idref_data, script_info):
@@ -71,14 +92,13 @@ def test_monitoring(app, agent_idref_data, script_info):
 
     runner = CliRunner()
     res = runner.invoke(es_db_missing_cli, ["aidref", "-d", 0], obj=script_info)
-    assert res.output == "aidref: pids missing in ES:\n069774331\n"
+    assert res.output == "ES missing aidref: 069774331\n"
 
     runner = CliRunner()
     res = runner.invoke(es_db_counts_cli, ["-m", "-d", 0], obj=script_info)
     assert res.output.split("\n") == [
         *cli_output,
-        "aidref: pids missing in ES:",
-        "069774331",
+        "ES missing aidref: 069774331",
         "",
     ]
 
@@ -95,3 +115,99 @@ def test_monitoring(app, agent_idref_data, script_info):
     assert mon.get_es_count("agents_idref") == 1
     assert mon.check() == {"aidref": {"db_es": -1}}
     assert mon.missing("aidref") == {"DB": ["069774331"], "ES": [], "ES duplicate": []}
+
+    # print_missing: DB-missing case (pid in ES but not DB)
+    runner = CliRunner()
+    res = runner.invoke(es_db_missing_cli, ["aidref", "-d", "0"], obj=script_info)
+    assert "DB missing" in res.output
+
+
+def test_monitoring_print_missing_error(app, script_info):
+    """print_missing with unknown doc_type outputs the error message."""
+    runner = CliRunner()
+    res = runner.invoke(es_db_missing_cli, ["xxx", "-d", "0"], obj=script_info)
+    assert "xxx" in res.output
+    assert "Error" in res.output
+
+
+def test_monitoring_info_difference_db_es(app, agent_idref_data):
+    """info(difference_db_es=True) is called when DB==ES counts."""
+    mon = Monitoring(time_delta=0)
+    idref = AgentIdrefRecord.create(
+        data=agent_idref_data, delete_pid=False, dbcommit=True, reindex=True
+    )
+    AgentIdrefRecord.flush_indexes()
+    # counts match → difference_db_es branch is entered
+    info = mon.info(difference_db_es=True)
+    assert "aidref" in info
+    # clean up
+    idref.delete(force=True, dbcommit=True, delindex=True)
+    AgentIdrefRecord.flush_indexes()
+
+
+def test_monitoring_check_mef(app):
+    """check_mef returns a dict with entity-level MEF vs DB counts."""
+    mon = Monitoring(time_delta=0)
+    result = mon.check_mef()
+    assert isinstance(result, dict)
+
+
+def test_monitoring_cli_mef_counts(app, script_info):
+    """mef_counts_cli prints the MEF/DB comparison table."""
+    runner = CliRunner()
+    res = runner.invoke(mef_counts_cli, ["-d", "0"], obj=script_info)
+    assert res.exit_code == 0
+    assert "MEF" in res.output
+
+
+def test_monitoring_cli_es(app, script_info):
+    """Es CLI prints ES cluster health info."""
+    runner = CliRunner()
+    res = runner.invoke(es_cli, [], obj=script_info)
+    assert res.exit_code == 0
+    assert "status" in res.output
+
+
+def test_monitoring_cli_es_indices(app, script_info):
+    """es_indices CLI outputs index listing without error."""
+    runner = CliRunner()
+    res = runner.invoke(es_indices_cli, [], obj=script_info)
+    assert res.exit_code == 0
+
+
+def test_monitoring_cli_redis(app, script_info):
+    """Redis CLI prints Redis info (mocked)."""
+    mock_redis = MagicMock()
+    mock_redis.info.return_value = {"redis_version": "6.0.0", "used_memory": 1024}
+    with patch("rero_mef.monitoring.cli.Redis") as mock_redis_cls:
+        mock_redis_cls.from_url.return_value = mock_redis
+        runner = CliRunner()
+        res = runner.invoke(redis_cli, [], obj=script_info)
+    assert res.exit_code == 0
+    assert "redis_version" in res.output
+
+
+def test_monitoring_cli_db_connection_counts(app, script_info):
+    """db_connection_counts CLI prints connection stats (mocked DB query)."""
+    mock_result = MagicMock()
+    mock_result.first.return_value = (100, 5, 3, 92)
+    with patch("rero_mef.monitoring.cli.db") as mock_db:
+        mock_db.session.execute.return_value = mock_result
+        runner = CliRunner()
+        res = runner.invoke(db_conn_counts_cmd, [], obj=script_info)
+    assert res.exit_code == 0
+    assert "max" in res.output
+
+
+def test_monitoring_cli_db_connections(app, script_info):
+    """db_connections CLI prints per-connection details (mocked DB query)."""
+    mock_result = MagicMock()
+    mock_result.fetchall.return_value = [
+        (1, "app", "127.0.0.1", 5432, "t1", "t2", "t3", None, "idle", "x")
+    ]
+    with patch("rero_mef.monitoring.cli.db") as mock_db:
+        mock_db.session.execute.return_value = mock_result
+        runner = CliRunner()
+        res = runner.invoke(db_conns_cmd, [], obj=script_info)
+    assert res.exit_code == 0
+    assert "application_name" in res.output

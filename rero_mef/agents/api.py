@@ -44,7 +44,7 @@ class AgentRecord(EntityRecord):
             delete_pid=delete_pid,
             dbcommit=dbcommit,
             reindex=reindex,
-            md5=True,
+            md5=md5,
             **kwargs,
         )
 
@@ -71,7 +71,8 @@ class AgentRecord(EntityRecord):
         mef_actions = {}
         viaf_records = [viaf_record] if viaf_record else []
         viaf_pids = {viaf_record.pid} if viaf_record else set()
-        # get all VIAF records
+        # Collect all VIAF records linked to this agent to ensure we find
+        # all related MEF records (agents can be linked to multiple VIAF records)
         for viaf in AgentViafRecord.get_viaf(self):
             if viaf.pid not in viaf_pids:
                 viaf_pids.add(viaf.pid)
@@ -81,13 +82,14 @@ class AgentRecord(EntityRecord):
                 f"MULTIPLE VIAF FOUND FOR: {self.name} {self.pid} | "
                 f"viaf: {', '.join([viaf.pid for viaf in viaf_records])}"
             )
-        # get all VIAF associated MEF records.
+        # Collect all MEF records associated with found VIAF records
+        # This ensures we don't create duplicate MEF records
         for viaf in viaf_records:
             for mef in AgentMefRecord.get_mef(viaf.pid, viaf.name):
                 if mef.pid not in mef_pids:
                     mef_pids.add(mef.pid)
                     mef_records.append(mef)
-        # get all MEF records by agent pid
+        # Also collect MEF records directly linked to this agent by PID
         for mef in AgentMefRecord.get_mef(self.pid, self.name):
             if mef.pid not in mef_pids:
                 mef_pids.add(mef.pid)
@@ -103,11 +105,13 @@ class AgentRecord(EntityRecord):
         )
         old_pids = set()
         if mef_records:
-            # We have MEF records change them.
+            # Multiple MEF records found: consolidate them
+            # Keep the first MEF record and merge/discard the others
             for mef in mef_records[1:]:
-                # Delete ref in MEF records
+                # Remove this agent's reference from duplicate MEF records
                 if old_ref := mef.pop(self.name, None):
                     old_pid = old_ref["$ref"].split("/")[-1]
+                    # Track old PIDs that need new MEF records created
                     if old_pid != self.pid:
                         old_pids.add(old_pid)
                         mef_actions[old_pid] = Action.DELETE
@@ -144,7 +148,17 @@ class AgentRecord(EntityRecord):
             mef_actions[mef_record.pid] = Action.CREATE
         if reindex:
             AgentMefRecord.flush_indexes()
-        # create all MEF records for old pids
+        # Recreate MEF records for agents that were removed during consolidation.
+        # This ensures agents that were previously in duplicate MEF records
+        # still have their own MEF records after consolidation.
+        # dbcommit=True and reindex=True are intentionally hardcoded here:
+        # the new MEF records must be persisted and indexed immediately so that
+        # subsequent calls to create_or_update_mef for other agents can see them
+        # and avoid creating further duplicates. Using the caller's flags could
+        # leave these records invisible within the same transaction.
+        # Recursion depth is bounded: old_pids are agents that were displaced
+        # from a duplicate MEF record; once they get their own fresh MEF record
+        # (no existing duplicates to consolidate), the recursion terminates.
         for old_pid in old_pids:
             old_rec = self.get_record_by_pid(old_pid)
             mef, action = old_rec.create_or_update_mef(dbcommit=True, reindex=True)
@@ -155,12 +169,10 @@ class AgentRecord(EntityRecord):
     def get_online_record(cls, id_, debug=False):
         """Get online Record.
 
-        Has to be overloaded in agent class.
-
         :param id_: Id of online record.
         :param debug: Debug print.
         :returns: record or None
-        Has to be overloaded in agent class.
+        :raises NotImplementedError: Must be implemented by subclasses.
         """
         raise NotImplementedError()
 

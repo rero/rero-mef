@@ -13,4 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Elasticsearch mappings."""
+"""Elasticsearch index mappings for place MEF records.
+
+Defines the Elasticsearch field mappings and analyzers for indexing and
+searching place MEF records. Includes multilingual analysis and geographic support.
+"""
