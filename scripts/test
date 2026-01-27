@@ -66,16 +66,28 @@ add_exceptions() {
 
 set -e
 info_msg "Check vulnerabilities:"
-# pip     25.2    GHSA-4xh5-x5gv-qwph
-add_exceptions "GHSA-4xh5-x5gv-qwph"
-# urllib3 1.26.20 GHSA-pq67-6m6q-mj2v 2.5.0
-add_exceptions "GHSA-pq67-6m6q-mj2v"
-# urllib3 1.26.20 CVE-2025-66418 2.6.0
+# urllib3 1.26.x -> 2.x upgrade blocked by invenio-search[elasticsearch7]
+# which pins urllib3<2.0 via elasticsearch-py 7.x.
+# CVE-2025-50181 (fixed 2.5.0): HTTP redirects not disabled when PoolManager is configured to
+# disable them, potentially enabling SSRF or open-redirect bypass. Mitigation: rero-mef does not
+# configure PoolManager-level redirect disabling; all outbound HTTP goes through trusted
+# internal services or OAI endpoints where SSRF is not a concern.
+add_exceptions "CVE-2025-50181"
+# CVE-2025-66418 (fixed 2.6.0): unbounded number of links in the chained Content-Encoding
+# decompression pipeline (e.g. Content-Encoding: gzip, zstd, gzip, …), enabling DoS via CPU/memory exhaustion.
+# CVE-2025-66471 (fixed 2.6.0): streaming API improperly handles highly compressed data (decompression bomb).
+# CVE-2026-21441 (fixed 2.6.3): streaming API drains and decompresses response bodies
+# before the consumer reads them, bypassing configured read/size limits for any Content-Encoding.
+# Mitigation: all HTTP traffic goes through a reverse proxy (HAProxy/Nginx)
+# that enforces response size limits and strips unexpected Content-Encoding;
+# no untrusted streaming responses are consumed directly.
 add_exceptions "CVE-2025-66418"
-# urllib3 1.26.20 CVE-2025-66471 2.6.0
 add_exceptions "CVE-2025-66471"
-# urllib3 1.26.20 CVE-2026-21441 2.6.3
 add_exceptions "CVE-2026-21441"
+# sqlitedict 2.1.0 CVE-2024-35515 (no patched release):
+# Insecure deserialization via pickle. Mitigated: SqliteDict is instantiated with
+# encode=json.dumps / decode=json.loads, so pickle is never invoked.
+add_exceptions "CVE-2024-35515"
 pip-audit ${pip_audit_exceptions}
 
 info_msg "Test formatting:"
@@ -83,7 +95,11 @@ ruff format . --check
 info_msg "Test linting:"
 ruff check
 info_msg "Tests:"
-pytest
+if [ "${RERO_MEF_COVERAGE}" = "true" ]; then
+  pytest --cov=rero_mef --cov-report=term-missing --cov-report=xml
+else
+  pytest
+fi
 
 success_msg "Perfect ${PROGRAM}! See you soon…"
 exit 0

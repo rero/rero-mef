@@ -13,4 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Tests e2e."""
+"""End-to-end tests.
+
+Tests complete user workflows and system integration scenarios from
+front-end to back-end, including full application behavior.
+"""

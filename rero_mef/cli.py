@@ -552,7 +552,12 @@ def csv_diff(
     compair_data = {}
     if sqlite_dict:
         compair_data = SqliteDict(
-            sqlite_dict, autocommit=False, outer_stack=False, journal_mode="OFF"
+            sqlite_dict,
+            autocommit=False,
+            outer_stack=False,
+            journal_mode="OFF",
+            encode=json.dumps,
+            decode=json.loads,
         )
         compair_data.clear()
         compair_data.commit()

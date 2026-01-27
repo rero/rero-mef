@@ -13,7 +13,25 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Agents."""
+"""Agent entity management for bibliographic authorities.
+
+This module provides classes and functionality for managing agent entities
+(persons, organizations, families) from multiple authority sources. Agents
+are aggregated into MEF records that link equivalent entities across
+different international authority files.
+
+Supported authority sources:
+    - VIAF (Virtual International Authority File)
+    - IdRef (French bibliographic agency)
+    - GND (German National Library)
+    - RERO (Swiss library network)
+
+Main components:
+    - AgentMefRecord: Aggregated MEF records for agents
+    - Agent*Record classes: Authority-specific agent records
+    - Agent*Indexer classes: Elasticsearch indexing
+    - Agent*Search classes: Search and retrieval functionality
+"""
 
 from ..api import Action
 from .gnd.api import AgentGndIndexer, AgentGndRecord, AgentGndSearch

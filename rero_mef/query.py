@@ -55,13 +55,32 @@ def and_search_factory(self, search, query_parser=None):
 
     urlkwargs.add("q", query_string)
 
-    # include deleted
+    # Check if deleted records should be included in search results
+    # By default, exclude deleted records unless explicitly requested
     with_deleted = request.args.get(
         "with_deleted", default=False, type=lambda v: v.lower() in ["true", "1"]
     )
     if not with_deleted:
-        search = search.exclude("exists", field="deleted").exclude(
-            "exists", field="*.deleted"
+        search = search.exclude("exists", field="deleted")
+        # Build deleted entities exclusion dynamically from per-index facets config
+        facets = current_app.config.get("RECORDS_REST_FACETS", {})
+        index_aggs = facets.get(search_index, {}).get("aggs", {})
+        should_list = (
+            index_aggs.get("deleted_entities", {})
+            .get("filter", {})
+            .get("bool", {})
+            .get("should", [])
         )
+        deleted_fields = [
+            field
+            for item in should_list
+            if (field := item.get("exists", {}).get("field"))
+        ]
+        if deleted_fields:
+            search = search.exclude(
+                "bool",
+                should=[Q("exists", field=f) for f in deleted_fields],
+                minimum_should_match=1,
+            )
 
     return search, urlkwargs

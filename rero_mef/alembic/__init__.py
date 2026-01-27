@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2024 RERO
+# Copyright (C) 2020 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -13,12 +13,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""GND place records.
+"""Database migration scripts using Alembic.
 
-This module provides classes for managing place entities from the GND
-authority file (Gemeinsame Normdatei), maintained by the German National
-Library.
+This module contains Alembic migration scripts for managing database schema
+changes. Alembic is used to track and apply incremental changes to the
+database structure over time.
 
-GND provides geographic authority control for places, jurisdictions, and
-other geographic entities, as used by German-speaking libraries and cultural institutions.
+Migration scripts include:
+    - Schema initialization and updates
+    - Table modifications
+    - Data migrations
+    - Index management
 """

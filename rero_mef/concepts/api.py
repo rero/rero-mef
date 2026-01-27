@@ -40,12 +40,12 @@ class ConceptRecord(ConceptPlaceRecord):
             delete_pid=delete_pid,
             dbcommit=dbcommit,
             reindex=reindex,
-            md5=True,
+            md5=md5,
             **kwargs,
         )
 
     def delete(self, force=False, dbcommit=False, delindex=False):
-        """Delete agent from MEF record."""
+        """Delete concept from MEF record."""
         from rero_mef.concepts import ConceptMefRecord
 
         for mef_record in ConceptMefRecord.get_mef(self.pid, self.name):

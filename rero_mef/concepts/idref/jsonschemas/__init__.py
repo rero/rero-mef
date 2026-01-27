@@ -13,4 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""JSON schemas."""
+"""JSON schema definitions for IdRef concept records.
+
+Provides JSON schema validation rules for IdRef concept records, ensuring data
+structure and content integrity for IdRef subject authorities.
+"""

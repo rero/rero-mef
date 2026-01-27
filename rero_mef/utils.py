@@ -51,13 +51,14 @@ from invenio_oaiharvester.utils import get_oaiharvest_object
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PersistentIdentifier
 from invenio_records_rest.utils import obj_or_import_string
+from lxml.etree import XMLSyntaxError
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from pymarc.marcxml import parse_xml_to_array
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
 from sickle import OAIResponse, Sickle, oaiexceptions
 from sickle.iterator import OAIItemIterator
 from sickle.oaiexceptions import NoRecordsMatch
+from urllib3.util.retry import Retry
 
 # Hours can not be retrieved by get_info_by_oai_name
 # TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
@@ -186,16 +187,27 @@ class MyOAIItemIterator(OAIItemIterator):
         if access_token:
             params["accessToken"] = access_token
 
-        count = 0
-        while count < 5:
+        last_error = None
+        # Retry up to 5 times if harvesting fails (network issues, server errors)
+        for count in range(5):
             try:
                 self.oai_response = self.sickle.harvest(**params)
-                self.oai_response.xml  # try to get xml
-                count = 5
-            except Exception as err:
-                count += 1
-                current_app.logger.error(f"Sickle harvest {count} {err}")
-                sleep(60)
+                _ = (
+                    self.oai_response.xml
+                )  # force parse; raises XMLSyntaxError if malformed
+                break  # Success, exit retry loop
+            except (
+                requests.RequestException,
+                oaiexceptions.OAIError,
+                XMLSyntaxError,
+            ) as err:
+                last_error = err
+                current_app.logger.exception(f"Sickle harvest attempt {count + 1}/5")
+                # Wait 60 seconds before retrying to avoid overwhelming the server
+                if count < 4:
+                    sleep(60)
+        else:
+            raise last_error or RuntimeError("OAI harvest failed after 5 retries")
         error = self.oai_response.xml.find(f".//{self.sickle.oai_namespace}error")
         if error is not None:
             code = error.attrib.get("code", "UNKNOWN")
@@ -205,20 +217,23 @@ class MyOAIItemIterator(OAIItemIterator):
             except AttributeError:
                 raise oaiexceptions.OAIError(description)
         if self.resumption_token:
-            # Test we got a complete response ('resumptionToken' in xml)
+            # Verify we received a complete response with resumption token
+            # Incomplete responses can occur due to network issues or server problems
             resumption_token_element = self.oai_response.xml.find(
                 f".//{self.sickle.oai_namespace}resumptionToken"
             )
 
             if resumption_token_element is None:
-                current_app.logger.error(
-                    f"ERROR HARVESTING incomplete response: "
-                    f"{self.resumption_token.cursor} "
-                    f"{self.resumption_token.token}"
+                # Missing resumption token indicates an incomplete response.
+                # Raise instead of falling through to avoid leaving self.resumption_token
+                # and self._items in a stale state, which would cause infinite loops or
+                # repeated processing of the same batch.
+                raise oaiexceptions.OAIError(
+                    f"Incomplete response: resumptionToken element missing "
+                    f"(cursor={self.resumption_token.cursor}, "
+                    f"token={self.resumption_token.token})"
                 )
-                sleep(60)
-            else:
-                self.next_resumption_token_and_items()
+            self.next_resumption_token_and_items()
         else:
             # first time
             self.next_resumption_token_and_items()
@@ -250,6 +265,9 @@ def oai_process_records_from_dates(
     :param from_date: The lower bound date for the harvesting (optional).
     :param until_date: The upper bound date for the harvesting (optional).
     """
+    if days_span <= 0:
+        raise ValueError(f"days_span must be positive, got {days_span}")
+
     from rero_mef.api import Action
 
     # data on IDREF Servers starts on 2000-10-01
@@ -286,8 +304,11 @@ def oai_process_records_from_dates(
 
         from_date = parser.isoparse(dates_initial["from"])
         real_until_date = parser.isoparse(f"{dates_initial['until']} 23:59:59.999999")
+        # Process records in date range chunks (days_span) to avoid timeout issues
+        # with large date ranges and to enable incremental progress tracking
         while from_date < real_until_date:
             until_date = from_date + timedelta(days=days_span)
+            # Ensure we don't exceed the requested end date
             until_date = min(until_date, real_until_date)
             dates = {
                 "from": from_date.strftime(TIME_FORMAT),
@@ -333,6 +354,7 @@ def oai_process_records_from_dates(
                                 action_count.setdefault(action, 0)
                                 action_count[action] += 1
                                 m_actions = {}
+                                # If record was created/updated, also update its MEF (aggregated) record
                                 if action in [
                                     Action.CREATE,
                                     Action.UPDATE,
@@ -341,6 +363,7 @@ def oai_process_records_from_dates(
                                     m_record, m_actions = record.create_or_update_mef(
                                         dbcommit=True, reindex=True
                                     )
+                                    # Track MEF-level actions separately from entity-level actions
                                     for m_action in m_actions.values():
                                         mef_action_count.setdefault(m_action, 0)
                                         mef_action_count[m_action] += 1
@@ -407,6 +430,9 @@ def oai_save_records_from_dates(
     :param from_date: The lower bound date for the harvesting (optional).
     :param until_date: The upper bound date for the harvesting (optional).
     """
+    if days_span <= 0:
+        raise ValueError(f"days_span must be positive, got {days_span}")
+
     url, metadata_prefix, last_run, setspecs = get_info_by_oai_name(name)
 
     request = sickle(url, iterator=oai_item_iterator, max_retries=max_retries)
@@ -667,6 +693,8 @@ def raw_connection():
         engine = sqlalchemy.create_engine(uri)
         # conn = engine.connect()
         connection = engine.raw_connection()
+        # Set autocommit mode for bulk operations (COPY commands)
+        # This bypasses transaction overhead for better performance
         connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         return connection
 
@@ -1084,8 +1112,8 @@ class JsonWriter:
     def __init__(self, filename, indent=2):
         """Constructor.
 
-        :params filename: File name of the file to be written.
-        :param indent: indentation.
+        :param filename: File name of the file to be written.
+        :param indent: Indentation level.
         """
         self.indent = indent
         self.file_handle = open(filename, "w")

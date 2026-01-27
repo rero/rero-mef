@@ -13,4 +13,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""RERO."""
+"""RERO concept records.
+
+This module provides classes for managing concept entities from the RERO
+authority file, maintained by the RERO network (Swiss Western library network).
+
+RERO provides subject authority control for topics and concepts in Swiss
+Romandy (French-speaking Switzerland) libraries.
+"""

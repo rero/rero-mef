@@ -13,8 +13,16 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""RERO MEF monitoring."""
+"""System monitoring and health check functionality.
+
+This module provides tools for monitoring the health and status of the
+RERO MEF system, including database connectivity, Elasticsearch status,
+and service availability checks.
+
+Main components:
+    - Monitoring: Health check and system status monitoring
+"""
 
 from .api import Monitoring
 
-__all__ = (Monitoring,)
+__all__ = ("Monitoring",)

@@ -13,4 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Tests unit agents."""
+"""Unit tests for agent entity functionality.
+
+Tests agent record classes, indexing, serialization, and business logic
+across all authority sources (MEF, VIAF, IdRef, GND, RERO).
+"""

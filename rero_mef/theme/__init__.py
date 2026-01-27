@@ -13,4 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""RERO MEF theme module."""
+"""User interface theme and templates.
+
+Provides customized templates, styles, and assets for the RERO MEF
+web interface, including branding and layout configurations.
+"""

@@ -13,4 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""JSON resolvers."""
+"""JSON reference resolvers for GND agent records.
+
+Provides functionality to resolve JSON references ($ref) in GND agent records,
+enabling dynamic loading and linking of related entity data.
+"""

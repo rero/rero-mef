@@ -34,7 +34,7 @@ def rero_get_record(id_, debug=False):
     http://data.rero.ch/02-A000069866/marcxml
     """
     url = current_app.config["RERO_MEF_AGENTS_RERO_GET_RECORD"].replace("{id}", id_)
-    msg = f"API-agents.rero  get: {id:<15} {url}"
+    msg = f"API-agents.rero  get: {id_:<15} {url}"
     try:
         response = requests_retry_session().get(url)
         status_code = response.status_code

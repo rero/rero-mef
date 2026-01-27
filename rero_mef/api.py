@@ -16,6 +16,7 @@
 
 from copy import deepcopy
 from enum import Enum
+from time import sleep
 from uuid import uuid4
 
 from celery import current_app as current_celery_app
@@ -49,7 +50,11 @@ RERO_ILS_ENTITY_TYPES = {
 
 
 class Action(Enum):
-    """Class holding all available entities record creation actions."""
+    """Enumeration of all available entity record creation actions.
+
+    This enum defines the possible outcomes when creating, updating,
+    or deleting entity records in the system.
+    """
 
     CREATE = "create"
     UPDATE = "update"
@@ -66,32 +71,53 @@ class Action(Enum):
 
 
 class EntityRecordError:
-    """Base class for errors in the Record class."""
+    """Base class for entity record errors.
+
+    Contains all custom exception types raised during entity record
+    operations such as creation, update, deletion, and PID management.
+    """
 
     class Deleted(Exception):
-        """Record is deleted."""
+        """Exception raised when attempting to access a deleted record."""
 
     class NotDeleted(Exception):
-        """Record is not deleted."""
+        """Exception raised when a record is expected to be deleted but is not."""
 
     class PidMissing(Exception):
-        """Record pid missing."""
+        """Exception raised when a required PID (Persistent Identifier) is missing."""
 
     class PidChange(Exception):
-        """Record pid change."""
+        """Exception raised when attempting to change an immutable PID."""
 
     class PidAlreadyUsed(Exception):
-        """Record pid already used."""
+        """Exception raised when attempting to use a PID that already exists."""
 
     class PidDoesNotExist(Exception):
-        """Pid does not exist."""
+        """Exception raised when a referenced PID cannot be found."""
 
     class DataMissing(Exception):
-        """Data missing in record."""
+        """Exception raised when required data is missing from a record."""
+
+    class DatabaseRetryError(Exception):
+        """Exception raised when a database operation fails after all retries."""
 
 
 class EntityRecord(Record):
-    """Entity Record class."""
+    """Base class for entity records in the RERO MEF system.
+
+    Provides common functionality for managing entity records including:
+    - Creating, updating, and deleting records
+    - Managing persistent identifiers (PIDs)
+    - Indexing and searching
+    - MD5 checksums for change detection
+    - Database transaction management
+
+    Subclasses should define:
+    - minter: PID minter function
+    - fetcher: PID fetcher function
+    - provider: PID provider
+    - name: Entity type name
+    """
 
     minter = None
     fetcher = None
@@ -118,7 +144,17 @@ class EntityRecord(Record):
         md5=False,
         **kwargs,
     ):
-        """Create a new agent record."""
+        """Create a new entity record.
+
+        :param data: Dictionary containing the record data.
+        :param id_: UUID for the record. If None, a new UUID is generated.
+        :param delete_pid: If True, remove 'pid' from data before creating.
+        :param dbcommit: If True, commit changes to database and optionally reindex.
+        :param reindex: If True and dbcommit is True, reindex the record.
+        :param md5: If True, add MD5 checksum to the record data.
+        :param kwargs: Additional arguments passed to parent create method.
+        :returns: The newly created record instance.
+        """
         assert cls.minter
         if "$schema" not in data:
             data = add_schema(data, cls.provider.pid_type)
@@ -144,7 +180,20 @@ class EntityRecord(Record):
         reindex=False,
         test_md5=False,
     ):
-        """Create or update agent record."""
+        """Create a new record or update an existing one.
+
+        Checks if a record with the given PID already exists. If it does,
+        updates it; otherwise creates a new record.
+
+        :param data: Dictionary containing the record data with 'pid' field.
+        :param id_: UUID for the record (unused in this implementation).
+        :param delete_pid: If True, remove 'pid' from data before creating.
+        :param dbcommit: If True, commit changes to database.
+        :param reindex: If True, reindex the record after changes.
+        :param test_md5: If True, only update if MD5 checksum has changed.
+        :returns: Tuple (record, action) where record is the EntityRecord instance
+                  and action is an Action enum value indicating what occurred.
+        """
         action = Action.ERROR
         return_record = data
 
@@ -152,7 +201,8 @@ class EntityRecord(Record):
         if agent_record := cls.get_record_by_pid(pid):
             # record exist
             data = add_schema(data, agent_record.provider.pid_type)
-            # save the records old data if the new one is empty
+            # Preserve critical fields from the existing record if they're missing in new data
+            # This prevents accidental data loss during updates
             copy_fields = [
                 "pid",
                 "$schema",
@@ -163,8 +213,8 @@ class EntityRecord(Record):
                 "deleted",
             ]
             original_data = {k: v for k, v in agent_record.items() if k in copy_fields}
-            # dict merging, `original_data` values
-            # will be override by `data` values
+            # Merge dictionaries: original_data provides defaults,
+            # data overrides with new values
             data = {**original_data, **data}
             if test_md5:
                 return_record, action = agent_record.update_md5_changed(
@@ -195,7 +245,13 @@ class EntityRecord(Record):
         return return_record, action
 
     def delete(self, force=True, dbcommit=False, delindex=False):
-        """Delete record and persistent identifier."""
+        """Delete record and its persistent identifier.
+
+        :param force: If True, permanently delete the PID from database.
+        :param dbcommit: If True, commit the deletion to database.
+        :param delindex: If True, remove the record from search index.
+        :returns: The deleted record instance.
+        """
         persistent_identifier = self.get_persistent_identifier(self.id)
         persistent_identifier.delete()
         if force:
@@ -235,7 +291,10 @@ class EntityRecord(Record):
         :returns: Record.
         """
         data = deepcopy(data)
+        # Calculate MD5 hash of the new data
         data = add_md5(data)
+        # Compare MD5 hashes to detect if data has actually changed
+        # This prevents unnecessary database writes for identical data
         if data.get("md5", "data") == self.get("md5", "agent"):
             # record has no changes
             return self, Action.UPTODATE
@@ -243,7 +302,18 @@ class EntityRecord(Record):
         return return_record, Action.UPDATE
 
     def replace(self, data, commit=False, dbcommit=False, reindex=False):
-        """Replace data in record."""
+        """Replace all record data with new data.
+
+        Clears the current record and updates it with entirely new data.
+        The PID must be present in the new data and match the existing PID.
+
+        :param data: Dictionary containing the complete new record data.
+        :param commit: If True, commit to the record (deprecated, use dbcommit).
+        :param dbcommit: If True, commit changes to database.
+        :param reindex: If True, reindex the record after replacement.
+        :returns: The updated record instance.
+        :raises EntityRecordError.PidMissing: If 'pid' is not in the new data.
+        """
         new_data = deepcopy(data)
         pid = new_data.get("pid")
         if not pid:
@@ -256,13 +326,21 @@ class EntityRecord(Record):
         )
 
     def dbcommit(self, reindex=False, forceindex=False):
-        """Commit changes to db."""
+        """Commit changes to the database.
+
+        :param reindex: If True, reindex the record after committing.
+        :param forceindex: If True, use external version type for indexing.
+        """
         db.session.commit()
         if reindex:
             self.reindex(forceindex=forceindex)
 
     def reindex(self, forceindex=False):
-        """Reindex record."""
+        """Reindex the record in the search engine.
+
+        :param forceindex: If True, use external_gte version type to force indexing.
+        :returns: Result of the indexing operation.
+        """
         indexer = self.get_indexer_class()
         if forceindex:
             return indexer(version_type="external_gte").index(self)
@@ -270,47 +348,65 @@ class EntityRecord(Record):
 
     @classmethod
     def get_record_by_pid(cls, pid, with_deleted=False):
-        """Get ils record by pid value."""
+        """Retrieve a record by its persistent identifier.
+
+        Includes retry logic to handle transient database errors.
+
+        :param pid: The persistent identifier value.
+        :param with_deleted: If True, include deleted records in search.
+        :returns: The record instance if found, None otherwise.
+        """
         assert cls.provider
-        get_record_error_count = 0
-        get_record_ok = False
-        while not get_record_ok and get_record_error_count < 5:
+        for attempt in range(5):
             try:
                 persistent_identifier = PersistentIdentifier.get(
                     cls.provider.pid_type, pid
                 )
-                get_record_ok = True
                 return super().get_record(
                     persistent_identifier.object_uuid, with_deleted=with_deleted
                 )
-
             except PIDDoesNotExistError:
                 return None
             except NoResultFound:
                 return None
             except OperationalError:
-                get_record_error_count += 1
-                msg = f"Get record OperationalError: {get_record_error_count} {pid}"
-                current_app.logger.error(msg)
+                current_app.logger.exception(
+                    f"Get record OperationalError: {attempt + 1} {pid}"
+                )
                 db.session.rollback()
+                sleep(2**attempt)
+        current_app.logger.error(f"Get record failed after 5 retries: {pid}")
         return None
 
     @classmethod
     def get_pid_by_id(cls, id_):
-        """Get pid by uuid."""
+        """Get the PID value from a record UUID.
+
+        :param id_: The UUID of the record.
+        :returns: The PID value associated with the UUID.
+        """
         persistent_identifier = cls.get_persistent_identifier(id_)
         return str(persistent_identifier.pid_value)
 
     @classmethod
     def get_persistent_identifier(cls, id_):
-        """Get Persistent Identifier."""
+        """Get the PersistentIdentifier object for a record UUID.
+
+        :param id_: The UUID of the record.
+        :returns: The persistent identifier object.
+        """
         return PersistentIdentifier.get_by_object(
             cls.provider.pid_type, cls.object_type, id_
         )
 
     @classmethod
     def _get_all(cls, with_deleted=False, date=None):
-        """Get all persistent identifier records."""
+        """Build a query for all persistent identifiers.
+
+        :param with_deleted: If True, include deleted records.
+        :param date: If provided, only include records created before this date.
+        :returns: SQLAlchemy query object for persistent identifiers.
+        """
         query = PersistentIdentifier.query.filter_by(pid_type=cls.provider.pid_type)
         if not with_deleted:
             query = query.filter_by(status=PIDStatus.REGISTERED)
@@ -320,9 +416,17 @@ class EntityRecord(Record):
 
     @classmethod
     def get_all_pids(cls, with_deleted=False, batch_size=1000, date=None):
-        """Get all records pids. Return a generator iterator."""
+        """Generate all record PIDs in batches.
+
+        :param with_deleted: If True, include deleted records.
+        :param batch_size: Number of records to fetch per database query.
+        :param date: If provided, only include records created before this date.
+        :yields: PID values one at a time.
+        """
         query = cls._get_all(with_deleted=with_deleted, date=date)
         offset = 0
+        # Process records in batches to avoid loading entire dataset into memory
+        # Uses walrus operator (:=) to assign and check batch in one expression
         while batch := query.limit(batch_size).offset(offset).all():
             for identifier in batch:
                 yield identifier.pid_value
@@ -330,7 +434,12 @@ class EntityRecord(Record):
 
     @classmethod
     def get_all_deleted_pids(cls, batch_size=1000, from_date=None):
-        """Get all records pids. Return a generator iterator."""
+        """Generate PIDs of all deleted records in batches.
+
+        :param batch_size: Number of records to fetch per database query.
+        :param from_date: If provided, only include records deleted on or after this date.
+        :yields: PID values of deleted records one at a time.
+        """
         query = PersistentIdentifier.query.filter_by(
             pid_type=cls.provider.pid_type
         ).filter_by(status=PIDStatus.DELETED)
@@ -344,7 +453,13 @@ class EntityRecord(Record):
 
     @classmethod
     def get_all_ids(cls, with_deleted=False, batch_size=1000, date=None):
-        """Get all records uuids. Return a generator iterator."""
+        """Generate all record UUIDs in batches.
+
+        :param with_deleted: If True, include deleted records.
+        :param batch_size: Number of records to fetch per database query.
+        :param date: If provided, only include records created before this date.
+        :yields: Record UUIDs one at a time.
+        """
         query = cls._get_all(with_deleted=with_deleted, date=date)
         offset = 0
         while batch := query.limit(batch_size).offset(offset).all():
@@ -354,35 +469,53 @@ class EntityRecord(Record):
 
     @classmethod
     def get_all_records(cls, with_deleted=False, batch_size=1000):
-        """Get all records. Return a generator iterator."""
+        """Generate all record instances in batches.
+
+        :param with_deleted: If True, include deleted records.
+        :param batch_size: Number of records to fetch per database query.
+        :yields: Record instances one at a time.
+        """
         for id_ in cls.get_all_ids(with_deleted=with_deleted, batch_size=batch_size):
             yield cls.get_record(id_)
 
     @classmethod
     def count(cls, with_deleted=False):
-        """Get record count."""
-        get_count_ok = False
-        get_count_count = 0
-        while not get_count_ok and get_count_count < 5:
+        """Count total number of records.
+
+        Includes retry logic to handle transient database errors.
+
+        :param with_deleted: If True, include deleted records in count.
+        :returns: Total number of records.
+        :raises EntityRecordError.DatabaseRetryError: If database operation fails after retries.
+        """
+        # Retry up to 5 times to handle transient database connection issues
+        for attempt in range(5):
             try:
-                get_count_ok = True
                 return cls._get_all(with_deleted=with_deleted).count()
             except OperationalError:
-                get_count_count += 1
-                msg = f"Get count OperationalError: {get_count_count}"
-                current_app.logger.error(msg)
+                current_app.logger.exception(
+                    f"Get count OperationalError: {attempt + 1}"
+                )
                 db.session.rollback()
-        raise OperationalError("Get count")
+                sleep(2**attempt)
+        raise EntityRecordError.DatabaseRetryError("Get count failed after 5 retries")
 
     @classmethod
     def index_all(cls):
-        """Index all records."""
+        """Index all records in the search engine.
+
+        :returns: Number of records indexed.
+        """
         ids = cls.get_all_ids()
         return cls.index_ids(ids)
 
     @classmethod
     def index_ids(cls, ids):
-        """Index ids."""
+        """Index records by their UUIDs.
+
+        :param ids: Iterable of record UUIDs to index.
+        :returns: Number of records indexed.
+        """
         count = 0
         for uuid in ids:
             count += 1
@@ -391,7 +524,13 @@ class EntityRecord(Record):
 
     @classmethod
     def get_indexer_class(cls):
-        """Get the indexer from config."""
+        """Get the indexer class from configuration.
+
+        Returns the configured indexer class for this record type,
+        or EntityIndexer as default if not configured.
+
+        :returns: The indexer class to use for this record type.
+        """
         try:
             indexer = obj_or_import_string(
                 current_app.config["RECORDS_REST_ENDPOINTS"][cls.provider.pid_type][
@@ -405,7 +544,10 @@ class EntityRecord(Record):
         return indexer
 
     def delete_from_index(self):
-        """Delete record from index."""
+        """Remove this record from the search engine index.
+
+        Logs a warning if the record is not found in the index.
+        """
         indexer = self.get_indexer_class()
         try:
             indexer().delete(self)
@@ -416,36 +558,57 @@ class EntityRecord(Record):
 
     @property
     def pid(self):
-        """Get record pid value."""
+        """Get the record's persistent identifier value.
+
+        :returns: The PID value.
+        """
         return self.get("pid")
 
     @property
     def persistent_identifier(self):
-        """Get Persistent Identifier."""
+        """Get the record's PersistentIdentifier object.
+
+        :returns: The persistent identifier object.
+        """
         return self.get_persistent_identifier(self.id)
 
     @classmethod
     def get_metadata_identifier_names(cls):
-        """Get metadata and identif table names."""
+        """Get database table names for metadata and identifiers.
+
+        :returns: Tuple (metadata_table_name, identifier_table_name).
+        """
         metadata = cls.model_cls.__tablename__
         identifier = cls.provider.pid_identifier
         return metadata, identifier
 
     @property
     def deleted(self):
-        """Get record deleted value."""
+        """Get the record's deletion status.
+
+        :returns: Deletion timestamp if deleted, None otherwise.
+        """
         return self.get("deleted")
 
 
 class ConceptPlaceRecord(EntityRecord):
-    """Mef concept place class."""
+    """Base class for Concept and Place entity records.
+
+    Extends EntityRecord with functionality for managing associations
+    between concepts/places and their MEF aggregation records.
+    Handles linking of related records through association identifiers.
+    """
 
     def get_association_record(self, association_cls, association_search):
-        """Get associated record.
+        """Get the associated record linked via association identifier.
 
-        :params association_cls: Association class
-        :params association_search: Association search class.
-        :returns: Associated record.
+        Searches for an associated record (concept or place) that shares
+        the same association identifier. Validates uniqueness and logs
+        errors if multiple records are found.
+
+        :param association_cls: The class of the associated record type.
+        :param association_search: The search class for finding associated records.
+        :returns: The associated record if found and unique, None if not found or multiple found.
         """
         if association_identifier := self.association_identifier:
             # Test if my identifier is unique
@@ -476,18 +639,30 @@ class ConceptPlaceRecord(EntityRecord):
 
     @property
     def association_identifier(self):
-        """Get associated record.
+        """Get the association identifier for this record.
 
-        Has to be overloaded in concept/place class.
+        This property must be implemented by concept/place subclasses
+        to define how they identify related records.
+
+        :returns: The association identifier value.
+        :raises NotImplementedError: Must be implemented by subclasses.
         """
         raise NotImplementedError()
 
     def create_or_update_mef(self, dbcommit=False, reindex=False):
-        """Create or update MEF and VIAF record.
+        """Create or update the MEF record for this concept/place.
 
-        :param dbcommit: Commit changes to DB.
-        :param reindex: Reindex record.
-        :returns: MEF record, MEF action
+        Handles the complex logic of MEF record management:
+        - Creates new MEF record if none exists
+        - Updates existing MEF record with new references
+        - Manages associations between related records
+        - Handles merging and splitting of MEF records
+
+        :param dbcommit: If True, commit changes to database.
+        :param reindex: If True, reindex affected records.
+        :returns: Tuple (mef_record, actions_dict) where mef_record is the
+                  MEF record instance and actions_dict maps MEF PIDs
+                  to Action enum values indicating what occurred.
         """
 
         def mef_create(mef_cls, data, association_identifier, dbcommit, reindex):
@@ -612,7 +787,10 @@ class ConceptPlaceRecord(EntityRecord):
                 and not bool(mef_other_pid)
                 and bool(mef_other_association_pid)
             ):
-                # Delete entity from old MEF and add it to new MEF
+                # Complex MEF reassociation: when current entity is in one MEF record
+                # but its association is in a different MEF record, we need to:
+                # 1. Remove the association from its current MEF record
+                # 2. Add it to the MEF record containing the current entity
                 ref = mef_associated_record.pop(association_name)
                 associated_mef_record = mef_associated_record.replace(
                     data=mef_associated_record, dbcommit=dbcommit, reindex=reindex
@@ -644,35 +822,48 @@ class ConceptPlaceRecord(EntityRecord):
 
     @classmethod
     def get_online_record(cls, id_, debug=False):
-        """Get online Record.
+        """Fetch a record from the online source.
 
-        :param id_: Id of online record.
-        :param debug: Debug print.
-        :returns: record or None
-        Has to be overloaded in concept/place class.
+        This method must be implemented by concept/place subclasses
+        to define how they retrieve records from external sources.
+
+        :param id_: The identifier of the record to fetch.
+        :param debug: If True, print debug information during fetch.
+        :returns: The fetched record data, or None if not found.
+        :raises NotImplementedError: Must be implemented by subclasses.
         """
         raise NotImplementedError()
 
 
 class EntityIndexer(RecordIndexer):
-    """Indexing class for mef."""
+    """Custom indexer for MEF entity records.
+
+    Extends Invenio's RecordIndexer with MEF-specific functionality
+    for bulk indexing operations and message queue processing.
+    """
 
     def bulk_index(self, record_id_iterator, index=None, doc_type=None):
-        """Bulk index records.
+        """Submit bulk index operations to the message queue.
 
-        :param record_id_iterator: Iterator yielding record UUIDs.
+        :param record_id_iterator: Iterator yielding record UUIDs to index.
+        :param index: Optional search engine index name override.
+        :param doc_type: Optional document type for cross-type indexing.
         """
         self._bulk_op(
             record_id_iterator, op_type="index", index=index, doc_type=doc_type
         )
 
     def process_bulk_queue(self, search_bulk_kwargs=None, stats_only=True):
-        """Process bulk indexing queue.
+        """Process and execute bulk indexing operations from the queue.
 
-        :param dict search_bulk_kwargs: Passed to `search.helpers.bulk`.
-        :param boolean stats_only: if `True` only report number of
-            successful/failed operations instead of just number of
-            successful and a list of error responses
+        Consumes messages from the indexing queue and performs bulk
+        operations against the search engine.
+
+        :param search_bulk_kwargs: Additional keyword arguments for search.helpers.bulk.
+        :param stats_only: If True, return only success/failure counts instead of
+                          detailed error responses.
+        :returns: Indexing statistics (success count, failure count) if
+                 stats_only is True, otherwise detailed results.
         """
         with current_celery_app.pool.acquire(block=True) as conn:
             consumer = Consumer(
@@ -700,9 +891,14 @@ class EntityIndexer(RecordIndexer):
         return count
 
     def _actionsiter(self, message_iterator):
-        """Iterate bulk actions.
+        """Generate bulk actions from message queue iterator.
 
-        :param message_iterator: Iterator yielding messages from a queue.
+        Processes messages from the queue, converting them into search
+        engine bulk action dictionaries. Handles acknowledgment and
+        rejection of messages based on processing success.
+
+        :param message_iterator: Iterator yielding messages from the indexing queue.
+        :yields: Search engine bulk action specifications.
         """
         for message in message_iterator:
             payload = message.decode()
@@ -720,10 +916,14 @@ class EntityIndexer(RecordIndexer):
                 current_app.logger.error(f"Failed to index record {uid}", exc_info=True)
 
     def _index_action(self, payload):
-        """Bulk index action.
+        """Create a bulk index action from a message payload.
 
-        :param payload: Decoded message body.
-        :returns: Dictionary defining the search engine bulk 'index' action.
+        Retrieves the record, prepares its data for indexing, and
+        constructs the search engine action dictionary.
+
+        :param payload: Decoded message body containing record ID and operation details.
+        :returns: Search engine bulk 'index' action specification including
+                 _id, _index, _source, and version information.
         """
         if doc_type := payload.get("doc_type"):
             record = get_entity_class(doc_type).get_record(payload["id"])
@@ -748,12 +948,15 @@ class EntityIndexer(RecordIndexer):
         return action
 
     def _bulk_op(self, record_id_iterator, op_type, index=None, doc_type=None):
-        """Index record in the search engine asynchronously.
+        """Send bulk operation messages to the indexing queue.
 
-        :param record_id_iterator: Iterator that yields record UUIDs.
-        :param op_type: Indexing operation (one of ``index``, ``create``,
-            ``delete`` or ``update``).
-        :param index: The search engine index. (Default: ``None``)
+        Publishes messages for each record to the message queue for
+        asynchronous processing by workers.
+
+        :param record_id_iterator: Iterator yielding record UUIDs.
+        :param op_type: Type of operation ('index', 'create', 'delete', 'update').
+        :param index: Optional search engine index name override.
+        :param doc_type: Optional document type for the operation.
         """
         with self.create_producer() as producer:
             for rec in record_id_iterator:

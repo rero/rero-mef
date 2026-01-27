@@ -35,9 +35,9 @@ class Monitoring:
     """
 
     def __init__(self, time_delta=0):
-        """Constructor.
+        """Initialize Monitoring instance.
 
-        :param time_delta: Minutes tu substract from DB EScreation time.
+        :param time_delta: Minutes to subtract from DB/ES creation time.
         """
         self.time_delta = int(time_delta)
 
@@ -243,14 +243,20 @@ class Monitoring:
 
         :param doc_type: doc type to print.
         """
-        for info, data in self.missing(doc_type=doc_type).items():
-            if info == "ERROR":
-                click.secho(data, fg="red")
-            elif data:
-                if info == "ES duplicate":
-                    click.secho(f"{doc_type}: duplicate in ES:", fg="red")
-                    pid_counts = [f"{pid}: {count}" for pid, count in data.items()]
-                    click.echo(", ".join(pid_counts))
-                else:
-                    click.secho(f"{doc_type}: pids missing in {info}:", fg="red")
-                    click.echo(", ".join(data))
+        missing = self.missing(doc_type=doc_type)
+        if "ERROR" in missing:
+            click.secho(f"Error: {missing['ERROR']}", fg="yellow")
+        else:
+            if missing.get("ES duplicate"):
+                click.secho(
+                    f"ES duplicate {doc_type}: {', '.join(missing['ES duplicate'])}",
+                    fg="red",
+                )
+            if missing.get("ES"):
+                click.secho(
+                    f"ES missing {doc_type}: {', '.join(missing['ES'])}", fg="red"
+                )
+            if missing.get("DB"):
+                click.secho(
+                    f"DB missing {doc_type}: {', '.join(missing['DB'])}", fg="red"
+                )

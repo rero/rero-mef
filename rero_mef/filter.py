@@ -25,7 +25,7 @@ def exists_filter(field):
     :returns: Function that returns the Terms query.
     """
 
-    def inner(values):
+    def inner(_values):
         return Q("exists", field=field)
 
     return inner
@@ -38,7 +38,40 @@ def not_exists_filter(field):
     :returns: Function that returns the Terms query.
     """
 
-    def inner(values):
+    def inner(_values):
         return Q("bool", must_not=[Q("exists", field=field)])
 
     return inner
+
+
+def multi_exists_filter(fields):
+    """Create a filter that checks if any of multiple fields exist.
+
+    :param fields: List of field names.
+    :returns: Function that returns a bool query with should clauses.
+    """
+
+    def inner(_values):
+        return Q(
+            "bool",
+            should=[Q("exists", field=field) for field in fields],
+            minimum_should_match=1,
+        )
+
+    return inner
+
+
+def deleted_entities_agg(fields):
+    """Build the ``deleted_entities`` aggregation dict from a list of fields.
+
+    :param fields: List of field names (e.g. ``["idref.deleted", "gnd.deleted"]``).
+    :returns: Elasticsearch filter aggregation dict.
+    """
+    return {
+        "filter": {
+            "bool": {
+                "should": [{"exists": {"field": f}} for f in fields],
+                "minimum_should_match": 1,
+            }
+        }
+    }

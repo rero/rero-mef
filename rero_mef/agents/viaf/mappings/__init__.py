@@ -13,4 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Elasticsearch mappings."""
+"""Elasticsearch index mappings for VIAF agent records.
+
+Defines the Elasticsearch field mappings and analyzers for indexing and
+searching VIAF agent records. Includes multilingual analysis support.
+"""

@@ -40,7 +40,7 @@ class PlaceRecord(ConceptPlaceRecord):
             delete_pid=delete_pid,
             dbcommit=dbcommit,
             reindex=reindex,
-            md5=True,
+            md5=md5,
             **kwargs,
         )
 

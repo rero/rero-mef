@@ -13,4 +13,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Tests ui."""
+"""User interface tests.
+
+Tests for web interface functionality, view rendering, and user interactions.
+"""

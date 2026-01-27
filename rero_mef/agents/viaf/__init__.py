@@ -13,4 +13,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""VIAF."""
+"""VIAF agent records.
+
+This module provides classes for managing agent entities from VIAF
+(Virtual International Authority File), maintained by OCLC.
+
+VIAF is an international authority file that aggregates and links
+national library authority files from around the world, providing
+global identifiers for persons, organizations, and other entities.
+"""
