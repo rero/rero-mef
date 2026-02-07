@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -109,7 +109,7 @@ class Transformation:
         GND_Aenderungsdienst/gndAenderungsdienst_node.html
         """
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_deleted")
+            self.logger.info("Call Function: %s", "trans_gnd_deleted")
         if self.marc.leader[5] in ["c", "d", "x"]:
             self.json_dict["deleted"] = datetime.now(timezone.utc).isoformat()
 
@@ -133,7 +133,7 @@ class Transformation:
     def trans_gnd_gender(self):
         """Transform gender 375 $a 1 = male, 2 = female, " " = not known."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_gender")
+            self.logger.info("Call Function: %s", "trans_gnd_gender")
         gender = ""
         if fields_375 := self.marc.get_fields("375"):
             if fields_375[0].get("a"):
@@ -150,7 +150,7 @@ class Transformation:
     def trans_gnd_language(self):
         """Transformation language 377 $a."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_language")
+            self.logger.info("Call Function: %s", "trans_gnd_language")
         if (field_377 := self.marc.get_fields("377")) and (
             language_list := [
                 language
@@ -163,14 +163,14 @@ class Transformation:
     def trans_gnd_pid(self):
         """Transformation pid from field 001."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_pid")
+            self.logger.info("Call Function: %s", "trans_gnd_pid")
         if field_001 := self.marc.get_fields("001"):
             self.json_dict["pid"] = field_001[0].data
 
     def trans_gnd_identifier(self):
         """Transformation identifier from field 001."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_identifier")
+            self.logger.info("Call Function: %s", "trans_gnd_identifier")
         fields_024 = self.marc.get_fields("024")
         for field_024 in fields_024:
             subfields_0 = field_024.get("0")
@@ -212,7 +212,7 @@ class Transformation:
             return None
 
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_birth_and_death_dates")
+            self.logger.info("Call Function: %s", "trans_gnd_birth_and_death_dates")
         dates_per_tag = {}
         if fields_100 := self.marc.get_fields("100"):
             if fields_100[0].get("d"):
@@ -271,7 +271,7 @@ class Transformation:
     def trans_gnd_numeration(self):
         """Transformation numeration 100 $b."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_numeration")
+            self.logger.info("Call Function: %s", "trans_gnd_numeration")
         subfields = {"b": " "}
         numeration = build_string_list_from_fields(self.marc, "100", subfields)
         if numeration and numeration[0]:
@@ -280,7 +280,7 @@ class Transformation:
     def trans_gnd_qualifier(self):
         """Transformation qualifier 100 $c."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_qualifier")
+            self.logger.info("Call Function: %s", "trans_gnd_qualifier")
         subfields = {"c": " "}
         qualifier = build_string_list_from_fields(self.marc, "100", subfields)
         if qualifier and qualifier[0]:
@@ -289,7 +289,7 @@ class Transformation:
     def trans_gnd_conference(self):
         """Transformation conference. false: 075 $b = b true: 075 $b = f."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_conference")
+            self.logger.info("Call Function: %s", "trans_gnd_conference")
         if self.marc.get_fields("110") or self.marc.get_fields("111"):
             if field_075 := self.marc.get("075"):
                 if subfields_b := field_075.get("b"):
@@ -310,7 +310,7 @@ class Transformation:
             if self.marc.get_fields("111"):
                 tags.append("111")
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_preferred_name")
+            self.logger.info("Call Function: %s", "trans_gnd_preferred_name")
         variant_names = self.json_dict.get("variant_name", [])
         for tag in tags:
             preferred_names = build_string_list_from_fields(
@@ -350,7 +350,7 @@ class Transformation:
             agent = "bf:Organisation"
 
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_authorized_access_point")
+            self.logger.info("Call Function: %s", "trans_gnd_authorized_access_point")
         variant_access_points = self.json_dict.get("variant_access_point", [])
         for tag in tags:
             authorized_access_points = build_string_list_from_fields(
@@ -368,7 +368,7 @@ class Transformation:
     def trans_gnd_variant_name(self):
         """Transformation variant_name 400/410/411."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_variant_name")
+            self.logger.info("Call Function: %s", "trans_gnd_variant_name")
         tag = "400"
         subfields = {"a": ", ", "b": ", ", "c": ", "}
         if self.marc.get_fields("410") or self.marc.get_fields("411"):
@@ -407,7 +407,7 @@ class Transformation:
             if self.marc.get_fields("411"):
                 tag = "411"
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_variant_access_point")
+            self.logger.info("Call Function: %s", "trans_gnd_variant_access_point")
         if variant_access_point := build_string_list_from_fields(
             record=self.marc, tag=tag, subfields=subfields
         ):
@@ -435,7 +435,7 @@ class Transformation:
             if self.marc.get_fields("711"):
                 tag = "711"
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_parallel_access_point")
+            self.logger.info("Call Function: %s", "trans_gnd_parallel_access_point")
         if parallel_access_point := build_string_list_from_fields(
             record=self.marc, tag=tag, subfields=subfields
         ):
@@ -444,7 +444,7 @@ class Transformation:
     def trans_gnd_country_associated(self):
         """Transformation country_associated 043 $c codes ISO 3166-1."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_country_associated")
+            self.logger.info("Call Function: %s", "trans_gnd_country_associated")
         if fields_043 := self.marc.get_fields("043"):
             if fields_043[0].get("c"):
                 country_split = fields_043[0]["c"].split("-")

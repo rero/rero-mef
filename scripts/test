@@ -59,12 +59,16 @@ msg "PROGRAM: ${PROGRAM}"
 if [[ -z "${VIRTUAL_ENV}" ]]; then
   error_msg+exit "Error - Launch this script via uv command:\n\uv run run-tests"
 fi
-pip_audit_exceptions=""
+
+pip_audit_exceptions=()
 add_exceptions() {
-  pip_audit_exceptions="$pip_audit_exceptions --ignore-vuln $1"""
+  pip_audit_exceptions+=(--ignore-vuln "$1")
 }
 
 set -e
+
+# Add exceptions below when a known vulnerability cannot yet be fixed.
+# Format: add_exception "VULN-ID"  # reason and upstream issue link
 info_msg "Check vulnerabilities:"
 # urllib3 1.26.x -> 2.x upgrade blocked by invenio-search[elasticsearch7]
 # which pins urllib3<2.0 via elasticsearch-py 7.x.
@@ -93,7 +97,7 @@ add_exceptions "CVE-2024-35515"
 # pins pytest<9.0.0. Mitigated: tests run in isolated environments with a single trusted
 # user; no untrusted local users have access to the test runner's /tmp.
 add_exceptions "CVE-2025-71176"
-pip-audit ${pip_audit_exceptions}
+pip-audit "${pip_audit_exceptions[@]}"
 
 info_msg "Test formatting:"
 ruff format . --check

@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -14,9 +14,10 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 """API for manipulating records."""
 
+import click
 from flask import current_app
 
-from rero_mef.utils import build_ref_string
+from rero_mef.utils import build_ref_string, get_entity_class, progressbar
 
 from ..api import Action, EntityIndexer, EntityRecord
 
@@ -103,6 +104,7 @@ class AgentRecord(EntityRecord):
         ref_string = build_ref_string(
             entity_type="agents", entity_name=self.name, entity_pid=self.pid
         )
+        viaf_pid = viaf_records[0].pid if viaf_records else None
         old_pids = set()
         if mef_records:
             # Multiple MEF records found: consolidate them
@@ -128,6 +130,8 @@ class AgentRecord(EntityRecord):
                     old_pids.add(old_pid)
                     mef_actions[old_pid] = Action.DELETE
                 mef_record[self.name] = {"$ref": ref_string}
+            if viaf_pid and mef_record.get("viaf_pid") != viaf_pid:
+                mef_record["viaf_pid"] = viaf_pid
             mef_record = mef_record.update(
                 data=mef_record, dbcommit=dbcommit, reindex=reindex
             )
@@ -137,8 +141,8 @@ class AgentRecord(EntityRecord):
             mef_data = {self.name: {"$ref": ref_string}}
             if self.deleted and not mef_data.get("deleted"):
                 mef_data["deleted"] = self.deleted
-            if viaf_records:
-                mef_data["viaf_pid"] = viaf_records[0].pid
+            if viaf_pid:
+                mef_data["viaf_pid"] = viaf_pid
             mef_record = AgentMefRecord.create(
                 data=mef_data,
                 dbcommit=dbcommit,
@@ -160,6 +164,12 @@ class AgentRecord(EntityRecord):
         # (no existing duplicates to consolidate), the recursion terminates.
         for old_pid in old_pids:
             old_rec = self.get_record_by_pid(old_pid)
+            if old_rec is None:
+                current_app.logger.warning(
+                    "create_or_update_mef: displaced agent %s not found, skipping",
+                    old_pid,
+                )
+                continue
             mef, action = old_rec.create_or_update_mef(dbcommit=True, reindex=True)
             mef_actions[old_pid] = action
         return mef_record, mef_actions
@@ -184,6 +194,123 @@ class AgentRecord(EntityRecord):
         for mef_record in AgentMefRecord.get_mef(self.pid, self.name):
             mef_record.reindex(forceindex=forceindex)
         return result
+
+
+def get_all_missing_viaf_pids(verbose=False):
+    """Get all missing VIAF pids.
+
+    :param verbose: Verbose.
+    :returns: Missing VIAF pids.
+    """
+    from .mef.api import AgentMefRecord
+    from .viaf.api import AgentViafRecord
+
+    if verbose:
+        click.echo("Get pids from VIAF ...")
+    progress = progressbar(
+        items=AgentViafRecord.get_all_pids(),
+        length=AgentViafRecord.count(),
+        verbose=verbose,
+        label="VIAF all",
+    )
+    missing_pids = dict.fromkeys(progress, 1)
+    if verbose:
+        click.echo("Get pids from MEF and calculate missing ...")
+    query = AgentMefRecord.search().filter("exists", field="viaf_pid")
+    progress = progressbar(
+        items=query.source(["pid", "viaf_pid"]).scan(),
+        length=query.count(),
+        verbose=verbose,
+        label="VIAF from MEF",
+    )
+    non_existing_pids = {
+        hit.pid: hit.viaf_pid
+        for hit in progress
+        if not missing_pids.pop(hit.viaf_pid, None)
+    }
+
+    return list(missing_pids), non_existing_pids
+
+
+def get_unlinked_agents(relink=False, dbcommit=False, reindex=False, progress=False):
+    """Yield VIAF lookup tasks for MEF records that have no VIAF link.
+
+    Scans Elasticsearch directly to collect the entity source code and pid
+    needed for each VIAF lookup, avoiding per-record database reads.
+    Excludes deleted MEF records, deleted linked entities, and entities that
+    are already covered by an existing local VIAF record.
+
+    :param relink: If True, relink MEF records to already existing local VIAF records when possible.
+    :param dbcommit: Commit relinking changes to DB.
+    :param reindex: Reindex relinked MEF records.
+    :param progress: Show progress bar while scanning MEF records.
+    :returns: Iterator of ``(mef_pid, viaf_source_code, entity_pid)`` tuples
+        for records that still require an online VIAF lookup.
+    """
+    from .mef.api import AgentMefRecord, AgentMefSearch
+    from .viaf.api import AgentViafSearch
+
+    entity_types = current_app.config.get("RERO_AGENTS", [])
+    entity_by_name = {}
+    for entity_type in entity_types:
+        entity_cls = get_entity_class(entity_type)
+        if hasattr(entity_cls, "viaf_source_code"):
+            entity_by_name[entity_cls.name] = entity_cls
+
+    if not entity_by_name:
+        return
+
+    # Build a set of entity pids already covered by local VIAF records.
+    # Those agents are not truly unlinked — they just need re-linking, not an
+    # online fetch.
+    entity_names = list(entity_by_name)
+    covered_pids = {}
+    for name in entity_names:
+        covered_search = (
+            AgentViafSearch()
+            .filter("exists", field=f"{name}_pid")
+            .source(["pid", f"{name}_pid"])
+        )
+        covered_pids[name] = {
+            hit_dict[f"{name}_pid"]: hit_dict["pid"]
+            for hit in covered_search.scan()
+            if (hit_dict := hit.to_dict()).get(f"{name}_pid")
+        }
+    query = (
+        AgentMefSearch()
+        .exclude("exists", field="viaf_pid")
+        .exclude("exists", field="deleted")
+        .filter("terms", sources=entity_names)
+    )
+    # Exclude MEF records with deleted linked entities
+    for name in entity_names:
+        query = query.exclude("exists", field=f"{name}.deleted")
+
+    length = query.count() if progress else 0
+    for hit in progressbar(
+        query.source(["pid", *entity_names]).scan(),
+        length=length,
+        verbose=progress,
+        label="MEF without VIAF",
+    ):
+        hit_dict = hit.to_dict()
+        mef_pid = hit_dict["pid"]
+        for name, entity_cls in entity_by_name.items():
+            if entity_data := hit_dict.get(name):
+                if entity_pid := entity_data.get("pid"):
+                    if viaf_pid := covered_pids[name].get(entity_pid):
+                        if relink:
+                            mef_record = AgentMefRecord.get_record(hit.meta.id)
+                            if mef_record.get("viaf_pid") != viaf_pid:
+                                mef_record["viaf_pid"] = viaf_pid
+                                mef_record.update(
+                                    data=mef_record,
+                                    dbcommit=dbcommit,
+                                    reindex=reindex,
+                                )
+                    else:
+                        yield mef_pid, entity_cls.viaf_source_code, entity_pid
+                    break
 
 
 class AgentIndexer(EntityIndexer):

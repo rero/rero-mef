@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -15,7 +15,12 @@
 
 """API for manipulating VIAF record."""
 
+import random
+import signal
+import threading
+import time
 from copy import deepcopy
+from urllib.parse import quote
 
 import click
 import requests
@@ -30,6 +35,7 @@ from rero_mef.utils import (
     progressbar,
     requests_retry_session,
 )
+from rero_mef.version import __version__
 
 from .. import AgentGndRecord, AgentIdrefRecord, AgentMefRecord, AgentReroRecord
 from ..api import Action, EntityIndexer, EntityRecord
@@ -39,6 +45,40 @@ from .models import ViafMetadata
 from .providers import ViafProvider
 
 _md5 = MD5Extension()
+
+
+def _sleep_with_countdown(wait_seconds):
+    """Sleep while showing a short progress countdown.
+
+    :param wait_seconds: Number of seconds to wait.
+    """
+    if wait_seconds <= 0:
+        return
+    hms = f"{wait_seconds // 3600:02d}:{(wait_seconds % 3600) // 60:02d}:{wait_seconds % 60:02d}"
+    with click.progressbar(
+        range(wait_seconds),
+        label=f"Retry-After={hms}",
+        length=wait_seconds,
+    ) as progress_items:
+        for _ in progress_items:
+            time.sleep(1)
+
+
+def _get_redirect_pid_from_msg(msg):
+    """Extract redirect target PID from a VIAF fetch message.
+
+    :param msg: VIAF fetch status message.
+    :returns: Redirect target PID or ``None``.
+    """
+    marker = "| REDIRECT -> "
+    if not msg or marker not in msg:
+        return None
+    redirect_to_pid = msg.split(marker, maxsplit=1)[1].strip()
+    return redirect_to_pid or None
+
+
+class RetryableVIAFError(RuntimeError):
+    """Transient VIAF fetch failure that callers should not treat as not-found."""
 
 
 class AgentViafSearch(RecordsSearch):
@@ -191,7 +231,7 @@ class AgentViafRecord(EntityRecord):
             """Update agents online.
 
             :param agent_class: Agent class to use.
-            :param pid: Agent pid to use..
+            :param pid: Agent pid to use.
             :param online: Try to get following agent types online.
             :return: Agent record and performed action.
             """
@@ -307,55 +347,204 @@ class AgentViafRecord(EntityRecord):
         :param rec_format: raw = get the not transformed VIAF record link = get the VIAF link record
         :returns: VIAF record as json
         """
-        viaf_format = "/viaf.json"
-        if rec_format == "link":
-            viaf_format = "/justlinks.json"
-            rec_format = "raw"
         viaf_url = current_app.config.get("RERO_MEF_VIAF_BASE_URL")
         url = f"{viaf_url}/viaf"
+        connect_timeout = current_app.config.get("RERO_MEF_VIAF_CONNECT_TIMEOUT")
+        read_timeout = current_app.config.get("RERO_MEF_VIAF_READ_TIMEOUT")
+        retries = current_app.config.get("RERO_MEF_VIAF_RETRIES")
+        total_timeout = current_app.config.get("RERO_MEF_VIAF_TOTAL_TIMEOUT")
+        request_delay = current_app.config.get("RERO_MEF_VIAF_REQUEST_DELAY")
+        request_jitter = current_app.config.get("RERO_MEF_VIAF_REQUEST_JITTER", 0)
+        retry_after_default = current_app.config.get(
+            "RERO_MEF_VIAF_RETRY_AFTER_DEFAULT"
+        )
+        retry_after_max = current_app.config.get("RERO_MEF_VIAF_RETRY_AFTER_MAX")
+        user_agent = current_app.config.get(
+            "RERO_MEF_VIAF_USER_AGENT",
+            f"rero-mef/{__version__} (+https://github.com/rero/rero-mef)",
+        )
+
+        headers = {
+            "Accept": "application/json",
+            "Accept-Language": "en-US,en;q=0.9",
+            "User-Agent": user_agent,
+        }
+
         if viaf_source_code.upper() == "VIAF":
-            url = f"{url}/{pid}{viaf_format}"
+            url = f"{url}/{pid}"
         else:
-            url = f"{url}/sourceID/{viaf_source_code}|{pid}{viaf_format}"
-        response = requests_retry_session().get(url)
+            source_id = quote(str(viaf_source_code), safe="")
+            source_pid = quote(str(pid), safe="")
+            url = f"{url}/sourceID/{source_id}%7C{source_pid}"
+
+        if request_delay:
+            time.sleep(float(request_delay) + random.uniform(0, float(request_jitter)))
+
+        # 429 is handled explicitly below so we can cap Retry-After sleeps.
+        retry_statuses = (500, 502, 503, 504)
+
+        def _perform_request():
+            if (
+                total_timeout
+                and hasattr(signal, "SIGALRM")
+                and threading.current_thread() is threading.main_thread()
+            ):
+
+                def _on_timeout(_signum, _frame):
+                    raise TimeoutError(f"request exceeded {total_timeout}s")
+
+                previous_handler = signal.getsignal(signal.SIGALRM)
+                signal.signal(signal.SIGALRM, _on_timeout)
+                signal.setitimer(signal.ITIMER_REAL, float(total_timeout))
+                try:
+                    return requests_retry_session(
+                        retries=retries,
+                        backoff_factor=1,
+                        status_forcelist=retry_statuses,
+                    ).get(
+                        url,
+                        headers=headers,
+                        timeout=(connect_timeout, read_timeout),
+                    )
+                finally:
+                    signal.setitimer(signal.ITIMER_REAL, 0)
+                    signal.signal(signal.SIGALRM, previous_handler)
+
+            return requests_retry_session(
+                retries=retries,
+                backoff_factor=1,
+                status_forcelist=retry_statuses,
+            ).get(
+                url,
+                headers=headers,
+                timeout=(connect_timeout, read_timeout),
+            )
+
+        max_attempts = 2
+        response = None
+        for attempt in range(1, max_attempts + 1):
+            try:
+                # requests' connect/read timeouts are not always sufficient to bound
+                # total wall-clock time under some network/proxy conditions.
+                response = _perform_request()
+            except TimeoutError as e:
+                msg = f"VIAF get: {pid:<15} {url} | REQUEST ERROR: {e}"
+                if attempt >= max_attempts:
+                    raise RetryableVIAFError(msg) from e
+                continue
+            except requests.RequestException as e:
+                msg = f"VIAF get: {pid:<15} {url} | REQUEST ERROR: {e}"
+                if attempt >= max_attempts:
+                    raise RetryableVIAFError(msg) from e
+                continue
+
+            if response.status_code != 429:
+                break
+
+            if response.status_code == 429:
+                retry_after = response.headers.get("Retry-After")
+                try:
+                    requested_sleep = (
+                        int(retry_after) if retry_after else retry_after_default
+                    )
+                except (TypeError, ValueError):
+                    requested_sleep = retry_after_default
+                capped_sleep = min(requested_sleep, retry_after_max)
+                wait_msg = (
+                    f"VIAF get: {pid:<15} {url} | RATE LIMITED (429) "
+                    f"Retry-After={requested_sleep}s"
+                    + (
+                        f" (capped to {capped_sleep}s)"
+                        if capped_sleep < requested_sleep
+                        else ""
+                    )
+                )
+                if attempt >= max_attempts:
+                    raise RetryableVIAFError(wait_msg)
+                click.echo(wait_msg)
+                _sleep_with_countdown(capped_sleep)
+                continue
+
         result = {}
+        msg = f"VIAF get: {pid:<15} {url} | HTTP {response.status_code}"
         if response.status_code == requests.codes.ok:
             msg = f"VIAF get: {pid:<15} {url} | OK"
-            if rec_format == "raw":
-                return response.json(), msg
-            data_json = response.json()
-            result["pid"] = data_json.get("viafID")
-            if sources := data_json.get("sources", {}).get("source"):
-                if isinstance(sources, dict):
-                    sources = [sources]
-                for source in sources:
-                    # get pid
-                    text = source.get("#text", "|")
-                    text = text.split("|")
-                    if bib_source := cls.sources.get(text[0], {}).get("name"):
-                        result[f"{bib_source}_pid"] = text[1]
-                        # get URL
-                        if nsid := source.get("@nsid"):
-                            if nsid.startswith("http"):
+            try:
+                data_json = response.json()
+
+                # Handle new API format with ns1:VIAFCluster wrapper
+                if "ns1:VIAFCluster" in data_json:
+                    data_json = data_json["ns1:VIAFCluster"]
+
+                if rec_format == "raw":
+                    return data_json, msg
+
+                # Extract VIAF ID (handle both old and new format, ensure string type)
+                viaf_id = data_json.get("viafID") or data_json.get("ns1:viafID")
+                result["pid"] = str(viaf_id) if viaf_id else None
+
+                # Extract sources (handle both old and new format with ns1: prefix)
+                sources_data = (
+                    data_json.get("sources") or data_json.get("ns1:sources") or {}
+                )
+                if isinstance(sources_data, dict):
+                    sources = sources_data.get("source") or sources_data.get(
+                        "ns1:source"
+                    )
+                else:
+                    sources = None
+
+                if sources:
+                    if isinstance(sources, dict):
+                        sources = [sources]
+                    for source in sources:
+                        # get pid (handle both old and new format, ensure string type)
+                        text = source.get("content") or source.get("#text", "|")
+                        text = str(text).split("|")
+                        if bib_source := cls.sources.get(text[0], {}).get("name"):
+                            result[f"{bib_source}_pid"] = text[1]
+                            # get URL (handle both old and new format)
+                            nsid = source.get("nsid") or source.get("@nsid")
+                            if nsid and str(nsid).startswith("http"):
                                 result[bib_source] = nsid
-                # get Wikipedia URLs
-                x_links = data_json.get("xLinks", {}).get("xLink", [])
-                if not isinstance(x_links, list):
-                    x_links = [x_links]
-                for x_link in x_links:
-                    if isinstance(x_link, dict) and result.get("wiki_pid"):
-                        text = x_link.get("#text")
-                        if text and "wikipedia" in text:
-                            result.setdefault("wiki", []).append(
-                                text.replace('"', "%22")
-                            )
-                if wiki_urls := result.get("wiki"):
-                    result["wiki"] = sorted(wiki_urls)
+
+                    # get Wikipedia URLs (handle both old and new format)
+                    x_links_data = (
+                        data_json.get("xLinks") or data_json.get("ns1:xLinks") or {}
+                    )
+                    x_links = (
+                        x_links_data.get("xLink", [])
+                        if isinstance(x_links_data, dict)
+                        else []
+                    )
+                    if not isinstance(x_links, list):
+                        x_links = [x_links]
+                    for x_link in x_links:
+                        if isinstance(x_link, dict) and result.get("wiki_pid"):
+                            # Handle both old and new format
+                            text = x_link.get("content") or x_link.get("#text")
+                            if text and "wikipedia" in text:
+                                result.setdefault("wiki", []).append(
+                                    text.replace('"', "%22")
+                                )
+                    if wiki_urls := result.get("wiki"):
+                        result["wiki"] = sorted(wiki_urls)
+            except Exception as e:
+                current_app.logger.exception(
+                    f"Error parsing VIAF response for {pid}: {e}"
+                )
+                return {}, f"VIAF get: {pid:<15} {url} | PARSE ERROR: {e}"
 
         # make sure we got a VIAF with the same pid for source
         if viaf_source_code.upper() == "VIAF":
             if result.get("pid") == pid:
                 return result, msg
+            # Redirect detected: VIAF cluster was merged into another
+            if result.get("pid"):
+                result["redirect_from"] = pid
+                return None, (
+                    f"VIAF get: {pid:<15} {url} | REDIRECT -> {result['pid']}"
+                )
         elif (
             result.get(f"{cls.sources.get(viaf_source_code, {}).get('name')}_pid")
             == pid
@@ -370,7 +559,20 @@ class AgentViafRecord(EntityRecord):
         :param reindex: Reindex record.
         :returns: record and actions message.
         """
-        online_data, _ = self.get_online_record(viaf_source_code="VIAF", pid=self.pid)
+        try:
+            online_data, msg = self.get_online_record(
+                viaf_source_code="VIAF", pid=self.pid
+            )
+        except RetryableVIAFError as err:
+            current_app.logger.warning(f"VIAF update failed for {self.pid}: {err}")
+            return None, Action.ERROR
+        if redirect_to_pid := _get_redirect_pid_from_msg(msg):
+            new_record, action, _redirect_info = self.handle_redirect(
+                redirect_to_pid=redirect_to_pid,
+                dbcommit=dbcommit,
+                reindex=reindex,
+            )
+            return new_record, action
         if online_data:
             online_data["$schema"] = self["$schema"]
             _md5.add_md5(online_data)
@@ -381,6 +583,87 @@ class AgentViafRecord(EntityRecord):
                 Action.REPLACE,
             )
         return None, Action.DISCARD
+
+    def handle_redirect(
+        self, redirect_to_pid, dbcommit=False, reindex=False, delete_if_not_found=False
+    ):
+        """Handle VIAF cluster merge (redirect).
+
+        When a VIAF cluster is merged into another, the old VIAF ID
+        redirects to the new one. This method:
+        1. Fetches and creates/updates the target VIAF record
+        2. Deletes the old VIAF record (which cleans up MEF via delete())
+        3. Logs the redirect for audit
+
+        :param redirect_to_pid: The new VIAF PID (redirect target).
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex records.
+        :param delete_if_not_found: Delete old record even if target not found or error occurs.
+        :returns: Tuple (new_record, action, redirect_info_dict).
+        """
+        old_pid = self.pid
+        redirect_info = {
+            "from": old_pid,
+            "to": redirect_to_pid,
+        }
+        current_app.logger.info(f"VIAF redirect: {old_pid} -> {redirect_to_pid}")
+        # Fetch the target VIAF record
+        try:
+            target_data, msg = self.get_online_record(
+                viaf_source_code="VIAF", pid=redirect_to_pid
+            )
+        except RetryableVIAFError as err:
+            current_app.logger.warning(
+                f"VIAF redirect target fetch failed transiently: "
+                f"{old_pid} -> {redirect_to_pid} | {err}"
+            )
+            return None, Action.ERROR, redirect_info
+        if redirected_to_pid := _get_redirect_pid_from_msg(msg):
+            current_app.logger.warning(
+                f"VIAF redirect target chained: "
+                f"{old_pid} -> {redirect_to_pid} -> {redirected_to_pid} | {msg}"
+            )
+            if delete_if_not_found:
+                current_app.logger.info(
+                    f"Deleting old VIAF record {old_pid} due to chained redirect"
+                )
+                self.delete(force=True, dbcommit=dbcommit, delindex=reindex)
+            return None, Action.ERROR, redirect_info
+        if not target_data:
+            current_app.logger.warning(
+                f"VIAF redirect target not found: "
+                f"{old_pid} -> {redirect_to_pid} | {msg}"
+            )
+            if delete_if_not_found:
+                current_app.logger.info(
+                    f"Deleting old VIAF record {old_pid} as target not found"
+                )
+                self.delete(force=True, dbcommit=dbcommit, delindex=reindex)
+            return None, Action.ERROR, redirect_info
+        target_data = _md5.add_md5(target_data)
+
+        try:
+            new_record, action = self.create_or_update(
+                data=target_data,
+                dbcommit=dbcommit,
+                reindex=reindex,
+                test_md5=True,
+            )
+        except Exception as e:
+            current_app.logger.exception(
+                f"Failed to create/update target VIAF {redirect_to_pid}: {e}"
+            )
+            if delete_if_not_found:
+                current_app.logger.info(
+                    f"Deleting old VIAF record {old_pid} due to target creation error"
+                )
+                self.delete(force=True, dbcommit=dbcommit, delindex=reindex)
+            return None, Action.ERROR, redirect_info
+
+        # Delete old VIAF record (handles MEF cleanup) only after successful create/update
+        self.delete(force=True, dbcommit=dbcommit, delindex=reindex)
+
+        return new_record, Action.REDIRECT, redirect_info
 
     @classmethod
     def get_viaf(cls, agent):
@@ -436,9 +719,10 @@ class AgentViafRecord(EntityRecord):
     def delete(self, force=True, dbcommit=False, delindex=False):
         """Delete record and persistent identifier.
 
+        :param force: Force-delete the record (always True for VIAF records).
         :param dbcommit: Commit changes to DB.
-        :param reindex: Reindex record.
-        :returns: MEF actions message.
+        :param delindex: Remove record from index.
+        :returns: Tuple (result, Action.DELETE, mef_actions).
         """
         agents_records = self.get_entities_records()
         mef_records = AgentMefRecord.get_mef(entity_pid=self.pid, entity_name=self.name)

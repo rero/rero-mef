@@ -58,7 +58,7 @@ class Transformation:
     def trans_example_1(self):
         """Transformation example 1."""
         if self.logger and self.verbose:
-            self.logger.info("Transformation", "trans_example_1")
+            self.logger.info("Transformation: %s", "trans_example_1")
         fields_001 = self.marc.get_fields("001")
         # save the conferted data to json_dict
         self.json_dict["example1"] = fields_001[0].data
@@ -66,7 +66,7 @@ class Transformation:
     def trans_example_2(self):
         """Transformation example 2."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_example_1")
+            self.logger.info("Call Function: %s", "trans_example_2")
         fields_245 = self.marc.get_fields("245")
         to_return = []
         for field in fields_245:

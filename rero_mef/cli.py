@@ -38,9 +38,13 @@ from sqlitedict import SqliteDict
 from werkzeug.local import LocalProxy
 from werkzeug.security import gen_salt
 
+from .agents import AgentMefRecord
+from .cli_logging import ensure_single_stream_handler
+from .concepts import ConceptMefRecord
 from .extensions import MD5Extension
 from .marctojson.records import RecordsCount
 from .monitoring.api import Monitoring
+from .places import PlaceMefRecord
 from .tasks import create_or_update as task_create_or_update
 from .tasks import delete as task_delete
 from .tasks import process_bulk_queue as task_process_bulk_queue
@@ -77,16 +81,19 @@ def abort_if_false(ctx, param, value):
 @click.group()
 def fixtures():
     """Fixtures management commands."""
+    ensure_single_stream_handler()
 
 
 @click.group()
 def utils():
     """Misc management commands."""
+    ensure_single_stream_handler()
 
 
 @click.group()
 def celery():
     """Celery management commands."""
+    ensure_single_stream_handler()
 
 
 @fixtures.command()
@@ -391,10 +398,12 @@ def load_csv(
         )
         try:
             bulk_load_ids(entity, ids_file, bulk_count=bulk_count, verbose=verbose)
+            entity_class = get_entity_class(entity)
+            _, identifier = entity_class.get_metadata_identifier_names()
+            if verbose:
+                click.echo(f"  Loaded IDs into table: {identifier}")
         except Exception as err:
             click.secho(f"Error: {err}", fg="red")
-        # TODO: get entity identifier
-        # append_fixtures_new_identifiers(MefIdentifier, [], 'mef')
 
 
 @fixtures.command()
@@ -909,7 +918,6 @@ def save(output_file_name, name, from_date, until_date, quiet, enqueue):
     :param enqueue: Enqueue harvesting and return immediately.
     """
     click.secho(f"Harvest: {name} {output_file_name} ...", fg="green")
-    # TODO: addapt to other entity types
     save_task = obj_or_import_string(f"rero_mef.{name}.tasks:save_records_from_dates")
     count = 0
     if save_task:
@@ -1090,25 +1098,96 @@ def queue_count():
     return task_count
 
 
+def rabbitmq_queue_count():
+    """Count pending messages in RabbitMQ queues known by Celery.
+
+    Uses passive queue declarations, so no queue is created by this check.
+    Returns ``None`` when the broker is not available or queue metrics cannot
+    be fetched.
+    """
+    try:
+        queues = current_celery.amqp.queues or {}
+        if not queues:
+            return 0
+
+        count = 0
+        with current_celery.connection_or_acquire() as connection:
+            channel = connection.channel()
+            try:
+                for queue_name in queues:
+                    try:
+                        _, message_count, _ = channel.queue_declare(
+                            queue=queue_name, passive=True
+                        )
+                        count += message_count
+                    except Exception:
+                        current_app.logger.exception(
+                            f"Failed to inspect RabbitMQ queue '{queue_name}'"
+                        )
+                        return None
+            finally:
+                channel.close()
+        return count
+    except Exception:
+        current_app.logger.exception("Failed to inspect RabbitMQ broker queues")
+        return None
+
+
+def combined_queue_count():
+    """Count tasks across Celery workers and RabbitMQ pending queues."""
+    rabbitmq_count = rabbitmq_queue_count()
+    if rabbitmq_count is None:
+        return None
+    return queue_count() + rabbitmq_count
+
+
 def wait_empty_tasks(delay, verbose=False):
     """Wait for tasks to be empty."""
+    max_inspection_failures = 3
+
+    def _get_count_with_retry():
+        inspection_failures = 0
+        while True:
+            try:
+                count = combined_queue_count()
+            except Exception as e:
+                count = None
+                exc_info = f": {e}"
+            else:
+                exc_info = ""
+
+            if count is not None:
+                return count
+
+            inspection_failures += 1
+            backoff = max(delay, 1) * (2 ** (inspection_failures - 1))
+            current_app.logger.warning(
+                "Task queue inspection failed "
+                f"({inspection_failures}/{max_inspection_failures}); "
+                f"retrying in {backoff}s{exc_info}"
+            )
+            if inspection_failures >= max_inspection_failures:
+                msg = (
+                    "Task queue inspection failed repeatedly; aborting wait_empty_tasks"
+                )
+                current_app.logger.warning(msg)
+                raise RuntimeError(msg)
+
+            sleep(backoff)
+
     if verbose:
         spinner = itertools.cycle(["-", "\\", "|", "/"])
         click.echo(f"Waiting: {next(spinner)}\r", nl=False)
-    # TODO: we have to find a way do get the remaining queue count from
-    # rabbitmq. The cellery queue could be empty but not the rabbitmq
-    # queue. try to get the queue count twice with a delay of 5 seconds
-    # to be more sure the cellery and rabbitmy queue is empty.
-    count = queue_count()
+    count = _get_count_with_retry()
     sleep(5)
-    count += queue_count()
+    count += _get_count_with_retry()
     while count:
         if verbose:
             click.echo(f"Waiting: {next(spinner)}\r", nl=False)
         sleep(delay)
-        count = queue_count()
+        count = _get_count_with_retry()
         sleep(5)
-        count += queue_count()
+        count += _get_count_with_retry()
 
 
 @celery.command()
@@ -1202,6 +1281,133 @@ def reindex_missing(entities, verbose):
                     rec.reindex()
                 else:
                     click.secho(f"  {entity} record not found: {pid}", fg="red")
+
+
+@utils.command()
+@click.option(
+    "-r",
+    "--record-type",
+    "record_types",
+    multiple=True,
+    type=click.Choice(
+        ["aidref", "aggnd", "agrero", "cidref", "cognd", "corero", "pidref", "plgnd"]
+    ),
+    help="Limit cleanup to specific record types.",
+)
+@click.option("--dry-run", "dry_run", is_flag=True, default=False)
+@click.option("-v", "--verbose", "verbose", is_flag=True, default=False)
+@with_appcontext
+def clean_multiple_mef(record_types, dry_run, verbose):
+    """Clean duplicate MEF mappings by reconciling entity records.
+
+    Detects entity pids that point to multiple MEF records and runs
+    ``create_or_update_mef`` for those entity records to reconcile mappings.
+    Also reports or deletes orphaned MEF records that no longer contain any
+    source links or VIAF pid after reconciliation.
+
+    :param record_types: Optional record types to process.
+    :param dry_run: If True, only report duplicates.
+    :param verbose: Verbose output.
+    """
+    plans = [
+        ("agents-mef", AgentMefRecord, ["aidref", "aggnd", "agrero"]),
+        ("concepts-mef", ConceptMefRecord, ["cidref", "cognd", "corero"]),
+        ("places-mef", PlaceMefRecord, ["pidref", "plgnd"]),
+    ]
+    selected_types = set(record_types or [])
+    details = {}
+    duplicates_count = 0
+    reconciled_count = 0
+    orphan_details = {}
+    orphan_count = 0
+    deleted_orphan_count = 0
+
+    for group_name, mef_cls, group_types in plans:
+        if current_types := (
+            [
+                record_type
+                for record_type in group_types
+                if record_type in selected_types
+            ]
+            if selected_types
+            else group_types
+        ):
+            _, multiple_pids, _, _ = mef_cls.get_multiple_missing_pids(
+                record_types=current_types, verbose=verbose
+            )
+            for pid_type, entity_map in multiple_pids.items():
+                if not entity_map:
+                    continue
+                entity_pids = list(entity_map.keys())
+                count = len(entity_pids)
+                duplicates_count += count
+                info = details.setdefault(pid_type, {"duplicates": 0, "reconciled": 0})
+                info["duplicates"] += count
+
+                if dry_run:
+                    continue
+
+                entity_cls = get_entity_class(pid_type)
+                for entity_pid in entity_pids:
+                    if record := entity_cls.get_record_by_pid(entity_pid):
+                        record.create_or_update_mef(dbcommit=True, reindex=True)
+                        reconciled_count += 1
+                        info["reconciled"] += 1
+                    elif verbose:
+                        click.secho(
+                            f"Missing {pid_type} record: {entity_pid}", fg="yellow"
+                        )
+                if not dry_run:
+                    mef_cls.flush_indexes()
+            orphan_pids = list(mef_cls.get_all_pids_without_entities_and_viaf())
+            orphan_count += len(orphan_pids)
+            orphan_details[group_name] = {"orphaned": len(orphan_pids), "deleted": 0}
+            if verbose and orphan_pids:
+                click.echo(f"{group_name} orphaned pids: {', '.join(orphan_pids)}")
+
+            if dry_run:
+                continue
+
+            for orphan_pid in orphan_pids:
+                if record := mef_cls.get_record_by_pid(orphan_pid):
+                    record.delete(force=True, dbcommit=True, delindex=True)
+                    deleted_orphan_count += 1
+                    orphan_details[group_name]["deleted"] += 1
+
+    if not details and orphan_count == 0:
+        click.secho("No duplicated or orphaned MEF mappings found.", fg="green")
+        return
+
+    for pid_type in sorted(details):
+        info = details[pid_type]
+        if dry_run:
+            click.echo(f"{pid_type}: duplicates={info['duplicates']}")
+        else:
+            click.echo(
+                f"{pid_type}: duplicates={info['duplicates']} reconciled={info['reconciled']}"
+            )
+
+    for group_name in [plan[0] for plan in plans if plan[0] in orphan_details]:
+        info = orphan_details[group_name]
+        if dry_run:
+            click.echo(f"{group_name}: orphaned={info['orphaned']}")
+        else:
+            click.echo(
+                f"{group_name}: orphaned={info['orphaned']} deleted={info['deleted']}"
+            )
+
+    if dry_run:
+        click.secho(
+            f"Detected duplicate entity mappings: {duplicates_count}; orphaned mef records: {orphan_count}",
+            fg="yellow",
+        )
+    else:
+        click.secho(
+            "Detected duplicate entity mappings: "
+            f"{duplicates_count}; reconciled: {reconciled_count}; "
+            f"deleted orphaned mef records: {deleted_orphan_count}",
+            fg="green",
+        )
 
 
 def create_personal(name, user_id, scopes=None, is_internal=False, access_token=None):

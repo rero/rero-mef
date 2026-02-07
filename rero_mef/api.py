@@ -66,6 +66,7 @@ class Action(Enum):
     DELETE_ENTITY = "delete entity"
     VALIDATION_ERROR = "validation error"
     ERROR = "error"
+    REDIRECT = "redirect"
     NOT_ONLINE = "not online"
     NOT_FOUND = "not found"
 

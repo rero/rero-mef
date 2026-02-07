@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -53,7 +53,7 @@ class Transformation:
     def trans_rero_identifier(self):
         """Transformation identifier from field 035."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_identifier")
+            self.logger.info("Call Function: %s", "trans_rero_identifier")
         identifiers = []
         field_035 = self.marc.get_fields("035")
         if field_035 and field_035[0].get("a"):
@@ -82,7 +82,7 @@ class Transformation:
     def trans_rero_bnf_type(self):
         """Transformation bnf type from field 035."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_bnf_type")
+            self.logger.info("Call Function: %s", "trans_rero_bnf_type")
         with contextlib.suppress(Exception):
             if data_075_a := self.marc["075"]["a"].strip():
                 self.json_dict["bnf_type"] = data_075_a
@@ -90,14 +90,15 @@ class Transformation:
     def trans_rero_authorized_access_point(self):
         """Transformation authorized_access_point from field 150 155."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_authorized_access_point")
+            self.logger.info("Call Function: %s", "trans_rero_authorized_access_point")
         tag = "155" if self.marc.get_fields("155") else "150"
-        self.json_dict["authorized_access_point"] = self.marc[tag]["a"].strip()
+        with contextlib.suppress(Exception):
+            self.json_dict["authorized_access_point"] = self.marc[tag]["a"].strip()
 
     def trans_rero_variant_access_point(self):
         """Transformation variant_access_point from field 450 455."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_variant_access_point")
+            self.logger.info("Call Function: %s", "trans_rero_variant_access_point")
         tag = "455" if self.marc.get_fields("455") else "450"
         subfields = {"a": ", ", "x": " - "}
         if variant_access_points := build_string_list_from_fields(
@@ -108,7 +109,7 @@ class Transformation:
     def trans_rero_relation(self):
         """Transformation broader related narrower 550 555."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_relation")
+            self.logger.info("Call Function: %s", "trans_rero_relation")
         tag = "555" if self.marc.get_fields("555") else "550"
         relations = {}
         for field in self.marc.get_fields(tag):
@@ -133,7 +134,7 @@ class Transformation:
     def trans_rero_classification(self):
         """Transformation classification from field 072."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_classification")
+            self.logger.info("Call Function: %s", "trans_rero_classification")
         classifications = []
         for field_072 in self.marc.get_fields("072"):
             if field_072.get("a"):
@@ -153,7 +154,7 @@ class Transformation:
     def trans_rero_close_match(self):
         """Transformation closeMatch from field 682."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_close_match")
+            self.logger.info("Call Function: %s", "trans_rero_close_match")
         close_matchs = []
         for field_682 in self.marc.get_fields("682"):
             with contextlib.suppress(Exception):
@@ -174,7 +175,7 @@ class Transformation:
         seeReference 360 __ $a: seeAlsoReference 016 $9: REROtreatment
         """
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_note")
+            self.logger.info("Call Function: %s", "trans_rero_note")
         notes = {
             "dataSource": [],
             "dataNotFound": [],

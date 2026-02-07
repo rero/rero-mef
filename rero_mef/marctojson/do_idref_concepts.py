@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -52,7 +52,9 @@ class Transformation:
                 self.json_dict = {"NO TRANSFORMATION": msg}
                 self.trans_idref_pid()
                 if self.logger and self.verbose:
-                    self.logger.info("Exclude FMeSH", self.marc.get_fields("001"))
+                    field_001 = self.marc.get_fields("001")
+                    pid = field_001[0].data if field_001 else "unknown"
+                    self.logger.info("Exclude FMeSH: %s", pid)
         else:
             msg = "No 008"
             if self.logger and self.verbose:
@@ -68,14 +70,14 @@ class Transformation:
     def trans_idref_pid(self):
         """Transformation identifier from field 001."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_pid")
+            self.logger.info("Call Function: %s", "trans_idref_pid")
         if field_001 := self.marc.get_fields("001"):
             self.json_dict["pid"] = field_001[0].data
 
     def trans_idref_bnf_type(self):
         """Transformation bnf_type from field 008."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_bnf_type")
+            self.logger.info("Call Function: %s", "trans_idref_bnf_type")
         if field_008 := self.marc.get_fields("008"):
             self.json_dict["bnf_type"] = "sujet Rameau"
             if field_008[0].data == "Tf8":
@@ -84,7 +86,7 @@ class Transformation:
     def trans_idref_identifier(self):
         """Transformation identifier from field 003 033."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_identifier")
+            self.logger.info("Call Function: %s", "trans_idref_identifier")
         identifiers = self.json_dict.get("identifiedBy", [])
         if field_003 := self.marc.get_fields("003"):
             uri = field_003[0].data.strip()
@@ -103,7 +105,7 @@ class Transformation:
     def trans_idref_relation_pid(self):
         """Transformation old pids 035 $a $9 = sudoc."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_relation_pid")
+            self.logger.info("Call Function: %s", "trans_idref_relation_pid")
         bnf_ids = {}
         for field_035 in self.marc.get_fields("035"):
             subfield_a = field_035.get("a")
@@ -139,14 +141,14 @@ class Transformation:
     def trans_idref_deleted(self):
         """Transformation deleted leader 5 == d."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_deleted")
+            self.logger.info("Call Function: %s", "trans_idref_deleted")
         if self.marc.leader[5] == "d":
             self.json_dict["deleted"] = datetime.now(timezone.utc).isoformat()
 
     def trans_idref_authorized_access_point(self):
         """Transformation authorized_access_point from field 250 280."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_authorized_access_point")
+            self.logger.info("Call Function: %s", "trans_idref_authorized_access_point")
         tag = "280" if self.marc.get_fields("280") else "250"
         subfields = {"a": ", ", "x": " - ", "y": " - ", "z": " - "}
         try:
@@ -158,7 +160,7 @@ class Transformation:
     def trans_idref_variant_access_point(self):
         """Transformation variant_access_point from field 450 480."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_variant_access_point")
+            self.logger.info("Call Function: %s", "trans_idref_variant_access_point")
         tag = "480" if self.marc.get_fields("480") else "450"
         subfields = {"a": ", ", "x": " - ", "y": " - ", "z": " - "}
         if variant_access_points := build_string_list_from_fields(
@@ -169,7 +171,7 @@ class Transformation:
     def trans_idref_relation(self):
         """Transformation broader related narrower 550 580 515."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_relation")
+            self.logger.info("Call Function: %s", "trans_idref_relation")
         relations = {}
         for tag in ["550", "580", "515"]:
             for field in self.marc.get_fields(tag):
@@ -203,7 +205,7 @@ class Transformation:
     def trans_idref_classification(self):
         """Transformation classification from field 686."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_classification")
+            self.logger.info("Call Function: %s", "trans_idref_classification")
         classifications = []
         for field_686 in self.marc.get_fields("686"):
             if field_686.get("a"):
@@ -220,7 +222,7 @@ class Transformation:
     def trans_idref_close_match(self):
         """Transformation closeMatch from field 822."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_close_match")
+            self.logger.info("Call Function: %s", "trans_idref_close_match")
         close_matchs = []
         for field_822 in self.marc.get_fields("822"):
             with contextlib.suppress(Exception):
@@ -250,7 +252,7 @@ class Transformation:
         seeReference 320 $a: seeReference
         """
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_note")
+            self.logger.info("Call Function: %s", "trans_idref_note")
         notes = {
             "dataSource": [],
             "dataNotFound": [],

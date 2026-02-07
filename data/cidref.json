@@ -37445,5 +37445,165 @@
       }
     ],
     "authorized_access_point": "Familles nicaraguayennes"
+  },
+  {
+    "md5": "ed57dd07e0505fda9d11f117813d2510",
+    "pid": "027797473",
+    "note": [
+      {
+        "label": [
+          "Dict. encyclopedique d'histoire / M. Mourre, 1996"
+        ],
+        "noteType": "dataSource"
+      },
+      {
+        "label": [
+          "S'emploie uniquement en subdivision chronologique a tous sujets noms communs et noms propres.",
+          "Ne pas employer aux litteratures."
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Temporal",
+    "broader": [
+      {
+        "authorized_access_point": "Histoire"
+      }
+    ],
+    "related": [
+      {
+        "authorized_access_point": "Avant 1500"
+      }
+    ],
+    "bnf_type": "sujet Rameau",
+    "narrower": [
+      {
+        "authorized_access_point": "Antiquite"
+      },
+      {
+        "authorized_access_point": "Moyen age"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/027797473",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb11976240j",
+        "source": "BNF"
+      },
+      {
+        "type": "bf:Nbn",
+        "value": "FRBNF11976240",
+        "source": "BNF"
+      }
+    ],
+    "relation_pid": {
+      "type": "redirect_from",
+      "value": "028657276"
+    },
+    "classification": [
+      {
+        "name": "Histoire",
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "900"
+      }
+    ],
+    "variant_access_point": [
+      "Jusqu'a 1500 (subdivision)",
+      "Epoque precolombienne"
+    ],
+    "authorized_access_point": "Jusqu'a 1500"
+  },
+  {
+    "md5": "00d12c8bd0f80024189727458fea550a",
+    "pid": "027794962",
+    "note": [
+      {
+        "label": [
+          "S'emploie uniquement en subdivision chronologique a la vedette Cinema et aux genres cinematographiques."
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Temporal",
+    "related": [
+      {
+        "authorized_access_point": "Cinema - 1945-1960"
+      }
+    ],
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/027794962",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb119760671",
+        "source": "BNF"
+      },
+      {
+        "type": "bf:Nbn",
+        "value": "FRBNF11976067",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "name": "Audiovisuel",
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "791"
+      }
+    ],
+    "authorized_access_point": "1945-1960"
+  },
+  {
+    "md5": "18bd2aeb031d78dd3f7014af20bc23a9",
+    "pid": "034935177",
+    "note": [
+      {
+        "label": [
+          "Subdivision chronologique employee pour les litteratures et genres litteraires arabes."
+        ],
+        "noteType": "general"
+      }
+    ],
+    "type": "bf:Temporal",
+    "related": [
+      {
+        "authorized_access_point": "Litterature arabe - 750-1258"
+      }
+    ],
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/034935177",
+        "source": "IDREF"
+      },
+      {
+        "type": "uri",
+        "value": "http://catalogue.bnf.fr/ark:/12148/cb12563505c",
+        "source": "BNF"
+      },
+      {
+        "type": "bf:Nbn",
+        "value": "FRBNF12563505",
+        "source": "BNF"
+      }
+    ],
+    "classification": [
+      {
+        "name": "Histoire et critique litteraires",
+        "type": "bf:ClassificationDdc",
+        "classificationPortion": "800"
+      }
+    ],
+    "authorized_access_point": "750-1258"
   }
 ]

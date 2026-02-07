@@ -261,3 +261,33 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
         "pid": "1",
         "type": "bf:Place",
     }
+
+
+def test_places_utils_get_places_endpoints(app):
+    """Test get_places_endpoints utility function."""
+    from rero_mef.places.utils import get_places_endpoints
+
+    endpoints = get_places_endpoints()
+
+    assert isinstance(endpoints, dict)
+    # Should contain place endpoints
+    assert "plgnd" in endpoints
+
+
+def test_places_utils_make_identifier(app):
+    """Test make_identifier utility function."""
+    from rero_mef.places.utils import make_identifier
+
+    # Test with source
+    identified_by_with_source = {
+        "type": "uri",
+        "source": "IDREF",
+        "value": "http://www.idref.fr/123456",
+    }
+    identifier = make_identifier(identified_by_with_source)
+    assert identifier == "uri|(IDREF)http://www.idref.fr/123456"
+
+    # Test without source
+    identified_by_without_source = {"type": "bf:Isbn", "value": "978-3-16-148410-0"}
+    identifier = make_identifier(identified_by_without_source)
+    assert identifier == "bf:Isbn|978-3-16-148410-0"

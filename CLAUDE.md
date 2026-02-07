@@ -1,4 +1,3 @@
-
 # RERO MEF — Claude Code Guide
 
 ## Overview

@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -164,14 +164,14 @@ class Transformation:
     def trans_idref_deleted(self):
         """Transformation deleted leader 5 == d."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_deleted")
+            self.logger.info("Call Function: %s", "trans_idref_deleted")
         if self.marc.leader[5] == "d":
             self.json_dict["deleted"] = datetime.now(timezone.utc).isoformat()
 
     def trans_idref_relation_pid(self):
         """Transformation old pids 035 $a $9 = sudoc."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_relation_pid")
+            self.logger.info("Call Function: %s", "trans_idref_relation_pid")
         for field_035 in self.marc.get_fields("035"):
             subfield_a = field_035.get("a")
             subfield_2 = field_035.get("2")
@@ -195,7 +195,7 @@ class Transformation:
     def trans_idref_gender(self):
         """Transformation gender 120 $a a:female, b: male, -:not known."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_gender")
+            self.logger.info("Call Function: %s", "trans_idref_gender")
         if fields_120 := self.marc.get_fields("120"):
             if fields_120[0].get("a"):
                 gender = None
@@ -212,7 +212,7 @@ class Transformation:
     def trans_idref_language(self):
         """Transformation language 101 $a."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_language")
+            self.logger.info("Call Function: %s", "trans_idref_language")
         if (fields_101 := self.marc.get_fields("101")) and (
             language_list := [
                 language
@@ -225,14 +225,14 @@ class Transformation:
     def trans_idref_pid(self):
         """Transformation pid from field 001."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_pid")
+            self.logger.info("Call Function: %s", "trans_idref_pid")
         if fields_001 := self.marc.get_fields("001"):
             self.json_dict["pid"] = fields_001[0].data
 
     def trans_idref_identifier(self):
         """Transformation identifier from field 003."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_identifier")
+            self.logger.info("Call Function: %s", "trans_idref_identifier")
         if fields_003 := self.marc.get_fields("003"):
             identified_by = self.json_dict.get("identifiedBy", [])
             identified_by.append(
@@ -272,7 +272,7 @@ class Transformation:
             return date_formated
 
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_birth_and_death_dates")
+            self.logger.info("Call Function: %s", "trans_idref_birth_and_death_dates")
         birth_date = ""
         death_date = ""
         if fields_103 := self.marc.get_fields("103"):
@@ -300,7 +300,9 @@ class Transformation:
     def trans_idref_biographical_information(self):
         """Transformation biographical_information 300 $a 34x $a."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_biographical_information")
+            self.logger.info(
+                "Call Function: %s", "trans_idref_biographical_information"
+            )
         tag_list = [300, *list(range(340, 349 + 1))]  # 300, 340:349
         biographical_information = []
         subfields = {"a": ", "}
@@ -314,7 +316,7 @@ class Transformation:
     def trans_idref_numeration(self):
         """Transformation numeration 200 $d."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_numeration")
+            self.logger.info("Call Function: %s", "trans_idref_numeration")
         subfields = {"d": " "}
         numeration = build_string_list_from_fields(self.marc, "200", subfields)
         if numeration and numeration[0]:
@@ -323,7 +325,7 @@ class Transformation:
     def trans_idref_qualifier(self):
         """Transformation qualifier 200 $c."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_qualifier")
+            self.logger.info("Call Function: %s", "trans_idref_qualifier")
         subfields = {"c": " "}
         qualifier = build_string_list_from_fields(self.marc, "200", subfields)
         if qualifier and qualifier[0]:
@@ -332,7 +334,7 @@ class Transformation:
     def trans_idref_preferred_name(self):
         """Transformation preferred_name 200/210."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_preferred_name")
+            self.logger.info("Call Function: %s", "trans_idref_preferred_name")
         tag = "200"
         subfields = {"a": ", ", "b": ", ", "c": ", "}
         tag_grouping = []
@@ -405,7 +407,7 @@ class Transformation:
             ]
 
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_authorized_access_point")
+            self.logger.info("Call Function: %s", "trans_idref_authorized_access_point")
         variant_access_points = self.json_dict.get("variant_access_point", [])
         authorized_access_points = build_language_string_list_from_fields(
             record=self.marc, tag=tag, subfields=subfields, tag_grouping=tag_grouping
@@ -422,7 +424,7 @@ class Transformation:
     def trans_idref_variant_name(self):
         """Transformation variant_name 400/410."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_variant_name")
+            self.logger.info("Call Function: %s", "trans_idref_variant_name")
         tag = "400"
         subfields = {"a": ", ", "b": ", ", "c": ", "}
         tag_grouping = []
@@ -449,7 +451,7 @@ class Transformation:
     def trans_idref_variant_access_point(self):
         """Transformation variant_access_point 400/410."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_variant_access_point")
+            self.logger.info("Call Function: %s", "trans_idref_variant_access_point")
         tag = "400"
         subfields = {
             "a": ", ",
@@ -541,7 +543,7 @@ class Transformation:
     def trans_idref_country_associated(self):
         """Transformation country_associated 102 $a codes ISO 3166-1."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_idref_country_associated")
+            self.logger.info("Call Function: %s", "trans_idref_country_associated")
         if fields_102 := self.marc.get_fields("102"):
             if fields_102[0].get("a"):
                 country = COUNTRY_UNIMARC_MARC21.get(fields_102[0]["a"])

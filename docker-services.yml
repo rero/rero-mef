@@ -13,7 +13,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-version: '2.3'
 services:
   app:
     build:
@@ -55,7 +54,7 @@ services:
     ports:
       - "6379:6379"
   db:
-    image: postgres:13
+    image: postgres:17
     restart: "unless-stopped"
     environment:
       - "POSTGRES_USER=rero-mef"
@@ -64,7 +63,7 @@ services:
     ports:
       - "5432:5432"
   mq:
-    image: rabbitmq:3-management
+    image: rabbitmq:4-management
     restart: "unless-stopped"
     ports:
       - "15672:15672"
@@ -90,10 +89,14 @@ services:
     image: docker.elastic.co/elasticsearch/kibana-oss:7.10.2
     environment:
       - "ELASTICSEARCH_URL=http://es:9200"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ports: ['5601:5601']
   flower:
-    image: mher/flower:0.9.7
-    command: --broker=amqp://guest:guest@mq:5672/ --broker_api=http://guest:guest@mq:15672/api/
+    image: mher/flower
+    restart: "unless-stopped"
+    depends_on:
+      - mq
+    environment:
+      - "CELERY_BROKER_URL=amqp://guest:guest@mq:5672/"
+      - "FLOWER_BROKER_API=http://guest:guest@mq:15672/api/"
     ports:
       - "5555:5555"

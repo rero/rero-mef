@@ -31,10 +31,22 @@ from rero_mef.agents import (
     AgentViafRecord,
     AgentViafSearch,
 )
+from rero_mef.agents.viaf.api import RetryableVIAFError
 from rero_mef.cli import init_oai_harvest_config
 from rero_mef.monitoring import Monitoring
 
 from ...utils import mock_response
+
+
+@pytest.fixture(autouse=True)
+def _disable_viaf_request_delay(app):
+    """Disable VIAF per-request sleep for fast and deterministic tests."""
+    old_delay = app.config.get("RERO_MEF_VIAF_REQUEST_DELAY")
+    app.config["RERO_MEF_VIAF_REQUEST_DELAY"] = 0
+    try:
+        yield
+    finally:
+        app.config["RERO_MEF_VIAF_REQUEST_DELAY"] = old_delay
 
 
 def test_get_pids_with_multiple_viaf(app, agent_viaf_record):
@@ -77,7 +89,7 @@ def test_get_online(mock_get, app, agent_viaf_online_response):
     }
     assert msg == (
         "VIAF get: 076515788       "
-        "http://www.viaf.org/viaf/sourceID/SUDOC|076515788/viaf.json | OK"
+        "http://www.viaf.org/viaf/sourceID/SUDOC%7C076515788 | OK"
     )
 
     mock_get.return_value = mock_response(json_data=agent_viaf_online_response)
@@ -87,7 +99,7 @@ def test_get_online(mock_get, app, agent_viaf_online_response):
     assert data == agent_viaf_online_response
     assert msg == (
         "VIAF get: 076515788       "
-        "http://www.viaf.org/viaf/sourceID/SUDOC|076515788/viaf.json | OK"
+        "http://www.viaf.org/viaf/sourceID/SUDOC%7C076515788 | OK"
     )
 
 
@@ -318,11 +330,10 @@ def test_create_mef_and_agents(
 
 
 @mock.patch("requests.Session.get")
-@mock.patch("requests.get")
 def test_create_mef_and_agents_online(
-    mock_get, mock_session_get, app, agent_viaf_record, script_info
+    mock_session_get, app, aggnd_oai_139205527, script_info
 ):
-    """Test create MEF and agents online."""
+    """Test online agent creation from a mocked GND response."""
     # We need OAI harvest informations for the online functions.
     runner = CliRunner()
     oaisources = os.path.join(os.path.dirname(__file__), "../../data/oaisources.yml")
@@ -333,11 +344,320 @@ def test_create_mef_and_agents_online(
         "Add OAIHarvestConfig: concepts.idref https://www.idref.fr/OAI/oai.jsp Added",
         "Add OAIHarvestConfig: places.idref https://www.idref.fr/OAI/oai.jsp Added",
     ]
-    mock_get.return_value = mock_response(content="")
-    mock_session_get.return_value = mock_response(content="")
-    actions = agent_viaf_record.create_mef_and_agents(
-        dbcommit=True, reindex=True, online=["aggnd", "aidref"], verbose=True
+    viaf_record = AgentViafRecord.create(
+        data={
+            "$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json",
+            "pid": "VIAF_ONLINE_CREATE",
+            "gnd_pid": "139205527",
+        },
+        dbcommit=True,
+        reindex=True,
     )
-    # TODO: 'action': Action.NOT_FOUND ????
-    assert actions["069774331"] == {"action": Action.NOT_FOUND, "source": "idref"}
-    assert actions["12391664X"] == {"action": Action.NOT_FOUND, "source": "gnd"}
+
+    mock_session_get.return_value = mock_response(content=aggnd_oai_139205527)
+
+    actions = viaf_record.create_mef_and_agents(
+        dbcommit=True, reindex=True, online=["aggnd"], verbose=True
+    )
+    mef_pid = AgentMefRecord.get_mef(
+        entity_pid=viaf_record.pid,
+        entity_name=viaf_record.name,
+        pid_only=True,
+    )[0]
+
+    assert actions["139205527"] == {
+        "MEF": {mef_pid: Action.CREATE},
+        "action": Action.CREATE,
+        "source": "gnd",
+    }
+
+
+@mock.patch("requests.Session.get")
+def test_handle_redirect(mock_get, app, agent_viaf_online_response):
+    """Test VIAF redirect handling (cluster merge)."""
+    # Create a proper VIAF record with persistent identifier
+    old_pid = "12345678"
+    viaf_data = {
+        "$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json",
+        "pid": old_pid,
+        "gnd_pid": "12391664X",
+        "idref_pid": "069774331",
+    }
+    agent_viaf_record = AgentViafRecord.create(
+        data=viaf_data, dbcommit=True, reindex=True
+    )
+    new_pid = "999999999"
+
+    # Mock the target VIAF record online data
+    target_data = deepcopy(agent_viaf_online_response)
+    target_data["viafID"] = new_pid
+    mock_get.return_value = mock_response(json_data=target_data)
+
+    # Call handle_redirect
+    new_record, action, redirect_info = agent_viaf_record.handle_redirect(
+        redirect_to_pid=new_pid,
+        dbcommit=True,
+        reindex=True,
+    )
+
+    # Verify the redirect was handled correctly
+    assert action == Action.REDIRECT
+    assert redirect_info == {"from": old_pid, "to": new_pid}
+    assert new_record.pid == new_pid
+
+    # Verify old record was deleted
+    assert AgentViafRecord.get_record_by_pid(old_pid) is None
+
+    # Verify new record exists
+    assert AgentViafRecord.get_record_by_pid(new_pid) is not None
+
+
+@mock.patch("requests.Session.get")
+def test_handle_redirect_target_not_found(mock_get, app):
+    """Test VIAF redirect when target is not found."""
+    # Create a proper VIAF record
+    old_pid = "12345678"
+    viaf_data = {
+        "$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json",
+        "pid": old_pid,
+        "gnd_pid": "12391664X",
+    }
+    agent_viaf_record = AgentViafRecord.create(
+        data=viaf_data, dbcommit=True, reindex=True
+    )
+    old_pid = agent_viaf_record.pid
+    new_pid = "999999999"
+
+    # Mock response without viafID (target not found)
+    mock_get.return_value = mock_response(json_data={"sources": {}})
+    # Call handle_redirect
+    new_record, action, redirect_info = agent_viaf_record.handle_redirect(
+        redirect_to_pid=new_pid,
+        dbcommit=True,
+        reindex=True,
+    )
+
+    # Verify error handling
+    assert action == Action.ERROR
+    assert redirect_info == {"from": old_pid, "to": new_pid}
+    assert new_record is None
+
+
+@mock.patch("requests.Session.get")
+def test_get_online_with_redirect(mock_get, app, agent_viaf_online_response):
+    """Test get_online_record with redirect detection."""
+    old_pid = "12345"
+    new_pid = "67890"
+
+    # Mock response with different PID (redirect)
+    redirected_data = deepcopy(agent_viaf_online_response)
+    redirected_data["viafID"] = new_pid
+    mock_get.return_value = mock_response(json_data=redirected_data)
+
+    data, msg = AgentViafRecord.get_online_record("VIAF", old_pid)
+
+    # Verify redirect was detected
+    assert data is None
+    assert "REDIRECT" in msg
+    assert new_pid in msg
+
+
+@mock.patch("requests.Session.get")
+def test_update_online_handles_redirect(
+    mock_get, app, agent_viaf_record, agent_viaf_online_response
+):
+    """Test update_online reconciles merged VIAF clusters via handle_redirect."""
+    viaf_record = AgentViafRecord.get_record_by_pid(agent_viaf_record.pid)
+    if viaf_record is None:
+        viaf_record = AgentViafRecord.create(
+            data=dict(agent_viaf_record),
+            dbcommit=True,
+            reindex=True,
+        )
+
+    old_pid = viaf_record.pid
+    new_pid = "999999999"
+
+    redirected_data = deepcopy(agent_viaf_online_response)
+    redirected_data["viafID"] = new_pid
+    mock_get.return_value = mock_response(json_data=redirected_data)
+
+    new_record, action = viaf_record.update_online(
+        dbcommit=True,
+        reindex=True,
+    )
+
+    assert action == Action.REDIRECT
+    assert new_record.pid == new_pid
+    assert AgentViafRecord.get_record_by_pid(old_pid) is None
+    assert AgentViafRecord.get_record_by_pid(new_pid) is not None
+
+
+@mock.patch("requests.Session.get")
+def test_handle_redirect_chained(mock_get, app):
+    """Test handle_redirect with chained redirect (error case)."""
+    # Create a VIAF record
+    old_pid = "11111111"
+    viaf_data = {
+        "$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json",
+        "pid": old_pid,
+        "gnd_pid": "12391664X",
+    }
+    agent_viaf_record = AgentViafRecord.create(
+        data=viaf_data, dbcommit=True, reindex=True
+    )
+    new_pid = "22222222"
+
+    # Mock response with chained redirect (redirect_from still present)
+    chained_data = {
+        "viafID": "33333333",
+        "redirect_from": new_pid,
+        "sources": {},
+    }
+    mock_get.return_value = mock_response(json_data=chained_data)
+
+    # Call handle_redirect - should return ERROR for chained redirect
+    new_record, action, redirect_info = agent_viaf_record.handle_redirect(
+        redirect_to_pid=new_pid,
+        dbcommit=True,
+        reindex=True,
+    )
+
+    # Verify error handling for chained redirect
+    assert action == Action.ERROR
+    assert new_record is None
+
+
+@mock.patch("requests.Session.get")
+def test_get_online_other_source(mock_get, app, agent_viaf_online_response):
+    """Test get_online_record with non-VIAF source code."""
+    pid = "076515788"
+
+    mock_get.return_value = mock_response(json_data=agent_viaf_online_response)
+
+    # Test with SUDOC source
+    data, msg = AgentViafRecord.get_online_record("SUDOC", pid)
+
+    assert data is not None
+    assert "idref_pid" in data
+    assert msg is not None
+
+
+@mock.patch("requests.Session.get")
+@mock.patch("rero_mef.agents.viaf.api.click.echo")
+@mock.patch("rero_mef.agents.viaf.api._sleep_with_countdown")
+def test_get_online_rate_limit_retry_after_capped(
+    mock_wait, mock_echo, mock_get, app, agent_viaf_online_response
+):
+    """Cap Retry-After to RERO_MEF_VIAF_RETRY_AFTER_MAX and retry successfully."""
+    old_delay = app.config.get("RERO_MEF_VIAF_REQUEST_DELAY")
+    old_max = app.config.get("RERO_MEF_VIAF_RETRY_AFTER_MAX")
+    app.config["RERO_MEF_VIAF_REQUEST_DELAY"] = 0
+    app.config["RERO_MEF_VIAF_RETRY_AFTER_MAX"] = 60
+
+    try:
+        rate_limited = mock_response(status=429)
+        rate_limited.headers = {"Retry-After": "9999"}
+        success = mock_response(json_data=agent_viaf_online_response)
+        mock_get.side_effect = [rate_limited, success]
+
+        data, msg = AgentViafRecord.get_online_record("SUDOC", "076515788")
+
+        assert data is not None
+        assert "idref_pid" in data
+        assert "OK" in msg
+        echo_call = mock_echo.call_args[0][0]
+        assert "capped to 60s" in echo_call
+        mock_wait.assert_called_once_with(60)
+    finally:
+        app.config["RERO_MEF_VIAF_REQUEST_DELAY"] = old_delay
+        app.config["RERO_MEF_VIAF_RETRY_AFTER_MAX"] = old_max
+
+
+@mock.patch("requests.Session.get")
+@mock.patch("rero_mef.agents.viaf.api.click.echo")
+@mock.patch("rero_mef.agents.viaf.api._sleep_with_countdown")
+def test_get_online_rate_limit_without_header_uses_default(
+    mock_wait, mock_echo, mock_get, app
+):
+    """Use the default wait and raise on repeated 429 responses."""
+    old_delay = app.config.get("RERO_MEF_VIAF_REQUEST_DELAY")
+    old_default = app.config.get("RERO_MEF_VIAF_RETRY_AFTER_DEFAULT")
+    app.config["RERO_MEF_VIAF_REQUEST_DELAY"] = 0
+    app.config["RERO_MEF_VIAF_RETRY_AFTER_DEFAULT"] = 3
+
+    try:
+        rate_limited = mock_response(status=429)
+        rate_limited.headers = {}
+        mock_get.side_effect = [rate_limited, rate_limited]
+
+        with pytest.raises(RetryableVIAFError, match=r"RATE LIMITED \(429\)"):
+            AgentViafRecord.get_online_record("SUDOC", "076515788")
+
+        mock_echo.assert_called_once()
+        mock_wait.assert_called_once_with(3)
+    finally:
+        app.config["RERO_MEF_VIAF_REQUEST_DELAY"] = old_delay
+        app.config["RERO_MEF_VIAF_RETRY_AFTER_DEFAULT"] = old_default
+
+
+def test_handle_redirect_retryable_target_failure_does_not_delete_old_record(app):
+    """Test transient target fetch failures do not delete the old VIAF record."""
+    old_pid = "12345679"
+    new_pid = "999999997"
+    viaf_record = AgentViafRecord.create(
+        data={
+            "$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json",
+            "pid": old_pid,
+            "gnd_pid": "12391664X",
+        },
+        dbcommit=True,
+        reindex=True,
+    )
+
+    with mock.patch.object(
+        AgentViafRecord,
+        "get_online_record",
+        side_effect=RetryableVIAFError("temporary failure"),
+    ):
+        new_record, action, redirect_info = viaf_record.handle_redirect(
+            redirect_to_pid=new_pid,
+            dbcommit=True,
+            reindex=True,
+            delete_if_not_found=True,
+        )
+
+    assert new_record is None
+    assert action == Action.ERROR
+    assert redirect_info == {"from": old_pid, "to": new_pid}
+    assert AgentViafRecord.get_record_by_pid(old_pid) is not None
+
+
+@mock.patch("requests.Session.get")
+def test_handle_redirect_create_or_update_exception(
+    mock_get, app, agent_viaf_online_response
+):
+    """Test handle_redirect when create_or_update raises an exception."""
+    old_pid = "11111112"
+    new_pid = "99999998"
+
+    viaf_data = {
+        "$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json",
+        "pid": old_pid,
+    }
+    viaf_record = AgentViafRecord.create(data=viaf_data, dbcommit=True, reindex=True)
+
+    target_data = deepcopy(agent_viaf_online_response)
+    target_data["viafID"] = new_pid
+    mock_get.return_value = mock_response(json_data=target_data)
+
+    with mock.patch.object(
+        AgentViafRecord, "create_or_update", side_effect=Exception("DB error")
+    ):
+        new_record, action, redirect_info = viaf_record.handle_redirect(
+            redirect_to_pid=new_pid, dbcommit=True, reindex=True
+        )
+
+    assert action == Action.ERROR
+    assert new_record is None
+    assert redirect_info == {"from": old_pid, "to": new_pid}
