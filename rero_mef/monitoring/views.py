@@ -58,7 +58,7 @@ def db_connection_counts():
             DB_CONNECTION_COUNTS_QUERY
         ).first()
     except Exception as error:
-        return jsonify({"ERROR": error})
+        return jsonify({"ERROR": str(error)}), 500
     return jsonify(
         {
             "data": {
@@ -81,21 +81,9 @@ def db_connections():
     try:
         results = db.session.execute(DB_CONNECTION_QUERY).fetchall()
     except Exception as error:
-        return jsonify({"ERROR": error})
-    data = {}
-    for (
-        pid,
-        application_name,
-        client_addr,
-        client_port,
-        backend_start,
-        xact_start,
-        query_start,
-        wait_event,
-        state,
-        left,
-    ) in results:
-        data[pid] = {
+        return jsonify({"ERROR": str(error)}), 500
+    data = {
+        pid: {
             "application_name": application_name,
             "client_addr": client_addr,
             "client_port": client_port,
@@ -106,6 +94,19 @@ def db_connections():
             "state": state,
             "left": left,
         }
+        for (
+            pid,
+            application_name,
+            client_addr,
+            client_port,
+            backend_start,
+            xact_start,
+            query_start,
+            wait_event,
+            state,
+            left,
+        ) in results
+    }
     return jsonify({"data": data})
 
 
@@ -170,7 +171,18 @@ def check_es_db_counts():
                 "about": url_for("api_monitoring.check_es_db_counts", _external=True)
             }
             for info, count in doc_type_data.items():
-                if info == "db_es":
+                if info == "es_error":
+                    errors.append(
+                        {
+                            "id": "ES_UNAVAILABLE",
+                            "links": links,
+                            "code": "ES_UNAVAILABLE",
+                            "title": "Elasticsearch is unavailable.",
+                            "details": f"Cannot retrieve count for {doc_type} from Elasticsearch. "
+                            "Check Elasticsearch connectivity and index status.",
+                        }
+                    )
+                elif info == "db_es":
                     links[doc_type] = url_for(
                         "api_monitoring.missing_pids", doc_type=doc_type, _external=True
                     )
@@ -258,10 +270,9 @@ def missing_pids(doc_type):
             data["ES"].append(pid)
     for pid in mon.get("ES duplicate"):
         if api_url:
-            url = f"{api_url}?q=pid:{pid}"
-            data["ES duplicate"][url] = len(mon.get("ES duplicate"))
+            data["ES duplicate"].append(f"{api_url}?q=pid:{pid}")
         else:
-            data["ES duplicate"][pid] = len(mon.get("ES duplicate"))
+            data["ES duplicate"].append(pid)
     return jsonify({"data": data})
 
 

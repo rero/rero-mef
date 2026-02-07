@@ -136,8 +136,33 @@ def test_gnd_relation():
 
 
 def test_gnd_classification():
-    """Test trans_gnd_classification ???."""
-    # TODO: trans_gnd_classification
+    """Test trans_gnd_classification 686."""
+    xml_part_to_add = """
+        <datafield tag="686" ind1=" " ind2=" ">
+            <subfield code="a">370</subfield>
+            <subfield code="c">Erziehung und Bildung</subfield>
+            <subfield code="2">DDC</subfield>
+        </datafield>
+        <datafield tag="686" ind1=" " ind2=" ">
+            <subfield code="a">401</subfield>
+            <subfield code="2">DDC</subfield>
+        </datafield>
+    """
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
+    trans.trans_gnd_classification()
+    assert trans.json == {
+        "classification": [
+            {
+                "type": "bf:ClassificationDdc",
+                "classificationPortion": "370",
+                "name": "Erziehung und Bildung",
+            },
+            {
+                "type": "bf:ClassificationDdc",
+                "classificationPortion": "401",
+            },
+        ]
+    }
 
 
 def test_gnd_close_match():

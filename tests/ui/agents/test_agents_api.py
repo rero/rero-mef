@@ -16,6 +16,8 @@
 """Test agents api."""
 
 import os
+from types import SimpleNamespace
+from unittest import mock
 
 from rero_mef.agents import (
     Action,
@@ -26,6 +28,52 @@ from rero_mef.agents import (
     AgentViafRecord,
 )
 from rero_mef.utils import export_json_records, number_records_in_file
+
+
+class _FakeSearch:
+    def __init__(self, hits):
+        self._hits = hits
+        self.params_calls = []
+        self.scan_count = 0
+
+    def params(self, **kwargs):
+        self.params_calls.append(kwargs)
+        return self
+
+    def filter(self, *_args, **_kwargs):
+        return self
+
+    def exclude(self, *_args, **_kwargs):
+        return self
+
+    def source(self, *_args, **_kwargs):
+        return self
+
+    def scan(self):
+        for hit in self._hits:
+            self.scan_count += 1
+            yield hit
+
+
+class _FakeHit:
+    def __init__(self, data, record_id):
+        self._data = data
+        self.meta = SimpleNamespace(id=record_id)
+
+    def to_dict(self):
+        return self._data
+
+
+class _FakeRecord(dict):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.update_calls = []
+
+    def update(self, data, dbcommit=False, reindex=False):
+        self.update_calls.append(
+            {"data": dict(data), "dbcommit": dbcommit, "reindex": reindex}
+        )
+        return self
 
 
 def test_create_agent_record_with_viaf_links(
@@ -238,3 +286,141 @@ def test_create_agent_record_with_viaf_links(
         "3": {"gnd": {"12391664X": Action.CREATE}},
         "4": {"rero": {"A023655346": Action.CREATE}},
     }
+
+
+def test_get_unlinked_agents_relink_uses_record_id(app):
+    """Test relinking uses search hit record id instead of pid lookup."""
+    from rero_mef.agents.api import get_unlinked_agents
+
+    fake_viaf_search = _FakeSearch(
+        [_FakeHit({"pid": "viaf-1", "gnd_pid": "gnd-1"}, "viaf-record")]
+    )
+    fake_mef_search = _FakeSearch(
+        [_FakeHit({"pid": "mef-1", "gnd": {"pid": "gnd-1"}}, "mef-record-id")]
+    )
+    fake_record = _FakeRecord({"pid": "mef-1"})
+
+    app.config["RERO_AGENTS"] = ["agents/gnd"]
+
+    fake_entity_class = type(
+        "FakeEntityClass",
+        (),
+        {"name": "gnd", "viaf_source_code": "DNB"},
+    )
+
+    with (
+        mock.patch(
+            "rero_mef.agents.viaf.api.AgentViafSearch",
+            return_value=fake_viaf_search,
+        ),
+        mock.patch(
+            "rero_mef.agents.mef.api.AgentMefSearch",
+            return_value=fake_mef_search,
+        ),
+        mock.patch(
+            "rero_mef.agents.api.get_entity_class", return_value=fake_entity_class
+        ),
+        mock.patch(
+            "rero_mef.agents.mef.api.AgentMefRecord.get_record",
+            return_value=fake_record,
+        ) as mock_get_record,
+        mock.patch(
+            "rero_mef.agents.mef.api.AgentMefRecord.get_record_by_pid",
+            side_effect=AssertionError("pid lookup should not be used"),
+        ),
+    ):
+        assert not list(get_unlinked_agents(relink=True, dbcommit=True, reindex=True))
+
+    mock_get_record.assert_called_once_with("mef-record-id")
+    assert fake_record["viaf_pid"] == "viaf-1"
+    assert fake_record.update_calls == [
+        {
+            "data": {"pid": "mef-1", "viaf_pid": "viaf-1"},
+            "dbcommit": True,
+            "reindex": True,
+        }
+    ]
+
+
+def test_get_unlinked_agents_yields_all_tasks(app):
+    """Test get_unlinked_agents yields all tasks lazily from the MEF scan."""
+    from rero_mef.agents.api import get_unlinked_agents
+
+    fake_viaf_search = _FakeSearch([])
+    fake_mef_search = _FakeSearch(
+        [
+            _FakeHit({"pid": "mef-1", "gnd": {"pid": "gnd-1"}}, "mef-record-1"),
+            _FakeHit({"pid": "mef-2", "gnd": {"pid": "gnd-2"}}, "mef-record-2"),
+        ]
+    )
+
+    app.config["RERO_AGENTS"] = ["agents/gnd"]
+
+    fake_entity_class = type(
+        "FakeEntityClass",
+        (),
+        {"name": "gnd", "viaf_source_code": "DNB"},
+    )
+
+    with (
+        mock.patch(
+            "rero_mef.agents.viaf.api.AgentViafSearch",
+            return_value=fake_viaf_search,
+        ),
+        mock.patch(
+            "rero_mef.agents.mef.api.AgentMefSearch",
+            return_value=fake_mef_search,
+        ),
+        mock.patch(
+            "rero_mef.agents.api.get_entity_class", return_value=fake_entity_class
+        ),
+    ):
+        tasks = list(get_unlinked_agents(relink=False, dbcommit=False, reindex=False))
+
+    assert tasks == [("mef-1", "DNB", "gnd-1"), ("mef-2", "DNB", "gnd-2")]
+    assert fake_mef_search.scan_count == 2
+
+
+def test_create_or_update_mef_skips_missing_displaced_agent(app):
+    """Displaced agent that no longer exists is skipped without raising.
+
+    Regression: get_record_by_pid returns None when a displaced agent has been
+    deleted between the consolidation step and the re-MEF step.  The guard must
+    log a warning and continue instead of raising AttributeError.
+    """
+    from rero_mef.agents import AgentGndRecord
+
+    fake_mef = mock.MagicMock()
+    fake_mef.pid = "mef-1"
+    # Simulate one duplicate MEF record being consolidated: the record holds a
+    # reference to "gnd-old" which will be added to old_pids.
+    fake_mef.__iter__ = mock.MagicMock(return_value=iter([]))
+    fake_mef.pop.return_value = {"$ref": "https://mef.rero.ch/api/agents/gnd/gnd-old"}
+    fake_mef.get.return_value = None
+    fake_mef.update.return_value = fake_mef
+
+    with (
+        mock.patch(
+            "rero_mef.agents.mef.api.AgentMefRecord.get_mef",
+            return_value=[fake_mef],
+        ),
+        mock.patch(
+            "rero_mef.agents.mef.api.AgentMefRecord.flush_indexes",
+        ),
+        # The displaced agent is gone from the DB
+        mock.patch.object(AgentGndRecord, "get_record_by_pid", return_value=None),
+    ):
+        record = AgentGndRecord(
+            {
+                "pid": "gnd-new",
+                "type": "bf:Person",
+                "authorized_access_point": "New, Author",
+            }
+        )
+        # Must not raise AttributeError
+        mef_record, mef_actions = record.create_or_update_mef(
+            dbcommit=False, reindex=False
+        )
+
+    # The displaced pid was skipped, so it does not appear in mef_actions
+    assert "gnd-old" not in mef_actions

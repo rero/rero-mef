@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -58,7 +58,7 @@ class Transformation:
     def trans_rero_identifier(self):
         """Transformation identifier from field 035."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_identifier")
+            self.logger.info("Call Function: %s", "trans_rero_identifier")
         if fields_035 := self.marc.get_fields("035"):
             if fields_035[0].get("a"):
                 pid = fields_035[0]["a"]
@@ -86,7 +86,7 @@ class Transformation:
         #     return date_formated
 
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_birth_and_death_dates")
+            self.logger.info("Call Function: %s", "trans_rero_birth_and_death_dates")
         if fields_100 := self.marc.get_fields("100"):
             if fields_100[0].get("d"):
                 dates_string = re.sub(r"\s+", " ", fields_100[0]["d"]).strip()
@@ -105,7 +105,7 @@ class Transformation:
     def trans_rero_biographical_information(self):
         """Transformation biographical_information 680 $a."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_biographical_information")
+            self.logger.info("Call Function: %s", "trans_rero_biographical_information")
         biographical_information = []
         subfields = {"a": ", "}
         for tag in [680]:
@@ -118,7 +118,7 @@ class Transformation:
     def trans_rero_numeration(self):
         """Transformation numeration 100 $b."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_numeration")
+            self.logger.info("Call Function: %s", "trans_rero_numeration")
         subfields = {"b": " "}
         numeration = build_string_list_from_fields(self.marc, "100", subfields)
         if numeration and numeration[0]:
@@ -127,7 +127,7 @@ class Transformation:
     def trans_rero_qualifier(self):
         """Transformation qualifier 100 $c."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_qualifier")
+            self.logger.info("Call Function: %s", "trans_rero_qualifier")
         subfields = {"c": " "}
         qualifier = build_string_list_from_fields(self.marc, "100", subfields)
         if qualifier and qualifier[0]:
@@ -146,7 +146,7 @@ class Transformation:
             if self.marc.get_fields("111"):
                 tag = "111"
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_preferred_name")
+            self.logger.info("Call Function: %s", "trans_rero_preferred_name")
         variant_names = self.json_dict.get("variant_name", [])
         preferred_names = build_string_list_from_fields(
             record=self.marc,
@@ -192,7 +192,7 @@ class Transformation:
                 agent = "bf:Organisation"
                 self.json_dict["conference"] = True
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_authorized_access_point")
+            self.logger.info("Call Function: %s", "trans_rero_authorized_access_point")
         self.json_dict["type"] = agent
         authorized_access_points = build_string_list_from_fields(
             record=self.marc,
@@ -213,7 +213,7 @@ class Transformation:
     def trans_rero_variant_name(self):
         """Transformation variant_name 400/410/411."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_variant_name")
+            self.logger.info("Call Function: %s", "trans_rero_variant_name")
         tag = "400"
         punctuation = ""
         spaced_punctuation = ""
@@ -241,7 +241,7 @@ class Transformation:
     def trans_rero_variant_access_point(self):
         """Transformation variant_access_point 400/410/411."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_variant_access_point")
+            self.logger.info("Call Function: %s", "trans_rero_variant_access_point")
         tag = "400"
         subfields = {"a": " ", "b": " ", "c": " ", "d": " ", "q": " ", "x": " "}
         punctuation = ""
@@ -276,9 +276,9 @@ class Transformation:
             self.json_dict["variant_access_point"] = variant_access_points
 
     def trans_rero_parallel_access_point(self):
-        """Transformation parallel_access_point 700/710/710."""
+        """Transformation parallel_access_point 700/710/711."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_rero_parallel_access_point")
+            self.logger.info("Call Function: %s", "trans_rero_parallel_access_point")
         tag = "700"
         subfields = {"a": " ", "b": " ", "c": " ", "d": " ", "q": " ", "x": " "}
         punctuation = ""

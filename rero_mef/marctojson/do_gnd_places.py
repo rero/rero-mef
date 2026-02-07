@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2024 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -93,14 +93,14 @@ class Transformation:
         GND_Aenderungsdienst/gndAenderungsdienst_node.html
         """
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_deleted")
+            self.logger.info("Call Function: %s", "trans_gnd_deleted")
         if self.marc.leader[5] in ["c", "d", "x"]:
             self.json_dict["deleted"] = datetime.now(timezone.utc).isoformat()
 
     def trans_gnd_pid(self):
         """Transformation pid from field 001."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_pid")
+            self.logger.info("Call Function: %s", "trans_gnd_pid")
         if field_001 := self.marc.get_fields("001"):
             self.json_dict["pid"] = field_001[0].data
             self.json_dict["type"] = "bf:Place"
@@ -108,7 +108,7 @@ class Transformation:
     def trans_gnd_identifier(self):
         """Transformation identifier from field 024, 035."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_identifier")
+            self.logger.info("Call Function: %s", "trans_gnd_identifier")
         fields_024 = self.marc.get_fields("024")
         for field_024 in fields_024:
             subfield_0 = field_024.get("0")
@@ -136,7 +136,7 @@ class Transformation:
     def trans_gnd_authorized_access_point(self):
         """Transformation authorized_access_point 151."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_authorized_access_point")
+            self.logger.info("Call Function: %s", "trans_gnd_authorized_access_point")
         tag = "151"
         subfields = {"a": ", ", "g": " , ", "x": " - ", "z": " - "}
         tag_grouping = [
@@ -159,7 +159,7 @@ class Transformation:
     def trans_gnd_variant_access_point(self):
         """Transformation variant_access_point 451."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_variant_access_point")
+            self.logger.info("Call Function: %s", "trans_gnd_variant_access_point")
         tag = "451"
         subfields = {"a": ", ", "g": " , "}
         tag_grouping = [
@@ -183,7 +183,7 @@ class Transformation:
         GND_Aenderungsdienst/gndAenderungsdienst_node.html
         """
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_relation")
+            self.logger.info("Call Function: %s", "trans_gnd_relation")
         fields_682 = self.marc.get_fields("682")
         for field_682 in fields_682:
             if field_682.get("i") and field_682["i"] == "Umlenkung":
@@ -231,13 +231,24 @@ class Transformation:
     def trans_gnd_classification(self):
         """Transformation classification from field 686."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_classification")
-        # TODO: find classification
+            self.logger.info("Call Function: %s", "trans_gnd_classification")
+        classifications = []
+        for field_686 in self.marc.get_fields("686"):
+            if field_686.get("a"):
+                classification = {
+                    "type": "bf:ClassificationDdc",
+                    "classificationPortion": field_686["a"].strip(),
+                }
+                if field_686.get("c"):
+                    classification["name"] = field_686["c"].strip()
+                classifications.append(classification)
+        if classifications:
+            self.json_dict["classification"] = classifications
 
     def trans_gnd_match(self):
         """Transformation closeMatch and exactMatch field 751."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_match")
+            self.logger.info("Call Function: %s", "trans_gnd_match")
         for field_751 in self.marc.get_fields("751"):
             with contextlib.suppress(Exception):
                 match_type = None
@@ -303,7 +314,7 @@ class Transformation:
         677 $a: general 678 $a: general 670 $a - $u: dataSource 680 $a: general
         """
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_note")
+            self.logger.info("Call Function: %s", "trans_gnd_note")
         notes = {
             "dataSource": [],
             "dataNotFound": [],

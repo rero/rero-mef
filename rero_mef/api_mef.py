@@ -17,7 +17,6 @@
 
 from datetime import datetime, timezone
 
-import click
 from dateutil import parser
 from elasticsearch_dsl import Q
 from flask import current_app
@@ -136,7 +135,6 @@ class EntityMefRecord(EntityRecord):
 
         # Get all pids from MEF
         date = datetime.now(timezone.utc)
-        click.echo("Get mef")
         progress = progressbar(
             items=cls.search()
             .params(preserve_order=True)
@@ -161,7 +159,6 @@ class EntityMefRecord(EntityRecord):
                         none_pids[record_type].append(mef_pid)
         # Get all entities pids and compare with MEF pids
         for record_type, info in entities.items():
-            click.echo(f"Get {info['name']} MEF: {len(pids[record_type])}")
             progress = progressbar(
                 items=info["search"]
                 .params(preserve_order=True)

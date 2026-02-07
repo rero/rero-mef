@@ -67,15 +67,16 @@ class PlaceIdrefRecord(PlaceRecord):
     @property
     def association_identifier(self):
         """Get associated identifier from identifiedBy."""
-        pids = []
-        for identified_by in self.get("identifiedBy", []):
-            value = identified_by.get("value", "")
-            if (
-                identified_by.get("source") == "GND"
+        pids = list(
+            dict.fromkeys(
+                pid
+                for identified_by in self.get("identifiedBy", [])
+                if identified_by.get("source") == "GND"
                 and identified_by.get("type") == "bf:Nbn"
-                and value.startswith("(DE-101)")
-            ):
-                pids.append(value.replace("(DE-101)", ""))
+                and identified_by.get("value", "").startswith("(DE-101)")
+                if (pid := identified_by.get("value", "").removeprefix("(DE-101)"))
+            )
+        )
         if len(pids) > 1:
             current_app.logger.error(
                 f"MULTIPLE ASSOCIATIONS FOUND FOR: {self.name} {self.pid} | {', '.join(pids)}"

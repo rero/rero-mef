@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2022 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -22,6 +22,7 @@ from invenio_db import db
 from invenio_search import current_search_client
 from redis import Redis
 
+from ..cli_logging import ensure_single_stream_handler
 from .api import Monitoring
 from .utils import DB_CONNECTION_COUNTS_QUERY, DB_CONNECTION_QUERY
 
@@ -29,6 +30,7 @@ from .utils import DB_CONNECTION_COUNTS_QUERY, DB_CONNECTION_QUERY
 @click.group()
 def monitoring():
     """Monitoring commands."""
+    ensure_single_stream_handler()
 
 
 @monitoring.command("es_db_counts")
@@ -45,7 +47,7 @@ def monitoring():
     "--delay",
     "delay",
     default=1,
-    help="Get ES and DB counts from delay miniutes in the past.",
+    help="Get ES and DB counts from delay minutes in the past.",
 )
 @with_appcontext
 def es_db_counts_cli(missing, delay):
@@ -62,12 +64,13 @@ def es_db_counts_cli(missing, delay):
     click.echo(msg_head)
     info = mon.info(with_deleted=False, difference_db_es=False)
     for doc_type in sorted(info):
-        db_es = info[doc_type].get("db-es", "")
-        msg = f"{db_es:>7}  {doc_type:>6} {info[doc_type].get('db', ''):>10}"
+        db_es = info[doc_type].get("db-es")
+        db_es_display = "" if db_es is None else db_es
+        msg = f"{db_es_display:>7}  {doc_type:>6} {info[doc_type].get('db', ''):>10}"
         index = info[doc_type].get("index", "")
         if index:
             msg += f"  {index:>25} {info[doc_type].get('es', ''):>10}"
-        if db_es not in [0, ""]:
+        if db_es not in [0, "", None]:
             click.secho(msg, fg="red")
         else:
             click.echo(msg)
@@ -78,14 +81,14 @@ def es_db_counts_cli(missing, delay):
 
 
 @monitoring.command("mef_counts")
-@with_appcontext
 @click.option(
     "-d",
     "--delay",
     "delay",
     default=1,
-    help="Get ES and DB counts from delay miniutes in the past.",
+    help="Get ES and DB counts from delay minutes in the past.",
 )
+@with_appcontext
 def mef_counts_cli(delay):
     """Print MEF counts.
 
@@ -97,9 +100,9 @@ def mef_counts_cli(delay):
     click.echo(msg_head)
     for entity, data in mon.check_mef().items():
         mef_db = data.get("mef-db", "")
-        db = data.get("db", "")
+        db_count = data.get("db", "")
         mef = data.get("mef", "")
-        msg = f"{mef_db:>8}  {entity:>6} {db:>10}  {mef:>10}"
+        msg = f"{mef_db:>8}  {entity:>6} {db_count:>10}  {mef:>10}"
         if mef_db not in [0, ""]:
             click.secho(msg, fg="red")
         else:
@@ -113,7 +116,7 @@ def mef_counts_cli(delay):
     "--delay",
     "delay",
     default=1,
-    help="Get ES and DB counts from delay miniutes in the past.",
+    help="Get ES and DB counts from delay minutes in the past.",
 )
 @with_appcontext
 def es_db_missing_cli(doc_type, delay):
@@ -134,8 +137,8 @@ def es():
 def redis():
     """Displays redis info."""
     url = current_app.config.get("ACCOUNTS_SESSION_REDIS_URL", "redis://localhost:6379")
-    redis = Redis.from_url(url)
-    for key, value in redis.info().items():
+    redis_client = Redis.from_url(url)
+    for key, value in redis_client.info().items():
         click.echo(f"{key:<33}: {value}")
 
 
@@ -155,8 +158,8 @@ def db_connection_counts():
             DB_CONNECTION_COUNTS_QUERY
         ).first()
     except Exception as error:
-        click.secho(f"ERROR: {error}", fg="red")
-    return click.secho(
+        raise click.ClickException(str(error)) from error
+    click.secho(
         f"max: {max_conn}, used: {used}, res_super: {res_for_super}, free: {free}"
     )
 
@@ -168,9 +171,9 @@ def db_connections():
     try:
         results = db.session.execute(DB_CONNECTION_QUERY).fetchall()
     except Exception as error:
-        click.secho(f"ERROR: {error}", fg="red")
+        raise click.ClickException(str(error)) from error
     for (
-        pid,
+        _,
         application_name,
         client_addr,
         client_port,

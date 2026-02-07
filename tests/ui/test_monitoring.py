@@ -199,6 +199,16 @@ def test_monitoring_cli_db_connection_counts(app, script_info):
     assert "max" in res.output
 
 
+def test_monitoring_cli_db_connection_counts_error_exits_non_zero(app, script_info):
+    """db_connection_counts exits non-zero on DB failure."""
+    with patch("rero_mef.monitoring.cli.db") as mock_db:
+        mock_db.session.execute.side_effect = Exception("db is down")
+        runner = CliRunner()
+        res = runner.invoke(db_conn_counts_cmd, [], obj=script_info)
+    assert res.exit_code != 0
+    assert "db is down" in res.output
+
+
 def test_monitoring_cli_db_connections(app, script_info):
     """db_connections CLI prints per-connection details (mocked DB query)."""
     mock_result = MagicMock()
@@ -211,3 +221,13 @@ def test_monitoring_cli_db_connections(app, script_info):
         res = runner.invoke(db_conns_cmd, [], obj=script_info)
     assert res.exit_code == 0
     assert "application_name" in res.output
+
+
+def test_monitoring_cli_db_connections_error_exits_non_zero(app, script_info):
+    """db_connections exits non-zero on DB failure."""
+    with patch("rero_mef.monitoring.cli.db") as mock_db:
+        mock_db.session.execute.side_effect = Exception("db unavailable")
+        runner = CliRunner()
+        res = runner.invoke(db_conns_cmd, [], obj=script_info)
+    assert res.exit_code != 0
+    assert "db unavailable" in res.output

@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2022 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -53,7 +53,9 @@ class Monitoring:
         msg_head += f"{'':-^64s}\n"
 
         for doc_type, info in sorted(self.info().items()):
-            msg = f"{info.get('db-es', ''):>7}  {doc_type:>6} {info.get('db', ''):>10}"
+            db_es_display = info.get("db-es")
+            db_es_str = "" if db_es_display is None else db_es_display
+            msg = f"{db_es_str:>7}  {doc_type:>6} {info.get('db', ''):>10}"
             if index := info.get("index", ""):
                 msg += f"  {index:>25} {info.get('es', ''):>10}"
             result += msg + "\n"
@@ -144,7 +146,11 @@ class Monitoring:
             info[doc_type]["db"] = count_db
             if index := endpoint.get("search_index", ""):
                 count_es = self.get_es_count(index)
-                db_es = count_db - count_es
+                db_es = (
+                    count_db - count_es
+                    if isinstance(count_db, int) and isinstance(count_es, int)
+                    else None
+                )
                 info[doc_type]["index"] = index
                 info[doc_type]["es"] = count_es
                 info[doc_type]["db-es"] = db_es
@@ -175,7 +181,10 @@ class Monitoring:
             with_deleted=with_deleted, difference_db_es=difference_db_es
         ).items():
             db_es = data.get("db-es", "")
-            if db_es not in [0, ""]:
+            if db_es is None:
+                checks.setdefault(info, {})
+                checks[info]["es_error"] = "unavailable"
+            elif isinstance(db_es, (int, float)) and db_es != 0:
                 checks.setdefault(info, {})
                 checks[info]["db_es"] = db_es
             if data.get("db-"):

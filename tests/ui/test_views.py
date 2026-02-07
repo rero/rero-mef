@@ -21,7 +21,7 @@
 
 def test_ping(live_server, browser):
     """Test the ping view."""
-    # TODO: write E"E tests
+    # TODO: write E2E tests
     # browser.get(url_for('rero_mef.index', _external=True))
     # assert (
     #     'Get into your library' ==

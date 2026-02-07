@@ -17,13 +17,12 @@
 
 from copy import deepcopy
 
-import click
 from flask import current_app
 from invenio_search.api import RecordsSearch
 
 from rero_mef.api import EntityIndexer
 from rero_mef.api_mef import EntityMefRecord
-from rero_mef.utils import get_entity_classes, progressbar
+from rero_mef.utils import get_entity_classes
 
 from .fetchers import mef_id_fetcher
 from .minters import mef_id_minter
@@ -56,41 +55,6 @@ class AgentMefRecord(EntityMefRecord):
     search = AgentMefSearch
     mef_type = "AGENTS"
     entities = ["idref", "gnd", "rero"]
-
-    @classmethod
-    def get_all_missing_viaf_pids(cls, verbose=False):
-        """Get all missing VIAF pids.
-
-        :param verbose: Verbose.
-        :returns: Missing VIAF pids.
-        """
-        from ..viaf.api import AgentViafRecord
-
-        if verbose:
-            click.echo("Get pids from VIAF ...")
-        progress = progressbar(
-            items=AgentViafRecord.get_all_pids(),
-            length=AgentViafRecord.count(),
-            verbose=verbose,
-            label="VIAF all",
-        )
-        missing_pids = dict.fromkeys(progress, 1)
-        if verbose:
-            click.echo("Get pids from MEF and calculate missing ...")
-        query = cls.search().filter("exists", field="viaf_pid")
-        progress = progressbar(
-            items=query.source(["pid", "viaf_pid"]).scan(),
-            length=query.count(),
-            verbose=verbose,
-            label="VIAF from MEF",
-        )
-        non_existing_pids = {
-            hit.pid: hit.viaf_pid
-            for hit in progress
-            if not missing_pids.pop(hit.viaf_pid, None)
-        }
-
-        return list(missing_pids), non_existing_pids
 
     @classmethod
     def create(

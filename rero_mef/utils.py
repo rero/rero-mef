@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2024 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-# Copyright (C) 2018 RERO.
+# Copyright (C) 2026 RERO.
 #
 # RERO Ebooks is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -944,8 +944,8 @@ def create_csv_file(input_file, entity, pidstore, metadata):
         open(pidstore, "w", encoding="utf-8") as entity_pids_file,
     ):
         for record in ijson.items(entity_file, "item"):
-            if entity == "viaf":
-                record["pid"] = record["viaf_pid"]
+            if entity == "viaf" and not record.get("pid"):
+                raise ValueError("VIAF record missing required 'pid' field")
 
             if schema_url := _schema.get_schema_url_for_entity(entity):
                 record["$schema"] = schema_url

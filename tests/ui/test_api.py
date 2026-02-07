@@ -58,6 +58,6 @@ def test_entityrecord_api(app, agent_idref_record):
     assert AgentIdrefRecord.get_pid_by_id(idref.id) == idref.pid
 
     AgentIdrefIndexer().bulk_index(list(AgentIdrefRecord.get_all_ids()))
-    process_bulk_queue(stats_only=True)
-    # TODO: Find out how to test bulk indexing.
-    # assert process_bulk_queue(stats_only=True) == (1, 0)
+    indexed, failed = process_bulk_queue(stats_only=True)
+    assert indexed >= 1
+    assert failed == 0
