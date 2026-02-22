@@ -1,6 +1,6 @@
-..
+<!--
     RERO MEF
-    Copyright (C) 2020 RERO
+    Copyright (C) 2020-2026 RERO
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -13,26 +13,14 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
 
-==========
- RERO MEF
-==========
+# RERO MEF
 
-.. image:: https://github.com/rero/rero-mef/workflows/build/badge.svg
-        :alt: Github actions status
-        :target: https://github.com/rero/rero-mef/actions?query=workflow%3Abuild
-
-.. image:: https://img.shields.io/coveralls/rero/rero-mef.svg
-        :alt: Coveralls
-        :target: https://coveralls.io/rero/rero-mef
-
-.. image:: https://img.shields.io/github/tag/rero/rero-mef.svg
-        :alt: Release Number
-        :target: https://github.com/rero/rero-mef/releases/latest
-
-.. image:: https://img.shields.io/badge/License-AGPL%20v3-blue.svg
-        :alt: License
-        :target: http://www.gnu.org/licenses/agpl-3.0.html
+[![Github actions status](https://github.com/rero/rero-mef/workflows/build/badge.svg)](https://github.com/rero/rero-mef/actions?query=workflow%3Abuild)
+[![Coveralls](https://img.shields.io/coveralls/rero/rero-mef.svg)](https://coveralls.io/rero/rero-mef)
+[![Release Number](https://img.shields.io/github/tag/rero/rero-mef.svg)](https://github.com/rero/rero-mef/releases/latest)
+[![License](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0.html)
 
 MEF (Multilingual Entity File) server with records for persons, works, etc. for reuse in integrated library systems (ILS).
 

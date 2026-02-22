@@ -67,6 +67,7 @@ target/
 
 # Celery Beat
 celerybeat-schedule
+celerybeat-schedule.db
 
 # Environment variables
 .env
@@ -78,3 +79,9 @@ celerybeat-schedule
 .vscode
 
 .python-version
+
+# Data run tracking files
+*_last_run.txt
+
+# Large MARC data files
+data/marc_xml/

@@ -26,13 +26,12 @@ include scripts/console
 include scripts/server
 include scripts/setup
 include scripts/update
-prune docs/_build
 recursive-include docker *.cfg *.conf *.crt *.ini *.key *.pem *.sh
 
 # added by check_manifest.py
 include *.base
 include *.lock
-include *.rst
+include *.md
 include *.sh
 include *.yml
 include LICENSE
@@ -41,7 +40,7 @@ recursive-include data *.json
 recursive-include data *.yml
 recursive-include docs *.bat
 recursive-include docs *.py
-recursive-include docs *.rst
+recursive-include docs *.md
 recursive-include docs *.txt
 recursive-include docs Makefile
 recursive-include rero_mef *.json

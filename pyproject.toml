@@ -194,13 +194,13 @@ tests_debug = {cmd = "pytest -s -vv --no-cov", help = "pytest -s -vv --no-cov"}
 
 [tool.pytest.ini_options]
 live_server_scope = "module"
-addopts = "--color=yes --doctest-glob='*.rst' --doctest-modules --exclude-warning-annotations --ignore=setup.py --ignore=docs/conf.py"
-testpaths = "docs tests rero_mef"
+addopts = "--color=yes --doctest-modules --exclude-warning-annotations --ignore=setup.py"
+testpaths = "tests rero_mef"
 # not displaying all the PendingDeprecationWarnings from invenio
 filterwarnings = "ignore::PendingDeprecationWarning"
 
 [tool.ruff]
-extend-exclude = ["config.py", "conf.py"]
+extend-exclude = ["config.py"]
 
 [tool.ruff.lint]
 extend-select = ["A", "C4", "INT", "ISC", "T20", "PIE", "Q", "RET", "SIM", "I", "N", "PERF", "W", "D", "F", "UP", "RUF"]
@@ -208,6 +208,7 @@ ignore = ["D103", "D105", "D107", "D401", "N818", "PERF203", "PERF401", "RUF012"
 
 [tool.ruff.lint.per-file-ignores]
 "rero_mef/alembic/*.py" = ["N999"]
+"tests/**/*.py" = ["ARG001"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "pep257"
