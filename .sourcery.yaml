@@ -1,0 +1,47 @@
+# Sourcery configuration for rero-mef
+# Align with Ruff rules to prevent conflicts
+
+rules:
+  - id: no-long-functions
+    description: Avoid functions longer than 100 lines
+    pattern: function-length
+    max-length: 100
+
+  - id: no-complex-functions
+    description: Avoid functions with high cyclomatic complexity
+    pattern: function-complexity
+    max-complexity: 15
+
+python_version: "3.9"
+
+# Respect Ruff's style choices
+refactor:
+  # Don't suggest changes that conflict with Ruff's decisions
+  skip_default_refactorings:
+    - use-fstring-for-formatting  # Only if Ruff handles this
+    - merge-nested-ifs  # Conflicts with SIM102 which is ignored in Ruff
+    - lift-return-into-if  # Conflicts with RET rules
+    - swap-if-else  # Can conflict with readability preferences
+
+  # Focus on logic improvements, not style
+  priority:
+    - extract-method
+    - simplify-boolean-expression
+    - use-named-expression
+    - remove-redundant-if
+    - hoist-similar-statement-from-if
+    - split-complex-comprehension
+
+# Ignore rules that conflict with project standards
+ignore:
+  - docstring-style  # Ruff handles this with D rules
+  - line-length  # Ruff handles this
+  - import-order  # Ruff I rules handle this
+
+# Only review production code, not generated files
+exclude:
+  - "rero_mef/config.py"
+  - "rero_mef/alembic/*"
+  - "**/__pycache__/*"
+  - "*.egg-info/*"
+  - "htmlcov/*"

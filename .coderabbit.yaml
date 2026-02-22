@@ -1,0 +1,54 @@
+# CodeRabbit AI Code Review Configuration
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+# Align with Ruff to prevent style conflicts
+
+# Language settings
+language: "en-US"
+
+# Review settings
+reviews:
+  # Review profile (chill = lighter feedback)
+  profile: "chill"
+
+  # File patterns to review (glob patterns)
+  path_filters:
+    - "rero_mef/**/*.py"
+    - "tests/**/*.py"
+    - "scripts/**/*.py"
+    - "!**/__pycache__/**"
+    - "!**/*.egg-info/**"
+    - "!htmlcov/**"
+    - "!rero_mef/config.py"
+    - "!**/.venv/**"
+    - "!**/node_modules/**"
+
+  # Path-specific review instructions
+  path_instructions:
+    - path: "**/*.py"
+      instructions: |
+        This project uses Ruff for linting and formatting. Focus on:
+        - Security vulnerabilities and correctness issues
+        - Performance problems and edge cases
+        - Logic errors and architectural improvements
+
+        Do NOT flag style issues that Ruff handles:
+        - Line length (120 chars max)
+        - Star imports (F403, F405) - allowed in this project
+        - print() statements (T201) - allowed
+        - Nested if/with (SIM102, SIM117) - allowed for readability
+
+        Docstring conventions (Sphinx-style, PEP 257):
+        - Public function/class docstrings are optional (D103, D101 ignored)
+        - Relaxed naming conventions (N801-N818 ignored)
+
+        See pyproject.toml [tool.ruff.lint.ignore] for full project preferences.
+
+  # Auto review configuration
+  auto_review:
+    enabled: true
+    drafts: true
+
+# Chat settings
+chat:
+  auto_reply: false
