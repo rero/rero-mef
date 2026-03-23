@@ -104,7 +104,7 @@ class Monitoring:
         pids_es = []
         pids_db = []
         if index:
-            date = datetime.now(timezone.utc)
+            date = datetime.now(timezone.utc) - timedelta(minutes=self.time_delta)
             pids_es = {}
             query = RecordsSearch(index=index).filter("range", _created={"lte": date})
             progress = progressbar(
@@ -119,7 +119,7 @@ class Monitoring:
             progress = progressbar(
                 items=agent_class.get_all_pids(
                     with_deleted=with_deleted,
-                    date=date - timedelta(minutes=self.time_delta),
+                    date=date,
                 ),
                 length=agent_class.count(with_deleted=with_deleted),
                 verbose=verbose,
