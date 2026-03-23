@@ -1,0 +1,55 @@
+<ul class="mef-results-list">
+  <li ng-repeat="record in vm.invenioSearchResults.hits.hits track by $index" class="mef-result-item">
+    <article class="mef-result-card" ng-class="{'mef-type-conflict': record.metadata.type_conflict}">
+      <div class="mef-type-icon" ng-class="{'mef-icon-deleted': record.metadata.deleted}">
+        <i ng-if="record.entity === 'agents' && record.metadata.type === 'bf:Organisation'" class="fa fa-building-o" aria-hidden="true"></i>
+        <i ng-if="record.entity === 'agents' && record.metadata.type !== 'bf:Organisation'" class="fa fa-user" aria-hidden="true"></i>
+        <i ng-if="record.entity === 'concepts' && record.metadata.type === 'bf:Temporal'" class="fa fa-clock-o" aria-hidden="true"></i>
+        <i ng-if="record.entity === 'concepts' && record.metadata.type !== 'bf:Temporal'" class="fa fa-lightbulb-o" aria-hidden="true"></i>
+        <i ng-if="record.entity === 'places'" class="fa fa-map-marker" aria-hidden="true"></i>
+        <span ng-if="record.metadata.type" class="mef-type-label">{{ record.metadata.type | mefTypeName }}</span>
+      </div>
+
+      <div class="mef-result-content">
+        <h3 class="mef-result-title">
+          <a ng-href="{{ record.links.preview || record.links.self }}" rel="noopener">
+            {{
+              record.metadata.authorized_access_point
+              || record.metadata.preferred_name
+              || (record.metadata.rero && (record.metadata.rero.authorized_access_point || record.metadata.rero.preferred_name))
+              || (record.metadata.idref && (record.metadata.idref.authorized_access_point || record.metadata.idref.preferred_name))
+              || (record.metadata.gnd && (record.metadata.gnd.authorized_access_point || record.metadata.gnd.preferred_name))
+              || 'No authorized access point'
+            }}
+          </a>
+          <span ng-if="record.metadata.type_conflict" class="mef-type-conflict-badge" title="This record has a redirect to a different entity type">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+          </span>
+        </h3>
+
+        <p class="mef-result-meta">
+          <span ng-if="record.metadata.pid" class="mef-meta-inline mef-meta-pid">{{ record.metadata.pid }}</span>
+          <span ng-if="record.metadata.viaf_pid" class="mef-meta-inline">VIAF {{ record.metadata.viaf_pid }}</span>
+          <span ng-if="record.created" class="mef-meta-inline">Created {{ record.created | date:'yyyy-MM-dd' }}</span>
+          <span ng-if="record.updated" class="mef-meta-inline">Updated {{ record.updated | date:'yyyy-MM-dd' }}</span>
+          <span ng-if="record.metadata.deleted" class="mef-meta-inline mef-deleted-badge">Deleted {{ record.metadata.deleted | date:'yyyy-MM-dd' }}</span>
+        </p>
+
+        <div class="mef-source-links">
+          <a class="mef-source-chip mef-chip-gnd"
+            ng-if="record.metadata.gnd && record.metadata.gnd.pid"
+            ng-href="{{ '/api/' + record.entity + '/gnd/' + record.metadata.gnd.pid }}"
+            target="_blank" rel="noopener">GND</a>
+          <a class="mef-source-chip mef-chip-idref"
+            ng-if="record.metadata.idref && record.metadata.idref.pid"
+            ng-href="{{ '/api/' + record.entity + '/idref/' + record.metadata.idref.pid }}"
+            target="_blank" rel="noopener">IDREF</a>
+          <a class="mef-source-chip mef-chip-rero"
+            ng-if="record.entity !== 'places' && record.metadata.rero && record.metadata.rero.pid"
+            ng-href="{{ (record.entity === 'concepts' ? '/api/concepts' : '/api/agents') + '/rero/' + record.metadata.rero.pid }}"
+            target="_blank" rel="noopener">RERO</a>
+        </div>
+      </div>
+    </article>
+  </li>
+</ul>

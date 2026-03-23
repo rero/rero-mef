@@ -53,7 +53,7 @@ Never use `pip`, `python -m pytest`, or bare `pytest` — always use `uv`.
 - Linting and formatting are enforced by Ruff (see `pyproject.toml`).
 - Line length: 120 characters.
 - Docstrings: Sphinx-style, only on public symbols where needed.
-- Imports: Standard library → third-party → local, sorted within groups.
+- Imports: Standard library → third-party → local, sorted within groups. Always place imports at the top of the file. Deferred (inside-function) imports are only acceptable when they genuinely break a circular dependency — document why with a comment in that case.
 - Commit messages: [Conventional Commits](https://www.conventionalcommits.org)
 
 ### Sourcery

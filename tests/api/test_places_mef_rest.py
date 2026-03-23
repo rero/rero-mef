@@ -40,9 +40,16 @@ def test_view_places_mef(
     assert res.status_code == 200
     json_data = json.loads(res.get_data(as_text=True))
     assert json_data["hits"]["total"] == 1
-    assert json_data["aggregations"] == {
+    aggs = json_data["aggregations"]
+    aggs.pop("creation_date", None)
+    aggs.pop("update_date", None)
+    assert aggs == {
+        "authorized_access_point": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
         "deleted": {"doc_count": 0},
-        "deleted_entities": {"doc_count": 0},
         "source": {
             "buckets": [{"doc_count": 1, "key": "idref"}],
             "doc_count_error_upper_bound": 0,

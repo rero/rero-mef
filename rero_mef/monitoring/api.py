@@ -205,14 +205,19 @@ class Monitoring:
             mef_search = mef["mef_class"].search
             for entity in mef["endpoints"]:
                 entity_class = get_entity_class(entity)
-                mef_count = (
-                    mef_search().filter("exists", field=entity_class.name).count()
-                )
+                try:
+                    mef_count = (
+                        mef_search().filter("exists", field=entity_class.name).count()
+                    )
+                except NotFoundError:
+                    mef_count = f"No >>{mef['mef_class'].search.Meta.index}<< in ES"
                 db_count = entity_class.count()
                 checks[entity] = {
                     "mef": mef_count,
                     "db": db_count,
-                    "mef-db": mef_count - db_count,
+                    "mef-db": mef_count - db_count
+                    if isinstance(mef_count, int) and isinstance(db_count, int)
+                    else "",
                     "index": entity,
                 }
         return checks

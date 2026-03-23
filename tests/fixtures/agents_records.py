@@ -110,3 +110,31 @@ def agent_mef_idref_redirect_record(
 ):
     """Create a IdRef record."""
     return create_record(AgentMefRecord, agent_mef_idref_redirect_data)
+
+
+@pytest.fixture(scope="module")
+def agent_gnd_crosstype_redirect_record(
+    app,
+    agent_gnd_crosstype_redirect_data,
+    agent_gnd_crosstype_redirect_2_data,
+    agent_gnd_crosstype_redirect_3_data,
+    agent_gnd_record,
+):
+    """Create GND crosstype redirect records (bf:Organisation → bf:Person/Place)."""
+    create_record(AgentGndRecord, agent_gnd_crosstype_redirect_2_data)
+    create_record(AgentGndRecord, agent_gnd_crosstype_redirect_3_data)
+    return create_record(AgentGndRecord, agent_gnd_crosstype_redirect_data)
+
+
+@pytest.fixture(scope="module")
+def agent_mef_crosstype_redirect_record(
+    app,
+    agent_mef_crosstype_redirect_data,
+    agent_mef_crosstype_redirect_2_data,
+    agent_mef_crosstype_redirect_3_data,
+    agent_gnd_crosstype_redirect_record,
+):
+    """Create agent MEF crosstype redirect records."""
+    create_record(AgentMefRecord, agent_mef_crosstype_redirect_2_data)
+    create_record(AgentMefRecord, agent_mef_crosstype_redirect_3_data)
+    return create_record(AgentMefRecord, agent_mef_crosstype_redirect_data)

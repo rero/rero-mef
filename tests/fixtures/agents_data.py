@@ -930,3 +930,84 @@ def aggnd_oai_list_records_empty():
     file_name = join(dirname(__file__), "../data/aggnd_oai_list_records_empty.xml")
     with open(file_name, "rb") as file:
         return file.read()
+
+
+@pytest.fixture(scope="module")
+def agent_gnd_crosstype_redirect_data():
+    """Agent GND record (bf:Organisation) redirecting to an existing bf:Person GND record.
+
+    Uses redirect_to pointing at 12391664X (bf:Person) so tests can verify type_conflict
+    detection without requiring place records in the test database.
+    """
+    return {
+        "$schema": "https://mef.rero.ch/schemas/agents_gnd/gnd-agent-v0.0.1.json",
+        "pid": "GND_CROSSTYPE_ORG",
+        "type": "bf:Organisation",
+        "preferred_name": "Amt Nordschleswig",
+        "authorized_access_point": "Amt Nordschleswig",
+        "relation_pid": {"type": "redirect_to", "value": "12391664X"},
+    }
+
+
+@pytest.fixture(scope="module")
+def agent_mef_crosstype_redirect_data():
+    """Agent MEF record whose GND source (Amt Nordschleswig) redirects to a bf:Place."""
+    return {
+        "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
+        "gnd": {"$ref": "https://mef.rero.ch/api/agents/gnd/GND_CROSSTYPE_ORG"},
+        "type": "bf:Organisation",
+    }
+
+
+@pytest.fixture(scope="module")
+def agent_gnd_crosstype_redirect_2_data():
+    """Agent GND record (bf:Organisation) redirecting to GND place 040425134 (Norden).
+
+    Verwaltungsgemeinschaft Norden was a regional administrative body (bf:Organisation);
+    GND reclassified it to the corresponding place record Norden, Landkreis Aurich.
+    """
+    return {
+        "$schema": "https://mef.rero.ch/schemas/agents_gnd/gnd-agent-v0.0.1.json",
+        "pid": "GND_CROSSTYPE_ORG_2",
+        "type": "bf:Organisation",
+        "preferred_name": "Verwaltungsgemeinschaft Norden",
+        "authorized_access_point": "Verwaltungsgemeinschaft Norden (Ostfriesland)",
+        "relation_pid": {"type": "redirect_to", "value": "040425134"},
+    }
+
+
+@pytest.fixture(scope="module")
+def agent_mef_crosstype_redirect_2_data():
+    """Agent MEF record whose GND source (Verwaltungsgemeinschaft Norden) redirects to a bf:Place."""
+    return {
+        "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
+        "gnd": {"$ref": "https://mef.rero.ch/api/agents/gnd/GND_CROSSTYPE_ORG_2"},
+        "type": "bf:Organisation",
+    }
+
+
+@pytest.fixture(scope="module")
+def agent_gnd_crosstype_redirect_3_data():
+    """Agent GND record (bf:Organisation) redirecting to GND place 1334736340.
+
+    Gesellschaft der Freunde des Théâtre des Champs-Élysées was catalogued as a
+    corporate body; GND reclassified it to the venue as a geographic entity (bf:Place).
+    """
+    return {
+        "$schema": "https://mef.rero.ch/schemas/agents_gnd/gnd-agent-v0.0.1.json",
+        "pid": "GND_CROSSTYPE_ORG_3",
+        "type": "bf:Organisation",
+        "preferred_name": "Gesellschaft der Freunde des Théâtre des Champs-Élysées",
+        "authorized_access_point": "Gesellschaft der Freunde des Théâtre des Champs-Élysées (Paris)",
+        "relation_pid": {"type": "redirect_to", "value": "1334736340"},
+    }
+
+
+@pytest.fixture(scope="module")
+def agent_mef_crosstype_redirect_3_data():
+    """Agent MEF record whose GND source redirects to place 1334736340 (Théâtre des Champs-Élysées)."""
+    return {
+        "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
+        "gnd": {"$ref": "https://mef.rero.ch/api/agents/gnd/GND_CROSSTYPE_ORG_3"},
+        "type": "bf:Organisation",
+    }

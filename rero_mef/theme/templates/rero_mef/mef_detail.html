@@ -1,0 +1,138 @@
+{# -*- coding: utf-8 -*-
+
+  RERO MEF
+  Copyright (C) 2026 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+
+{%- extends config.BASE_TEMPLATE %}
+
+{%- macro render_field_list(rows) %}
+<dl class="dl-horizontal mef-field-list">
+  {%- for row in rows %}
+  <dt>{{ row.label }}</dt>
+  {%- if row.identifier_items %}
+    {%- for item in row.identifier_items %}
+    <dd{% if item.linking %} class="mef-linking"{% endif %}>
+      {%- if item.url %}<a href="{{ item.url }}" target="_blank" rel="noopener" title="Open external link">{% if row.bold %}<strong>{% endif %}{{ item.text }}{% if row.bold %}</strong>{% endif %} <span class="glyphicon glyphicon-new-window"></span></a>
+      {%- else %}{% if row.bold %}<strong>{% endif %}{{ item.text }}{% if row.bold %}</strong>{% endif %}{% endif %}
+      {%- if item.linking %} <span class="mef-linking-badge">link key</span>{% endif %}
+    </dd>
+    {%- endfor %}
+  {%- elif row.list_items %}
+    {%- for item in row.list_items %}
+    <dd>{% if row.bold %}<strong>{% endif %}{{ item }}{% if row.bold %}</strong>{% endif %}</dd>
+    {%- endfor %}
+  {%- else %}
+  <dd{% if row.linking %} class="mef-linking"{% elif row.label == 'Deleted' %} class="mef-deleted-value"{% endif %}>
+    {%- if row.url and row.internal %}<a href="{{ row.url }}">{% if row.bold %}<strong>{% endif %}{{ row.value|safe if row.raw_html else row.value }}{% if row.bold %}</strong>{% endif %} <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
+    {%- elif row.url %}<a href="{{ row.url }}" target="_blank" rel="noopener" title="Open external link">{% if row.bold %}<strong>{% endif %}{{ row.value|safe if row.raw_html else row.value }}{% if row.bold %}</strong>{% endif %} <span class="glyphicon glyphicon-new-window"></span></a>
+    {%- elif row.conflict_url %}<a href="{{ row.conflict_url }}" class="mef-conflict-link">{{ row.value|safe if row.raw_html else row.value }} <i class="fa fa-exclamation-triangle" aria-hidden="true"></i></a>
+    {%- else %}{% if row.bold %}<strong>{% endif %}{{ row.value|safe if row.raw_html else row.value }}{% if row.bold %}</strong>{% endif %}{% endif %}
+    {%- if row.linking %} <span class="mef-linking-badge">link key</span>{% endif %}
+  </dd>
+  {%- endif %}
+  {%- endfor %}
+</dl>
+{%- endmacro %}
+
+{%- block page_header %}
+{% include('rero_mef/header.html') %}
+{%- endblock page_header %}
+
+{%- block page_body %}
+<div class="container mef-detail-page">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="mef-detail-toolbar">
+        <div class="mef-detail-nav">
+          <a class="mef-home-link" href="{{ home_url }}" title="All search"><i class="fa fa-home" aria-hidden="true"></i></a>
+          <a class="mef-back-link" href="{{ back_url }}"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</a>
+          {%- if older_url %}
+          <a class="mef-older-link" href="{{ older_url }}"><i class="fa fa-step-backward" aria-hidden="true"></i> Older</a>
+          {%- endif %}
+          {%- if latest_url %}
+          <a class="mef-latest-link" href="{{ latest_url }}">Latest <i class="fa fa-step-forward" aria-hidden="true"></i></a>
+          {%- endif %}
+        </div>
+        {%- if entity_label %}
+        <span class="mef-detail-type-badge">{{ entity_label }}</span>
+        {%- endif %}
+      </div>
+      {%- if type_conflict %}
+      <div class="alert alert-warning mef-type-conflict-alert" role="alert">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+        <strong>Cross-type redirect:</strong> This record has a redirect (<code>relation_pid</code>) pointing to an entity of a different type. The redirect target may be in a different entity class (e.g., agents vs places).
+      </div>
+      {%- endif %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {%- if item_url %}
+          <h3 class="panel-title"><a href="{{ item_url }}" target="_blank" rel="noopener" title="View raw JSON">Main record <span class="glyphicon glyphicon-new-window"></span></a></h3>
+          {%- else %}
+          <h3 class="panel-title">Main record</h3>
+          {%- endif %}
+        </div>
+        <div class="panel-body">
+          {{ render_field_list(main_rows) }}
+          {%- if created or updated %}
+          <dl class="dl-horizontal mef-field-list">
+            {%- if created %}<dt>Created</dt><dd>{{ created }}</dd>{% endif %}
+            {%- if updated %}<dt>Updated</dt><dd>{{ updated }}</dd>{% endif %}
+          </dl>
+          {%- endif %}
+        </div>
+      </div>
+
+      {% for section in source_sections %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {% if section.url %}
+          <h3 class="panel-title"><a href="{{ section.url }}" target="_blank" rel="noopener" title="View raw JSON">{{ section.title }} source <span class="glyphicon glyphicon-new-window"></span></a></h3>
+          {% else %}
+          <h3 class="panel-title">{{ section.title }} source</h3>
+          {% endif %}
+        </div>
+        <div class="panel-body">
+          {{ render_field_list(section.rows) }}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{%- endblock page_body %}
+
+{%- block page_footer %}
+{% include 'rero_mef/footer.html' %}
+{%- endblock page_footer %}
+
+{%- block javascript %}
+{{ super() }}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
+{%- endblock javascript %}
+
+{%- block css %}
+{{ super() }}
+{{ webpack['global.css'] }}
+{%- endblock css %}

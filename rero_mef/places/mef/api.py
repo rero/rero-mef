@@ -55,6 +55,20 @@ class PlaceMefRecord(EntityMefRecord):
     mef_type = "PLACES"
     entities = ["idref", "gnd"]
 
+    def update(self, data, commit=False, dbcommit=False, reindex=False):
+        """Update data for record.
+
+        :param data: a dict data to update the record.
+        :param commit: if True push the db transaction.
+        :param dbcommit: make the change effective in db.
+        :param reindex: reindex the record.
+        :returns: the modified record
+        """
+        data["type"] = "bf:Place"
+        return super().update(
+            data=data, commit=commit, dbcommit=dbcommit, reindex=reindex
+        )
+
     @classmethod
     def create(
         cls,
@@ -116,13 +130,18 @@ class PlaceMefRecord(EntityMefRecord):
         return data
 
     @classmethod
-    def get_latest(cls, pid_type, pid):
+    def get_latest(cls, pid_type, pid, _visited=None):
         """Get latest Mef record for pid_type and pid.
 
         :param pid_type: pid type to use.
-        :param pid: pid to use..
+        :param pid: pid to use.
+        :param _visited: set of already-seen pids used to break redirect cycles.
         :returns: latest record.
         """
+        visited = _visited or set()
+        if pid in visited:
+            return {}
+        visited.add(pid)
         search = PlaceMefSearch().filter({"term": {f"{pid_type}.pid": pid}})
         if search.count() > 0:
             data = next(search.scan()).to_dict()
@@ -136,7 +155,11 @@ class PlaceMefRecord(EntityMefRecord):
                 if search.count() > 0:
                     new_data = next(search.scan()).to_dict()
                     new_pid = new_data.get("idref", {}).get("pid")
-            return cls.get_latest(pid_type=pid_type, pid=new_pid) if new_pid else data
+            return (
+                cls.get_latest(pid_type=pid_type, pid=new_pid, _visited=visited)
+                if new_pid
+                else data
+            )
         return {}
 
 

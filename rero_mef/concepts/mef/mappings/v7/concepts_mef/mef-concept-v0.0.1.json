@@ -44,6 +44,18 @@
       "deleted": {
         "type": "date"
       },
+      "type_conflict": {
+        "type": "boolean"
+      },
+      "entity": {
+        "type": "keyword"
+      },
+      "sort_authorized_access_point": {
+        "type": "keyword"
+      },
+      "pid_numeric": {
+        "type": "long"
+      },
       "rero": {
         "type": "object",
         "properties": {

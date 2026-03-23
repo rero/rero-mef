@@ -206,8 +206,7 @@ class EntityMefRecord(EntityRecord):
             cls.search().params(preserve_order=True).sort({"pid": {"order": "asc"}})
         )
         deleted = []
-        from_date = data.get("from_date")
-        if from_date:
+        if from_date := data.get("from_date"):
             search = search.filter("range", _updated={"gte": from_date})
         missing_pids = []
         if pids := data.get("pids"):

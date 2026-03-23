@@ -18,6 +18,8 @@
 from elasticsearch_dsl.query import Q
 from flask import current_app, request
 from invenio_records_rest.errors import InvalidQueryRESTError
+from invenio_records_rest.facets import default_facets_factory
+from invenio_records_rest.sorter import default_sorter_factory
 
 
 def and_search_factory(self, search, query_parser=None):
@@ -30,10 +32,19 @@ def and_search_factory(self, search, query_parser=None):
 
     def _default_parser(qstr=None):
         """Default parser that uses the Q() from elasticsearch_dsl."""
-        return Q("query_string", query=qstr, default_operator="AND") if qstr else Q()
-
-    from invenio_records_rest.facets import default_facets_factory
-    from invenio_records_rest.sorter import default_sorter_factory
+        if not qstr:
+            return Q()
+        return Q(
+            "query_string",
+            query=qstr,
+            default_operator="AND",
+            fields=[
+                "*.authorized_access_point^5",
+                "*.variant_access_point^2",
+                "*.preferred_name^2",
+                "*",
+            ],
+        )
 
     query_string = request.values.get("q")
     query_parser = query_parser or _default_parser
@@ -62,25 +73,5 @@ def and_search_factory(self, search, query_parser=None):
     )
     if not with_deleted:
         search = search.exclude("exists", field="deleted")
-        # Build deleted entities exclusion dynamically from per-index facets config
-        facets = current_app.config.get("RECORDS_REST_FACETS", {})
-        index_aggs = facets.get(search_index, {}).get("aggs", {})
-        should_list = (
-            index_aggs.get("deleted_entities", {})
-            .get("filter", {})
-            .get("bool", {})
-            .get("should", [])
-        )
-        deleted_fields = [
-            field
-            for item in should_list
-            if (field := item.get("exists", {}).get("field"))
-        ]
-        if deleted_fields:
-            search = search.exclude(
-                "bool",
-                should=[Q("exists", field=f) for f in deleted_fields],
-                minimum_should_match=1,
-            )
 
     return search, urlkwargs

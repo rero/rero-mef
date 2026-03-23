@@ -60,7 +60,7 @@ class Transformation:
         - u Werk
         """
         for field_075 in self.marc.get_fields("075") or []:
-            if field_075.get("2") and field_075["2"] == "gndgen":
+            if field_075.get("2") == "gndgen":
                 return RECORD_TYPES.get(field_075["b"])
         return None
 
@@ -186,7 +186,7 @@ class Transformation:
             self.logger.info("Call Function: %s", "trans_gnd_relation")
         fields_682 = self.marc.get_fields("682")
         for field_682 in fields_682:
-            if field_682.get("i") and field_682["i"] == "Umlenkung":
+            if field_682.get("i") == "Umlenkung":
                 subfields_0 = field_682.get_subfields("0")
                 for subfield_0 in subfields_0:
                     if subfield_0.startswith("(DE-101)"):

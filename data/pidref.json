@@ -34564,5 +34564,59 @@
     "pid": "279571658",
     "type": "bf:Place",
     "md5": "c5be134fb333acfc4f354be6825adba8"
+  },
+  {
+    "pid": "EXPL001",
+    "type": "bf:Place",
+    "authorized_access_point": "Lac Léman",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/EXPL001",
+        "source": "IDREF"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "general",
+        "label": ["Example place — redirect target for EXPL002, no type_conflict"]
+      }
+    ],
+    "relation_pid": {
+      "type": "redirect_from",
+      "value": "EXPL002"
+    }
+  },
+  {
+    "pid": "EXPL002",
+    "type": "bf:Place",
+    "authorized_access_point": "Lake Geneva",
+    "relation_pid": {
+      "type": "redirect_to",
+      "value": "EXPL001"
+    }
+  },
+  {
+    "pid": "EXPL003",
+    "type": "bf:Place",
+    "authorized_access_point": "Genfer See",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/EXPL003",
+        "source": "IDREF"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "general",
+        "label": ["Example valid same-type redirect — bf:Place to bf:Place, no type_conflict"]
+      }
+    ],
+    "relation_pid": {
+      "type": "redirect_to",
+      "value": "EXPL001"
+    }
   }
 ]

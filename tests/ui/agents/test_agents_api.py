@@ -300,8 +300,6 @@ def test_get_unlinked_agents_relink_uses_record_id(app):
     )
     fake_record = _FakeRecord({"pid": "mef-1"})
 
-    app.config["RERO_AGENTS"] = ["agents/gnd"]
-
     fake_entity_class = type(
         "FakeEntityClass",
         (),
@@ -309,6 +307,7 @@ def test_get_unlinked_agents_relink_uses_record_id(app):
     )
 
     with (
+        mock.patch.dict(app.config, {"RERO_AGENTS": ["agents/gnd"]}),
         mock.patch(
             "rero_mef.agents.viaf.api.AgentViafSearch",
             return_value=fake_viaf_search,
@@ -354,8 +353,6 @@ def test_get_unlinked_agents_yields_all_tasks(app):
         ]
     )
 
-    app.config["RERO_AGENTS"] = ["agents/gnd"]
-
     fake_entity_class = type(
         "FakeEntityClass",
         (),
@@ -363,6 +360,7 @@ def test_get_unlinked_agents_yields_all_tasks(app):
     )
 
     with (
+        mock.patch.dict(app.config, {"RERO_AGENTS": ["agents/gnd"]}),
         mock.patch(
             "rero_mef.agents.viaf.api.AgentViafSearch",
             return_value=fake_viaf_search,
@@ -424,3 +422,24 @@ def test_create_or_update_mef_skips_missing_displaced_agent(app):
 
     # The displaced pid was skipped, so it does not appear in mef_actions
     assert "gnd-old" not in mef_actions
+
+
+def test_agents_utils_get_agent_endpoints(app):
+    """get_agent_endpoints returns only agent endpoints from config."""
+    from rero_mef.agents.utils import get_agent_endpoints
+
+    endpoints = get_agent_endpoints()
+    assert isinstance(endpoints, dict)
+    assert "aidref" in endpoints
+    assert "aggnd" in endpoints
+    assert "agrero" in endpoints
+
+
+def test_agents_utils_get_agent_classes(app):
+    """get_agent_classes returns a list of record classes for each agent endpoint."""
+    from rero_mef.agents.utils import get_agent_classes
+
+    classes = get_agent_classes()
+    assert isinstance(classes, list)
+    assert len(classes) > 0
+    assert all(cls is not None for cls in classes)

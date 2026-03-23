@@ -1,0 +1,244 @@
+<!--
+  Customized Invenio Search UI facets template for MEF.
+  Flat sections with — prefix, active filter chips.
+-->
+<div
+  ng-init="
+    tree=[];
+    tree_more=[];
+    facetCollapsed={};
+    dateFrom={};
+    dateTo={};
+    dateError={};
+    facetLabels={
+      'entity': 'Entity',
+      'type': 'Type',
+      'source': 'Sources',
+      'country_associated': 'Country associated',
+      'authorized_access_point': 'Authorized access point',
+      'deleted': 'Deleted records',
+      'identifiedBy_source': 'Identifier source',
+      'classification': 'Classification',
+      'classificationPortion': 'Classification code',
+      'association_identifier': 'Association identifier',
+      'rero_double': 'Duplicate RERO links',
+      'creation_date': 'Created',
+      'update_date': 'Updated',
+      'type_conflict': 'Type conflict (cross-type redirect)'
+    };
+    countryNames={
+      'ag': 'Argentina',
+      'at': 'Austria',
+      'au': 'Australia',
+      'be': 'Belgium',
+      'bl': 'Brazil',
+      'cc': 'China',
+      'de': 'Germany',
+      'dk': 'Denmark',
+      'es': 'Spain',
+      'fr': 'France',
+      'gb': 'United Kingdom',
+      'gr': 'Greece',
+      'gw': 'Germany',
+      'hu': 'Hungary',
+      'ii': 'India',
+      'it': 'Italy',
+      'ja': 'Japan',
+      'ko': 'Korea',
+      'mx': 'Mexico',
+      'ne': 'Netherlands',
+      'nl': 'Netherlands',
+      'no': 'Norway',
+      'pl': 'Poland',
+      'po': 'Portugal',
+      'pt': 'Portugal',
+      'rm': 'Romania',
+      'ru': 'Russia',
+      'sa': 'Saudi Arabia',
+      'sp': 'Spain',
+      'sw': 'Sweden',
+      'sz': 'Switzerland',
+      'tu': 'Turkey',
+      'us': 'United States',
+      'xxc': 'Canada',
+      'xxk': 'United Kingdom',
+      'xxu': 'United States'
+    };
+    entityNames={
+      'agents': 'Agents',
+      'concepts': 'Concepts',
+      'places': 'Places'
+    }
+  "
+>
+  <script type="text/ng-template" id="rero_mef_facet_panel.html">
+    <div
+      ng-if="
+        (aggr.value.buckets && aggr.value.buckets.length > 0)
+        || getValues(aggr.key)
+        || ((aggr.key === 'deleted') && (aggr.value.doc_count > 0 || getValues(aggr.key).length > 0))
+        || ((aggr.key === 'creation_date' || aggr.key === 'update_date') && getValues(aggr.key).length > 0)
+      "
+      class="mef-facet-section"
+    >
+      <div class="mef-facet-heading"
+        ng-init="facetCollapsed[aggr.key] = (aggr.key === 'country_associated' || ((aggr.key === 'creation_date' || aggr.key === 'update_date') && (getValues(aggr.key) || []).length === 0))"
+      >
+        <a
+          href=""
+          ng-click="facetCollapsed[aggr.key] = !facetCollapsed[aggr.key]; $event.preventDefault()"
+          class="mef-facet-title"
+        >
+          {{ facetLabels[aggr.key] || aggr.key }}
+          <i class="fa {{ facetCollapsed[aggr.key] ? 'fa-angle-right' : 'fa-angle-down' }}" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <div class="mef-facet-body" ng-show="!facetCollapsed[aggr.key]">
+        <!-- Deleted toggle -->
+        <ul class="list-unstyled" ng-if="aggr.key === 'deleted'">
+          <li>
+            <input
+              type="checkbox"
+              ng-checked="getValues(aggr.key).length > 0"
+              ng-click="handleClick(aggr.key, 'true')"
+            />
+            {{ facetLabels[aggr.key] || aggr.key }} ({{ aggr.value.doc_count || 0 }})
+          </li>
+        </ul>
+
+        <!-- Date range picker for creation_date / update_date -->
+        <div
+          ng-if="aggr.key === 'creation_date' || aggr.key === 'update_date'"
+          ng-init="
+            dateFrom[aggr.key] = (getValues(aggr.key)[0] || '').split(':')[0] | mefParseDate;
+            dateTo[aggr.key] = (getValues(aggr.key)[0] || '').split(':')[1] || '' | mefParseDate;
+            dateError[aggr.key] = ((getValues(aggr.key)[0] || '').split(':')[0] | mefDateError) || (((getValues(aggr.key)[0] || '').split(':')[1] || '') | mefDateError)
+          "
+          class="mef-date-range"
+        >
+          <div ng-if="dateError[aggr.key]" class="alert alert-danger mef-date-error" role="alert">
+            {{ dateError[aggr.key] }}
+          </div>
+          <div ng-if="aggr.value.buckets && aggr.value.buckets.length > 0" class="mef-date-range-hint">
+            <small class="text-muted">{{ aggr.value.buckets[aggr.value.buckets.length-1].key_as_string | mefParseDate | date:'dd.MM.yyyy' }} – {{ aggr.value.buckets[0].key_as_string | mefParseDate | date:'dd.MM.yyyy' }}</small>
+          </div>
+          <div class="mef-date-range-inputs">
+            <div class="mef-date-row">
+              <label class="mef-date-label">From</label>
+              <input
+                type="date"
+                class="form-control input-sm mef-date-input"
+                ng-model="dateFrom[aggr.key]"
+              />
+            </div>
+            <div class="mef-date-row">
+              <label class="mef-date-label">To</label>
+              <input
+                type="date"
+                class="form-control input-sm mef-date-input"
+                ng-model="dateTo[aggr.key]"
+              />
+            </div>
+          </div>
+          <div class="mef-date-range-actions">
+            <button
+              type="button"
+              class="btn btn-xs btn-primary"
+              ng-click="
+                df=dateFrom[aggr.key]; dt=dateTo[aggr.key];
+                dfStr=(df && df.getDate ? (df.getFullYear()+'-'+('0'+(df.getMonth()+1)).slice(-2)+'-'+('0'+df.getDate()).slice(-2)) : (df||'').substring(0,10));
+                dtStr=(dt && dt.getDate ? (dt.getFullYear()+'-'+('0'+(dt.getMonth()+1)).slice(-2)+'-'+('0'+dt.getDate()).slice(-2)) : (dt||'').substring(0,10));
+                mefApplyDateFilter(handler, aggr.key, dfStr, dtStr)
+              "
+            >Apply</button>
+            <button
+              type="button"
+              class="btn btn-xs btn-default"
+              ng-if="getValues(aggr.key).length > 0"
+              ng-click="
+                handleClick(aggr.key, getValues(aggr.key)[0]);
+                dateFrom[aggr.key] = null;
+                dateTo[aggr.key] = null
+              "
+            >Clear</button>
+          </div>
+          <div ng-if="getValues(aggr.key).length > 0" class="mef-date-range-active">
+            <span class="label label-info">
+              {{ ((getValues(aggr.key)[0] || '').split(':')[0] | mefParseDate | date:'dd.MM.yyyy') || '…' }}
+              –
+              {{ ((getValues(aggr.key)[0] || '').split(':')[1] | mefParseDate | date:'dd.MM.yyyy') || '…' }}
+              <a
+                href=""
+                ng-click="
+                  handleClick(aggr.key, getValues(aggr.key)[0]);
+                  dateFrom[aggr.key] = null;
+                  dateTo[aggr.key] = null;
+                  $event.preventDefault()
+                "
+                class="mef-date-range-remove"
+              >✕</a>
+            </span>
+          </div>
+        </div>
+
+        <!-- Regular checkboxes -->
+        <div ng-if="aggr.key !== 'deleted' && aggr.key !== 'type_conflict' && aggr.key !== 'creation_date' && aggr.key !== 'update_date' && aggr.key !== 'has_relation' && aggr.key !== 'rero_double'">
+          <ul class="list-unstyled" ng-init="values = getValues(aggr.key)" ng-repeat="item in aggr.value.buckets">
+            <li>
+              <input type="checkbox" ng-checked="values.indexOf(item.key_as_string || item.key) > -1" ng-click="handleClick(aggr.key, item.key_as_string || item.key)" />
+              {{ aggr.key === 'country_associated' && countryNames[(item.key || '').toLowerCase()] ? countryNames[(item.key || '').toLowerCase()] + ' (' + item.key + ')' : aggr.key === 'entity' && entityNames[(item.key || '').toLowerCase()] ? entityNames[(item.key || '').toLowerCase()] : (item.key_as_string || item.key) }} ({{ item.doc_count }})
+              <small>
+                <a
+                  ng-init="tree_more[item.key] = false; tree[item.key] = (values.indexOf(item.key) > -1 || tree[item.key])"
+                  ng-model="tree[item.key]"
+                  ng-show="tree_more[item.key]"
+                  ng-click="tree[item.key]=!tree[item.key]"
+                >
+                  {{ (tree[item.key]) ? '-' : '+' }}
+                </a>
+              </small>
+              <div ng-show="tree[item.key] === true" ng-repeat="(subKey, subValue) in item">
+                <div ng-if="['doc_count', 'key'].indexOf(subKey) === -1">
+                  <ul ng-init="tree_more[item.key] = true; subValues = getValues(subKey)" ng-repeat="subFacets in subValue.buckets">
+                    <li>
+                      <input
+                        ng-init="tree[item.key] = (subValues.indexOf(subFacets.key) > -1 || tree[item.key])"
+                        type="checkbox"
+                        ng-checked="subValues.indexOf(subFacets.key) > -1"
+                        ng-click="handleClick(subKey, subFacets.key)" /> {{ subFacets.key }} ({{ subFacets.doc_count }})
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+
+          <ul class="list-unstyled" ng-if="aggr.value.buckets" ng-repeat="selectedValue in getValues(aggr.key)">
+            <li ng-if="(aggr.value.buckets | filter:{key:selectedValue}:true).length == 0 && (aggr.value.buckets | filter:{key_as_string:selectedValue}:true).length == 0">
+              <input type="checkbox" checked ng-click="handleClick(aggr.key, selectedValue)" />
+              {{ aggr.key === 'country_associated' && countryNames[(selectedValue || '').toLowerCase()] ? countryNames[(selectedValue || '').toLowerCase()] + ' (' + selectedValue + ')' : aggr.key === 'entity' && entityNames[(selectedValue || '').toLowerCase()] ? entityNames[(selectedValue || '').toLowerCase()] : selectedValue }} (0)
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <!-- Active filter chips -->
+  <div class="mef-active-filters"
+    ng-show="vm && vm.invenioSearchArgs && mefHasAngularChips(vm.invenioSearchArgs)">
+    <div class="mef-agg-chips"
+      ng-repeat="(key, vals) in vm.invenioSearchArgs"
+      ng-if="!{q:1,page:1,size:1,sort:1,resolve:1,with_deleted:1,deleted:1,has_relation:1,type_conflict:1}[key] && mefAsArray(vals).length > 0">
+      <span ng-repeat="val in mefAsArray(vals) track by $index" class="mef-active-chip">
+        <span class="mef-active-chip-label">{{ facetLabels[key] || key }}: {{ key === 'country_associated' ? (countryNames[(val||'').toLowerCase()] || val) : key === 'entity' ? (entityNames[(val||'').toLowerCase()] || val) : val }}</span>
+        <a href="" ng-click="handleClick(key, val); $event.preventDefault()" class="mef-active-chip-remove">&#10005;</a>
+      </span>
+    </div>
+  </div>
+
+  <div ng-repeat="aggr in orderedAggs track by $index" ng-if="aggr.key !== 'country_associated' && aggr.key !== 'deleted' && aggr.key !== 'creation_date' && aggr.key !== 'update_date'" ng-include="'rero_mef_facet_panel.html'"></div>
+  <div ng-repeat="aggr in orderedAggs track by $index" ng-if="aggr.key === 'country_associated'" ng-include="'rero_mef_facet_panel.html'"></div>
+  <div ng-repeat="aggr in orderedAggs track by $index" ng-if="aggr.key === 'creation_date' || aggr.key === 'update_date'" ng-include="'rero_mef_facet_panel.html'"></div>
+</div>

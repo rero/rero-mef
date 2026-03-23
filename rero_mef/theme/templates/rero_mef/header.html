@@ -1,8 +1,47 @@
+{# -*- coding: utf-8 -*-
+
+  RERO MEF
+  Copyright (C) 2026 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+
 <header>
   <div class="container">
     <div class="row">
-      <div class="col-md-12">
-        <img id="header-logo" src="{{ url_for('static', filename='images/logo_rero_plus.svg')}}" alt="RERO MEF" />
+      <div class="col-md-6 col-sm-12">
+        <a href="{{ url_for('rero_mef.index') }}" aria-label="RERO MEF Home">
+          <img id="header-logo" src="{{ url_for('static', filename='images/logo_rero_plus.svg')}}" alt="RERO MEF" />
+        </a>
+      </div>
+      <div class="col-md-6 col-sm-12 text-right mef-header-nav">
+        <a href="{{ url_for('rero_mef.index') }}">Home</a>
+        <div class="mef-nav-dropdown">
+          <button class="mef-nav-dropdown-btn" aria-haspopup="true">Search &#9662;</button>
+          <div class="mef-nav-dropdown-menu" role="menu">
+            <a href="{{ url_for('rero_mef.all_mef_list') }}" role="menuitem">All MEF</a>
+            <a href="{{ url_for('rero_mef.linking') }}" role="menuitem">How linking works</a>
+          </div>
+        </div>
+        <div class="mef-nav-dropdown">
+          <button class="mef-nav-dropdown-btn" aria-haspopup="true">API &#9662;</button>
+          <div class="mef-nav-dropdown-menu" role="menu">
+            <a href="/api/agents/mef/" role="menuitem">Agents</a>
+            <a href="/api/concepts/mef/" role="menuitem">Concepts</a>
+            <a href="/api/places/mef/" role="menuitem">Places</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -24,6 +24,7 @@ from rero_mef.api import EntityIndexer
 from rero_mef.api_mef import EntityMefRecord
 from rero_mef.utils import get_entity_classes
 
+from ..api import get_all_missing_viaf_pids
 from .fetchers import mef_id_fetcher
 from .minters import mef_id_minter
 from .models import AgentMefMetadata
@@ -68,7 +69,6 @@ class AgentMefRecord(EntityMefRecord):
         **kwargs,
     ):
         """Create a new agent record."""
-        # replace_refs_data = deepcopy(data).replace_refs()
         data["type"] = "bf:Person"
         entity_classes = get_entity_classes()
         for agent in cls.entities:
@@ -80,7 +80,7 @@ class AgentMefRecord(EntityMefRecord):
                     if entity_class.name == ref_type:
                         if entity_rec := entity_class.get_record_by_pid(ref_pid):
                             data["type"] = entity_rec["type"]
-                            break
+                        break
 
         return super().create(
             data=data,
@@ -132,13 +132,27 @@ class AgentMefRecord(EntityMefRecord):
         return data
 
     @classmethod
-    def get_latest(cls, pid_type, pid):
+    def get_all_missing_viaf_pids(cls, verbose=False):
+        """Get VIAF pids missing from MEF and MEF records with non-existing VIAF pids.
+
+        :param verbose: Verbose output.
+        :returns: Tuple of (missing_viaf_pids: list, non_existing_pids: dict).
+        """
+        return get_all_missing_viaf_pids(verbose=verbose)
+
+    @classmethod
+    def get_latest(cls, pid_type, pid, _visited=None):
         """Get latest Mef record for pid_type and pid.
 
         :param pid_type: pid type to use.
-        :param pid: pid to use..
+        :param pid: pid to use.
+        :param _visited: set of already-seen pids used to break redirect cycles.
         :returns: latest record.
         """
+        visited = _visited or set()
+        if pid in visited:
+            return {}
+        visited.add(pid)
         search = AgentMefSearch().filter({"term": {f"{pid_type}.pid": pid}})
         if search.count() > 0:
             data = next(search.scan()).to_dict()
@@ -152,7 +166,11 @@ class AgentMefRecord(EntityMefRecord):
                 if search.count() > 0:
                     new_data = next(search.scan()).to_dict()
                     new_pid = new_data.get("idref", {}).get("pid")
-            return cls.get_latest(pid_type=pid_type, pid=new_pid) if new_pid else data
+            return (
+                cls.get_latest(pid_type=pid_type, pid=new_pid, _visited=visited)
+                if new_pid
+                else data
+            )
         return {}
 
 

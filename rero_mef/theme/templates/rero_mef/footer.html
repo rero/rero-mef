@@ -1,11 +1,31 @@
-<footer id="footer">
-  <div class="container">
-    <div class="row">
-        <div class="col-xs-12">
-          {{ _('Powered by') }}
-          <a href="https://www.rero.ch/en/produits/mef" target="_blank">MEF</a> &
-          <a href="http://invenio-software.org" target="_blank">Invenio</a>
-        </div>
-    </div>
+{# -*- coding: utf-8 -*-
+
+  RERO MEF
+  Copyright (C) 2026 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+
+<footer class="rero-ils-footer border-top mt-4 bg-light d-flex">
+  <div class="container d-flex justify-content-center align-items-center py-4">
+    <p class="text-secondary mb-0">
+      {{ _('Powered by') }} <a href="https://www.rero.ch/produits/mef" target="_blank">RERO MEF</a> &
+      <a href="https://inveniosoftware.org/" target="_blank" rel="noopener">Invenio</a> |
+      <a href="https://github.com/rero/rero-mef/releases/tag/v{{version}}" target="_blank">v{{ version }}</a>
+      {% if config.RERO_ILS_PRIVACY_POLICY_URL %} |
+      <a href="{{ config.RERO_ILS_PRIVACY_POLICY_URL }}" target="_blank">{{ _('Privacy policy') }}</a>
+      {% endif %}
+    </p>
   </div>
 </footer>

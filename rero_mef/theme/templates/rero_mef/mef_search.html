@@ -1,0 +1,174 @@
+{# -*- coding: utf-8 -*-
+
+  RERO MEF
+  Copyright (C) 2026 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+
+{%- extends config.BASE_TEMPLATE %}
+
+{%- block page_header %}
+{% include('rero_mef/header.html') %}
+{%- endblock page_header %}
+
+{%- block css %}
+{{ super() }}
+{{ webpack['global.css'] }}
+{{ webpack['search_ui_theme.css'] }}
+<style>
+  /* Inline fallback: ensures the search bar is full-width even when
+     global.css has not been rebuilt after deployment.
+     Do NOT add width:100% to the Bootstrap .row — that fights negative-margin
+     expansion and makes the bar narrower than the content rows below. */
+  .mef-search-page invenio-search-bar { display: block !important; width: 100% !important; margin: 0 0 18px; }
+  .mef-searchbar-form { display: block !important; width: 100% !important; margin: 0; padding: 0; }
+  .mef-searchbar-group { display: flex !important; width: 100% !important; box-sizing: border-box; }
+  .mef-searchbar-group .form-control { flex: 1 1 auto !important; width: 1% !important; min-width: 0 !important; max-width: none !important; }
+  .mef-searchbar-group .input-group-btn { flex: 0 0 auto !important; width: auto !important; }
+</style>
+{%- endblock css %}
+
+{%- block javascript %}
+{{ super() }}
+{{ webpack['search_ui_app.js'] }}
+<script src="{{ url_for('static', filename='js/mef_search_ui.js') }}"></script>
+<script>
+  // Focus the search input once AngularJS has rendered the searchbar template
+  document.addEventListener('DOMContentLoaded', function () {
+    var attempts = 0;
+    var interval = setInterval(function () {
+      var input = document.querySelector('.mef-searchbar-form .form-control');
+      if (input) {
+        input.focus();
+        clearInterval(interval);
+      } else if (++attempts > 20) {
+        clearInterval(interval);
+      }
+    }, 100);
+  });
+</script>
+{%- endblock javascript %}
+
+{%- block page_body %}
+<div id="invenio-search">
+  <invenio-search
+    search-endpoint="{{ search_api }}"
+    search-hidden-params='{"with_deleted": 1}'
+    search-headers='{"Accept": "application/json"}'
+  >
+    <div class="container search-page mef-search-page">
+
+      <!-- Full-width search bar -->
+      <div class="row mef-search-header">
+        <div class="col-xs-12">
+          <invenio-search-bar
+            template="{{ url_for('static', filename='templates/rero_mef/searchbar.html') }}"
+            placeholder="{{ _('Search') }}">
+          </invenio-search-bar>
+        </div>
+      </div>
+
+      <!-- Two-column layout -->
+      <div class="row">
+
+        <!-- Results column (pushed right on md+) -->
+        <div class="col-xs-12 col-md-9 col-md-push-3">
+          {%- set sort_options = config.get('RECORDS_REST_SORT_OPTIONS', {}).get(search_index) %}
+          {%- set current_size = request.args.get('size', '20') %}
+          <div class="mef-toolbar-row">
+            <div class="mef-toolbar-actions mef-search-controls">
+              {% if sort_options %}
+              <invenio-search-select-box
+                sort-key="sort"
+                available-options='{{ sort_options|format_sortoptions|safe }}'
+                template="{{ url_for('static', filename=config.SEARCH_UI_JSTEMPLATE_SELECT_BOX) }}">
+              </invenio-search-select-box>
+              <invenio-search-sort-order
+                sort-key="sort"
+                template="{{ url_for('static', filename=config.SEARCH_UI_JSTEMPLATE_SORT_ORDER) }}">
+              </invenio-search-sort-order>
+              {% endif %}
+            </div>
+          </div>
+          <hr class="no-margin-top" />
+          <invenio-search-error
+            template="{{ url_for('static', filename=config.SEARCH_UI_JSTEMPLATE_ERROR) }}"
+            message="{{ _('Search failed.') }}">
+          </invenio-search-error>
+          <invenio-search-loading
+            ng-if="vm.invenioSearchLoading && vm.invenioSearchResults.hits == undefined"
+            template="{{ url_for('static', filename=config.SEARCH_UI_JSTEMPLATE_LOADING) }}"
+            message="{{ _('Loading...') }}">
+          </invenio-search-loading>
+          <invenio-search-results
+            template="{{ url_for('static', filename=results_template) }}">
+          </invenio-search-results>
+          <div class="mef-bottom-pager-controls" ng-if="vm.invenioSearchResults.hits.total > 0">
+            <invenio-search-pagination
+              template="{{ url_for('static', filename=config.SEARCH_UI_JSTEMPLATE_PAGINATION) }}">
+            </invenio-search-pagination>
+            <select
+              class="form-control input-sm mef-size-select"
+              aria-label="Results size">
+              <option value="10" {% if current_size == '10' %}selected{% endif %}>10</option>
+              <option value="20" {% if current_size == '20' %}selected{% endif %}>20</option>
+              <option value="50" {% if current_size == '50' %}selected{% endif %}>50</option>
+              <option value="100" {% if current_size == '100' %}selected{% endif %}>100</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Facets / sidebar column (pulled left on md+) -->
+        <div class="col-md-3 col-md-pull-9 col-xs-12 mef-sidebar">
+          <p class="mef-search-title" ng-if="vm.invenioSearchResults.hits.total != undefined">
+            <strong ng-bind="vm.invenioSearchResults.hits.total | number"></strong> results
+          </p>
+          {%- set deleted_on = request.args.get('deleted') == 'true' %}
+          {%- set relation_on = request.args.get('has_relation') == 'true' %}
+          {%- set type_conflict_on = request.args.get('type_conflict') == 'true' %}
+          <div class="mef-toggle-section">
+            <label class="mef-toggle-row" data-mef-toggle-key="deleted" data-mef-toggle-value="true">
+              <span class="mef-toggle-visual {{ 'mef-toggle-on' if deleted_on else 'mef-toggle-off' }}">
+                <span class="mef-toggle-knob"></span>
+              </span>
+              <span class="mef-toggle-label">Deleted</span>
+            </label>
+            <label class="mef-toggle-row" data-mef-toggle-key="has_relation" data-mef-toggle-value="true">
+              <span class="mef-toggle-visual {{ 'mef-toggle-on' if relation_on else 'mef-toggle-off' }}">
+                <span class="mef-toggle-knob"></span>
+              </span>
+              <span class="mef-toggle-label">Has relation</span>
+            </label>
+            <label class="mef-toggle-row" data-mef-toggle-key="type_conflict" data-mef-toggle-value="true">
+              <span class="mef-toggle-visual {{ 'mef-toggle-on' if type_conflict_on else 'mef-toggle-off' }}">
+                <span class="mef-toggle-knob"></span>
+              </span>
+              <span class="mef-toggle-label"><i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"></i> Cross-type redirect</span>
+            </label>
+          </div>
+          <invenio-search-facets
+            template="{{ url_for('static', filename=config.SEARCH_UI_JSTEMPLATE_FACETS) }}">
+          </invenio-search-facets>
+        </div>
+
+      </div>
+    </div>
+  </invenio-search>
+</div>
+{%- endblock page_body %}
+
+{%- block page_footer %}
+{% include 'rero_mef/footer.html' %}
+{%- endblock page_footer %}
