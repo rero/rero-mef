@@ -60,6 +60,7 @@ from sickle.oaiexceptions import NoRecordsMatch
 from urllib3.util.retry import Retry
 
 from rero_mef.extensions import SchemaExtension
+from rero_mef.marctojson.helper import display_record
 
 _schema = SchemaExtension()
 
@@ -169,9 +170,7 @@ def oai_set_last_run(name, date, verbose=False):
     """
     try:
         oai_source = get_oaiharvest_object(name)
-        lastrun_date = date
-        if isinstance(date, str):
-            lastrun_date = parser.isoparse(date)
+        lastrun_date = parser.isoparse(date) if isinstance(date, str) else date
         oai_source.update_lastrun(lastrun_date)
         oai_source.save()
         db.session.commit()
@@ -233,8 +232,8 @@ class MyOAIItemIterator(OAIItemIterator):
             description = error.text or ""
             try:
                 raise getattr(oaiexceptions, code[0].upper() + code[1:])(description)
-            except AttributeError:
-                raise oaiexceptions.OAIError(description)
+            except AttributeError as exc:
+                raise oaiexceptions.OAIError(description) from exc
         if self.resumption_token:
             # Verify we received a complete response with resumption token
             # Incomplete responses can occur due to network issues or server problems
@@ -549,8 +548,6 @@ def oai_get_record(
         return None, msg
     records = parse_xml_to_array(StringIO(record.raw))
     if debug:
-        from rero_mef.marctojson.helper import display_record
-
         display_record(records[0])
     trans_record = transformation(records[0], logger=current_app.logger).json
     return trans_record, msg
@@ -1183,11 +1180,11 @@ def get_mefs_endpoints():
     from rero_mef.concepts import ConceptMefRecord
     from rero_mef.concepts.utils import get_concept_endpoints
     from rero_mef.places import PlaceMefRecord
-    from rero_mef.places.utils import get_places_endpoints
+    from rero_mef.places.utils import get_place_endpoints
 
     mefs = [{"mef_class": AgentMefRecord, "endpoints": get_agent_endpoints()}]
     mefs.append({"mef_class": ConceptMefRecord, "endpoints": get_concept_endpoints()})
-    mefs.append({"mef_class": PlaceMefRecord, "endpoints": get_places_endpoints()})
+    mefs.append({"mef_class": PlaceMefRecord, "endpoints": get_place_endpoints()})
     return mefs
 
 

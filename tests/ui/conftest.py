@@ -15,12 +15,44 @@
 
 """Pytest fixtures and plugins for the UI application."""
 
+import json
+import os
 from os.path import dirname, join
 
 import pytest
 import yaml
 
 from rero_mef.utils import add_oai_source
+
+# Webpack asset keys referenced by invenio_theme and rero_mef templates.
+_WEBPACK_MANIFEST_STUBS = {
+    "theme.css": "/static/dist/theme.css",
+    "theme.js": "/static/dist/theme.js",
+    "theme-admin.css": "/static/dist/theme-admin.css",
+    "global.css": "/static/dist/global.css",
+    "adminlte.js": "/static/dist/adminlte.js",
+    "base.js": "/static/dist/base.js",
+    "i18n_app.js": "/static/dist/i18n_app.js",
+    "search_ui_app.js": "/static/dist/search_ui_app.js",
+    "search_ui_theme.css": "/static/dist/search_ui_theme.css",
+}
+
+
+@pytest.fixture(scope="session", autouse=True)
+def webpack_manifest():
+    """Create a stub webpack manifest so UI templates render without assets."""
+    dist_dir = os.path.join(
+        os.environ.get(
+            "INVENIO_INSTANCE_PATH", os.path.join(os.getcwd(), ".venv/var/instance")
+        ),
+        "static",
+        "dist",
+    )
+    os.makedirs(dist_dir, exist_ok=True)
+    manifest_path = os.path.join(dist_dir, "manifest.json")
+    if not os.path.exists(manifest_path):
+        with open(manifest_path, "w", encoding="utf-8") as f:
+            json.dump(_WEBPACK_MANIFEST_STUBS, f)
 
 
 @pytest.fixture(scope="module")

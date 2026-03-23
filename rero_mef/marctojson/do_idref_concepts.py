@@ -93,7 +93,7 @@ class Transformation:
             identifiers.append({"type": "uri", "value": uri, "source": "IDREF"})
         uris = {}
         for field_033 in self.marc.get_fields("033"):
-            if field_033.get("2") and field_033["2"] == "BNF" and field_033.get("a"):
+            if field_033.get("2") == "BNF" and field_033.get("a"):
                 date = int(date) if (date := field_033.get("d")) else 0
                 uris[date] = field_033["a"].strip()
         if uris:

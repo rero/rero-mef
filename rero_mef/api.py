@@ -36,7 +36,11 @@ from sqlalchemy import func
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm.exc import NoResultFound
 
-from rero_mef.extensions import DeletedStateExtension, MD5Extension, SchemaExtension
+from rero_mef.extensions import (
+    DeletedStateExtension,
+    MD5Extension,
+    SchemaExtension,
+)
 from rero_mef.utils import build_ref_string, get_entity_class
 
 _md5 = MD5Extension()
@@ -126,7 +130,11 @@ class EntityRecord(Record):
     object_type = "rec"
     name = None
 
-    _extensions = [SchemaExtension(), DeletedStateExtension(), MD5Extension()]
+    _extensions = [
+        SchemaExtension(),
+        DeletedStateExtension(),
+        MD5Extension(),
+    ]
 
     @classmethod
     def flush_indexes(cls):
@@ -208,7 +216,7 @@ class EntityRecord(Record):
                 "deleted",
             ]
             original_data = {k: v for k, v in agent_record.items() if k in copy_fields}
-            data = {**original_data, **data}
+            data = original_data | data
             if test_md5:
                 incoming_md5 = _md5.create_md5(
                     {k: v for k, v in data.items() if k not in ("$schema", "md5")}
@@ -388,7 +396,9 @@ class EntityRecord(Record):
             query = query.filter_by(status=PIDStatus.REGISTERED)
         if date:
             query = query.filter(PersistentIdentifier.created < date)
-        return query
+        # Stable ordering is required so that LIMIT/OFFSET pagination does not
+        # skip or repeat rows across batches when PostgreSQL changes its query plan.
+        return query.order_by(PersistentIdentifier.id)
 
     @classmethod
     def get_all_pids(cls, with_deleted=False, batch_size=1000, date=None):
@@ -418,6 +428,7 @@ class EntityRecord(Record):
         ).filter_by(status=PIDStatus.DELETED)
         if from_date:
             query = query.filter(func.DATE(PersistentIdentifier.updated) >= from_date)
+        query = query.order_by(PersistentIdentifier.id)
         offset = 0
         while batch := query.limit(batch_size).offset(offset).all():
             for identifier in batch:
@@ -671,9 +682,7 @@ class ConceptPlaceRecord(EntityRecord):
                 current_app.logger.error(
                     f"MULTIPLE MEF FOUND FOR: {name} {pid} | mef: {', '.join(mef_pids)}"
                 )
-            if len(mef_records) == 1:
-                return mef_records[0]
-            return None
+            return mef_records[0] if len(mef_records) == 1 else None
 
         association_info = self.association_info
         # Get direct MEF record
@@ -896,9 +905,7 @@ class EntityIndexer(RecordIndexer):
             "_version_type": self._version_type,
             "_source": body,
         }
-        action.update(arguments)
-
-        return action
+        return action | arguments
 
     def _bulk_op(self, record_id_iterator, op_type, index=None, doc_type=None):
         """Send bulk operation messages to the indexing queue.

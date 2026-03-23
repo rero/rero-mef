@@ -114,6 +114,9 @@ def _refresh_viaf_record(
     if verbose:
         click.echo(f"  VIAF {pid}: {action.value}")
 
+    if action in (Action.CREATE, Action.UPDATE, Action.REPLACE):
+        viaf_record.create_mef_and_agents(dbcommit=dbcommit, reindex=reindex)
+
     if action == Action.UPTODATE and dbcommit:
         # Touch _updated so this record moves to the back of the queue.
         # Without this, unchanged records stay at the front and are re-fetched
@@ -121,10 +124,15 @@ def _refresh_viaf_record(
         viaf_record.commit()
         viaf_record.dbcommit(reindex=reindex)
 
-    if update_agents and action in (Action.CREATE, Action.UPDATE):
-        actions = viaf_record.create_mef_and_agents(dbcommit=dbcommit, reindex=reindex)
+    if update_agents and action == Action.UPTODATE:
+        # Force-sync agents even though VIAF data is unchanged — useful after
+        # a bug fix in agent processing without needing to modify VIAF records.
+        # update_viaf=True: also search VIAF online for displaced agents.
+        actions = viaf_record.create_mef_and_agents(
+            dbcommit=dbcommit, reindex=reindex, update_viaf=True
+        )
         if verbose:
-            click.echo(f"  VIAF {pid}: agents updated {actions}")
+            click.echo(f"  VIAF {pid}: agents force-updated {actions}")
 
     return action
 

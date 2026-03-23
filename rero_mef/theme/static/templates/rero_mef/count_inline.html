@@ -1,0 +1,7 @@
+<!-- Inline count template for compact toolbar layout. -->
+<span ng-show="vm.invenioSearchResults.hits.total != undefined" class="invenio-search-results-inline">
+  <ng-pluralize
+   count="vm.invenioSearchResults.hits.total"
+   when="{'0': 'No results.', 'one': 'Found 1 result.', 'other': 'Found {} results.'}">
+  </ng-pluralize>
+</span>

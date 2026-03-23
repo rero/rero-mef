@@ -57107,5 +57107,23 @@
       "$ref": "https://mef.rero.ch/api/agents/idref/153776951"
     },
     "viaf_pid": "310528870"
+  },
+  {
+    "type": "bf:Organisation",
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/agents/gnd/999100001"
+    }
+  },
+  {
+    "type": "bf:Organisation",
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/agents/gnd/999100002"
+    }
+  },
+  {
+    "type": "bf:Organisation",
+    "gnd": {
+      "$ref": "https://mef.rero.ch/api/agents/gnd/999100003"
+    }
   }
 ]

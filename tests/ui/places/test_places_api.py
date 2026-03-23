@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2024 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -263,15 +263,29 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     }
 
 
-def test_places_utils_get_places_endpoints(app):
-    """Test get_places_endpoints utility function."""
-    from rero_mef.places.utils import get_places_endpoints
+def test_places_utils_get_place_endpoints(app):
+    """Test get_place_endpoints utility function."""
+    from rero_mef.places.utils import get_place_endpoints
 
-    endpoints = get_places_endpoints()
+    endpoints = get_place_endpoints()
 
     assert isinstance(endpoints, dict)
     # Should contain place endpoints
     assert "plgnd" in endpoints
+
+
+def test_places_utils_get_place_classes(app):
+    """get_place_classes returns record classes keyed by endpoint, without plmef by default."""
+    from rero_mef.places.utils import get_place_classes
+
+    classes = get_place_classes()
+    assert isinstance(classes, dict)
+    assert "plmef" not in classes
+    assert "plgnd" in classes or "pidref" in classes
+
+    classes_with_mef = get_place_classes(without_mef=False)
+    assert isinstance(classes_with_mef, dict)
+    assert len(classes_with_mef) >= len(classes)
 
 
 def test_places_utils_make_identifier(app):
@@ -291,3 +305,29 @@ def test_places_utils_make_identifier(app):
     identified_by_without_source = {"type": "bf:Isbn", "value": "978-3-16-148410-0"}
     identifier = make_identifier(identified_by_without_source)
     assert identifier == "bf:Isbn|978-3-16-148410-0"
+
+
+def test_make_identifier(app):
+    """make_identifier builds type|(source)value or type:value strings."""
+    from rero_mef.places.utils import make_identifier
+
+    assert make_identifier({"type": "bf:Nbn", "source": "GND", "value": "12345"}) == (
+        "bf:Nbn|(GND)12345"
+    )
+    assert make_identifier({"type": "bf:Nbn", "value": "12345"}) == "bf:Nbn|12345"
+
+
+def test_place_record_delete(app, place_idref_data):
+    """PlaceRecord.delete removes the ref from linked MEF records."""
+    from copy import deepcopy
+
+    idref_record, _ = PlaceIdrefRecord.create_or_update(
+        data=deepcopy(place_idref_data), dbcommit=True, reindex=True
+    )
+    m_record, _ = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
+    assert m_record.get("idref") is not None
+
+    idref_record.delete(dbcommit=True, delindex=True)
+    # The MEF record should have had the idref ref removed
+    updated_mef = PlaceMefRecord.get_record_by_pid(m_record.pid)
+    assert updated_mef is None or updated_mef.get("idref") is None

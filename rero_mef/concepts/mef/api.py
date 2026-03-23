@@ -74,7 +74,7 @@ class ConceptMefRecord(EntityMefRecord):
                     if concept_class.name == ref_type:
                         if concept_rec := concept_class.get_record_by_pid(ref_pid):
                             data["type"] = concept_rec["type"]
-                            break
+                        break
         return data
 
     def update(self, data, commit=False, dbcommit=False, reindex=False):
@@ -152,13 +152,18 @@ class ConceptMefRecord(EntityMefRecord):
         return data
 
     @classmethod
-    def get_latest(cls, pid_type, pid):
+    def get_latest(cls, pid_type, pid, _visited=None):
         """Get latest Mef record for pid_type and pid.
 
         :param pid_type: pid type to use.
-        :param pid: pid to use..
+        :param pid: pid to use.
+        :param _visited: set of already-seen pids used to break redirect cycles.
         :returns: latest record.
         """
+        visited = _visited or set()
+        if pid in visited:
+            return {}
+        visited.add(pid)
         search = ConceptMefSearch().filter({"term": {f"{pid_type}.pid": pid}})
         if search.count() > 0:
             data = next(search.scan()).to_dict()
@@ -174,7 +179,11 @@ class ConceptMefRecord(EntityMefRecord):
                 if search.count() > 0:
                     new_data = next(search.scan()).to_dict()
                     new_pid = new_data.get("idref", {}).get("pid")
-            return cls.get_latest(pid_type=pid_type, pid=new_pid) if new_pid else data
+            return (
+                cls.get_latest(pid_type=pid_type, pid=new_pid, _visited=visited)
+                if new_pid
+                else data
+            )
         return {}
 
 

@@ -273,7 +273,7 @@ def create_csv_mef(viaf_metadata_file, output_directory, verbose):
     "update_agents",
     is_flag=True,
     default=False,
-    help="Update MEF and agent records (GND/IdRef) after each VIAF update.",
+    help="Force-sync MEF and agent records even when VIAF data is unchanged (UPTODATE). Useful after a bug fix in agent processing.",
 )
 @click.option(
     "--delay",
@@ -383,6 +383,8 @@ def harvest_viaf(
                     viaf_record, _ = AgentViafRecord.create_or_update(
                         data=data, dbcommit=True, reindex=True
                     )
+                    if viaf_record:
+                        viaf_record.create_mef_and_agents(dbcommit=True, reindex=True)
                     if verbose and viaf_record:
                         click.echo(
                             f"  mef_pid: {mef_pid} linked viaf_pid: {viaf_pid_new}"

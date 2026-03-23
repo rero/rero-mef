@@ -24,6 +24,7 @@ import click
 import redis
 import yaml
 from celery import current_app as current_celery
+from elasticsearch.exceptions import NotFoundError
 from flask import current_app
 from flask.cli import with_appcontext
 from flask_security.confirmable import confirm_user
@@ -34,6 +35,7 @@ from invenio_oaiharvester.models import OAIHarvestConfig
 from invenio_oauth2server.cli import process_scopes, process_user
 from invenio_oauth2server.models import Client, Token
 from invenio_records_rest.utils import obj_or_import_string
+from invenio_search import current_search_client
 from sqlitedict import SqliteDict
 from werkzeug.local import LocalProxy
 from werkzeug.security import gen_salt
@@ -1220,6 +1222,62 @@ def flush_cache():
     red = redis.StrictRedis.from_url(current_app.config["CACHE_REDIS_URL"])
     red.flushall()
     click.secho("Redis cache cleared!", fg="red")
+
+
+@utils.command("all_mef_alias")
+@with_appcontext
+def all_mef_alias():
+    """Create/update all_mef alias for MEF indexes.
+
+    The command binds alias ``all_mef`` to concrete indexes currently behind
+    aliases/indexes ``mef``, ``concepts_mef`` and ``places_mef``.
+    """
+    alias_name = "all_mef"
+    targets = ("mef", "concepts_mef", "places_mef")
+
+    # Resolve the desired set of concrete indexes.
+    desired = set()
+    for target in targets:
+        if current_search_client.indices.exists_alias(name=target):
+            mapping = current_search_client.indices.get_alias(name=target)
+            desired.update(mapping.keys())
+            continue
+        if current_search_client.indices.exists(index=target):
+            desired.add(target)
+
+    if not desired:
+        click.secho(
+            "No target index found for all_mef alias (mef, concepts_mef, places_mef).",
+            fg="yellow",
+        )
+        return
+
+    # Find indexes currently in the alias so stale entries can be removed.
+    try:
+        existing_mapping = current_search_client.indices.get_alias(name=alias_name)
+        current_members = set(existing_mapping.keys())
+    except NotFoundError:
+        current_members = set()
+
+    actions = [
+        {"remove": {"index": old, "alias": alias_name}}
+        for old in current_members - desired
+    ] + [
+        {"add": {"index": new, "alias": alias_name}}
+        for new in desired - current_members
+    ]
+
+    if not actions:
+        click.secho(f"Alias {alias_name} is already up to date.", fg="green")
+        return
+
+    current_search_client.indices.update_aliases(body={"actions": actions})
+
+    alias_mapping = current_search_client.indices.get_alias(name=alias_name)
+    click.secho(
+        f"Alias {alias_name} is now pointing to: {', '.join(sorted(alias_mapping.keys()))}",
+        fg="green",
+    )
 
 
 @users.command("confirm")

@@ -39,9 +39,10 @@ class DeletedStateExtension(RecordExtension):
         """
         changed = False
         source_data = deepcopy(record).replace_refs()
-        if sources := source_data.get("sources"):
-            for source in sources:
-                if deleted := source_data.get(source, {}).get("deleted"):
+        # Iterate through all defined entity types (from the record's entities list)
+        if hasattr(record, "entities"):
+            for entity_name in record.entities:
+                if deleted := source_data.get(entity_name, {}).get("deleted"):
                     record["deleted"] = deleted
                     changed = True
                     break

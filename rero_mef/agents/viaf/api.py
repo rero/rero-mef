@@ -216,6 +216,7 @@ class AgentViafRecord(EntityRecord):
         online=None,
         verbose=False,
         online_verbose=False,
+        update_viaf=False,
     ):
         """Create MEF and agents records.
 
@@ -223,7 +224,9 @@ class AgentViafRecord(EntityRecord):
         :param reindex: Reindex record.
         :param online: Search online for new VIAF record.
         :param verbose: Verbose.
-        :param online_verbose: Online verbose
+        :param online_verbose: Online verbose.
+        :param update_viaf: When True, search VIAF online for each agent
+            displaced from this cluster and create/update the new cluster.
         :returns: Actions.
         """
 
@@ -286,6 +289,10 @@ class AgentViafRecord(EntityRecord):
                     changed = True
             if changed:
                 mef_record.update(data=mef_record, dbcommit=dbcommit, reindex=reindex)
+        # Flush VIAF index so ES reflects this cluster's updated agent list
+        # before get_viaf() queries run inside create_or_update_mef.
+        if reindex:
+            self.flush_indexes()
         # Recreate MEF records
         for data in viaf_agents_data:
             agent_record, action = update_online(
@@ -321,13 +328,42 @@ class AgentViafRecord(EntityRecord):
         if reindex:
             AgentMefRecord.flush_indexes()
         for entity_pid, agent in old_agents.items():
-            mef_record, mef_actions = agent.create_or_update_mef(
-                dbcommit=dbcommit, reindex=reindex
-            )
-            actions.setdefault(entity_pid, {})
-            actions[entity_pid].setdefault("MEF", {})
-            for pid, action in mef_actions.items():
-                actions[entity_pid]["MEF"][pid] = action
+            viaf_updated = False
+            if update_viaf and getattr(agent, "viaf_source_code", None):
+                try:
+                    viaf_data, msg = AgentViafRecord.get_online_record(
+                        viaf_source_code=agent.viaf_source_code, pid=entity_pid
+                    )
+                    if verbose:
+                        click.echo(msg)
+                    if viaf_data and not viaf_data.get("NO TRANSFORMATION"):
+                        new_viaf_record, viaf_action = AgentViafRecord.create_or_update(
+                            data=viaf_data, dbcommit=dbcommit, reindex=reindex
+                        )
+                        if new_viaf_record:
+                            new_viaf_record.create_mef_and_agents(
+                                dbcommit=dbcommit, reindex=reindex
+                            )
+                        actions.setdefault(entity_pid, {})
+                        actions[entity_pid]["viaf_update"] = viaf_action
+                        viaf_updated = viaf_action in (
+                            Action.CREATE,
+                            Action.UPDATE,
+                            Action.REPLACE,
+                        )
+                except RetryableVIAFError as err:
+                    if verbose:
+                        click.echo(
+                            f"  VIAF lookup failed for {agent.name}:{entity_pid}: {err}"
+                        )
+            if not viaf_updated:
+                mef_record, mef_actions = agent.create_or_update_mef(
+                    dbcommit=dbcommit, reindex=reindex
+                )
+                actions.setdefault(entity_pid, {})
+                actions[entity_pid].setdefault("MEF", {})
+                for pid, action in mef_actions.items():
+                    actions[entity_pid]["MEF"][pid] = action
         return actions
 
     def reindex(self, forceindex=False):
@@ -643,7 +679,7 @@ class AgentViafRecord(EntityRecord):
         target_data = _md5.add_md5(target_data)
 
         try:
-            new_record, action = self.create_or_update(
+            new_record, _ = self.create_or_update(
                 data=target_data,
                 dbcommit=dbcommit,
                 reindex=reindex,
@@ -660,6 +696,8 @@ class AgentViafRecord(EntityRecord):
                 self.delete(force=True, dbcommit=dbcommit, delindex=reindex)
             return None, Action.ERROR, redirect_info
 
+        if new_record:
+            new_record.create_mef_and_agents(dbcommit=dbcommit, reindex=reindex)
         # Delete old VIAF record (handles MEF cleanup) only after successful create/update
         self.delete(force=True, dbcommit=dbcommit, delindex=reindex)
 
@@ -712,8 +750,6 @@ class AgentViafRecord(EntityRecord):
             reindex=reindex,
             test_md5=test_md5,
         )
-        if record:
-            record.create_mef_and_agents(dbcommit=dbcommit, reindex=reindex)
         return record, action
 
     def delete(self, force=True, dbcommit=False, delindex=False):
@@ -739,6 +775,14 @@ class AgentViafRecord(EntityRecord):
                 mef_actions[mef_record.pid][mef_agents_records[0].name] = {
                     mef_agents_records[0].pid: Action.UPDATE
                 }
+            # Guard: if create_mef_and_agents for a redirect target already migrated
+            # this MEF record to a new VIAF cluster, the DB record's viaf_pid no longer
+            # matches self.pid (ES may still show the old value when reindex=False).
+            # Cleaning up an already-migrated record would strip the new viaf_pid.
+            current_viaf_pid = mef_record.get("viaf_pid")
+            if current_viaf_pid != self.pid:
+                mef_actions[mef_record.pid]["viaf"] = {current_viaf_pid: Action.DISCARD}
+                continue
             for mef_agent_record in mef_agents_records[1:]:
                 if mef_agent_record in agents_records:
                     mef_record.pop(mef_agent_record.name)
@@ -746,8 +790,8 @@ class AgentViafRecord(EntityRecord):
                         mef_agent_record.pid: Action.DELETE
                     }
                     old_agent_records[mef_agent_record.pid] = mef_agent_record
-            viaf_pid = mef_record.pop("viaf_pid", None)
-            mef_actions[mef_record.pid]["viaf"] = {viaf_pid: Action.DELETE}
+            mef_record.pop("viaf_pid", None)
+            mef_actions[mef_record.pid]["viaf"] = {current_viaf_pid: Action.DELETE}
             mef_record.update(data=mef_record, dbcommit=True, reindex=True)
             AgentMefRecord.flush_indexes()
         # recreate MEF records for agents

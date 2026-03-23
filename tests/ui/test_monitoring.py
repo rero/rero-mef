@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2021 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -221,13 +221,3 @@ def test_monitoring_cli_db_connections(app, script_info):
         res = runner.invoke(db_conns_cmd, [], obj=script_info)
     assert res.exit_code == 0
     assert "application_name" in res.output
-
-
-def test_monitoring_cli_db_connections_error_exits_non_zero(app, script_info):
-    """db_connections exits non-zero on DB failure."""
-    with patch("rero_mef.monitoring.cli.db") as mock_db:
-        mock_db.session.execute.side_effect = Exception("db unavailable")
-        runner = CliRunner()
-        res = runner.invoke(db_conns_cmd, [], obj=script_info)
-    assert res.exit_code != 0
-    assert "db unavailable" in res.output

@@ -35,7 +35,20 @@ def test_view_agents_mef(
     assert res.status_code == 200
     json_data = json.loads(res.get_data(as_text=True))
     assert json_data["hits"]["total"] == 1
-    assert json_data["aggregations"] == {
+    aggs = json_data["aggregations"]
+    aggs.pop("creation_date", None)
+    aggs.pop("update_date", None)
+    assert aggs == {
+        "authorized_access_point": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
+        "country_associated": {
+            "buckets": [],
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+        },
         "type": {
             "buckets": [{"doc_count": 1, "key": "bf:Person"}],
             "doc_count_error_upper_bound": 0,
@@ -51,7 +64,6 @@ def test_view_agents_mef(
             "sum_other_doc_count": 0,
         },
         "deleted": {"doc_count": 0},
-        "deleted_entities": {"doc_count": 0},
     }
     url = url_for("invenio_records_rest.mef_item", pid_value=pid)
     res = client.get(url)

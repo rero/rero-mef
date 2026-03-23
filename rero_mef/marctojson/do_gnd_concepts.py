@@ -157,7 +157,7 @@ class Transformation:
             self.logger.info("Call Function: %s", "trans_gnd_relation_pid")
         fields_682 = self.marc.get_fields("682")
         for field_682 in fields_682:
-            if field_682.get("i") and field_682["i"] == "Umlenkung":
+            if field_682.get("i") == "Umlenkung":
                 subfields_0 = field_682.get_subfields("0")
                 for subfield_0 in subfields_0:
                     if subfield_0.startswith("(DE-101)"):

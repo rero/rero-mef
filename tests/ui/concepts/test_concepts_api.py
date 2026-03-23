@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -395,3 +395,41 @@ def test_create_concept_frbnf_record_exact(
         "pid": f"{mef_count + 1}",
         "type": "bf:Topic",
     }
+
+
+def test_concept_record_delete(app, concept_idref_data):
+    """ConceptRecord.delete removes the ref from linked MEF records."""
+    idref_record, _ = ConceptIdrefRecord.create_or_update(
+        data=deepcopy(concept_idref_data), dbcommit=True, reindex=True
+    )
+    m_record, _ = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
+    assert m_record.get("idref") is not None
+
+    idref_record.delete(dbcommit=True, delindex=True)
+    updated_mef = ConceptMefRecord.get_record_by_pid(m_record.pid)
+    assert updated_mef is None or updated_mef.get("idref") is None
+
+
+def test_concepts_utils_get_concept_endpoints(app):
+    """get_concept_endpoints returns only concept endpoints from config."""
+    from rero_mef.concepts.utils import get_concept_endpoints
+
+    endpoints = get_concept_endpoints()
+    assert isinstance(endpoints, dict)
+    assert "cidref" in endpoints
+    assert "cognd" in endpoints
+    assert "corero" in endpoints
+
+
+def test_concepts_utils_get_concept_classes(app):
+    """get_concept_classes returns record classes keyed by endpoint, without comef by default."""
+    from rero_mef.concepts.utils import get_concept_classes
+
+    classes = get_concept_classes()
+    assert isinstance(classes, dict)
+    assert "comef" not in classes
+    assert len(classes) > 0
+
+    classes_with_mef = get_concept_classes(without_mef=False)
+    assert isinstance(classes_with_mef, dict)
+    assert len(classes_with_mef) >= len(classes)

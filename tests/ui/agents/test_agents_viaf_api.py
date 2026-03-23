@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2024 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -661,3 +661,11 @@ def test_handle_redirect_create_or_update_exception(
     assert action == Action.ERROR
     assert new_record is None
     assert redirect_info == {"from": old_pid, "to": new_pid}
+
+
+def test_get_all_missing_viaf_pids(app, agent_viaf_record, agent_mef_record):
+    """get_all_missing_viaf_pids returns pids from VIAF not in MEF and vice versa."""
+    missing, non_existing = AgentMefRecord.get_all_missing_viaf_pids()
+    # agent_mef_record has a viaf_pid that matches agent_viaf_record so neither list has it
+    assert isinstance(missing, list)
+    assert isinstance(non_existing, dict)

@@ -35,7 +35,14 @@ from .agents.rero.models import AgentReroIdentifier
 from .agents.viaf.models import ViafIdentifier
 from .concepts.idref.models import ConceptIdrefIdentifier
 from .concepts.rero.models import ConceptReroIdentifier
-from .filter import deleted_entities_agg, exists_filter, multi_exists_filter
+from .filter import (
+    all_mef_entity_filter,
+    and_terms_filter,
+    any_relation_pid_filter,
+    date_range_filter,
+    exists_filter,
+    type_conflict_filter,
+)
 from .marctojson.do_gnd_agent import Transformation as AgentGndTransformation
 from .marctojson.do_gnd_concepts import Transformation as ConceptGndTransformation
 from .marctojson.do_gnd_places import Transformation as PlaceGndTransformation
@@ -75,7 +82,7 @@ I18N_LANGUAGES = [
 # Base templates
 # ==============
 #: Global base template.
-BASE_TEMPLATE = "invenio_theme/page.html"
+BASE_TEMPLATE = "rero_mef/page.html"
 #: Cover page base template (used for e.g. login/sign-up).
 COVER_TEMPLATE = "invenio_theme/page_cover.html"
 #: Footer base template.
@@ -97,6 +104,69 @@ THEME_FRONTPAGE_TITLE = "RERO MEF"
 THEME_FRONTPAGE_TEMPLATE = "rero_mef/frontpage.html"
 #: Template for error pages.
 THEME_ERROR_TEMPLATE = "rero_mef/page_error.html"
+
+# Search UI defaults
+# ==================
+SEARCH_UI_BASE_TEMPLATE = BASE_TEMPLATE
+SEARCH_UI_HEADER_TEMPLATE = HEADER_TEMPLATE
+SEARCH_UI_SEARCH_TEMPLATE = "rero_mef/mef_search.html"
+SEARCH_UI_JSTEMPLATE_COUNT = "templates/invenio_search_ui/count.html"
+SEARCH_UI_JSTEMPLATE_ERROR = "templates/invenio_search_ui/error.html"
+SEARCH_UI_JSTEMPLATE_FACETS = "templates/rero_mef/facets.html"
+SEARCH_UI_JSTEMPLATE_LOADING = "templates/invenio_search_ui/loading.html"
+SEARCH_UI_JSTEMPLATE_PAGINATION = "templates/invenio_search_ui/pagination.html"
+SEARCH_UI_JSTEMPLATE_RANGE = "templates/invenio_search_ui/range.html"
+SEARCH_UI_JSTEMPLATE_RANGE_OPTIONS = {
+    "histogramId": "#year_hist",
+    "selectionId": "#year_select",
+    "name": "years",
+    "width": 180,
+}
+SEARCH_UI_JSTEMPLATE_SELECT_BOX = "templates/invenio_search_ui/selectbox.html"
+SEARCH_UI_JSTEMPLATE_SORT_ORDER = "templates/invenio_search_ui/togglebutton.html"
+
+_MEF_SORT_OPTIONS = {
+    "relevance": {"title": "Relevance", "fields": ["_score"]},
+    "authorized_access_point": {
+        "title": "Authorized access point",
+        # Pre-computed at index time by enrich_mef_data — no Painless script needed.
+        "fields": ["sort_authorized_access_point"],
+    },
+    "date_changed": {"title": "Date changed", "fields": ["_updated"]},
+    "date_created": {"title": "Date created", "fields": ["_created"]},
+    "pid": {
+        "title": "PID",
+        # Pre-computed at index time as a long — no Painless script needed.
+        "fields": ["pid_numeric"],
+    },
+    "type": {"title": "Type", "fields": ["type"]},
+}
+
+RECORDS_REST_SORT_OPTIONS = {
+    "all_mef": _MEF_SORT_OPTIONS,
+    "mef": _MEF_SORT_OPTIONS,
+    "concepts_mef": _MEF_SORT_OPTIONS,
+    "places_mef": _MEF_SORT_OPTIONS,
+}
+
+RECORDS_REST_DEFAULT_SORT = {
+    "all_mef": {
+        "query": "relevance",
+        "noquery": "date_changed",
+    },
+    "mef": {
+        "query": "relevance",
+        "noquery": "date_changed",
+    },
+    "concepts_mef": {
+        "query": "relevance",
+        "noquery": "date_changed",
+    },
+    "places_mef": {
+        "query": "relevance",
+        "noquery": "date_changed",
+    },
+}
 
 WEBPACKEXT_PROJECT = "rero_mef.theme.webpack:project"
 
@@ -391,7 +461,9 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         search_factory_imp="rero_mef.query:and_search_factory",
         list_route="/concepts/rero/",
-        item_route="/concepts/rero/<pid(corero, record_class='rero_mef.concepts.rero.api:ConceptReroRecord'):pid_value>",
+        item_route=(
+            "/concepts/rero/<pid(corero, record_class='rero_mef.concepts.rero.api:ConceptReroRecord'):pid_value>"
+        ),
         default_media_type="application/json",
         max_result_window=MAX_RESULT_WINDOW,
         error_handlers={},
@@ -529,24 +601,92 @@ RECORDS_JSON_SCHEMA = {
     "viaf": "/viaf/viaf-v0.0.1.json",
 }
 
-_MEF_DELETED_FIELDS = ["idref.deleted", "gnd.deleted", "rero.deleted"]
-_CONCEPTS_MEF_DELETED_FIELDS = ["idref.deleted", "gnd.deleted", "rero.deleted"]
-_PLACES_MEF_DELETED_FIELDS = ["idref.deleted", "gnd.deleted"]
-
 RECORDS_REST_FACETS = dict(
+    all_mef=dict(
+        aggs=dict(
+            entity=dict(terms=dict(field="entity", size=3)),
+            type=dict(terms=dict(field="type", size=30)),
+            source=dict(terms=dict(field="sources", size=30)),
+            authorized_access_point=dict(
+                terms=dict(field="authorized_access_point", size=30)
+            ),
+            deleted=dict(filter=dict(exists=dict(field="deleted"))),
+            country_associated=dict(
+                terms=dict(field="gnd.country_associated", size=30)
+            ),
+            creation_date=dict(
+                date_histogram=dict(
+                    field="_created",
+                    calendar_interval="day",
+                    format="yyyy-MM-dd",
+                    order={"_key": "desc"},
+                    min_doc_count=1,
+                )
+            ),
+            update_date=dict(
+                date_histogram=dict(
+                    field="_updated",
+                    calendar_interval="day",
+                    format="yyyy-MM-dd",
+                    order={"_key": "desc"},
+                    min_doc_count=1,
+                )
+            ),
+        ),
+        filters=dict(
+            entity=all_mef_entity_filter(),
+            type=terms_filter("type"),
+            source=and_terms_filter("sources"),
+            authorized_access_point=terms_filter("authorized_access_point"),
+            country_associated=terms_filter("gnd.country_associated"),
+            deleted=exists_filter("deleted"),
+            type_conflict=type_conflict_filter(),
+            has_relation=any_relation_pid_filter(),
+            rero_double=terms_filter("rero.pid"),
+            creation_date=date_range_filter("_created"),
+            update_date=date_range_filter("_updated"),
+        ),
+    ),
     mef=dict(
         aggs=dict(
             type=dict(terms=dict(field="type", size=30)),
             source=dict(terms=dict(field="sources", size=30)),
+            authorized_access_point=dict(
+                terms=dict(field="authorized_access_point", size=30)
+            ),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
-            deleted_entities=deleted_entities_agg(_MEF_DELETED_FIELDS),
+            country_associated=dict(
+                terms=dict(field="gnd.country_associated", size=30)
+            ),
+            creation_date=dict(
+                date_histogram=dict(
+                    field="_created",
+                    calendar_interval="day",
+                    format="yyyy-MM-dd",
+                    order={"_key": "desc"},
+                    min_doc_count=1,
+                )
+            ),
+            update_date=dict(
+                date_histogram=dict(
+                    field="_updated",
+                    calendar_interval="day",
+                    format="yyyy-MM-dd",
+                    order={"_key": "desc"},
+                    min_doc_count=1,
+                )
+            ),
         ),
         filters=dict(
             type=terms_filter("type"),
-            source=terms_filter("sources"),
+            source=and_terms_filter("sources"),
+            authorized_access_point=terms_filter("authorized_access_point"),
+            country_associated=terms_filter("gnd.country_associated"),
             deleted=exists_filter("deleted"),
-            deleted_entities=multi_exists_filter(_MEF_DELETED_FIELDS),
+            type_conflict=type_conflict_filter(),
             rero_double=terms_filter("rero.pid"),
+            creation_date=date_range_filter("_created"),
+            update_date=date_range_filter("_updated"),
         ),
     ),
     viaf=dict(aggs=AgentViafRecord.aggregations(), filters=AgentViafRecord.filters()),
@@ -590,15 +730,39 @@ RECORDS_REST_FACETS = dict(
         aggs=dict(
             type=dict(terms=dict(field="type", size=30)),
             source=dict(terms=dict(field="sources", size=30)),
+            authorized_access_point=dict(
+                terms=dict(field="authorized_access_point", size=30)
+            ),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
-            deleted_entities=deleted_entities_agg(_CONCEPTS_MEF_DELETED_FIELDS),
+            creation_date=dict(
+                date_histogram=dict(
+                    field="_created",
+                    calendar_interval="day",
+                    format="yyyy-MM-dd",
+                    order={"_key": "desc"},
+                    min_doc_count=1,
+                )
+            ),
+            update_date=dict(
+                date_histogram=dict(
+                    field="_updated",
+                    calendar_interval="day",
+                    format="yyyy-MM-dd",
+                    order={"_key": "desc"},
+                    min_doc_count=1,
+                )
+            ),
         ),
         filters=dict(
             type=terms_filter("type"),
-            source=terms_filter("sources"),
+            source=and_terms_filter("sources"),
+            authorized_access_point=terms_filter("authorized_access_point"),
             deleted=exists_filter("deleted"),
-            deleted_entities=multi_exists_filter(_CONCEPTS_MEF_DELETED_FIELDS),
+            type_conflict=type_conflict_filter(),
+            has_relation=any_relation_pid_filter(),
             rero_double=terms_filter("rero.pid"),
+            creation_date=date_range_filter("_created"),
+            update_date=date_range_filter("_updated"),
         ),
     ),
     concepts_rero=dict(
@@ -671,14 +835,38 @@ RECORDS_REST_FACETS = dict(
         aggs=dict(
             type=dict(terms=dict(field="type", size=30)),
             source=dict(terms=dict(field="sources", size=30)),
+            authorized_access_point=dict(
+                terms=dict(field="authorized_access_point", size=30)
+            ),
             deleted=dict(filter=dict(exists=dict(field="deleted"))),
-            deleted_entities=deleted_entities_agg(_PLACES_MEF_DELETED_FIELDS),
+            creation_date=dict(
+                date_histogram=dict(
+                    field="_created",
+                    calendar_interval="day",
+                    format="yyyy-MM-dd",
+                    order={"_key": "desc"},
+                    min_doc_count=1,
+                )
+            ),
+            update_date=dict(
+                date_histogram=dict(
+                    field="_updated",
+                    calendar_interval="day",
+                    format="yyyy-MM-dd",
+                    order={"_key": "desc"},
+                    min_doc_count=1,
+                )
+            ),
         ),
         filters=dict(
             type=terms_filter("type"),
-            source=terms_filter("sources"),
+            source=and_terms_filter("sources"),
+            authorized_access_point=terms_filter("authorized_access_point"),
             deleted=exists_filter("deleted"),
-            deleted_entities=multi_exists_filter(_PLACES_MEF_DELETED_FIELDS),
+            type_conflict=type_conflict_filter(),
+            has_relation=any_relation_pid_filter(),
+            creation_date=date_range_filter("_created"),
+            update_date=date_range_filter("_updated"),
         ),
     ),
     places_idref=dict(

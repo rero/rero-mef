@@ -37605,5 +37605,60 @@
       }
     ],
     "authorized_access_point": "750-1258"
+  },
+  {
+    "pid": "EXCI001",
+    "type": "bf:Topic",
+    "authorized_access_point": "Libre accès à l'information",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/EXCI001",
+        "source": "IDREF"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "general",
+        "label": ["Example concept — redirect target for EXCI002, no type_conflict"]
+      }
+    ],
+    "relation_pid": {
+      "type": "redirect_from",
+      "value": "EXCI002"
+    }
+  },
+  {
+    "pid": "EXCI002",
+    "type": "bf:Topic",
+    "authorized_access_point": "Open access",
+    "relation_pid": {
+      "type": "redirect_to",
+      "value": "EXCI001"
+    }
+  },
+  {
+    "pid": "EXCI003",
+    "type": "bf:Topic",
+    "authorized_access_point": "Ressources électroniques (gestion)",
+    "bnf_type": "sujet Rameau",
+    "identifiedBy": [
+      {
+        "type": "uri",
+        "value": "http://www.idref.fr/EXCI003",
+        "source": "IDREF"
+      }
+    ],
+    "note": [
+      {
+        "noteType": "general",
+        "label": ["Example valid same-type redirect — bf:Topic to bf:Topic, no type_conflict"]
+      }
+    ],
+    "relation_pid": {
+      "type": "redirect_to",
+      "value": "EXCI001"
+    }
   }
 ]

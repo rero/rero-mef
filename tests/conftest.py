@@ -29,20 +29,21 @@ pytest_plugins = (
 
 
 @pytest.fixture(scope="module")
-def es(appctx):
-    """Setup and teardown all registered Elasticsearch indices.
+def search(appctx):
+    """Setup and teardown all registered search indices.
 
     Scope: module
-    This fixture will create all registered indexes in Elasticsearch and remove
-    once done. Fixtures that perform changes (e.g. index or remove documents),
-    should used the function-scoped :py:data:`es_clear` fixture to leave the
-    indexes clean for the following tests.
+
+    Overrides pytest_invenio's search fixture to delete existing indices
+    before creating, so tests run cleanly even when development-environment
+    indices are present. pytest_invenio's _search_create_indexes only catches
+    elasticsearch.RequestError, not invenio_search.IndexAlreadyExistsError,
+    causing failures whenever the dev ES instance has active indices.
     """
     from invenio_search import current_search, current_search_client
 
     current_search_client.indices.delete_template("*")
     list(current_search.put_templates())
-
     list(current_search.delete(ignore=[404]))
     list(current_search.create())
     current_search_client.indices.refresh()
@@ -52,6 +53,12 @@ def es(appctx):
     finally:
         current_search_client.indices.delete(index="*")
         current_search_client.indices.delete_template("*")
+
+
+@pytest.fixture(scope="module")
+def es(search):
+    """Alias for search fixture (backward compat for tests that use es directly)."""
+    yield search
 
 
 @pytest.fixture(scope="module")

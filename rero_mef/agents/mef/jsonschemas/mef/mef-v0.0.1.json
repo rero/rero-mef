@@ -67,6 +67,11 @@
       "type": "string",
       "format": "date-time"
     },
+    "type_conflict": {
+      "title": "Cross-type redirect flag",
+      "description": "Set to true when a source record redirects to an entity of a different type.",
+      "type": "boolean"
+    },
     "type": {
       "title": "Type",
       "type": "string",
