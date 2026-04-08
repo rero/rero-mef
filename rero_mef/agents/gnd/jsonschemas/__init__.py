@@ -15,6 +15,6 @@
 
 """JSON schema definitions for GND agent records.
 
-Provides JSON schema validation rules for GND agent records, ensuring data
-structure and content integrity for GND authority entities.
+Provides JSON schema validation rules for GND agent records, ensuring data structure and content integrity for GND
+authority entities.
 """

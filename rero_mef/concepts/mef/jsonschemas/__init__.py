@@ -15,6 +15,6 @@
 
 """JSON schema definitions for concept MEF records.
 
-Provides JSON schema validation rules for concept MEF records, ensuring data
-structure and content integrity for aggregated concept entities.
+Provides JSON schema validation rules for concept MEF records, ensuring data structure and content integrity for
+aggregated concept entities.
 """

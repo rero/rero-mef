@@ -107,17 +107,9 @@ class Transformation:
         bnf_ids = {}
         for field_035 in self.marc.get_fields("035"):
             subfield_a = field_035.get("a")
-            if isinstance(subfield_a, list):
-                subfield_a = subfield_a[0]
             subfield_2 = field_035.get("2")
-            if isinstance(subfield_2, list):
-                subfield_2 = subfield_2[0]
             subfield_9 = field_035.get("9")
-            if isinstance(subfield_9, list):
-                subfield_9 = subfield_9[0]
             subfield_z = field_035.get("z")
-            if isinstance(subfield_z, list):
-                subfield_z = subfield_z[0]
             if subfield_a and subfield_9 == "sudoc":
                 self.json_dict["relation_pid"] = {
                     "value": field_035["a"],
@@ -254,13 +246,8 @@ class Transformation:
     def trans_idref_note(self):
         """Transformation notes from field.
 
-        810 $a: dataSource
-        815 $a: dataNotFound
-        300 $a: general
-        330 $a: general
-        305 $a: seeReference
-        310 $a: seeReference
-        320 $a: seeReference
+        810 $a: dataSource 815 $a: dataNotFound 300 $a: general 330 $a: general 305 $a: seeReference 310 $a:
+        seeReference 320 $a: seeReference
         """
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_idref_note")

@@ -36,9 +36,10 @@ from sqlalchemy import func
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm.exc import NoResultFound
 
+from rero_mef.extensions import DeletedStateExtension, MD5Extension, SchemaExtension
 from rero_mef.utils import build_ref_string, get_entity_class
 
-from .utils import add_md5, add_schema
+_md5 = MD5Extension()
 
 RERO_ILS_ENTITY_TYPES = {
     "bf:Person": "agents",
@@ -52,8 +53,7 @@ RERO_ILS_ENTITY_TYPES = {
 class Action(Enum):
     """Enumeration of all available entity record creation actions.
 
-    This enum defines the possible outcomes when creating, updating,
-    or deleting entity records in the system.
+    This enum defines the possible outcomes when creating, updating, or deleting entity records in the system.
     """
 
     CREATE = "create"
@@ -73,8 +73,8 @@ class Action(Enum):
 class EntityRecordError:
     """Base class for entity record errors.
 
-    Contains all custom exception types raised during entity record
-    operations such as creation, update, deletion, and PID management.
+    Contains all custom exception types raised during entity record operations such as creation, update, deletion, and
+    PID management.
     """
 
     class Deleted(Exception):
@@ -125,6 +125,8 @@ class EntityRecord(Record):
     object_type = "rec"
     name = None
 
+    _extensions = [SchemaExtension(), DeletedStateExtension(), MD5Extension()]
+
     @classmethod
     def flush_indexes(cls):
         """Update indexes."""
@@ -141,7 +143,6 @@ class EntityRecord(Record):
         delete_pid=False,
         dbcommit=False,
         reindex=False,
-        md5=False,
         **kwargs,
     ):
         """Create a new entity record.
@@ -156,15 +157,11 @@ class EntityRecord(Record):
         :returns: The newly created record instance.
         """
         assert cls.minter
-        if "$schema" not in data:
-            data = add_schema(data, cls.provider.pid_type)
         if delete_pid:
             data.pop("pid", None)
         if not id_:
             id_ = uuid4()
         cls.minter(id_, data)
-        if md5:
-            data = add_md5(data)
         record = super().create(data=data, id_=id_, **kwargs)
         if dbcommit:
             record.dbcommit(reindex)
@@ -182,8 +179,7 @@ class EntityRecord(Record):
     ):
         """Create a new record or update an existing one.
 
-        Checks if a record with the given PID already exists. If it does,
-        updates it; otherwise creates a new record.
+        Checks if a record with the given PID already exists. If it does, updates it; otherwise creates a new record.
 
         :param data: Dictionary containing the record data with 'pid' field.
         :param id_: UUID for the record (unused in this implementation).
@@ -192,17 +188,15 @@ class EntityRecord(Record):
         :param reindex: If True, reindex the record after changes.
         :param test_md5: If True, only update if MD5 checksum has changed.
         :returns: Tuple (record, action) where record is the EntityRecord instance
-                  and action is an Action enum value indicating what occurred.
+        and action is an Action enum value indicating what occurred.
         """
         action = Action.ERROR
         return_record = data
 
         pid = data.get("pid")
         if agent_record := cls.get_record_by_pid(pid):
-            # record exist
-            data = add_schema(data, agent_record.provider.pid_type)
             # Preserve critical fields from the existing record if they're missing in new data
-            # This prevents accidental data loss during updates
+            # to prevent accidental data loss during updates
             copy_fields = [
                 "pid",
                 "$schema",
@@ -213,18 +207,22 @@ class EntityRecord(Record):
                 "deleted",
             ]
             original_data = {k: v for k, v in agent_record.items() if k in copy_fields}
-            # Merge dictionaries: original_data provides defaults,
-            # data overrides with new values
             data = {**original_data, **data}
             if test_md5:
-                return_record, action = agent_record.update_md5_changed(
-                    data=data, dbcommit=dbcommit, reindex=reindex
+                incoming_md5 = _md5.create_md5(
+                    {k: v for k, v in data.items() if k not in ("$schema", "md5")}
                 )
-            else:
-                return_record = agent_record.replace(
-                    data=data, dbcommit=dbcommit, reindex=reindex
-                )
-                action = Action.UPDATE
+                if incoming_md5 == agent_record.get("md5"):
+                    return_record = agent_record
+                    action = Action.UPTODATE
+                    if reindex:
+                        cls.flush_indexes()
+                    return return_record, action
+
+            return_record = agent_record.replace(
+                data=data, dbcommit=dbcommit, reindex=reindex
+            )
+            action = Action.REPLACE
         else:
             try:
                 return_record = cls.create(
@@ -273,8 +271,6 @@ class EntityRecord(Record):
         :param reindex: reindex the record.
         :returns: the modified record
         """
-        if self.get("md5"):
-            data = add_md5(data)
         super().update(data)
         if commit or dbcommit:
             self.commit()
@@ -282,30 +278,11 @@ class EntityRecord(Record):
             self.dbcommit(reindex)
         return self
 
-    def update_md5_changed(self, data, dbcommit=False, reindex=False):
-        """Testing md5 for update existing record.
-
-        :param data: Data to test MD5 changes.
-        :param dbcommit: Commit changes to DB.
-        :param reindex: Reindex record.
-        :returns: Record.
-        """
-        data = deepcopy(data)
-        # Calculate MD5 hash of the new data
-        data = add_md5(data)
-        # Compare MD5 hashes to detect if data has actually changed
-        # This prevents unnecessary database writes for identical data
-        if data.get("md5", "data") == self.get("md5", "agent"):
-            # record has no changes
-            return self, Action.UPTODATE
-        return_record = self.replace(data=data, dbcommit=dbcommit, reindex=reindex)
-        return return_record, Action.UPDATE
-
     def replace(self, data, commit=False, dbcommit=False, reindex=False):
         """Replace all record data with new data.
 
-        Clears the current record and updates it with entirely new data.
-        The PID must be present in the new data and match the existing PID.
+        Clears the current record and updates it with entirely new data. The PID must be present in the new data and
+        match the existing PID.
 
         :param data: Dictionary containing the complete new record data.
         :param commit: If True, commit to the record (deprecated, use dbcommit).
@@ -318,8 +295,6 @@ class EntityRecord(Record):
         pid = new_data.get("pid")
         if not pid:
             raise EntityRecordError.PidMissing(f"missing pid={self.pid}")
-        if self.get("md5"):
-            new_data = add_md5(new_data)
         self.clear()
         return self.update(
             data=new_data, commit=commit, dbcommit=dbcommit, reindex=reindex
@@ -419,14 +394,11 @@ class EntityRecord(Record):
         """Generate all record PIDs in batches.
 
         :param with_deleted: If True, include deleted records.
-        :param batch_size: Number of records to fetch per database query.
         :param date: If provided, only include records created before this date.
         :yields: PID values one at a time.
         """
         query = cls._get_all(with_deleted=with_deleted, date=date)
         offset = 0
-        # Process records in batches to avoid loading entire dataset into memory
-        # Uses walrus operator (:=) to assign and check batch in one expression
         while batch := query.limit(batch_size).offset(offset).all():
             for identifier in batch:
                 yield identifier.pid_value
@@ -526,8 +498,7 @@ class EntityRecord(Record):
     def get_indexer_class(cls):
         """Get the indexer class from configuration.
 
-        Returns the configured indexer class for this record type,
-        or EntityIndexer as default if not configured.
+        Returns the configured indexer class for this record type, or EntityIndexer as default if not configured.
 
         :returns: The indexer class to use for this record type.
         """
@@ -594,17 +565,15 @@ class EntityRecord(Record):
 class ConceptPlaceRecord(EntityRecord):
     """Base class for Concept and Place entity records.
 
-    Extends EntityRecord with functionality for managing associations
-    between concepts/places and their MEF aggregation records.
-    Handles linking of related records through association identifiers.
+    Extends EntityRecord with functionality for managing associations between concepts/places and their MEF aggregation
+    records. Handles linking of related records through association identifiers.
     """
 
     def get_association_record(self, association_cls, association_search):
         """Get the associated record linked via association identifier.
 
-        Searches for an associated record (concept or place) that shares
-        the same association identifier. Validates uniqueness and logs
-        errors if multiple records are found.
+        Searches for an associated record (concept or place) that shares the same association identifier. Validates
+        uniqueness and logs errors if multiple records are found.
 
         :param association_cls: The class of the associated record type.
         :param association_search: The search class for finding associated records.
@@ -627,12 +596,13 @@ class ConceptPlaceRecord(EntityRecord):
             query = association_search().filter(
                 "term", _association_identifier=association_identifier
             )
-            if query.count() > 1:
+            associated_count = query.count()
+            if associated_count > 1:
                 current_app.logger.error(
                     f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
                     f"| {association_identifier}"
                 )
-            elif query.count() == 1:
+            elif associated_count == 1:
                 hit = next(query.source("pid").scan())
                 return association_cls.get_record_by_pid(hit.pid)
         return None
@@ -641,8 +611,7 @@ class ConceptPlaceRecord(EntityRecord):
     def association_identifier(self):
         """Get the association identifier for this record.
 
-        This property must be implemented by concept/place subclasses
-        to define how they identify related records.
+        This property must be implemented by concept/place subclasses to define how they identify related records.
 
         :returns: The association identifier value.
         :raises NotImplementedError: Must be implemented by subclasses.
@@ -661,8 +630,7 @@ class ConceptPlaceRecord(EntityRecord):
         :param dbcommit: If True, commit changes to database.
         :param reindex: If True, reindex affected records.
         :returns: Tuple (mef_record, actions_dict) where mef_record is the
-                  MEF record instance and actions_dict maps MEF PIDs
-                  to Action enum values indicating what occurred.
+        MEF record instance and actions_dict maps MEF PIDs to Action enum values indicating what occurred.
         """
 
         def mef_create(mef_cls, data, association_identifier, dbcommit, reindex):
@@ -712,7 +680,7 @@ class ConceptPlaceRecord(EntityRecord):
             mef_cls=association_info["mef_cls"], name=self.name, pid=self.pid
         )
         # Get associated MEF record
-        mef_associated_record = {}
+        mef_associated_record = None
         if associated_record := association_info["record"]:
             # Get MEF record for the associated record.
             mef_associated_record = get_mef_record(
@@ -741,17 +709,6 @@ class ConceptPlaceRecord(EntityRecord):
             mef_self_association_pid = mef_association_pids.get(self.name)
             mef_other_pid = mef_pids.get(association_name)
             mef_other_association_pid = mef_association_pids.get(association_name)
-
-            # print(
-            #     "------->",
-            #     self.name,
-            #     mef_self_pid,
-            #     mef_self_association_pid,
-            #     "|",
-            #     association_name,
-            #     mef_other_pid,
-            #     mef_other_association_pid,
-            # )
 
             # New ref
             if not new_mef_record.get(self.name):
@@ -815,7 +772,7 @@ class ConceptPlaceRecord(EntityRecord):
             mef_record = new_mef_record.replace(
                 data=new_mef_record, dbcommit=dbcommit, reindex=reindex
             )
-            actions[mef_record.pid] = Action.UPDATE
+            actions[mef_record.pid] = Action.REPLACE
 
         association_info["mef_cls"].flush_indexes()
         return mef_record, actions
@@ -824,8 +781,8 @@ class ConceptPlaceRecord(EntityRecord):
     def get_online_record(cls, id_, debug=False):
         """Fetch a record from the online source.
 
-        This method must be implemented by concept/place subclasses
-        to define how they retrieve records from external sources.
+        This method must be implemented by concept/place subclasses to define how they retrieve records from external
+        sources.
 
         :param id_: The identifier of the record to fetch.
         :param debug: If True, print debug information during fetch.
@@ -838,8 +795,8 @@ class ConceptPlaceRecord(EntityRecord):
 class EntityIndexer(RecordIndexer):
     """Custom indexer for MEF entity records.
 
-    Extends Invenio's RecordIndexer with MEF-specific functionality
-    for bulk indexing operations and message queue processing.
+    Extends Invenio's RecordIndexer with MEF-specific functionality for bulk indexing operations and message queue
+    processing.
     """
 
     def bulk_index(self, record_id_iterator, index=None, doc_type=None):
@@ -856,14 +813,11 @@ class EntityIndexer(RecordIndexer):
     def process_bulk_queue(self, search_bulk_kwargs=None, stats_only=True):
         """Process and execute bulk indexing operations from the queue.
 
-        Consumes messages from the indexing queue and performs bulk
-        operations against the search engine.
+        Consumes messages from the indexing queue and performs bulk operations against the search engine.
 
         :param search_bulk_kwargs: Additional keyword arguments for search.helpers.bulk.
-        :param stats_only: If True, return only success/failure counts instead of
-                          detailed error responses.
-        :returns: Indexing statistics (success count, failure count) if
-                 stats_only is True, otherwise detailed results.
+        :param stats_only: If True, return only success/failure counts instead of detailed error responses.
+        :returns: Indexing statistics (success count, failure count) if stats_only is True, otherwise detailed results.
         """
         with current_celery_app.pool.acquire(block=True) as conn:
             consumer = Consumer(
@@ -893,9 +847,8 @@ class EntityIndexer(RecordIndexer):
     def _actionsiter(self, message_iterator):
         """Generate bulk actions from message queue iterator.
 
-        Processes messages from the queue, converting them into search
-        engine bulk action dictionaries. Handles acknowledgment and
-        rejection of messages based on processing success.
+        Processes messages from the queue, converting them into search engine bulk action dictionaries. Handles
+        acknowledgment and rejection of messages based on processing success.
 
         :param message_iterator: Iterator yielding messages from the indexing queue.
         :yields: Search engine bulk action specifications.
@@ -918,12 +871,11 @@ class EntityIndexer(RecordIndexer):
     def _index_action(self, payload):
         """Create a bulk index action from a message payload.
 
-        Retrieves the record, prepares its data for indexing, and
-        constructs the search engine action dictionary.
+        Retrieves the record, prepares its data for indexing, and constructs the search engine action dictionary.
 
         :param payload: Decoded message body containing record ID and operation details.
         :returns: Search engine bulk 'index' action specification including
-                 _id, _index, _source, and version information.
+        _id, _index, _source, and version information.
         """
         if doc_type := payload.get("doc_type"):
             record = get_entity_class(doc_type).get_record(payload["id"])
@@ -950,8 +902,7 @@ class EntityIndexer(RecordIndexer):
     def _bulk_op(self, record_id_iterator, op_type, index=None, doc_type=None):
         """Send bulk operation messages to the indexing queue.
 
-        Publishes messages for each record to the message queue for
-        asynchronous processing by workers.
+        Publishes messages for each record to the message queue for asynchronous processing by workers.
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         :param op_type: Type of operation ('index', 'create', 'delete', 'update').

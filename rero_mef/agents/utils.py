@@ -18,6 +18,7 @@
 import json
 import os
 from datetime import datetime, timezone
+from urllib.parse import urljoin
 from uuid import uuid4
 
 import click
@@ -56,8 +57,7 @@ def init_entity_pids(input_directory, verbose):
 
     :param input_directory: Input directory to look for agent pidstore files.
     :param verbose: Verbose.
-    :returns: Dictionary with agent name and associated pids and dictonary with
-              VIAF agent pid names.
+    :returns: Two dictionaries: one mapping agent names to associated PIDs, and one mapping VIAF agent PIDs to names.
     """
     pids = {}
     viaf_entity_pid_names = {}
@@ -114,12 +114,14 @@ def create_mef_files(
         open(mef_metadata_file_name, "w", encoding="utf-8") as metadata,
         open(mef_ids_file_name, "w", encoding="utf-8") as ids,
     ):
-        schemas = current_app.config.get("RECORDS_JSON_SCHEMA")
+        schemas = current_app.config.get("RECORDS_JSON_SCHEMA", {})
         base_url = current_app.config.get("RERO_MEF_APP_BASE_URL")
+        endpoint = current_app.config.get("JSONSCHEMAS_ENDPOINT", "")
+        mef_path = schemas.get("mef")
         schema = (
-            f"{base_url}"
-            f"{current_app.config.get('JSONSCHEMAS_ENDPOINT')}"
-            f"{schemas['mef']}"
+            urljoin(base_url, f"{endpoint}{mef_path}")
+            if base_url and mef_path
+            else None
         )
         # Create MEF with VIAF
         if verbose:
@@ -132,7 +134,9 @@ def create_mef_files(
         for line in progress:
             viaf_data = json.loads(line.split("\t")[3])
             viaf_pid = viaf_data["pid"]
-            corresponding_data = {"pid": str(mef_pid), "$schema": schema}
+            corresponding_data = {"pid": str(mef_pid)}
+            if schema:
+                corresponding_data["$schema"] = schema
             for viaf_pid_name, name in viaf_entity_pid_names.items():
                 entity_pid = viaf_data.get(viaf_pid_name)
                 if entity_pid and pids.get(name, {}).get(entity_pid):
@@ -159,11 +163,9 @@ def create_mef_files(
         for agent in progress:
             for pid in pids[agent]:
                 url = f"{base_url}/api/{agent}/{pid}"
-                corresponding_data = {
-                    "pid": str(mef_pid),
-                    "$schema": schema,
-                    agent: {"$ref": url},
-                }
+                corresponding_data = {"pid": str(mef_pid), agent: {"$ref": url}}
+                if schema:
+                    corresponding_data["$schema"] = schema
                 mef_pid = write_mef_files(
                     pid=mef_pid,
                     data=corresponding_data,

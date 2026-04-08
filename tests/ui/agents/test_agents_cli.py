@@ -57,9 +57,8 @@ def test_create_csv_viaf_mef(script_info, tmpdir):
             '"https://en.wikipedia.org/wiki/Guy_Stern"'
             "], "
             '"rero_pid": "A003863577", '
-            '"md5": "efbf1aaff7acc20e0a966432cfeeab12", '
-            '"$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json", '
-            '"pid": "108685760"}',
+            '"pid": "108685760", '
+            '"$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json"}',
             "1",
         ]
     with open(viaf_pidstore) as in_file:

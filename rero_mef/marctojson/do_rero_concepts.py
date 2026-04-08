@@ -170,14 +170,8 @@ class Transformation:
     def trans_rero_note(self):
         """Transformation notes from field.
 
-        670 $a: dataSource
-        675 $a: dataNotFound
-        680 __ $a: general
-        667 $a: nonPublic
-        260 _9 $a: seeReference
-        260 __ $a: seeReference
-        360 __ $a: seeAlsoReference
-        016 $9: REROtreatment
+        670 $a: dataSource 675 $a: dataNotFound 680 __ $a: general 667 $a: nonPublic 260 _9 $a: seeReference 260 __ $a:
+        seeReference 360 __ $a: seeAlsoReference 016 $9: REROtreatment
         """
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_rero_note")

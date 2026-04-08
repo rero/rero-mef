@@ -15,6 +15,6 @@
 
 """JSON schema definitions for RERO concept records.
 
-Provides JSON schema validation rules for RERO concept records, ensuring data
-structure and content integrity for RERO subject authorities.
+Provides JSON schema validation rules for RERO concept records, ensuring data structure and content integrity for RERO
+subject authorities.
 """

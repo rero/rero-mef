@@ -15,6 +15,6 @@
 
 """Elasticsearch index mappings for GND agent records.
 
-Defines the Elasticsearch field mappings and analyzers for indexing and
-searching GND agent records. Includes German language analysis support.
+Defines the Elasticsearch field mappings and analyzers for indexing and searching GND agent records. Includes German
+language analysis support.
 """

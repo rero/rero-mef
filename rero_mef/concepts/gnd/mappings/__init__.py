@@ -15,6 +15,6 @@
 
 """Elasticsearch index mappings for GND concept records.
 
-Defines the Elasticsearch field mappings and analyzers for indexing and
-searching GND concept records. Includes German language analysis support.
+Defines the Elasticsearch field mappings and analyzers for indexing and searching GND concept records. Includes German
+language analysis support.
 """

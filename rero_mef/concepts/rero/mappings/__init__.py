@@ -15,6 +15,6 @@
 
 """Elasticsearch index mappings for RERO concept records.
 
-Defines the Elasticsearch field mappings and analyzers for indexing and
-searching RERO concept records. Includes French language analysis support.
+Defines the Elasticsearch field mappings and analyzers for indexing and searching RERO concept records. Includes French
+language analysis support.
 """

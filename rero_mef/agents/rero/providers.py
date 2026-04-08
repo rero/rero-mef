@@ -33,8 +33,8 @@ class AgentReroProvider(BaseProvider):
     pid_provider = None
     """Provider name.
 
-    The provider name is not recorded in the PID since the provider does not
-    provide any additional features besides creation of Document ids.
+    The provider name is not recorded in the PID since the provider does not provide any additional features besides
+    creation of Document ids.
     """
 
     default_status = PIDStatus.REGISTERED

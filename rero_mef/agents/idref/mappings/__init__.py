@@ -15,6 +15,6 @@
 
 """Elasticsearch index mappings for IdRef agent records.
 
-Defines the Elasticsearch field mappings and analyzers for indexing and
-searching IdRef agent records. Includes French language analysis support.
+Defines the Elasticsearch field mappings and analyzers for indexing and searching IdRef agent records. Includes French
+language analysis support.
 """

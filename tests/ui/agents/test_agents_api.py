@@ -54,14 +54,18 @@ def test_create_agent_record_with_viaf_links(
 
     m_record, m_actions = gnd_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_actions == {"1": Action.CREATE}
-    assert m_record == {
+    assert "md5" in m_record
+    assert {k: v for k, v in m_record.items() if k != "md5"} == {
         "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
         "gnd": {"$ref": "https://mef.rero.ch/api/agents/gnd/12391664X"},
         "pid": "1",
         "type": "bf:Person",
         "viaf_pid": "66739143",
     }
-    assert viaf_record.get_entities_records() == [agent_gnd_data]
+    assert [
+        {k: v for k, v in r.items() if k != "md5"}
+        for r in viaf_record.get_entities_records()
+    ] == [agent_gnd_data]
     assert viaf_record.get_viaf(m_record) == [viaf_record]
     assert viaf_record.get_viaf(gnd_record) == [viaf_record]
     pids_db, pids_viaf = viaf_record.get_missing_entity_pids("aggnd")
@@ -75,7 +79,8 @@ def test_create_agent_record_with_viaf_links(
     assert rero_record["pid"] == "A023655346"
     m_record, m_actions = rero_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_actions == {"1": Action.UPDATE}
-    assert m_record == {
+    assert "md5" in m_record
+    assert {k: v for k, v in m_record.items() if k != "md5"} == {
         "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
         "gnd": {"$ref": "https://mef.rero.ch/api/agents/gnd/12391664X"},
         "pid": "1",
@@ -83,7 +88,10 @@ def test_create_agent_record_with_viaf_links(
         "type": "bf:Person",
         "viaf_pid": "66739143",
     }
-    assert viaf_record.get_entities_records() == [agent_gnd_data, agent_rero_data]
+    assert [
+        {k: v for k, v in r.items() if k != "md5"}
+        for r in viaf_record.get_entities_records()
+    ] == [agent_gnd_data, agent_rero_data]
 
     idref_record, action = AgentIdrefRecord.create_or_update(
         data=agent_idref_data, dbcommit=True, reindex=True
@@ -92,7 +100,8 @@ def test_create_agent_record_with_viaf_links(
     assert idref_record["pid"] == "069774331"
     m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_actions == {"1": Action.UPDATE}
-    assert m_record == {
+    assert "md5" in m_record
+    assert {k: v for k, v in m_record.items() if k != "md5"} == {
         "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
         "gnd": {"$ref": "https://mef.rero.ch/api/agents/gnd/12391664X"},
         "idref": {"$ref": "https://mef.rero.ch/api/agents/idref/069774331"},
@@ -101,7 +110,10 @@ def test_create_agent_record_with_viaf_links(
         "type": "bf:Person",
         "viaf_pid": "66739143",
     }
-    assert viaf_record.get_entities_records() == [
+    assert [
+        {k: v for k, v in r.items() if k != "md5"}
+        for r in viaf_record.get_entities_records()
+    ] == [
         agent_idref_data,
         agent_gnd_data,
         agent_rero_data,
@@ -151,19 +163,19 @@ def test_create_agent_record_with_viaf_links(
     returned_record, action = AgentGndRecord.create_or_update(
         data=agent_gnd_data, dbcommit=True, reindex=True
     )
-    assert action == Action.UPDATE
+    assert action == Action.REPLACE
     assert returned_record["pid"] == "12391664X"
 
     returned_record, action = AgentReroRecord.create_or_update(
         data=agent_rero_data, dbcommit=True, reindex=True
     )
-    assert action == Action.UPDATE
+    assert action == Action.REPLACE
     assert returned_record["pid"] == "A023655346"
 
     returned_record, action = AgentIdrefRecord.create_or_update(
         data=agent_idref_data, dbcommit=True, reindex=True
     )
-    assert action == Action.UPDATE
+    assert action == Action.REPLACE
     assert returned_record["pid"] == "069774331"
 
     # Test update MD5 agent record with VIAF links.

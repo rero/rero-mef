@@ -15,6 +15,6 @@
 
 """User interface theme and templates.
 
-Provides customized templates, styles, and assets for the RERO MEF
-web interface, including branding and layout configurations.
+Provides customized templates, styles, and assets for the RERO MEF web interface, including branding and layout
+configurations.
 """

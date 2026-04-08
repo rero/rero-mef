@@ -1328,13 +1328,10 @@ def display_record(record, ctrl=False):
 def remove_trailing_punctuation(data, punctuation=",", spaced_punctuation=":;/-"):
     """Remove trailing punctuation from data.
 
-    The punctuation parameter list the
-    punctuation characters to be removed
-    (preceded by a space or not).
+    The punctuation parameter lists the punctuation characters to be removed (preceded by a space or not).
 
-    The spaced_punctuation parameter list the
-    punctuation characters needing one or more preceding space(s)
-    in order to be removed.
+    The spaced_punctuation parameter lists the punctuation characters needing one or more preceding space(s) in order to
+    be removed.
     """
     return re.sub(
         rf"([{punctuation}]|\s+[{spaced_punctuation}])$", "", data.rstrip()
@@ -1346,8 +1343,8 @@ def build_string_from_field(
 ):
     """Build a string (one per field).
 
-    from the given field tag and given subfields.
-    the given separator is used as subfields delimiter.
+    Build a string from the given field using specified subfields. The punctuation characters
+    from the punctuation parameters are used to clean trailing characters.
     """
     if not field:
         return None
@@ -1357,8 +1354,6 @@ def build_string_from_field(
     grouping_code = []
     for code, data in field:
         if code in subfields:
-            if isinstance(data, (list, set)):
-                data = subfields[code].join(data)
             data = data.replace("\x98", "")
             data = data.replace("\x9c", "")
             data = data.replace(",,", ",")
@@ -1410,8 +1405,7 @@ def build_string_list_from_fields(
 ):
     """Build a list of strings (one per field).
 
-    from the given field tag and given subfields.
-    the given separator is used as subfields delimiter.
+    from the given field tag and given subfields. the given separator is used as subfields delimiter.
     """
     if not tag_grouping:
         tag_grouping = []

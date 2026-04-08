@@ -71,12 +71,12 @@ class Transformation:
         to_return = []
         for field in fields_245:
             data = {}
-            if field.get_subfields("a"):
-                data["ex2_a"] = field.get_subfields("a")[0]
-            if field.get_subfields("b"):
-                data["ex2_b"] = field.get_subfields("b")[0]
-            if field.get_subfields("c"):
-                data["ex2_c"] = field.get_subfields("c")[0]
+            if value := field.get("a"):
+                data["ex2_a"] = value
+            if value := field.get("b"):
+                data["ex2_b"] = value
+            if value := field.get("c"):
+                data["ex2_c"] = value
             to_return.append(data)
         # save the conferted data to json_dict
         self.json_dict["example2"] = to_return

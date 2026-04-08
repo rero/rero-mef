@@ -15,6 +15,6 @@
 
 """JSON schema definitions for IdRef agent records.
 
-Provides JSON schema validation rules for IdRef agent records, ensuring data
-structure and content integrity for IdRef authority entities.
+Provides JSON schema validation rules for IdRef agent records, ensuring data structure and content integrity for IdRef
+authority entities.
 """

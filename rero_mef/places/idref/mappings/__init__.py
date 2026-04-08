@@ -15,6 +15,6 @@
 
 """Elasticsearch index mappings for IdRef place records.
 
-Defines the Elasticsearch field mappings and analyzers for indexing and
-searching IdRef place records. Includes French language analysis and geographic support.
+Defines the Elasticsearch field mappings and analyzers for indexing and searching IdRef place records. Includes French
+language analysis and geographic support.
 """

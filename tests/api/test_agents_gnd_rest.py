@@ -71,7 +71,7 @@ def test_save_deleted_data(client, agent_gnd_record, agent_gnd_data):
     record, action = AgentGndRecord.create_or_update(
         data=data, delete_pid=False, dbcommit=True, reindex=True, test_md5=False
     )
-    assert action == Action.UPDATE
+    assert action == Action.REPLACE
     assert record["deleted"] == data["deleted"]
     assert record["relation_pid"] == data["relation_pid"]
 

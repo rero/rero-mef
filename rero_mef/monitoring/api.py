@@ -29,9 +29,8 @@ from ..utils import get_entity_class, get_mefs_endpoints, progressbar
 class Monitoring:
     """Monitoring class.
 
-    The main idea here is to check the consistency between the database and
-    the search index. We need to check that all documents presents in the
-    database are also present in the search index and vice versa.
+    The main idea here is to check the consistency between the database and the search index. We need to check that all
+    documents presents in the database are also present in the search index and vice versa.
     """
 
     def __init__(self, time_delta=0):
@@ -45,12 +44,8 @@ class Monitoring:
         """Table representation of database and elasticsearch differences.
 
         :return: string representation of database and elasticsearch
-        differences. Following columns are in the string:
-            1. database count minus elasticsearch count
-            2. document type
-            3. database count
-            4. elasticsearch index
-            5. elasticsearch count
+        differences. Following columns are in the string: 1. database count minus elasticsearch count 2. document type
+        3. database count 4. elasticsearch index 5. elasticsearch count
         """
         result = ""
         msg_head = f"DB - ES  {'type':>6} {'count':>10}"
@@ -138,8 +133,7 @@ class Monitoring:
         Get count details for all records rest endpoints in JSON format.
 
         :param with_deleted: count also deleted items in database.
-        :return: dictionair with database, elasticsearch and database minus
-        elasticsearch count informations.
+        :return: dictionary with database, elasticsearch and database minus elasticsearch count information.
         """
         info = {}
         for doc_type, endpoint in current_app.config.get(
@@ -174,8 +168,7 @@ class Monitoring:
         """Compaire elasticsearch with database counts.
 
         :param with_deleted: count also deleted items in database.
-        :return: dictionair with all document types with a difference in
-        database and elasticsearch counts.
+        :return: dictionary with all document types with a difference in database and elasticsearch counts.
         """
         checks = {}
         for info, data in self.info(
@@ -218,11 +211,10 @@ class Monitoring:
     def missing(self, doc_type, with_deleted=False):
         """Get missing pids.
 
-        Get missing pids in database and elasticsearch and find duplicate
-        pids in elasticsearch.
+        Get missing pids in database and elasticsearch and find duplicate pids in elasticsearch.
 
         :param doc_type: doc type to get missing pids.
-        :return: dictionair with all missing pids.
+        :return: dictionary with all missing pids.
         """
         (
             missing_in_db,

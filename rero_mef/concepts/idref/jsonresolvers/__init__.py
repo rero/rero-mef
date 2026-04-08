@@ -15,6 +15,6 @@
 
 """JSON reference resolvers for IdRef concept records.
 
-Provides functionality to resolve JSON references ($ref) in IdRef concept records,
-enabling dynamic loading and linking of related entity data.
+Provides functionality to resolve JSON references ($ref) in IdRef concept records, enabling dynamic loading and linking
+of related entity data.
 """

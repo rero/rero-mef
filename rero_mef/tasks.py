@@ -28,12 +28,10 @@ def process_bulk_queue(version_type=None, search_bulk_kwargs=None, stats_only=Tr
     """Process bulk indexing queue.
 
     :param str version_type: Elasticsearch version type.
-    :param dict search_bulk_kwargs: Passed to
-        :func:`elasticsearch:elasticsearch.helpers.bulk`.
+    :param dict search_bulk_kwargs: Passed to :func:`elasticsearch:elasticsearch.helpers.bulk`.
     :param boolean stats_only: if `True` only report number of
-            successful/failed operations instead of just number of
-            successful and a list of error responses.
-    Note: You can start multiple versions of this task.
+    successful/failed operations instead of just number of successful and a list of error responses. Note: You can start
+    multiple versions of this task.
     """
     return EntityIndexer(version_type=version_type).process_bulk_queue(
         search_bulk_kwargs=search_bulk_kwargs, stats_only=stats_only

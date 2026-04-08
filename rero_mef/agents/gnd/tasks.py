@@ -65,7 +65,7 @@ def process_records_from_dates(
         transformation=Transformation,
         access_token=current_app.config.get("RERO_OAI_GND_TOKEN"),
         record_class=AgentGndRecord,
-        days_spann=4,
+        days_span=4,
         from_date=from_date,
         until_date=until_date,
         ignore_deleted=ignore_deleted,
@@ -74,8 +74,8 @@ def process_records_from_dates(
         test_md5=test_md5,
         verbose=verbose,
         debug=debug,
-        viaf_onle=viaf_online,
-        kwargs=kwargs,
+        viaf_online=viaf_online,
+        **kwargs,
     )
 
 
@@ -83,8 +83,7 @@ def process_records_from_dates(
 def save_records_from_dates(file_name, from_date=None, until_date=None, verbose=False):
     """Harvest and save multiple records from an OAI repo.
 
-    :param name: The name of the OAIHarvestConfig to use instead of passing
-                 specific parameters.
+    :param file_name: Output file path for the harvested MARC records.
     :param from_date: The lower bound date for the harvesting (optional).
     :param until_date: The upper bound date for the harvesting (optional).
     """
@@ -96,7 +95,7 @@ def save_records_from_dates(file_name, from_date=None, until_date=None, verbose=
         max_retries=current_app.config.get("RERO_OAI_RETRIES", 0),
         oai_item_iterator=MyOAIItemIterator,
         access_token=current_app.config.get("RERO_OAI_GND_TOKEN"),
-        days_spann=30,
+        days_span=30,
         from_date=from_date,
         until_date=until_date,
         verbose=verbose,
@@ -107,8 +106,7 @@ def save_records_from_dates(file_name, from_date=None, until_date=None, verbose=
 def gnd_get_record(id_, debug=False):
     """Get a record from GND SRU repo.
 
-    GND documentation:
-    https://www.dnb.de/DE/Service/Hilfe/Katalog/kataloghilfe.html?nn=587750#link
+    GND documentation: https://www.dnb.de/DE/Service/Hilfe/Katalog/kataloghilfe.html?nn=587750#link
     https://services.dnb.de/sru/authorities?version=1.1
     &operation=searchRetrieve&query=idn%3D007355440&recordSchema=MARC21-xml
     """

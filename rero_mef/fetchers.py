@@ -25,7 +25,7 @@ def id_fetcher(_record_uuid, data, provider, pid_key="pid"):
     """Fetch a record's persistent identifier.
 
     :param _record_uuid: The record UUID (intentionally unused; present for
-        API compatibility with invenio PID fetcher conventions).
+    API compatibility with invenio PID fetcher conventions).
     :param data: The record metadata.
     :param provider: The PID provider class.
     :param pid_key: Key in ``data`` holding the PID value (default: ``"pid"``).

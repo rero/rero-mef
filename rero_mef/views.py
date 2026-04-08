@@ -39,8 +39,7 @@ def agent_mef_get_latest(pid_type, pid):
 def agent_mef_get_updated():
     """Get updated MEF agent records based on posted data.
 
-    Expects JSON payload in request body with update information.
-    Returns a streaming response with updated records.
+    Expects JSON payload in request body with update information. Returns a streaming response with updated records.
 
     :returns: Streaming JSON response with updated MEF agent records.
     """
@@ -64,8 +63,7 @@ def concept_mef_get_latest(pid_type, pid):
 def concept_mef_get_updated():
     """Get updated MEF concept records based on posted data.
 
-    Expects JSON payload in request body with update information.
-    Returns a streaming response with updated records.
+    Expects JSON payload in request body with update information. Returns a streaming response with updated records.
 
     :returns: Streaming JSON response with updated MEF concept records.
     """
@@ -89,8 +87,7 @@ def place_mef_get_latest(pid_type, pid):
 def place_mef_get_updated():
     """Get updated MEF place records based on posted data.
 
-    Expects JSON payload in request body with update information.
-    Returns a streaming response with updated records.
+    Expects JSON payload in request body with update information. Returns a streaming response with updated records.
 
     :returns: Streaming JSON response with updated MEF place records.
     """

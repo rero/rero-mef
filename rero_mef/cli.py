@@ -38,6 +38,7 @@ from sqlitedict import SqliteDict
 from werkzeug.local import LocalProxy
 from werkzeug.security import gen_salt
 
+from .extensions import MD5Extension
 from .marctojson.records import RecordsCount
 from .monitoring.api import Monitoring
 from .tasks import create_or_update as task_create_or_update
@@ -45,7 +46,6 @@ from .tasks import delete as task_delete
 from .tasks import process_bulk_queue as task_process_bulk_queue
 from .utils import (
     JsonWriter,
-    add_md5,
     add_oai_source,
     bulk_load_ids,
     bulk_load_metadata,
@@ -65,6 +65,7 @@ from .utils import (
 )
 
 _datastore = LocalProxy(lambda: current_app.extensions["security"].datastore)
+_md5 = MD5Extension()
 
 
 def abort_if_false(ctx, param, value):
@@ -259,7 +260,7 @@ def marc_to_json(entity, marc_file, json_file, error_file, verbose):
                     )
                 else:
                     pids[pid] = 1
-                    add_md5(json_data)
+                    _md5.add_md5(json_data)
                     if json_data.get("deleted"):
                         count_deleted += 1
                         json_deleted_file.write(json_data)
@@ -423,8 +424,7 @@ def save_csv(entities, output_directory, verbose):
 
     :param output_directory: Output directory.
     :param entities: entity to export.
-        default=['aggnd', 'aidref', 'agrero', 'mef', 'viaf',
-                 'cidref', 'corero', 'comef', 'pidref', 'plgnd', 'plmef'])
+    default=['aggnd', 'aidref', 'agrero', 'mef', 'viaf', 'cidref', 'corero', 'comef', 'pidref', 'plgnd', 'plmef'])
     :param verbose: Verbose.
     """
     oai_names = {
@@ -617,7 +617,7 @@ def csv_diff(
                         )
                         click.echo(f" new:\t{json.dumps(data, sort_keys=True)}")
                     if output:
-                        add_md5(data)
+                        _md5.add_md5(data)
                         file_diff.write(data)
                 else:
                     counts["unchanged"] += 1
@@ -629,14 +629,14 @@ def csv_diff(
                 if verbose:
                     click.echo(f"NEW :\t{json.dumps(data, sort_keys=True)}")
                 if output:
-                    add_md5(data)
+                    _md5.add_md5(data)
                     file_new.write(data)
     for pid, data in compair_data.items():
         counts["deleted"] += 1
         if verbose:
             click.echo(f"DEL :\t{json.dumps(data, sort_keys=True)}")
         if output:
-            add_md5(data)
+            _md5.add_md5(data)
             file_delete.write(data)
     file_new.close()
     file_diff.close()
@@ -820,8 +820,7 @@ def harvestname(
     :param name: Name of persistent configuration to use.
     :param from-date: The lower bound date for the harvesting (optional).
     :param until_date: The upper bound date for the harvesting (optional).
-    :param arguments: Arguments to harvesting task, in the form
-                       `-a arg1=val1`.
+    :param arguments: Arguments to harvesting task, in the form `-a arg1=val1`.
     :param quiet: Supress output.
     :param enqueue: Enqueue harvesting and return immediately.
     :param test_md5: Compaire md5 to find out if we have to update.
@@ -1208,14 +1207,12 @@ def reindex_missing(entities, verbose):
 def create_personal(name, user_id, scopes=None, is_internal=False, access_token=None):
     """Create a personal access token.
 
-    A token that is bound to a specific user and which doesn't expire, i.e.
-    similar to the concept of an API key.
+    A token that is bound to a specific user and which doesn't expire, i.e. similar to the concept of an API key.
 
     :param name: Client name.
     :param user_id: User ID.
     :param scopes: The list of permitted scopes. (Default: ``None``)
-    :param is_internal: If ``True`` it's a internal access token.
-            (Default: ``False``)
+    :param is_internal: If ``True`` it's a internal access token. (Default: ``False``)
     :param access_token: personalized access_token.
     :returns: A new access token.
     """

@@ -11,6 +11,9 @@
       "$schema": {
         "type": "keyword"
       },
+      "md5": {
+        "type": "keyword"
+      },
       "pid": {
         "type": "keyword"
       },
