@@ -15,6 +15,6 @@
 
 """JSON schema definitions for agent MEF records.
 
-Provides JSON schema validation rules for agent MEF records, ensuring data
-structure and content integrity for aggregated agent entities.
+Provides JSON schema validation rules for agent MEF records, ensuring data structure and content integrity for
+aggregated agent entities.
 """

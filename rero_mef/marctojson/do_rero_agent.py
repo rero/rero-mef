@@ -73,8 +73,7 @@ class Transformation:
     def trans_rero_birth_and_death_dates(self):
         """Transformation birth_date and death_date.
 
-        100 $d pos. 1-4 YYYY birth_date
-        100 $d pos. 6-9 YYYY birth_date
+        100 $d format: YYYY-YYYY (birth_date-death_date, split on hyphen)
         """
         # def format_100_date(date_str):
         #     """DocString."""

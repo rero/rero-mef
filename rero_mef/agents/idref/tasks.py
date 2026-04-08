@@ -62,7 +62,7 @@ def process_records_from_dates(
         oai_item_iterator=MyOAIItemIterator,
         transformation=Transformation,
         record_class=AgentIdrefRecord,
-        days_spann=30,
+        days_span=30,
         from_date=from_date,
         until_date=until_date,
         ignore_deleted=ignore_deleted,
@@ -72,7 +72,7 @@ def process_records_from_dates(
         verbose=verbose,
         debug=debug,
         viaf_online=viaf_online,
-        kwargs=kwargs,
+        **kwargs,
     )
 
 
@@ -80,8 +80,7 @@ def process_records_from_dates(
 def save_records_from_dates(file_name, from_date=None, until_date=None, verbose=False):
     """Harvest and save multiple records from an OAI repo.
 
-    :param name: The name of the OAIHarvestConfig to use instead of passing
-                 specific parameters.
+    :param file_name: Output file path for the harvested MARC records.
     :param from_date: The lower bound date for the harvesting (optional).
     :param until_date: The upper bound date for the harvesting (optional).
     """
@@ -92,7 +91,7 @@ def save_records_from_dates(file_name, from_date=None, until_date=None, verbose=
         sickle=SickleWithRetries,
         max_retries=current_app.config.get("RERO_OAI_RETRIES", 0),
         oai_item_iterator=MyOAIItemIterator,
-        days_spann=30,
+        days_span=30,
         from_date=from_date,
         until_date=until_date,
         verbose=verbose,

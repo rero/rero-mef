@@ -58,6 +58,10 @@
         }
       }
     },
+    "md5": {
+      "title": "MD5 hash",
+      "type": "string"
+    },
     "deleted": {
       "title": "Deletion date",
       "type": "string",

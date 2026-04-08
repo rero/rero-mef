@@ -21,7 +21,6 @@
 """Utilities."""
 
 import gc
-import hashlib
 import json
 import os
 import time
@@ -59,6 +58,26 @@ from sickle import OAIResponse, Sickle, oaiexceptions
 from sickle.iterator import OAIItemIterator
 from sickle.oaiexceptions import NoRecordsMatch
 from urllib3.util.retry import Retry
+
+from rero_mef.extensions import SchemaExtension
+
+_schema = SchemaExtension()
+
+
+def _apply_oai_overlap(last_run, from_date):
+    """Subtract the configured overlap from *last_run* to avoid missing boundary records.
+
+    :param last_run: Last harvest date string or ``None``.
+    :param from_date: Explicit from-date override or ``None``.
+    :returns: Adjusted date string, or the original value unchanged.
+    """
+    if last_run and not from_date:
+        overlap_days = current_app.config.get("RERO_MEF_OAI_LASTRUN_OVERLAP", 1)
+        return (parser.isoparse(last_run) - timedelta(days=overlap_days)).strftime(
+            TIME_FORMAT
+        )
+    return last_run
+
 
 # Hours can not be retrieved by get_info_by_oai_name
 # TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
@@ -233,10 +252,7 @@ class MyOAIItemIterator(OAIItemIterator):
                     f"(cursor={self.resumption_token.cursor}, "
                     f"token={self.resumption_token.token})"
                 )
-            self.next_resumption_token_and_items()
-        else:
-            # first time
-            self.next_resumption_token_and_items()
+        self.next_resumption_token_and_items()
 
 
 def oai_process_records_from_dates(
@@ -260,8 +276,7 @@ def oai_process_records_from_dates(
 ):
     """Harvest multiple records from an OAI repo.
 
-    :param name: The name of the OAIHarvestConfig to use instead of passing
-                 specific parameters.
+    :param name: The name of the OAIHarvestConfig to use instead of passing specific parameters.
     :param from_date: The lower bound date for the harvesting (optional).
     :param until_date: The upper bound date for the harvesting (optional).
     """
@@ -272,6 +287,7 @@ def oai_process_records_from_dates(
 
     # data on IDREF Servers starts on 2000-10-01
     url, metadata_prefix, last_run, setspecs = get_info_by_oai_name(name)
+    last_run = _apply_oai_overlap(last_run, from_date)
 
     request = sickle(url, iterator=oai_item_iterator, max_retries=max_retries)
 
@@ -425,8 +441,7 @@ def oai_save_records_from_dates(
 ):
     """Harvest and save multiple records from an OAI repo.
 
-    :param name: The name of the OAIHarvestConfig to use instead of passing
-                 specific parameters.
+    :param name: The name of the OAIHarvestConfig to use instead of passing specific parameters.
     :param from_date: The lower bound date for the harvesting (optional).
     :param until_date: The upper bound date for the harvesting (optional).
     """
@@ -434,6 +449,7 @@ def oai_save_records_from_dates(
         raise ValueError(f"days_span must be positive, got {days_span}")
 
     url, metadata_prefix, last_run, setspecs = get_info_by_oai_name(name)
+    last_run = _apply_oai_overlap(last_run, from_date)
 
     request = sickle(url, iterator=oai_item_iterator, max_retries=max_retries)
 
@@ -644,8 +660,7 @@ def get_host():
 def resolve_record(path, object_class):
     """Resolve local records.
 
-    :param path: pid for record
-    :object_class: record class to use
+    :param path: pid for record :object_class: record class to use
     :returns: record for pid or {}
     """
     try:
@@ -920,36 +935,6 @@ def bulk_save_ids(entity, file_name, verbose=False):
     )
 
 
-def create_md5(record):
-    """Create md5 for record."""
-    return hashlib.md5(
-        json.dumps(record, sort_keys=True, default=str).encode("utf-8")
-    ).hexdigest()
-
-
-def add_md5(record):
-    """Add md5 to json."""
-    schema = record.pop("$schema") if record.get("$schema") else None
-    if record.get("md5"):
-        record.pop("md5")
-    record["md5"] = create_md5(record)
-    if schema:
-        record["$schema"] = schema
-    return record
-
-
-def add_schema(record, entity):
-    """Add the $schema to the record."""
-    with current_app.app_context():
-        schemas = current_app.config.get("RECORDS_JSON_SCHEMA")
-        if entity in schemas:
-            base_url = current_app.config.get("RERO_MEF_APP_BASE_URL")
-            endpoint = current_app.config.get("JSONSCHEMAS_ENDPOINT")
-            schema = schemas[entity]
-            record["$schema"] = f"{base_url}{endpoint}{schema}"
-    return record
-
-
 def create_csv_file(input_file, entity, pidstore, metadata):
     """Create entity CSV file to load."""
     count = 0
@@ -962,15 +947,13 @@ def create_csv_file(input_file, entity, pidstore, metadata):
             if entity == "viaf":
                 record["pid"] = record["viaf_pid"]
 
-            ordered_record = add_md5(record)
-            add_schema(ordered_record, entity)
+            if schema_url := _schema.get_schema_url_for_entity(entity):
+                record["$schema"] = schema_url
 
             record_uuid = str(uuid4())
             date = str(datetime.now(timezone.utc))
 
-            entity_metadata_file.write(
-                metadata_csv_line(ordered_record, record_uuid, date)
-            )
+            entity_metadata_file.write(metadata_csv_line(record, record_uuid, date))
 
             entity_pids_file.write(
                 pidstore_csv_line(entity, record["pid"], record_uuid, date)
@@ -1043,9 +1026,9 @@ def write_viaf_json(
             if wiki_urls := value.get("url"):
                 json_data["wiki"] = sorted(wiki_urls)
 
-    json_data["md5"] = create_md5(json_data)
-    add_schema(json_data, "viaf")
     json_data["pid"] = viaf_pid
+    if schema_url := _schema.get_schema_url_for_entity("viaf"):
+        json_data["$schema"] = schema_url
     # only save VIAF data with used pids
     record_uuid = str(uuid4())
     date = str(datetime.now(timezone.utc))
@@ -1076,15 +1059,12 @@ def append_fixtures_new_identifiers(identifier, pids, pid_type):
 def set_timestamp(name, **kwargs):
     """Set timestamp in current cache.
 
-    Allows to timestamp functionality and monitoring of the changed
-    timestamps externaly via url requests.
+    Allows to timestamp functionality and monitoring of the changed timestamps externaly via url requests.
 
     :param name: name of time stamp.
     :returns: time of time stamp
     """
-    time_stamps = current_cache.get("timestamps")
-    if not time_stamps:
-        time_stamps = {}
+    time_stamps = current_cache.get("timestamps") or {}
     utc_now = datetime.now(timezone.utc)
     time_stamps[name] = {}
     time_stamps[name]["time"] = utc_now
@@ -1135,10 +1115,9 @@ class JsonWriter:
 
         :params exception_type: indicates class of exception.
         :params exception_value: indicates type of exception.
-            like divide_by_zero error, floating_point_error,
-            which are types of arithmetic exception.
+        like divide_by_zero error, floating_point_error, which are types of arithmetic exception.
         :params exception_traceback: traceback is a report which has all
-            of the information needed to solve the exception.
+        of the information needed to solve the exception.
         """
         self.__del__()
 
@@ -1234,8 +1213,7 @@ def requests_retry_session(
     """Request retry session.
 
     :params retries: The total number of retry attempts to make.
-    :params backoff_factor: Sleep between failed requests.
-        {backoff factor} * (2 ** ({number of total retries} - 1))
+    :params backoff_factor: Sleep between failed requests. {backoff factor} * (2 ** ({number of total retries} - 1))
     :params status_forcelist: The HTTP response codes to retry on..
     :params session: Session to use.
     :returns: http request session.

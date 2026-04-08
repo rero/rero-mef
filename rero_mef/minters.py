@@ -21,8 +21,8 @@ def id_minter(
 ):
     """Mint a persistent identifier for a record.
 
-    Creates a new persistent identifier and assigns it to the record data.
-    The PID value is extracted from the specified field in the record data.
+    Creates a new persistent identifier and assigns it to the record data. The PID value is extracted from the specified
+    field in the record data.
 
     :param record_uuid: UUID of the record to mint the PID for.
     :param data: Dictionary containing the record data.

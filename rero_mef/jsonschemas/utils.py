@@ -29,14 +29,11 @@ except ImportError:
 class JsonLoader:
     """JsonLoader.
 
-    Provides a callable which takes a URI, and returns the loaded JSON referred
-    to by that URI. Uses :mod:`requests` if available for HTTP URIs, and falls
-    back to :mod:`urllib`. By default it keeps a cache of previously loaded
+    Provides a callable which takes a URI, and returns the loaded JSON referred to by that URI. Uses :mod:`requests` if
+    available for HTTP URIs, and falls back to :mod:`urllib`. By default it keeps a cache of previously loaded
     documents.
-    :param store: A pre-populated dictionary matching URIs to loaded JSON
-        documents
-    :param cache_results: If this is set to false, the internal cache of
-        loaded JSON documents is not used
+    :param store: A pre-populated dictionary matching URIs to loaded JSON documents
+    :param cache_results: If this is set to false, the internal cache of loaded JSON documents is not used
     """
 
     def __init__(self, store=(), cache_results=True):
@@ -62,11 +59,10 @@ class JsonLoader:
     def get_remote_json(self, uri, **kwargs):
         """Get remote json.
 
-        We have to add local $ref loading to the base class.
-        https://invenio-jsonschemas.readthedocs.io/en/latest/configuration.html
+        We have to add local $ref loading to the base class. https://invenio-
+        jsonschemas.readthedocs.io/en/latest/configuration.html
 
-        Adds loading of $ref locally for the application instance.
-        See: github invenio-jsonschemas ext.py.
+        Adds loading of $ref locally for the application instance. See: github invenio-jsonschemas ext.py.
         :param uri: The URI of the JSON document to load.
         :param kwargs: Keyword arguments passed to json.loads().
         :returns: resolved json schema.

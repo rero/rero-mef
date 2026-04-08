@@ -15,6 +15,6 @@
 
 """Elasticsearch index mappings for concept MEF records.
 
-Defines the Elasticsearch field mappings and analyzers for indexing and
-searching concept MEF records. Includes multilingual analysis and faceting support.
+Defines the Elasticsearch field mappings and analyzers for indexing and searching concept MEF records. Includes
+multilingual analysis and faceting support.
 """

@@ -15,10 +15,10 @@
 
 """JS/CSS bundles for rero-mef.
 
-You include one of the bundles in a page like the example below (using
-``base`` bundle as an example):
+You include one of the bundles in a page like the example below (using ``base`` bundle as an example):
 .. code-block:: html
-    {{ webpack['base.js']}}
+
+   {{ webpack['base.js']}}
 """
 
 from flask_webpackext import WebpackBundle, WebpackBundleProject

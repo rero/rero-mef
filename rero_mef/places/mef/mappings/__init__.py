@@ -15,6 +15,6 @@
 
 """Elasticsearch index mappings for place MEF records.
 
-Defines the Elasticsearch field mappings and analyzers for indexing and
-searching place MEF records. Includes multilingual analysis and geographic support.
+Defines the Elasticsearch field mappings and analyzers for indexing and searching place MEF records. Includes
+multilingual analysis and geographic support.
 """

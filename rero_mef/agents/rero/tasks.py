@@ -29,9 +29,7 @@ from ...utils import requests_retry_session
 def rero_get_record(id_, debug=False):
     """Get a record from RERO data repo.
 
-    RERO documentation:
-    http://data.rero.ch/
-    http://data.rero.ch/02-A000069866/marcxml
+    RERO documentation: http://data.rero.ch/ http://data.rero.ch/02-A000069866/marcxml
     """
     url = current_app.config["RERO_MEF_AGENTS_RERO_GET_RECORD"].replace("{id}", id_)
     msg = f"API-agents.rero  get: {id_:<15} {url}"

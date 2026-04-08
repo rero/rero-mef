@@ -15,6 +15,6 @@
 
 """JSON schema definitions for RERO agent records.
 
-Provides JSON schema validation rules for RERO agent records, ensuring data
-structure and content integrity for RERO authority entities.
+Provides JSON schema validation rules for RERO agent records, ensuring data structure and content integrity for RERO
+authority entities.
 """

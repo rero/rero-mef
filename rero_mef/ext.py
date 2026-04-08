@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2020 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -24,15 +24,14 @@ from rero_mef.places.listener import enrich_place_data
 class REROMEFAPP:
     """RERO MEF Flask extension.
 
-    Provides initialization and setup for the RERO MEF application,
-    including signal registration for data enrichment during indexing.
+    Provides initialization and setup for the RERO MEF application, including signal registration for data enrichment
+    during indexing.
     """
 
     def __init__(self, app=None):
         """Initialize the RERO MEF extension.
 
-        :param app: Flask application instance. If provided, initializes
-                   the extension immediately.
+        :param app: Flask application instance. If provided, initializes the extension immediately.
         """
         if app:
             self.init_app(app)
@@ -40,8 +39,7 @@ class REROMEFAPP:
     def init_app(self, app):
         """Initialize Flask application with RERO MEF extension.
 
-        Registers this extension with the Flask application's
-        extension registry and connects signal handlers.
+        Registers this extension with the Flask application's extension registry and connects signal handlers.
 
         :param app: Flask application instance.
         """
@@ -51,8 +49,8 @@ class REROMEFAPP:
     def register_signals(self, app):
         """Register signal handlers for data enrichment.
 
-        Connects enrichment functions to the before_record_index signal
-        to enhance concept and place data before indexing in Elasticsearch.
+        Connects enrichment functions to the before_record_index signal to enhance concept and place data before
+        indexing in Elasticsearch.
 
         :param app: Flask application instance.
         """

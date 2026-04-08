@@ -29,8 +29,8 @@ celery = create_celery_app(
     )
 )
 """Celery application for Invenio.
-Overrides SENTRY_TRANSPORT wih synchronous HTTP transport since Celery does not
-deal nicely with the default threaded transport.
+Overrides SENTRY_TRANSPORT with synchronous HTTP transport since Celery does not deal nicely with the default threaded
+transport.
 """
 
 # Trigger an app log message upon import. This makes Sentry logging

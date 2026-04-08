@@ -15,6 +15,6 @@
 
 """JSON schema definitions for place MEF records.
 
-Provides JSON schema validation rules for place MEF records, ensuring data
-structure and content integrity for aggregated place entities.
+Provides JSON schema validation rules for place MEF records, ensuring data structure and content integrity for
+aggregated place entities.
 """

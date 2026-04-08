@@ -151,9 +151,8 @@ def mef_counts():
 def check_es_db_counts():
     """Displays health status for elasticsearch and database counts.
 
-    If there are no problems the status in returned data will be `green`,
-    otherwise the status will be `red` and in the returned error
-    links will be provided with more detailed informations.
+    If there are no problems, the status in returned data will be `green`; otherwise, the status will be `red` and the
+    returned error links will provide more detailed information.
     :return: jsonified health status for elasticsearch and database counts
     """
     result = {"data": {"status": "green"}}
@@ -226,8 +225,7 @@ def missing_pids(doc_type):
     - missing pids in database
     - missing pids in elasticsearch
     - pids indexed multiple times in elasticsearch
-    If possible, direct links will be provieded to the corresponding records.
-    This view needs an logged in system admin.
+    If possible, direct links will be provided to the corresponding records. This view requires a logged-in system admin.
 
     :param doc_type: Document type to display.
     :return: jsonified details of counts for document type

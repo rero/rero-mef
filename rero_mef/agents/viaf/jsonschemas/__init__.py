@@ -15,6 +15,6 @@
 
 """JSON schema definitions for VIAF agent records.
 
-Provides JSON schema validation rules for VIAF agent records, ensuring data
-structure and content integrity for VIAF authority entities.
+Provides JSON schema validation rules for VIAF agent records, ensuring data structure and content integrity for VIAF
+authority entities.
 """

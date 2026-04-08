@@ -15,10 +15,9 @@
 
 """GND place records.
 
-This module provides classes for managing place entities from the GND
-authority file (Gemeinsame Normdatei), maintained by the German National
-Library.
+This module provides classes for managing place entities from the GND authority file (Gemeinsame Normdatei), maintained
+by the German National Library.
 
-GND provides geographic authority control for places, jurisdictions, and
-other geographic entities, as used by German-speaking libraries and cultural institutions.
+GND provides geographic authority control for places, jurisdictions, and other geographic entities, as used by German-
+speaking libraries and cultural institutions.
 """

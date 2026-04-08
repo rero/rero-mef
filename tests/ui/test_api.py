@@ -39,14 +39,18 @@ def test_entityrecord_api(app, agent_idref_record):
     count = sum(1 for _ in AgentIdrefRecord.get_all_records())
     assert count == 1
 
-    _, agent_action = idref.update_md5_changed(data=idref, dbcommit=True, reindex=True)
+    _, agent_action = AgentIdrefRecord.create_or_update(
+        data=dict(idref), dbcommit=True, reindex=True, test_md5=True
+    )
     assert agent_action == Action.UPTODATE
 
     mef_record, _ = idref.create_or_update_mef(dbcommit=True, reindex=True)
 
     idref["gender"] = "female"
-    _, agent_action = idref.update_md5_changed(data=idref, dbcommit=True, reindex=True)
-    assert agent_action == Action.UPDATE
+    _, agent_action = AgentIdrefRecord.create_or_update(
+        data=dict(idref), dbcommit=True, reindex=True, test_md5=True
+    )
+    assert agent_action == Action.REPLACE
     AgentMefRecord.flush_indexes()
     mef_es = next(AgentMefSearch().filter("term", pid=mef_record.pid).scan()).to_dict()
     assert mef_es.get("idref").get("gender") == "female"

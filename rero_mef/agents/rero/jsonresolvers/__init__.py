@@ -15,6 +15,6 @@
 
 """JSON reference resolvers for RERO agent records.
 
-Provides functionality to resolve JSON references ($ref) in RERO agent records,
-enabling dynamic loading and linking of related entity data.
+Provides functionality to resolve JSON references ($ref) in RERO agent records, enabling dynamic loading and linking of
+related entity data.
 """

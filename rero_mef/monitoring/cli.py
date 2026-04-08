@@ -51,13 +51,8 @@ def monitoring():
 def es_db_counts_cli(missing, delay):
     """Print ES and DB counts.
 
-    Prints a table representation of database and elasticsearch counts.
-    Columes:
-    1. database count minus elasticsearch count
-    2. document type
-    3. database count
-    4. elasticsearch index
-    5. elasticsearch count
+    Prints a table representation of database and elasticsearch counts. Columns: 1. database count minus elasticsearch
+    count 2. document type 3. database count 4. elasticsearch index 5. elasticsearch count
     """
     missing_doc_types = []
     mon = Monitoring(time_delta=delay)
@@ -94,12 +89,8 @@ def es_db_counts_cli(missing, delay):
 def mef_counts_cli(delay):
     """Print MEF counts.
 
-    Prints a table representation of MEF counts.
-    Columes:
-    1. MEF count minus database count
-    2. document type
-    3. database count
-    5. MEF count
+    Prints a table representation of MEF counts. Columns: 1. MEF count minus database count 2. document type 3. database
+    count 4. MEF count
     """
     mon = Monitoring(time_delta=delay)
     msg_head = f"MEF - DB  {'type':>6} {'DB':>10}  {'MEF':>10}"

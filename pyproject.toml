@@ -239,3 +239,7 @@ where = ["."]
 
 [tool.uv]
 package = true
+required-environments = [
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "sys_platform == 'darwin'",
+]

@@ -15,6 +15,6 @@
 
 """JSON reference resolvers for agent MEF records.
 
-Provides functionality to resolve JSON references ($ref) in agent MEF records,
-enabling dynamic loading and linking of related entity data.
+Provides functionality to resolve JSON references ($ref) in agent MEF records, enabling dynamic loading and linking of
+related entity data.
 """

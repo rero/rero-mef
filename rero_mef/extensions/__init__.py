@@ -1,5 +1,5 @@
 # RERO MEF
-# Copyright (C) 2022 RERO
+# Copyright (C) 2026 RERO
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -13,8 +13,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""JSON schema definitions for IdRef place records.
+"""Invenio record extensions for RERO MEF."""
 
-Provides JSON schema validation rules for IdRef place records, ensuring data structure and content integrity for IdRef
-geographic authorities.
-"""
+from .deleted import DeletedStateExtension
+from .md5 import MD5Extension
+from .schema import SchemaExtension
+
+__all__ = ["DeletedStateExtension", "MD5Extension", "SchemaExtension"]

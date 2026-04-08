@@ -15,6 +15,6 @@
 
 """JSON schema definitions for GND place records.
 
-Provides JSON schema validation rules for GND place records, ensuring data
-structure and content integrity for GND geographic authorities.
+Provides JSON schema validation rules for GND place records, ensuring data structure and content integrity for GND
+geographic authorities.
 """

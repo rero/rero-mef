@@ -15,6 +15,6 @@
 
 """Elasticsearch index mappings for VIAF agent records.
 
-Defines the Elasticsearch field mappings and analyzers for indexing and
-searching VIAF agent records. Includes multilingual analysis support.
+Defines the Elasticsearch field mappings and analyzers for indexing and searching VIAF agent records. Includes
+multilingual analysis support.
 """

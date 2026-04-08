@@ -23,9 +23,9 @@ from elasticsearch_dsl.query import Q
 from flask import current_app
 from invenio_search.api import RecordsSearch
 
+from rero_mef.extensions import MD5Extension
 from rero_mef.filter import exists_filter
 from rero_mef.utils import (
-    add_md5,
     get_entity_class,
     progressbar,
     requests_retry_session,
@@ -37,6 +37,8 @@ from .fetchers import viaf_id_fetcher
 from .minters import viaf_id_minter
 from .models import ViafMetadata
 from .providers import ViafProvider
+
+_md5 = MD5Extension()
 
 
 class AgentViafSearch(RecordsSearch):
@@ -298,13 +300,11 @@ class AgentViafRecord(EntityRecord):
     def get_online_record(cls, viaf_source_code, pid, rec_format=None):
         """Get VIAF record.
 
-        Get's the VIAF record from:
-        http://www.viaf.org/viaf/sourceID/{source_code}|{pid}
+        Get's the VIAF record from: http://www.viaf.org/viaf/sourceID/{source_code}|{pid}
 
         :param viaf_source_code: agent source code
         :param pid: pid for agent source code
-        :param rec_format: raw = get the not transformed VIAF record
-                       link = get the VIAF link record
+        :param rec_format: raw = get the not transformed VIAF record link = get the VIAF link record
         :returns: VIAF record as json
         """
         viaf_format = "/viaf.json"
@@ -373,12 +373,12 @@ class AgentViafRecord(EntityRecord):
         online_data, _ = self.get_online_record(viaf_source_code="VIAF", pid=self.pid)
         if online_data:
             online_data["$schema"] = self["$schema"]
-            online_data = add_md5(online_data)
+            _md5.add_md5(online_data)
             if online_data["md5"] == self.get("md5"):
                 return self, Action.UPTODATE
             return (
                 self.replace(data=online_data, dbcommit=dbcommit, reindex=reindex),
-                Action.UPDATE,
+                Action.REPLACE,
             )
         return None, Action.DISCARD
 

@@ -30,7 +30,8 @@ def test_create_agent_record_no_viaf_links(
 
     m_record, m_actions = gnd_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_actions == {m_record.pid: Action.CREATE}
-    assert m_record == {
+    assert "md5" in m_record
+    assert {k: v for k, v in m_record.items() if k != "md5"} == {
         "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
         "gnd": {"$ref": "https://mef.rero.ch/api/agents/gnd/12391664X"},
         "pid": "1",
@@ -45,7 +46,8 @@ def test_create_agent_record_no_viaf_links(
 
     m_record, m_actions = rero_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_actions == {m_record.pid: Action.CREATE}
-    assert m_record == {
+    assert "md5" in m_record
+    assert {k: v for k, v in m_record.items() if k != "md5"} == {
         "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
         "pid": "2",
         "rero": {"$ref": "https://mef.rero.ch/api/agents/rero/A023655346"},
@@ -60,7 +62,8 @@ def test_create_agent_record_no_viaf_links(
 
     m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_actions == {m_record.pid: Action.CREATE}
-    assert m_record == {
+    assert "md5" in m_record
+    assert {k: v for k, v in m_record.items() if k != "md5"} == {
         "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
         "idref": {"$ref": "https://mef.rero.ch/api/agents/idref/069774331"},
         "pid": "3",

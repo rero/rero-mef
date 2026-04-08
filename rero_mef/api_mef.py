@@ -15,7 +15,6 @@
 
 """API for manipulating MEF records."""
 
-from copy import deepcopy
 from datetime import datetime, timezone
 
 import click
@@ -38,25 +37,6 @@ class EntityMefRecord(EntityRecord):
     search = None
     mef_type = ""
 
-    def set_deleted(self):
-        """Set deleted.
-
-        Sets MEF deleted value from sources.
-        """
-        changed = False
-        source_data = deepcopy(self).replace_refs()
-        if sources := source_data["sources"]:
-            for source in sources:
-                if deleted := self[source].get("deleted"):
-                    self["deleted"] = deleted
-                    changed = True
-                    break
-            if not changed and self.get("deleted"):
-                # Delete old deleted data
-                self.pop("deleted")
-                changed = True
-        return changed
-
     def update(self, data, commit=False, dbcommit=False, reindex=False):
         """Update data for record.
 
@@ -66,7 +46,6 @@ class EntityMefRecord(EntityRecord):
         :param reindex: reindex the record.
         :returns: the modified record
         """
-        self.set_deleted()
         return super().update(
             data=data, commit=commit, dbcommit=dbcommit, reindex=reindex
         )

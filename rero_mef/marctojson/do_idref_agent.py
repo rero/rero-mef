@@ -65,8 +65,10 @@ def build_language_string_list_from_fields(
 ):
     """Build a list of strings (one per field).
 
-    from the given field tag and given subfields.
-    the given separator is used as subfields delimiter.
+    Extracts data from the specified field tag and subfields, joining subfield values
+    using delimiters from the subfields dict and tag_grouping configuration. The
+    punctuation parameter controls which characters are removed from trailing positions.
+    Results are ordered by script code (Latin first, others appended).
     """
     if not tag_grouping:
         tag_grouping = []
@@ -77,8 +79,6 @@ def build_language_string_list_from_fields(
         grouping_code = []
         for code, data in field:
             if code in subfields:
-                if isinstance(data, (list, set)):
-                    data = subfields[code].join(data)
                 data = data.replace("\x98", "")
                 data = data.replace("\x9c", "")
                 data = data.replace(",,", ",")
@@ -174,14 +174,8 @@ class Transformation:
             self.logger.info("Call Function", "trans_idref_relation_pid")
         for field_035 in self.marc.get_fields("035"):
             subfield_a = field_035.get("a")
-            if isinstance(subfield_a, list):
-                subfield_a = subfield_a[0]
             subfield_2 = field_035.get("2")
-            if isinstance(subfield_2, list):
-                subfield_2 = subfield_2[0]
             subfield_9 = field_035.get("9")
-            if isinstance(subfield_9, list):
-                subfield_9 = subfield_9[0]
             if subfield_a and subfield_9 == "sudoc":
                 self.json_dict["relation_pid"] = {
                     "value": field_035["a"],

@@ -69,8 +69,9 @@ class Transformation:
         - u Werk
         """
         for field_075 in self.marc.get_fields("075") or []:
-            if field_075.get("2") and field_075["2"] == "gndgen":
-                return RECORD_TYPES.get(field_075["b"])
+            if field_075.get("2") == "gndgen":
+                if b := field_075.get("b"):
+                    return RECORD_TYPES.get(b)
         return None
 
     def _transform(self):
@@ -78,10 +79,9 @@ class Transformation:
         record_type = self.get_type()
         if record_type in {"bf:Person", "bf:Organisation"}:
             if self.marc.get_fields("100", "110", "111"):
-                for func in dir(self):
-                    if func.startswith("trans"):
-                        func = getattr(self, func)
-                        func()
+                for func_name in dir(self):
+                    if func_name.startswith("trans"):
+                        getattr(self, func_name)()
             else:
                 msg = "No 100 or 110 or 111"
                 if self.logger and self.verbose:
@@ -103,10 +103,7 @@ class Transformation:
     def trans_gnd_deleted(self):
         """Transformation deleted leader 5.
 
-        $c: Redirect notification
-        $x: Redirect
-        $c: Deletion notification
-        $d: Deletion
+        Leader position 5: c (redirect notification), x (redirect), d (deletion)
 
         https://www.dnb.de/EN/Professionell/Metadatendienste/Datenbezug/
         GND_Aenderungsdienst/gndAenderungsdienst_node.html
@@ -124,11 +121,9 @@ class Transformation:
         """
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_gnd_relation_pid")
-        fields_035 = self.marc.get_fields("682")
-        for field_035 in fields_035:
-            if field_035.get("i") and field_035["i"] == "Umlenkung":
-                subfields_0 = field_035.get_subfields("0")
-                for subfield_0 in subfields_0:
+        for field_682 in self.marc.get_fields("682"):
+            if field_682.get("i") == "Umlenkung":
+                for subfield_0 in field_682.get_subfields("0"):
                     if subfield_0.startswith("(DE-101)"):
                         self.json_dict["relation_pid"] = {
                             "value": subfield_0.replace("(DE-101)", ""),
@@ -227,7 +222,6 @@ class Transformation:
                 dates_per_tag["100"] = {}
                 dates_per_tag["100"]["birth_date"] = format_100_date(dates[0])
                 if len(dates) > 1:
-                    death_date = format_100_date(dates[1])
                     dates_per_tag["100"]["death_date"] = format_100_date(dates[1])
 
         for field_548 in self.marc.get_fields("548"):
@@ -268,13 +262,10 @@ class Transformation:
         """Transformation biographical_information 678 $abu."""
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_gnd_biographical_information")
-        biographical_information = []
-        for tag in [678]:
-            subfields = {"a": ", ", "b": ", ", "u": ", "}
-            biographical_information += build_string_list_from_fields(
-                self.marc, str(tag), subfields
-            )
-        if biographical_information:
+        subfields = {"a": ", ", "b": ", ", "u": ", "}
+        if biographical_information := build_string_list_from_fields(
+            self.marc, "678", subfields
+        ):
             self.json_dict["biographical_information"] = biographical_information
 
     def trans_gnd_numeration(self):

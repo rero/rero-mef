@@ -128,7 +128,6 @@ class AgentRecord(EntityRecord):
                     old_pids.add(old_pid)
                     mef_actions[old_pid] = Action.DELETE
                 mef_record[self.name] = {"$ref": ref_string}
-            mef_record.set_deleted()
             mef_record = mef_record.update(
                 data=mef_record, dbcommit=dbcommit, reindex=reindex
             )

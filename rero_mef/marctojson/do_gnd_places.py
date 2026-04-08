@@ -87,10 +87,7 @@ class Transformation:
     def trans_gnd_deleted(self):
         """Transformation deleted leader 5.
 
-        $c: Redirect notification
-        $x: Redirect
-        $c: Deletion notification
-        $d: Deletion
+        Leader position 5: c (redirect notification), x (redirect), d (deletion)
 
         https://www.dnb.de/EN/Professionell/Metadatendienste/Datenbezug/
         GND_Aenderungsdienst/gndAenderungsdienst_node.html
@@ -115,11 +112,7 @@ class Transformation:
         fields_024 = self.marc.get_fields("024")
         for field_024 in fields_024:
             subfield_0 = field_024.get("0")
-            if isinstance(subfield_0, list):
-                subfield_0 = subfield_0[0]
             subfield_2 = field_024.get("2")
-            if isinstance(subfield_2, list):
-                subfield_2 = subfield_2[0]
             if subfield_0 and subfield_2:
                 self.json_dict.setdefault("identifiedBy", []).append(
                     {
@@ -307,10 +300,7 @@ class Transformation:
     def trans_gnd_note(self):
         """Transformation notes from field.
 
-        677 $a: general
-        678 $a: general
-        670 $a - $u: dataSource
-        680 $a: general
+        677 $a: general 678 $a: general 670 $a - $u: dataSource 680 $a: general
         """
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_gnd_note")
@@ -327,9 +317,7 @@ class Transformation:
                 notes["general"].append(field["b"].strip())
         for field in self.marc.get_fields("670"):
             if field.get("a") and field.get("u"):
-                fields_u = field.get("u")
-                if isinstance(fields_u, str):
-                    fields_u = [fields_u]
+                fields_u = field.get_subfields("u")
                 info = f"{field['a'].strip()} - {', '.join(fields_u)}"
                 notes["dataSource"].append(info)
         for note, value in notes.items():

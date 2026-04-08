@@ -87,31 +87,28 @@ class ConceptIdrefRecord(ConceptRecord):
             query = association_search().filter(
                 "term", _association_identifier=association_identifier
             )
-            if query.count() > 1:
-                # Extra code, because the data from GND is not completely correct
-                # and we need to find out whether there is one exact match with possible close matches elsewhere.
-                # find exact matches in GND:
-                exact_pids = []
-                for hit in query.source(["pid", "exactMatch"]).scan():
-                    data = hit.to_dict()
-                    for exact_match in data.get("exactMatch", []):
-                        for identified_by in exact_match.get("identifiedBy", []):
-                            if (
-                                identified_by.get("source") == "BNF"
-                                and identified_by.get("type") == "bf:Nbn"
-                                and identified_by.get("value", "").startswith("FRBNF")
-                            ):
-                                exact_pids.append(hit.pid)
-                # we have one associated record with an exact match
+            associated_count = query.count()
+            if associated_count > 1:
+                # GND sometimes has multiple records sharing the same BNF identifier.
+                # Disambiguate by requiring exactly one GND record with an exact BNF match.
+                exact_pids = list(
+                    dict.fromkeys(
+                        hit.pid
+                        for hit in query.source(["pid", "exactMatch"]).scan()
+                        for exact_match in hit.to_dict().get("exactMatch", [])
+                        for identified_by in exact_match.get("identifiedBy", [])
+                        if identified_by.get("source") == "BNF"
+                        and identified_by.get("type") == "bf:Nbn"
+                        and identified_by.get("value") == association_identifier
+                    )
+                )
                 if len(exact_pids) == 1:
                     return association_cls.get_record_by_pid(exact_pids[0])
-                # we have multiple associated records
                 current_app.logger.error(
                     f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
                     f"| {association_identifier}"
                 )
-            # we have one associated record
-            elif query.count() == 1:
+            elif associated_count == 1:
                 hit = next(query.source("pid").scan())
                 return association_cls.get_record_by_pid(hit.pid)
         return None

@@ -29,6 +29,10 @@ from rero_mef.utils import export_json_records, number_records_in_file
 SCHEMA_URL = "https://mef.rero.ch/schemas/places_mef"
 
 
+def _no_md5(record):
+    return {k: v for k, v in record.items() if k != "md5"}
+
+
 def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     """Test create place record links."""
     idref_record, action = PlaceIdrefRecord.create_or_update(
@@ -41,7 +45,8 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
         dbcommit=True, reindex=True
     )
     assert m_action == {"1": Action.CREATE}
-    assert m_idref_record == {
+    assert "md5" in m_idref_record
+    assert _no_md5(m_idref_record) == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
         "pid": "1",
@@ -51,8 +56,9 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     m_idref_record, m_action = idref_record.create_or_update_mef(
         dbcommit=True, reindex=True
     )
-    assert m_action == {"1": Action.UPDATE}
-    assert m_idref_record == {
+    assert m_action == {"1": Action.REPLACE}
+    assert "md5" in m_idref_record
+    assert _no_md5(m_idref_record) == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
         "pid": "1",
@@ -79,7 +85,7 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     returned_record, action = PlaceIdrefRecord.create_or_update(
         data=place_idref_data, dbcommit=True, reindex=True
     )
-    assert action == Action.UPDATE
+    assert action == Action.REPLACE
     assert returned_record["pid"] == "271330163"
 
     # Test update MD5 place record MD5 test.
@@ -102,7 +108,8 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
         dbcommit=True, reindex=True
     )
     assert m_action == {"2": Action.CREATE}
-    assert m_gnd_record == {
+    assert "md5" in m_gnd_record
+    assert _no_md5(m_gnd_record) == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
         "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/040754766"},
         "pid": "2",
@@ -120,8 +127,9 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     m_idref_record, m_action = idref_record.create_or_update_mef(
         dbcommit=True, reindex=True
     )
-    assert m_action == {"1": Action.UPDATE, "2": Action.DELETE_ENTITY}
-    assert m_idref_record == {
+    assert m_action == {"1": Action.REPLACE, "2": Action.DELETE_ENTITY}
+    assert "md5" in m_idref_record
+    assert _no_md5(m_idref_record) == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
         "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/040754766"},
@@ -135,8 +143,9 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     m_idref_record, m_action = idref_record.create_or_update_mef(
         dbcommit=True, reindex=True
     )
-    assert m_action == {"1": Action.UPDATE}
-    assert m_idref_record == {
+    assert m_action == {"1": Action.REPLACE}
+    assert "md5" in m_idref_record
+    assert _no_md5(m_idref_record) == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
         "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/040754766"},
@@ -146,8 +155,9 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     m_gnd_record, m_action = gnd_record.create_or_update_mef(
         dbcommit=True, reindex=True
     )
-    assert m_action == {"1": Action.UPDATE}
-    assert m_gnd_record == {
+    assert m_action == {"1": Action.REPLACE}
+    assert "md5" in m_gnd_record
+    assert _no_md5(m_gnd_record) == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
         "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/040754766"},
@@ -165,8 +175,9 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     m_idref_record, m_action = idref_record.create_or_update_mef(
         dbcommit=True, reindex=True
     )
-    assert m_action == {"1": Action.UPDATE, "3": Action.CREATE}
-    assert m_idref_record == {
+    assert m_action == {"1": Action.REPLACE, "3": Action.CREATE}
+    assert "md5" in m_idref_record
+    assert _no_md5(m_idref_record) == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
         "pid": "1",
@@ -174,7 +185,8 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     }
 
     m_record = PlaceMefRecord.get_record_by_pid("3")
-    assert m_record == {
+    assert "md5" in m_record
+    assert _no_md5(m_record) == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
         "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/040754766"},
         "pid": "3",
@@ -195,8 +207,9 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     m_gnd_record, m_action = gnd_record.create_or_update_mef(
         dbcommit=True, reindex=True
     )
-    assert m_action == {"1": Action.UPDATE}
-    assert m_gnd_record == {
+    assert m_action == {"1": Action.REPLACE}
+    assert "md5" in m_gnd_record
+    assert _no_md5(m_gnd_record) == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
         "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/TEST"},
@@ -214,7 +227,8 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
         dbcommit=True, reindex=True
     )
     assert m_action == {"4": Action.CREATE}
-    assert m_gnd_record_2 == {
+    assert "md5" in m_gnd_record_2
+    assert _no_md5(m_gnd_record_2) == {
         "$schema": "https://mef.rero.ch/schemas/places_mef/mef-place-v0.0.1.json",
         "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/TEST2"},
         "pid": "4",
@@ -230,8 +244,9 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     m_idref_record, m_action = idref_record.create_or_update_mef(
         dbcommit=True, reindex=True
     )
-    assert m_action == {"1": Action.DELETE_ENTITY, "4": Action.UPDATE}
-    assert m_idref_record == {
+    assert m_action == {"1": Action.DELETE_ENTITY, "4": Action.REPLACE}
+    assert "md5" in m_idref_record
+    assert _no_md5(m_idref_record) == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
         "idref": {"$ref": "https://mef.rero.ch/api/places/idref/271330163"},
         "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/TEST2"},
@@ -239,7 +254,8 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
         "type": "bf:Place",
     }
     m_gnd_record = PlaceMefRecord.get_record_by_pid(m_gnd_record.pid)
-    assert m_gnd_record == {
+    assert "md5" in m_gnd_record
+    assert _no_md5(m_gnd_record) == {
         "$schema": f"{SCHEMA_URL}/mef-place-v0.0.1.json",
         "gnd": {"$ref": "https://mef.rero.ch/api/places/gnd/TEST"},
         "pid": "1",
