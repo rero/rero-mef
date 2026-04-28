@@ -19,6 +19,9 @@ on:
     branches: [staging]
   pull_request:
   workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -27,12 +30,9 @@ jobs:
         python-version: ["3.12"]
         dependencies: ['dev', 'deploy']
     steps:
-    - name: Cancel Previous Runs
-      uses: styfle/cancel-workflow-action@0.13.0
-      with:
-        access_token: ${{ github.token }}
 
-    - uses: actions/checkout@v6
+    - name: Checkout code
+      uses: actions/checkout@v6
 
     - name: Setup node
       uses: actions/setup-node@v6
@@ -43,7 +43,7 @@ jobs:
       run: docker compose up -d
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v7
+      uses: astral-sh/setup-uv@v8.1.0
       with:
         enable-cache: true
         cache-dependency-glob: uv.lock
@@ -63,11 +63,13 @@ jobs:
 
     - name: Run Test
       run: uv run poe run_tests
-      env:
-        RERO_MEF_COVERAGE: ${{ matrix.dependencies == 'dev'}}
+
+    - name: Coverage XML
+      if: ${{ matrix.dependencies == 'dev' }}
+      run: uv run coverage xml
 
     - name: Coveralls
-      if: ${{ matrix.dependencies == 'dev'}}
+      if: ${{ matrix.dependencies == 'dev' }}
       uses: coverallsapp/github-action@v2
       with:
         format: cobertura
