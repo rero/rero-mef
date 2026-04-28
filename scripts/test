@@ -88,6 +88,11 @@ add_exceptions "CVE-2026-21441"
 # Insecure deserialization via pickle. Mitigated: SqliteDict is instantiated with
 # encode=json.dumps / decode=json.loads, so pickle is never invoked.
 add_exceptions "CVE-2024-35515"
+# pytest 8.x CVE-2025-71176 (fixed in 9.0.3): local privilege escalation via predictable
+# /tmp/pytest-of-{user} directory names. Upgrade blocked by pytest-invenio<4.0.0 which
+# pins pytest<9.0.0. Mitigated: tests run in isolated environments with a single trusted
+# user; no untrusted local users have access to the test runner's /tmp.
+add_exceptions "CVE-2025-71176"
 pip-audit ${pip_audit_exceptions}
 
 info_msg "Test formatting:"
@@ -95,11 +100,7 @@ ruff format . --check
 info_msg "Test linting:"
 ruff check
 info_msg "Tests:"
-if [ "${RERO_MEF_COVERAGE}" = "true" ]; then
-  pytest --cov=rero_mef --cov-report=term-missing --cov-report=xml
-else
-  pytest
-fi
+pytest --cov=rero_mef --cov-report=term-missing
 
 success_msg "Perfect ${PROGRAM}! See you soon…"
 exit 0
