@@ -212,6 +212,11 @@ CELERY_BEAT_SCHEDULE = {
     }
 }
 CELERY_BROKER_HEARTBEAT = 0
+#: Override invenio-celery msgpack defaults — JSON is accepted by Kombu without
+#: explicit content-type trust and is required for Flower to inspect tasks.
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
 INDEXER_BULK_REQUEST_TIMEOUT = 60
 
 # Database

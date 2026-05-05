@@ -15,7 +15,7 @@
 
 """Marctojsons transformer for IDREF records."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from rero_mef.marctojson.helper import (
     COUNTRIES,
@@ -50,7 +50,7 @@ def get_script_code(field):
         subfield_7 = field["7"]
         code = subfield_7[4:6]
         script_code = LANGUAGE_SCRIPT_CODES[code]
-    except Exception:
+    except TypeError, KeyError:
         script_code = "latn"
     return script_code
 
@@ -166,7 +166,7 @@ class Transformation:
         if self.logger and self.verbose:
             self.logger.info("Call Function: %s", "trans_idref_deleted")
         if self.marc.leader[5] == "d":
-            self.json_dict["deleted"] = datetime.now(timezone.utc).isoformat()
+            self.json_dict["deleted"] = datetime.now(UTC).isoformat()
 
     def trans_idref_relation_pid(self):
         """Transformation old pids 035 $a $9 = sudoc."""

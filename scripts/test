@@ -88,6 +88,13 @@ add_exceptions "CVE-2025-50181"
 add_exceptions "CVE-2025-66418"
 add_exceptions "CVE-2025-66471"
 add_exceptions "CVE-2026-21441"
+# CVE-2026-44431 (fixed 2.7.0): sensitive headers (Authorization, Cookie, Proxy-Authorization)
+# forwarded on cross-origin redirects via the low-level ProxyManager API with assert_same_host=False.
+# Mitigation: rero-mef does not use ProxyManager with assert_same_host=False; all outbound HTTP
+# goes through trusted internal services or OAI endpoints without cross-origin redirects.
+# Upgrade blocked by elasticsearch-py 7.13.4 which pins urllib3<2.0;
+# elasticsearch7 support cannot be dropped until the Invenio stack supports ES8/OpenSearch.
+add_exceptions "CVE-2026-44431"
 # sqlitedict 2.1.0 CVE-2024-35515 (no patched release):
 # Insecure deserialization via pickle. Mitigated: SqliteDict is instantiated with
 # encode=json.dumps / decode=json.loads, so pickle is never invoked.

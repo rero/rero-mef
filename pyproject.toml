@@ -1,36 +1,59 @@
+# ---------------------------------------------------------------------------
+# Build system
+# ---------------------------------------------------------------------------
+
+[build-system]
+requires = ["uv_build<1.0.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = "."
+
+[tool.uv]
+package = true
+
+# ---------------------------------------------------------------------------
+# Project metadata
+# ---------------------------------------------------------------------------
+
 [project]
 name = "rero-mef"
 version = "0.17.0"
 description = "Invenio digital library framework MEF."
 authors = [{name = "RERO+", email = "software@rero.ch"}]
+keywords = ["rero-mef", "invenio", "multilingual entity file"]
 license = "AGPL-3.0-or-later"
-requires-python = ">= 3.9.2,<3.13"
+urls = {homepage = "https://www.rero.ch/en/products/mef", repository="https://github.com/rero/rero-mef"}
+requires-python = ">= 3.14,<3.15"
 
 dependencies = [
+    ## Third party invenio modules used by RERO ILS
     "invenio-oaiharvester @ git+https://github.com/inveniosoftware/invenio-oaiharvester.git@v1.0.0a4",
-    "invenio-search [elasticsearch7] >=3.0.0,<4.0.0",
+    "invenio-search[elasticsearch7]>=3.0.0",
     # Invenio core modules
-    "invenio-app>=2.0.0,<3.0.0",
-    "invenio-base>=2.0.0,<3.0.0",
-    "invenio-cache>=2.0.0,<3.0.0",
-    "invenio-celery>=2.0.0,<3.0.0",
+    "invenio-app>=3.0.0",
+    "invenio-base>=2.0.0",
+    "invenio-celery>=2.0.0",
     "invenio-config>=1.0.3,<2.0.0",
-    "invenio-db [postgresql] >=2.0.0,<3.0.0",
+    "invenio-db [postgresql]>=2.0.0",
     # Invenio base bundle
-    "invenio-assets>=4.0.0,<5.0.0",
-    "invenio-logging [sentry] >=4.0.0,<5.0.0",
-    "invenio-theme >=4.0.0,<5.0.0",
+    "invenio-assets>=4.0.0",
+    "invenio-formatter>=3.0.0",
+    "invenio-logging[sentry]>=4.0.0",
+    "invenio-rest>=3.0.0",
+    "invenio-theme>=4.0.0",
     # Invenio auth bundle
-    "invenio-access >=4.0.0,<6.0.0",
-    "invenio-accounts >=6.0.0,<7.0.0",
-    "invenio-oauth2server >=3.0.0,<4.0.0",
+    "invenio-access>=4.0.0",
+    "invenio-accounts>=6.0.0",
+    "invenio-oauth2server>=3.0.0",
     # Invenio metadata bundle
-    "invenio-indexer >=3.0.0,<4.0.0",
-    "invenio-jsonschemas >=2.0.0,<3.0.0",
-    "invenio-pidstore >=2.0.0,<3.0.0",
-    "invenio-records-rest >=3.0.0,<4.0.0",
-    "invenio-search-ui >=4.0.0,<5.0.0",
-    "invenio-records >=3.0.0,<4.0.0",
+    "invenio-indexer>=4.0.0",
+    "invenio-jsonschemas>=2.0.0",
+    "invenio-pidstore>=3.0.0",
+    "invenio-records-rest>=3.0.0",
+    "invenio-records-ui>=2.0.0",
+    "invenio-records>=4.0.0",
+    "invenio-search-ui>=4.0.0",
     "python-dotenv >=0.13.0",
     ## MEF specific python modules
     "PyYAML >=5.3.1",
@@ -40,23 +63,30 @@ dependencies = [
     "pymarc<5.2.0",
     "sqlitedict>=2.1.0",
     "rero-invenio-base>=0.3.1",
-    "dojson>=1.7.0",
-    # problems pkg_resources, removed in setuptools 82
-    "setuptools (<82)",
+    "dojson>=1.7.0"
 ]
 
 [dependency-groups]
 dev = [
-    "pytest-invenio (>=3.0.0,<4.0.0)",
+    ## Default from Invenio
+    "pytest-invenio>=3.0.0",
+    "coveralls>=4.0.1",
+    "Flask-Debugtoolbar>=0.10.1",
+    ## RERO ILS specific python packages
     "pip-audit (>=2.8.0,<3.0.0)",
+    "ruff>=0.12.5",
+    "pytest-ruff>=0.5",
     "mock>=2.0.0",
-    "ruff>=0.12.5"
+
 ]
 prod = [
-    "uwsgi>=2.0",
-    "uwsgi-tools>=1.1.1",
+    "uwsgi>=2.0.30",
     "uwsgitop>=0.11"
 ]
+
+# ---------------------------------------------------------------------------
+# Entry points
+# ---------------------------------------------------------------------------
 
 [project.entry-points."app.console_scripts"]
 rero-ils = "invenio_app.cli:cli"
@@ -232,15 +262,3 @@ omit = [
 [tool.coverage.report]
 precision = 2
 
-[build-system]
-requires = ["setuptools"]
-
-[tool.setuptools.packages.find]
-where = ["."]
-
-[tool.uv]
-package = true
-required-environments = [
-    "sys_platform == 'linux' and platform_machine == 'x86_64'",
-    "sys_platform == 'darwin'",
-]

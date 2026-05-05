@@ -17,7 +17,7 @@
 # https://www.dnb.de/EN/Professionell/Metadatendienste/Datenbezug/GND_Aenderungsdienst/gndAenderungsdienst_node.html
 
 import contextlib
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from rero_mef.marctojson.helper import (
     build_string_from_field,
@@ -95,7 +95,7 @@ class Transformation:
         if self.logger and self.verbose:
             self.logger.info("Call Function: %s", "trans_gnd_deleted")
         if self.marc.leader[5] in ["c", "d", "x"]:
-            self.json_dict["deleted"] = datetime.now(timezone.utc).isoformat()
+            self.json_dict["deleted"] = datetime.now(UTC).isoformat()
 
     def trans_gnd_pid(self):
         """Transformation pid from field 001."""

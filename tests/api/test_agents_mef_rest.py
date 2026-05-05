@@ -16,7 +16,7 @@
 """Test REST API MEF."""
 
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from flask import url_for
 
@@ -164,9 +164,8 @@ def test_agents_mef_get_updated(
 
     def utf_isoformat(date):
         """Changed datetime to UTC isoformat."""
-        # we have to add +00:00 to the datetime isoformat to get
-        # the same time string used in ES
-        return f"{date.isoformat()}+00:00"
+        iso = date.isoformat()
+        return iso if iso.endswith(("+00:00", "Z")) else f"{iso}+00:00"
 
     mef_data = agent_mef_idref_redirect_record.add_information(resolve=True)
     mef_data.pop("sources")
@@ -242,14 +241,14 @@ def test_agents_mef_get_updated(
         },
     ]
 
-    date = datetime.now(timezone.utc) + timedelta(days=1)
+    date = datetime.now(UTC) + timedelta(days=1)
     res, data = postdata(
         client, "api_blueprint.agent_mef_get_updated", {"from_date": date.isoformat()}
     )
     assert res.status_code == 200
     assert data == []
 
-    date = datetime.now(timezone.utc) + timedelta(days=1)
+    date = datetime.now(UTC) + timedelta(days=1)
     res, data = postdata(
         client,
         "api_blueprint.agent_mef_get_updated",

@@ -843,7 +843,7 @@ def harvestname(
         harvest_task = obj_or_import_string(
             f"rero_mef.{name}.tasks:process_records_from_dates"
         )
-    except Exception:
+    except ImportError:
         oai_names = [oai.name for oai in OAIHarvestConfig.query.all()]
         click.secho(f'Config "{name}" not found in {oai_names}', fg="red", err=True)
         sys.exit(1)

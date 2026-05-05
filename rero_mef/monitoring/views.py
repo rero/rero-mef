@@ -24,8 +24,9 @@ from invenio_cache import current_cache
 from invenio_db import db
 from invenio_search import current_search_client
 from redis import Redis
+from sqlalchemy.exc import SQLAlchemyError
+from werkzeug.routing import BuildError
 
-from ..permissions import monitoring_permission
 from .api import Monitoring
 from .utils import DB_CONNECTION_COUNTS_QUERY, DB_CONNECTION_QUERY
 
@@ -39,7 +40,7 @@ def check_authentication(func):
     def decorated_view(*args, **kwargs):
         if not current_user.is_authenticated:
             return jsonify({"status": "error: Unauthorized"}), 401
-        if not monitoring_permission.require().can():
+        if not current_user.has_role("monitoring"):
             return jsonify({"status": "error: Forbidden"}), 403
         return func(*args, **kwargs)
 
@@ -57,8 +58,9 @@ def db_connection_counts():
         max_conn, used, res_for_super, free = db.session.execute(
             DB_CONNECTION_COUNTS_QUERY
         ).first()
-    except Exception as error:
-        return jsonify({"ERROR": str(error)}), 500
+    except SQLAlchemyError as error:
+        current_app.logger.exception(error)
+        return jsonify({"ERROR": "Internal server error"}), 500
     return jsonify(
         {
             "data": {
@@ -80,8 +82,9 @@ def db_connections():
     """
     try:
         results = db.session.execute(DB_CONNECTION_QUERY).fetchall()
-    except Exception as error:
-        return jsonify({"ERROR": str(error)}), 500
+    except SQLAlchemyError as error:
+        current_app.logger.exception(error)
+        return jsonify({"ERROR": "Internal server error"}), 500
     data = {
         pid: {
             "application_name": application_name,
@@ -244,7 +247,7 @@ def missing_pids(doc_type):
     """
     try:
         api_url = url_for(f"invenio_records_rest.{doc_type}_list", _external=True)
-    except Exception:
+    except BuildError:
         api_url = None
     delay = request.args.get("delay", default=1, type=int)
     mon = Monitoring(time_delta=delay).missing(doc_type)

@@ -17,7 +17,7 @@
 
 import json
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from urllib.parse import urljoin
 from uuid import uuid4
 
@@ -45,7 +45,7 @@ def write_mef_files(pid, data, pidstore, metadata, ids):
     :returns: Next pid.
     """
     mef_uuid = str(uuid4())
-    date = str(datetime.now(timezone.utc))
+    date = str(datetime.now(UTC))
     pidstore.write(pidstore_csv_line("mef", str(pid), mef_uuid, date))
     metadata.write(metadata_csv_line(data, mef_uuid, date))
     ids.write(str(pid) + os.linesep)
