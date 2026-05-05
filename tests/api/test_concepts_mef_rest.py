@@ -16,7 +16,7 @@
 """Test REST API MEF."""
 
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from flask import url_for
 
@@ -159,7 +159,7 @@ def test_concepts_mef_get_updated(
     pids = sorted([rec.get("pid") for rec in data])
     assert pids == ["1", "2", "3"]
 
-    date = datetime.now(timezone.utc) + timedelta(days=1)
+    date = datetime.now(UTC) + timedelta(days=1)
     res, data = postdata(
         client, "api_blueprint.concept_mef_get_updated", {"from_date": date.isoformat()}
     )

@@ -84,7 +84,7 @@ class REROMEFAPP:
 
             try:
                 search_client = current_search_client
-            except (RuntimeError, AttributeError):
+            except RuntimeError, AttributeError:
                 app.logger.info(
                     "Skipping %s alias setup: search client is not available yet.",
                     alias_name,

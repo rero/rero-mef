@@ -25,7 +25,7 @@ import json
 import os
 import time
 from copy import deepcopy
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from io import StringIO
 from json import JSONDecodeError, JSONDecoder, dumps
 from time import sleep
@@ -344,7 +344,7 @@ def oai_process_records_from_dates(
                             updated = datetime.strptime(
                                 records[0]["005"].data, "%Y%m%d%H%M%S.%f"
                             )
-                        except Exception:
+                        except ValueError, AttributeError:
                             updated = "????"
                         if rec := transformation(
                             records[0], logger=current_app.logger
@@ -771,7 +771,7 @@ def bulk_load_entity(
     buffer = StringIO()
     buffer_uuid = []
     index = columns.index("id") if "id" in columns else -1
-    start_time = datetime.now(timezone.utc)
+    start_time = datetime.now(UTC)
     with open(data, encoding="utf-8", buffering=1) as input_file:
         for line in input_file:
             count += 1
@@ -782,7 +782,7 @@ def bulk_load_entity(
                 buffer.flush()
                 buffer.seek(0)
                 if verbose:
-                    end_time = datetime.now(timezone.utc)
+                    end_time = datetime.now(UTC)
                     diff_time = end_time - start_time
                     start_time = end_time
                     click.echo(
@@ -804,7 +804,7 @@ def bulk_load_entity(
                 buffer = StringIO()
 
         if verbose:
-            end_time = datetime.now(timezone.utc)
+            end_time = datetime.now(UTC)
             diff_time = end_time - start_time
             click.echo(
                 f"{entity} copy from file: {count} {diff_time.seconds}s", nl=False
@@ -948,7 +948,7 @@ def create_csv_file(input_file, entity, pidstore, metadata):
                 record["$schema"] = schema_url
 
             record_uuid = str(uuid4())
-            date = str(datetime.now(timezone.utc))
+            date = str(datetime.now(UTC))
 
             entity_metadata_file.write(metadata_csv_line(record, record_uuid, date))
 
@@ -1028,7 +1028,7 @@ def write_viaf_json(
         json_data["$schema"] = schema_url
     # only save VIAF data with used pids
     record_uuid = str(uuid4())
-    date = str(datetime.now(timezone.utc))
+    date = str(datetime.now(UTC))
     pidstore_file.write(pidstore_csv_line("viaf", viaf_pid, record_uuid, date))
     metadata_file.write(metadata_csv_line(json_data, record_uuid, date))
     if verbose:
@@ -1062,7 +1062,7 @@ def set_timestamp(name, **kwargs):
     :returns: time of time stamp
     """
     time_stamps = current_cache.get("timestamps") or {}
-    utc_now = datetime.now(timezone.utc)
+    utc_now = datetime.now(UTC)
     time_stamps[name] = {}
     time_stamps[name]["time"] = utc_now
     for key, value in kwargs.items():

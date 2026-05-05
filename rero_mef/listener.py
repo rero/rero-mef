@@ -150,7 +150,7 @@ def _compute_mef_sort_fields(json):
     # pid_numeric: store pid as integer for proper numeric sort
     try:
         json["pid_numeric"] = int(json["pid"])
-    except (ValueError, KeyError, TypeError):
+    except ValueError, KeyError, TypeError:
         json.pop("pid_numeric", None)
 
 

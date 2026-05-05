@@ -48,9 +48,10 @@ services:
       - "80"
       - "443"
   cache:
-    image: redis
+    image: redis:8
     restart: "unless-stopped"
     read_only: true
+    command: redis-server --save "" --appendonly no
     ports:
       - "6379:6379"
   db:

@@ -14,9 +14,3 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Permissions for this module."""
-
-from flask_principal import RoleNeed
-from invenio_access.permissions import Permission
-
-# Permission for monitoring/health check endpoints
-monitoring_permission = Permission(RoleNeed("monitoring"))

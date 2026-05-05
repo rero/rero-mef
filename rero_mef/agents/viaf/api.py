@@ -463,12 +463,7 @@ class AgentViafRecord(EntityRecord):
                 # requests' connect/read timeouts are not always sufficient to bound
                 # total wall-clock time under some network/proxy conditions.
                 response = _perform_request()
-            except TimeoutError as e:
-                msg = f"VIAF get: {pid:<15} {url} | REQUEST ERROR: {e}"
-                if attempt >= max_attempts:
-                    raise RetryableVIAFError(msg) from e
-                continue
-            except requests.RequestException as e:
+            except (TimeoutError, requests.RequestException) as e:
                 msg = f"VIAF get: {pid:<15} {url} | REQUEST ERROR: {e}"
                 if attempt >= max_attempts:
                     raise RetryableVIAFError(msg) from e
@@ -477,29 +472,28 @@ class AgentViafRecord(EntityRecord):
             if response.status_code != 429:
                 break
 
-            if response.status_code == 429:
-                retry_after = response.headers.get("Retry-After")
-                try:
-                    requested_sleep = (
-                        int(retry_after) if retry_after else retry_after_default
-                    )
-                except (TypeError, ValueError):
-                    requested_sleep = retry_after_default
-                capped_sleep = min(requested_sleep, retry_after_max)
-                wait_msg = (
-                    f"VIAF get: {pid:<15} {url} | RATE LIMITED (429) "
-                    f"Retry-After={requested_sleep}s"
-                    + (
-                        f" (capped to {capped_sleep}s)"
-                        if capped_sleep < requested_sleep
-                        else ""
-                    )
+            retry_after = response.headers.get("Retry-After")
+            try:
+                requested_sleep = (
+                    int(retry_after) if retry_after else retry_after_default
                 )
-                if attempt >= max_attempts:
-                    raise RetryableVIAFError(wait_msg)
-                click.echo(wait_msg)
-                _sleep_with_countdown(capped_sleep)
-                continue
+            except TypeError, ValueError:
+                requested_sleep = retry_after_default
+            capped_sleep = min(requested_sleep, retry_after_max)
+            wait_msg = (
+                f"VIAF get: {pid:<15} {url} | RATE LIMITED (429) "
+                f"Retry-After={requested_sleep}s"
+                + (
+                    f" (capped to {capped_sleep}s)"
+                    if capped_sleep < requested_sleep
+                    else ""
+                )
+            )
+            if attempt >= max_attempts:
+                raise RetryableVIAFError(wait_msg)
+            click.echo(wait_msg)
+            _sleep_with_countdown(capped_sleep)
+            continue
 
         result = {}
         msg = f"VIAF get: {pid:<15} {url} | HTTP {response.status_code}"

@@ -15,7 +15,7 @@
 
 """API for manipulating MEF records."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from dateutil import parser
 from elasticsearch_dsl import Q
@@ -134,7 +134,7 @@ class EntityMefRecord(EntityRecord):
                 current_app.logger.error(f"Record type not found: {record_type}")
 
         # Get all pids from MEF
-        date = datetime.now(timezone.utc)
+        date = datetime.now(UTC)
         progress = progressbar(
             items=cls.search()
             .params(preserve_order=True)

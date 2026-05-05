@@ -15,7 +15,7 @@
 """Marctojsons transformer for IdRef records."""
 
 import contextlib
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from rero_mef.marctojson.helper import (
     build_string_from_field,
@@ -143,7 +143,7 @@ class Transformation:
         if self.logger and self.verbose:
             self.logger.info("Call Function: %s", "trans_idref_deleted")
         if self.marc.leader[5] == "d":
-            self.json_dict["deleted"] = datetime.now(timezone.utc).isoformat()
+            self.json_dict["deleted"] = datetime.now(UTC).isoformat()
 
     def trans_idref_authorized_access_point(self):
         """Transformation authorized_access_point from field 250 280."""

@@ -15,7 +15,7 @@
 
 """Monitoring utilities."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import click
 from elasticsearch.exceptions import NotFoundError
@@ -101,7 +101,7 @@ class Monitoring:
         pids_es = []
         pids_db = []
         if index:
-            date = datetime.now(timezone.utc) - timedelta(minutes=self.time_delta)
+            date = datetime.now(UTC) - timedelta(minutes=self.time_delta)
             pids_es = {}
             query = RecordsSearch(index=index).filter("range", _created={"lte": date})
             progress = progressbar(

@@ -14,12 +14,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-on:
-  push:
-    branches: [staging]
-  pull_request:
-    branches: [staging]
-  workflow_dispatch:
+name: CI
+on: [push, pull_request, workflow_dispatch]
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -28,26 +24,23 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.12"]
+        python-version: ["3.14"]
         dependencies: ['dev', 'deploy']
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v6.0.2
 
     - name: Setup node
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v6.3.0
       with:
-        node-version: '18'
+        node-version: '24'
 
     - name: Docker compose up
       run: docker compose up -d
 
     - name: Install uv
       uses: astral-sh/setup-uv@v8.1.0
-      with:
-        enable-cache: true
-        cache-dependency-glob: uv.lock
 
     - name: Set up Python
       run: uv python install ${{ matrix.python-version }}
@@ -74,5 +67,4 @@ jobs:
       uses: coverallsapp/github-action@v2
       with:
         format: cobertura
-        file: ./coverage.xml
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+
