@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: Fondation RERO+
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-"""Elasticsearch index mappings for GND concept records.
+"""Search index mappings for GND concept records.
 
-Defines the Elasticsearch field mappings and analyzers for indexing and searching GND concept records. Includes German
+Defines the Search field mappings and analyzers for indexing and searching GND concept records. Includes German
 language analysis support.
 """

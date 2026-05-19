@@ -25,7 +25,7 @@ def search(appctx):
     Overrides pytest_invenio's search fixture to delete existing indices
     before creating, so tests run cleanly even when development-environment
     indices are present. pytest_invenio's _search_create_indexes only catches
-    elasticsearch.RequestError, not invenio_search.IndexAlreadyExistsError,
+    search.RequestError, not invenio_search.IndexAlreadyExistsError,
     causing failures whenever the dev ES instance has active indices.
     """
     from invenio_search import current_search, current_search_client

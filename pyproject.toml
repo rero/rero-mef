@@ -32,7 +32,7 @@ requires-python = ">= 3.14,<3.15"
 dependencies = [
     ## Third party invenio modules used by RERO ILS
     "invenio-oaiharvester @ git+https://github.com/inveniosoftware/invenio-oaiharvester.git@v1.0.0a4",
-    "invenio-search[elasticsearch7]>=3.0.0",
+    "invenio-search[opensearch2]>=3.0.0",
     # Invenio core modules
     "invenio-app>=3.0.0",
     "invenio-base>=2.0.0",
@@ -65,7 +65,8 @@ dependencies = [
     # problem with marcxml `leader`
     "pymarc<5.2.0",
     "sqlitedict>=2.1.0",
-    "rero-invenio-base>=0.3.1",
+    # "rero-invenio-base>=0.3.1",
+    "rero-invenio-base @ git+https://github.com/rerowep/rero-invenio-base@wep-opensearch",
     "dojson>=1.7.0"
 ]
 
@@ -99,6 +100,7 @@ rero_mef = "rero_mef.tasks"
 agents = "rero_mef.agents.tasks"
 concepts = "rero_mef.concepts.tasks"
 places = "rero_mef.places.tasks"
+monitoring = "rero_mef.monitoring.tasks"
 
 
 [project.entry-points."invenio_assets.webpack"]
@@ -251,7 +253,6 @@ convention = "pep257"
 relative_files = true
 omit = [
     "rero_mef/cli.py",
-    # filter.py builds Elasticsearch DSL callables; testing requires a live ES
     # cluster and is covered implicitly through integration tests in config.py.
     "rero_mef/filter.py",
     "rero_mef/alembic/*",

@@ -197,7 +197,11 @@ CELERY_BEAT_SCHEDULE = {
     "accounts": {
         "task": "invenio_accounts.tasks.clean_session_table",
         "schedule": timedelta(minutes=60),
-    }
+    },
+    "os-monitor": {
+        "task": "rero_mef.monitoring.tasks.index_os_stats",
+        "schedule": timedelta(minutes=1),
+    },
 }
 CELERY_BROKER_HEARTBEAT = 0
 #: Override invenio-celery msgpack defaults — JSON is accepted by Kombu without

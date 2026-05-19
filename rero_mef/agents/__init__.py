@@ -16,7 +16,7 @@ Supported authority sources:
 Main components:
 - AgentMefRecord: Aggregated MEF records for agents
 - Agent*Record classes: Authority-specific agent records
-- Agent*Indexer classes: Elasticsearch indexing
+- Agent*Indexer classes: Search indexing
 - Agent*Search classes: Search and retrieval functionality
 """
 

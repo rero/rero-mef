@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# RERO MEF
+# Copyright (C) 2026 RERO
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+# Create OpenSearch Dashboards index patterns for MEF data.
+# Usage: ./scripts/setup-dashboards [DASHBOARDS_URL]
+# Default URL: http://localhost:5601
+
+NC='\033[0m'
+INFO_COLOR='\033[1;97;44m'
+SUCCESS_COLOR='\033[1;97;42m'
+ERROR_COLOR='\033[1;97;41m'
+
+PROGRAM=$(basename "$0")
+
+msg()         { echo -e "${1}" 1>&2; }
+info_msg()    { msg "${INFO_COLOR}[INFO]: ${1}${NC}"; }
+success_msg() { msg "${SUCCESS_COLOR}[SUCCESS]: ${1}${NC}"; }
+error_msg()   { msg "${ERROR_COLOR}[ERROR]: ${1}${NC}"; }
+
+DASHBOARDS_URL="${1:-http://localhost:25601}"
+
+# Wait for dashboards to be ready
+info_msg "Waiting for OpenSearch Dashboards at ${DASHBOARDS_URL} ..."
+RETRIES=30
+until curl -sf "${DASHBOARDS_URL}/api/status" -o /dev/null; do
+    RETRIES=$((RETRIES - 1))
+    if [ "${RETRIES}" -eq 0 ]; then
+        error_msg "Dashboards not reachable after 30 attempts — aborting."
+        exit 1
+    fi
+    sleep 2
+done
+info_msg "Dashboards is ready."
+
+# Index patterns to register: "id:title" pairs
+PATTERNS=(
+    "agents_gnd:agents_gnd*"
+    "agents_idref:agents_idref*"
+    "agents_rero:agents_rero*"
+    "viaf:viaf*"
+    "agents_mef:mef*"
+    "concepts_gnd:concepts_gnd*"
+    "concepts_idref:concepts_idref*"
+    "concepts_rero:concepts_rero*"
+    "concepts_mef:concepts_mef*"
+    "places_gnd:places_gnd*"
+    "places_idref:places_idref*"
+    "places_mef:places_mef*"
+)
+
+for ENTRY in "${PATTERNS[@]}"; do
+    ID="${ENTRY%%:*}"
+    TITLE="${ENTRY#*:}"
+    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+        -X POST "${DASHBOARDS_URL}/api/saved_objects/index-pattern/${ID}" \
+        -H "osd-xsrf: true" \
+        -H "Content-Type: application/json" \
+        -d "{\"attributes\":{\"title\":\"${TITLE}\",\"timeFieldName\":\"\"}}")
+    if [ "${HTTP_CODE}" = "200" ] || [ "${HTTP_CODE}" = "409" ]; then
+        success_msg "Index pattern '${TITLE}' registered (HTTP ${HTTP_CODE})"
+    else
+        error_msg "Failed to register '${TITLE}' (HTTP ${HTTP_CODE})"
+    fi
+done
+
+# Import the MEF dashboard (index pattern + visualizations + dashboard panel)
+NDJSON="$(dirname "$0")/../docker/dashboards/mef-dashboard.ndjson"
+if [ -f "${NDJSON}" ]; then
+    info_msg "Importing MEF dashboard from ${NDJSON} ..."
+    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+        -X POST "${DASHBOARDS_URL}/api/saved_objects/_import?overwrite=true" \
+        -H "osd-xsrf: true" \
+        --form "file=@${NDJSON};type=application/ndjson")
+    if [ "${HTTP_CODE}" = "200" ]; then
+        success_msg "MEF dashboard imported — open ${DASHBOARDS_URL}/app/dashboards"
+    else
+        error_msg "Dashboard import failed (HTTP ${HTTP_CODE})"
+    fi
+else
+    error_msg "NDJSON not found at ${NDJSON}"
+fi

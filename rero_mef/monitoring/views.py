@@ -103,14 +103,14 @@ def db_connections():
 
 @api_blueprint.route("/es_db_counts")
 def es_db_counts():
-    """Display count for elasticsearch and documents.
+    """Display count for search and documents.
 
     Displays for all document types defind in config.py following informations:
     - index name for document type
     - count of records in database
-    - count of records in elasticsearch
-    - difference between the count in elasticsearch and database
-    :return: jsonified count for elasticsearch and documents
+    - count of records in search
+    - difference between the count in search and database
+    :return: jsonified count for search and documents
     """
     return jsonify(
         {
@@ -141,11 +141,11 @@ def mef_counts():
 
 @api_blueprint.route("/check_es_db_counts")
 def check_es_db_counts():
-    """Displays health status for elasticsearch and database counts.
+    """Displays health status for search and database counts.
 
     If there are no problems, the status in returned data will be `green`; otherwise, the status will be `red` and the
     returned error links will provide more detailed information.
-    :return: jsonified health status for elasticsearch and database counts
+    :return: jsonified health status for OpenSearch and database counts
     """
     result = {"data": {"status": "green"}}
     if checks := Monitoring().check(
@@ -168,9 +168,9 @@ def check_es_db_counts():
                             "id": "ES_UNAVAILABLE",
                             "links": links,
                             "code": "ES_UNAVAILABLE",
-                            "title": "Elasticsearch is unavailable.",
-                            "details": f"Cannot retrieve count for {doc_type} from Elasticsearch. "
-                            "Check Elasticsearch connectivity and index status.",
+                            "title": "OpenSearch is unavailable.",
+                            "details": f"Cannot retrieve count for {doc_type} from OpenSearch. "
+                            "Check OpenSearch connectivity and index status.",
                         }
                     )
                 elif info == "db_es":
@@ -226,8 +226,8 @@ def missing_pids(doc_type):
 
     Following informations will be displayed:
     - missing pids in database
-    - missing pids in elasticsearch
-    - pids indexed multiple times in elasticsearch
+    - missing pids in search
+    - pids indexed multiple times in search
     If possible, direct links will be provided to the corresponding records. This view requires a logged-in system admin.
 
     :param doc_type: Document type to display.
@@ -283,9 +283,9 @@ def redis():
 @api_blueprint.route("/es_indices")
 @check_authentication
 def elastic_search_indices():
-    """Displays Elasticsearch indices info.
+    """Displays Search indices info.
 
-    :return: jsonified Elasticsearch indices info.
+    :return: jsonified Search indices info.
     """
     info = current_search_client.cat.indices(bytes="b", format="json", s="index")
     info = {data["index"]: data for data in info}

@@ -41,8 +41,8 @@ def monitoring():
 def es_db_counts_cli(missing, delay):
     """Print ES and DB counts.
 
-    Prints a table representation of database and elasticsearch counts. Columns: 1. database count minus elasticsearch
-    count 2. document type 3. database count 4. elasticsearch index 5. elasticsearch count
+    Prints a table representation of database and search counts. Columns: 1. database count minus search
+    count 2. document type 3. database count 4. search index 5. search count
     """
     missing_doc_types = []
     mon = Monitoring(time_delta=delay)
@@ -133,7 +133,7 @@ def redis():
 @monitoring.command("es_indices")
 @with_appcontext
 def es_indices():
-    """Displays Elasticsearch indices info."""
+    """Displays Search indices info."""
     click.echo(current_search_client.cat.indices(s="index"))
 
 

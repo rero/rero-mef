@@ -5,8 +5,8 @@
 
 from datetime import date as _date
 
-from elasticsearch_dsl import Q
 from invenio_records_rest.errors import InvalidQueryRESTError
+from opensearch_dsl import Q
 
 
 def exists_filter(field):
