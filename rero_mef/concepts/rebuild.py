@@ -69,7 +69,7 @@ def assert_association_mappings(record_types=RECORD_TYPES):
     for index, name, declared, live in mismatches:
         click.secho(f"  {index}: {name} is {live or 'missing'}, expected {declared}", fg="red")
     aliases = " -a ".join(get_entity_search_class(record_type).Meta.index for record_type in record_types)
-    raise RuntimeError(f"Update the concept mappings first: invenio rero es index update-mapping -a {aliases}")
+    raise RuntimeError(f"Update the concept mappings first: invenio rero search index update-mapping -a {aliases}")
 
 
 def pids_to_rebuild(pids, from_pid=None):

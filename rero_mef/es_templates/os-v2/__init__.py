@@ -1,4 +1,4 @@
 # SPDX-FileCopyrightText: Fondation RERO+
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-"""Entity index templates for Elasticsearch 7."""
+"""Entity index templates for OpenSearch 2."""
