@@ -21,11 +21,11 @@ def test_ensure_all_mef_alias_success(app):
 
 
 def test_ensure_all_mef_alias_es_not_reachable(app):
-    """ensure_all_mef_alias skips gracefully when ES is not running (e.g. image build)."""
-    from elasticsearch.exceptions import ConnectionError as ESConnectionError
+    """ensure_all_mef_alias skips gracefully when OpenSearch is not running (e.g. image build)."""
+    from opensearchpy.exceptions import ConnectionError as OSConnectionError
 
     mock_client = MagicMock()
-    mock_client.indices.exists_alias.side_effect = ESConnectionError(
+    mock_client.indices.exists_alias.side_effect = OSConnectionError(
         "N/A", "Connection refused"
     )
 
@@ -50,7 +50,7 @@ def test_ensure_all_mef_alias_no_search_ext(app):
 
 def test_ensure_all_mef_alias_get_alias_not_found(app):
     """ensure_all_mef_alias falls back to direct index when get_alias raises NotFoundError."""
-    from elasticsearch.exceptions import NotFoundError
+    from opensearchpy.exceptions import NotFoundError
 
     mock_client = MagicMock()
     mock_client.indices.get_alias.side_effect = NotFoundError(
@@ -83,7 +83,7 @@ def test_ensure_all_mef_alias_get_alias_unexpected_error(app):
 
 def test_ensure_all_mef_alias_put_alias_not_found(app):
     """ensure_all_mef_alias continues attempting all aliases when put_alias raises NotFoundError."""
-    from elasticsearch.exceptions import NotFoundError
+    from opensearchpy.exceptions import NotFoundError
 
     mock_client = MagicMock()
     mock_client.indices.get_alias.return_value = {"some-index": {}}

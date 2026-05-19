@@ -77,7 +77,7 @@ def test_query_syntax_error_returns_400(client, agent_mef_record):
     """A query_string that raises SyntaxError is caught and returned as 400."""
     from unittest import mock
 
-    from elasticsearch_dsl.query import Q
+    from opensearch_dsl.query import Q
 
     # Patch _default_parser inside and_search_factory to raise SyntaxError
     original_q = Q

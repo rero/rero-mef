@@ -6,7 +6,6 @@
 import hashlib
 import json as _json
 
-from elasticsearch.exceptions import NotFoundError
 from flask import (
     Blueprint,
     Response,
@@ -20,6 +19,7 @@ from flask import (
 from invenio_cache import current_cache
 from invenio_records_rest.errors import InvalidQueryRESTError
 from invenio_search import current_search_client
+from opensearchpy.exceptions import NotFoundError
 
 from .agents import AgentMefRecord
 from .all_mef import AllMefSearch

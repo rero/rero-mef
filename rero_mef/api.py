@@ -8,8 +8,6 @@ from time import sleep
 from uuid import uuid4
 
 from celery import current_app as current_celery_app
-from elasticsearch.exceptions import NotFoundError
-from elasticsearch.helpers import bulk
 from flask import current_app
 from invenio_db import db
 from invenio_indexer.api import RecordIndexer
@@ -20,6 +18,8 @@ from invenio_records_rest.utils import obj_or_import_string
 from invenio_search import current_search
 from invenio_search.engine import search
 from kombu.compat import Consumer
+from opensearchpy.exceptions import NotFoundError
+from opensearchpy.helpers import bulk
 from sqlalchemy import func
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm.exc import NoResultFound

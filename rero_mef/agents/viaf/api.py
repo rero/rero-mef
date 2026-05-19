@@ -12,9 +12,9 @@ from urllib.parse import quote
 
 import click
 import requests
-from elasticsearch_dsl.query import Q
 from flask import current_app
 from invenio_search.api import RecordsSearch
+from opensearch_dsl.query import Q
 
 from rero_mef.extensions import MD5Extension
 from rero_mef.filter import exists_filter
@@ -362,14 +362,21 @@ class AgentViafRecord(EntityRecord):
 
     @classmethod
     def get_online_record(cls, viaf_source_code, pid, rec_format=None):
-        """Get VIAF record.
+        """Fetch a VIAF record from the remote VIAF API.
 
-        Get's the VIAF record from: http://www.viaf.org/viaf/sourceID/{source_code}|{pid}
+        Resolves via ``{RERO_MEF_VIAF_BASE_URL}/viaf/sourceID/{source_code}|{pid}``,
+        or directly via ``{RERO_MEF_VIAF_BASE_URL}/viaf/{pid}`` when
+        *viaf_source_code* is ``"VIAF"``.
 
-        :param viaf_source_code: agent source code
-        :param pid: pid for agent source code
-        :param rec_format: raw = get the not transformed VIAF record link = get the VIAF link record
-        :returns: VIAF record as json
+        :param viaf_source_code: VIAF source code (e.g. ``"DNB"``, ``"SUDOC"``, ``"VIAF"``).
+        :param pid: identifier within that source.
+        :param rec_format: controls the return value.
+            ``"raw"`` returns the unprocessed JSON response;
+            any other value (including ``None``) returns a normalised dict
+            with ``pid`` and ``sources``.
+        :returns: tuple ``(record, message)`` where *record* is a dict and
+            *message* describes the HTTP outcome.
+        :raises RetryableVIAFError: on network errors or a final 429.
         """
         viaf_url = current_app.config.get("RERO_MEF_VIAF_BASE_URL")
         url = f"{viaf_url}/viaf"

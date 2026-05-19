@@ -14,7 +14,7 @@ Supported authority sources:
 Main components:
 - PlaceMefRecord: Aggregated MEF records for places
 - Place*Record classes: Authority-specific place records
-- Place*Indexer classes: Elasticsearch indexing
+- Place*Indexer classes: Search indexing
 - Place*Search classes: Search and retrieval functionality
 """
 
