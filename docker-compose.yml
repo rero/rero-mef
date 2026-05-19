@@ -47,10 +47,10 @@ services:
       timeout: 5s
       retries: 6
       start_period: 30s
-  es:
+  os:
     extends:
       file: docker-services.yml
-      service: es
+      service: os
     # The colour is not part of the test: `_cluster/health` answers 200 whatever
     # the state, and one node cannot assign the replica the `record` template asks
     # for, so this cluster is yellow by construction.
@@ -60,6 +60,10 @@ services:
       timeout: 5s
       retries: 12
       start_period: 20s
+  dashboards:
+    extends:
+      file: docker-services.yml
+      service: dashboards
   # Brings the development indices down to one shard and no replica. The `record`
   # template is sized for production, which here means 96 shards and as many
   # unassignable replicas for a few thousand documents.
@@ -76,13 +80,13 @@ services:
         condition: service_healthy
       mq:
         condition: service_healthy
-      es:
+      os:
         condition: service_healthy
     command:
       - "-fsS"
       - "-X"
       - "PUT"
-      - "http://es:9200/_template/dev-single-shard"
+      - "http://os:9200/_template/dev-single-shard"
       - "-H"
       - "Content-Type: application/json"
       - "-d"

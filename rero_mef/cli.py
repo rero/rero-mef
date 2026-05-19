@@ -10,9 +10,9 @@ from time import sleep
 
 import click
 import redis
+import requests
 import yaml
 from celery import current_app as current_celery
-from elasticsearch.exceptions import NotFoundError
 from flask import current_app
 from flask.cli import with_appcontext
 from flask_security.confirmable import confirm_user
@@ -24,6 +24,7 @@ from invenio_oauth2server.cli import process_scopes, process_user
 from invenio_oauth2server.models import Client, Token
 from invenio_records_rest.utils import obj_or_import_string
 from invenio_search import current_search_client
+from opensearchpy.exceptions import NotFoundError
 from sqlitedict import SqliteDict
 from werkzeug.local import LocalProxy
 from werkzeug.security import gen_salt
@@ -40,6 +41,7 @@ from .concepts.rebuild import (
     rebuild_concept_mef,
     reindex_concepts,
 )
+from .dashboards import dashboards_running, export_dashboard, install_dashboard, wait_for_dashboards
 from .extensions import MD5Extension
 from .marctojson.records import RecordsCount
 from .monitoring.api import Monitoring
@@ -966,11 +968,11 @@ def export(output_path, pid_type, verbose, indent, schema):
     type=str,
     help="Name of the celery queue used to put the tasks into.",
 )
-@click.option("--version-type", help="Elasticsearch version type to use.")
+@click.option("--version-type", help="Search version type to use.")
 @click.option(
     "--raise-on-error/--skip-errors",
     default=True,
-    help=("Controls if Elasticsearch bulk indexing errors raises an exception."),
+    help=("Controls if Search bulk indexing errors raises an exception."),
 )
 @with_appcontext
 def run(delayed, concurrency, with_stats, version_type=None, queue=None, raise_on_error=True):
@@ -979,8 +981,8 @@ def run(delayed, concurrency, with_stats, version_type=None, queue=None, raise_o
     :param delayed: Run indexing in background.
     :param concurrency: Number of concurrent indexing tasks to start.
     :param queue: Name of the celery queue used to put the tasks into.
-    :param version-type: Elasticsearch version type to use.
-    :param raise-on-error: 'Controls if Elasticsearch bulk indexing.
+    :param version-type: Search version type to use.
+    :param raise-on-error: 'Controls if Search bulk indexing.
     """
     celery_kwargs = {
         "kwargs": {
@@ -1493,3 +1495,41 @@ def tokens_create(name, user, scopes, internal, access_token):
     token = create_personal(name, user.id, scopes=scopes, is_internal=internal, access_token=access_token)
     db.session.commit()
     click.secho(token.access_token, fg="blue")
+
+
+@utils.command()
+@click.option("-u", "--url", "url", default=None, help="Dashboards URL, else RERO_MEF_DASHBOARDS_URL.")
+@click.option(
+    "-e",
+    "--export",
+    "export",
+    is_flag=True,
+    default=False,
+    help="Write the MEF dashboard as edited in Dashboards back to the package NDJSON.",
+)
+@click.option(
+    "-s",
+    "--skip-unreachable",
+    "skip_unreachable",
+    is_flag=True,
+    default=False,
+    help="Exit without error when Dashboards does not answer.",
+)
+@with_appcontext
+def dashboards(url, export, skip_unreachable):
+    """Install the MEF dashboard into OpenSearch Dashboards, or export it from there."""
+    url = (url or current_app.config["RERO_MEF_DASHBOARDS_URL"]).rstrip("/")
+    if skip_unreachable and not dashboards_running(url):
+        click.secho(f"No OpenSearch Dashboards at {url}: skipping the MEF dashboard", fg="yellow")
+        return
+    if not wait_for_dashboards(url):
+        raise click.ClickException(f"OpenSearch Dashboards not reachable at {url}")
+    try:
+        if export:
+            count = export_dashboard(url)
+            click.secho(f"{count} objects exported from {url}", fg="green")
+        else:
+            count = install_dashboard(url)
+            click.secho(f"{count} objects imported: {url}/app/dashboards#/view/mef-complete", fg="green")
+    except requests.RequestException as err:
+        raise click.ClickException(f"OpenSearch Dashboards at {url}: {err}") from err

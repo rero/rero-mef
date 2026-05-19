@@ -66,7 +66,7 @@ def upgrade():
         for index, name, declared, live in mismatches:
             click.secho(f"  {index}: {name} is {live or 'missing'}, expected {declared}", fg="red")
         aliases = " -a ".join(CONCEPT_ALIASES)
-        raise RuntimeError(f"Update the concept mappings first: invenio rero es index update-mapping -a {aliases}")
+        raise RuntimeError(f"Update the concept mappings first: invenio rero search index update-mapping -a {aliases}")
     click.secho(
         "Concept indexes are ready. Rebuild the MEF records now, this revision does not:\n"
         "  invenio utils rebuild-concept-association",
