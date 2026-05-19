@@ -179,6 +179,12 @@ SECURITY_EMAIL_SUBJECT_REGISTER = "Welcome to RERO MEF!"
 #: Redis session storage URL.
 ACCOUNTS_SESSION_REDIS_URL = "redis://localhost:6379/1"
 
+# OAuth2 configuration
+# =====================
+#: Disable the OAuthlib URL-encoding patch from invenio-oauth2server to avoid
+#: the startup RuntimeWarning with the current dependency stack.
+OAUTH2SERVER_ALLOWED_URLENCODE_CHARACTERS = ""
+
 # Celery configuration
 # ====================
 
@@ -207,6 +213,10 @@ CELERY_BEAT_SCHEDULE = {
     "repair-stale-associations": {
         "task": "rero_mef.tasks.repair_stale_associations",
         "schedule": crontab(minute=0, hour=0),
+    },
+    "os-monitor": {
+        "task": "rero_mef.monitoring.tasks.index_os_stats",
+        "schedule": timedelta(minutes=1),
     },
 }
 CELERY_BROKER_HEARTBEAT = 0
@@ -294,6 +304,8 @@ IDENTIFIERS = {
 }
 
 RERO_MEF_APP_BASE_URL = "https://mef.rero.ch"
+#: OpenSearch Dashboards receiving the MEF dashboard (`invenio utils dashboards`).
+RERO_MEF_DASHBOARDS_URL = "http://localhost:5601"
 RERO_MEF_VIAF_BASE_URL = "http://www.viaf.org"
 RERO_MEF_VIAF_CONNECT_TIMEOUT = 2
 RERO_MEF_VIAF_READ_TIMEOUT = 4
