@@ -8,12 +8,14 @@ from os.path import dirname, join
 from unittest import mock
 
 import pytest
+import requests
 from click.testing import CliRunner
 
 from rero_mef.agents import AgentMefRecord
 from rero_mef.cli import (
     clean_multiple_mef,
     create_or_update,
+    dashboards,
     delete,
     rabbitmq_queue_count,
     tokens_create,
@@ -263,3 +265,64 @@ def test_wait_empty_tasks_retries_then_raises_on_inspection_failure(app):
 
     assert mocked_sleep.call_args_list == [mock.call(1), mock.call(2)]
     assert mock_warning.call_count == 4
+
+
+def test_dashboards_uses_the_configured_url(app, script_info, monkeypatch):
+    """The command targets RERO_MEF_DASHBOARDS_URL, which --url overrides."""
+    monkeypatch.setitem(app.config, "RERO_MEF_DASHBOARDS_URL", "http://configured:25601/")
+    runner = CliRunner()
+    with (
+        mock.patch("rero_mef.cli.wait_for_dashboards", return_value=True),
+        mock.patch("rero_mef.cli.install_dashboard", return_value=38) as install,
+    ):
+        res = runner.invoke(dashboards, [], obj=script_info)
+        assert res.exit_code == 0, res.output
+        install.assert_called_once_with("http://configured:25601")
+        assert "38 objects imported" in res.output
+
+        res = runner.invoke(dashboards, ["--url", "http://other:5601"], obj=script_info)
+        install.assert_called_with("http://other:5601")
+
+
+def test_dashboards_export(script_info):
+    """--export writes the dashboard back instead of installing it."""
+    runner = CliRunner()
+    with (
+        mock.patch("rero_mef.cli.wait_for_dashboards", return_value=True),
+        mock.patch("rero_mef.cli.install_dashboard") as install,
+        mock.patch("rero_mef.cli.export_dashboard", return_value=38) as export,
+    ):
+        res = runner.invoke(dashboards, ["--export"], obj=script_info)
+    assert res.exit_code == 0, res.output
+    export.assert_called_once()
+    install.assert_not_called()
+    assert "38 objects exported" in res.output
+
+
+def test_dashboards_unreachable(script_info):
+    """No Dashboards fails, unless asked to skip it as the sample load does."""
+    runner = CliRunner()
+    with (
+        mock.patch("rero_mef.cli.dashboards_running", return_value=False),
+        mock.patch("rero_mef.cli.wait_for_dashboards", return_value=False),
+        mock.patch("rero_mef.cli.install_dashboard") as install,
+    ):
+        res = runner.invoke(dashboards, ["--skip-unreachable"], obj=script_info)
+        assert res.exit_code == 0
+        assert "skipping the MEF dashboard" in res.output
+        res = runner.invoke(dashboards, [], obj=script_info)
+        assert res.exit_code != 0
+        assert "not reachable" in res.output
+    install.assert_not_called()
+
+
+def test_dashboards_refused(script_info):
+    """A refused request ends as a usage error, not a traceback."""
+    runner = CliRunner()
+    with (
+        mock.patch("rero_mef.cli.wait_for_dashboards", return_value=True),
+        mock.patch("rero_mef.cli.install_dashboard", side_effect=requests.HTTPError("400 Bad Request")),
+    ):
+        res = runner.invoke(dashboards, [], obj=script_info)
+    assert res.exit_code == 1
+    assert "400 Bad Request" in res.output

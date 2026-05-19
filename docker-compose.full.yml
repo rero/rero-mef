@@ -6,7 +6,7 @@
 # Here you can find a HAProxy load balancer which redirects the traffic to the web frontend, based on nginx.
 # UI application and REST API are separate.
 # There are also a celery worker backend, which can be monitored using Flower, and basics services such as
-# a Redis cache, a database, a message broker (RabbitMQ) and ElasticSearch.
+# a Redis cache, a database, a message broker (RabbitMQ) and OpenSearch.
 #
 services:
   # Load balancer
@@ -39,7 +39,7 @@ services:
       - static_data:/invenio/var/instance/static
     links:
       - cache
-      - es
+      - os
       - mq
       - db
   # API Rest Application
@@ -55,7 +55,7 @@ services:
       - static_data:/invenio/var/instance/static
     links:
       - cache
-      - es
+      - os
       - mq
       - db
   # Worker
@@ -68,7 +68,7 @@ services:
     image: rero-mef-worker
     links:
       - cache
-      - es
+      - os
       - mq
       - db
   # Beat
@@ -81,7 +81,7 @@ services:
     image: rero-ils-beat
     links:
       - cache
-      - es
+      - os
       - mq
       - db
   # Monitoring
@@ -104,9 +104,9 @@ services:
     extends:
       file: docker-services.yml
       service: mq
-  es:
+  os:
     extends:
       file: docker-services.yml
-      service: es
+      service: os
 volumes:
   static_data:

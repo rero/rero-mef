@@ -48,8 +48,8 @@ function oai_init () {
 }
 
 function sample_load () {
-    info_msg "Importing VIAF, agent, concept and place records, then OAI init"
-    invenio rero batch <(batch_sample_load; batch_oai)
+    info_msg "Importing VIAF, agent, concept and place records, then OAI init and dashboard"
+    invenio rero batch <(batch_sample_load; batch_oai; batch_dashboards)
 }
 
 function deploy () {
@@ -124,6 +124,10 @@ function usage () {
     msg " "
     msg " [./scripts/setup --viaf_init INPUT_DIR]"
     msg "    INPUT_DIR directory for VIAF CSV files"
+    msg " "
+    msg " [./scripts/setup --dashboards [OPTIONS]]"
+    msg "    Index patterns and MEF dashboard of OpenSearch Dashboards at"
+    msg "    RERO_MEF_DASHBOARDS_URL, see: invenio utils dashboards --help"
 
 }
 
@@ -184,6 +188,9 @@ else
             else
                 viaf_init $2
             fi
+            ;;
+        '--dashboards')
+            invenio utils dashboards "${@:2}"
             ;;
         '--help')
                 usage
