@@ -37,17 +37,16 @@ token_line() {
   fi
 }
 
-# Emit the two indexing runs and the alias, which every load path ends with.
+# Emit the two indexing runs, which every load path ends with.
 # The delayed run needs the workers, the second one drains what is left.
 index_run_lines() {
   cat <<EOF
 utils runindex --raise-on-error --concurrency 8 --delayed
 utils runindex --raise-on-error
-utils all_mef_alias
 EOF
 }
 
-# Index templates, mappings and the indexing queue.
+# Index templates, mappings, the indexing queue and the all_mef alias.
 #
 # The database lifecycle stays out: `db destroy` issues a DROP DATABASE, which
 # fails as soon as anything in the same process has opened a connection to that
@@ -57,6 +56,7 @@ batch_index_init() {
   cat <<EOF
 index init --force
 index queue init purge
+utils all_mef_alias
 EOF
 }
 
@@ -95,7 +95,7 @@ batch_oai() {
   done
 }
 
-# The prepared JSON fixtures of the data path, then the alias.
+# The prepared JSON fixtures of the data path.
 #
 # `create-or-update` reads its source file directly. It used to be fed by
 # `dojson -i`, which passed the JSON through unchanged and cost one more
@@ -106,7 +106,13 @@ batch_sample_load() {
   do
     echo "fixtures create-or-update ${ENTITY} ${DATA_PATH}/${ENTITY}.json -v"
   done
-  echo "utils all_mef_alias"
+}
+
+# The MEF dashboard, where an OpenSearch Dashboards answers at
+# RERO_MEF_DASHBOARDS_URL: it is optional in development and absent in
+# production.
+batch_dashboards() {
+  echo "utils dashboards --skip-unreachable"
 }
 
 # The CSV load of a deployment. The MEF resources carry an ids file, the
@@ -124,7 +130,7 @@ batch_load_csv() {
   done
 }
 
-# The two indexing runs and the alias.
+# The two indexing runs.
 batch_index_run() {
   index_run_lines
 }
