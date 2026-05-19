@@ -61,7 +61,7 @@ class REROMEFAPP:
         """Register signal handlers for data enrichment.
 
         Connects enrichment functions to the before_record_index signal to enhance concept and place data before
-        indexing in Elasticsearch.
+        indexing in Search.
 
         :param app: Flask application instance.
         """
