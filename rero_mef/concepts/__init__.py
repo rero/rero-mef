@@ -15,7 +15,7 @@ Supported authority sources:
 Main components:
 - ConceptMefRecord: Aggregated MEF records for concepts
 - Concept*Record classes: Authority-specific concept records
-- Concept*Indexer classes: Elasticsearch indexing
+- Concept*Indexer classes: Search indexing
 - Concept*Search classes: Search and retrieval functionality
 """
 

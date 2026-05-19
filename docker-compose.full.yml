@@ -6,7 +6,7 @@
 # Here you can find a HAProxy load balancer which redirects the traffic to the web frontend, based on nginx.
 # The user interface is the separate rero-mef-ui application, the REST API is served by rero-mef.
 # There are also a celery worker backend, which can be monitored using Flower, and basics services such as
-# a Redis cache, a database, a message broker (RabbitMQ) and ElasticSearch.
+# a Redis cache, a database, a message broker (RabbitMQ) and OpenSearch.
 #
 services:
   # Load balancer
@@ -47,7 +47,7 @@ services:
       - "5001"
     links:
       - cache
-      - es
+      - os
       - mq
       - db
   # Worker
@@ -60,7 +60,7 @@ services:
     image: rero-mef-worker
     links:
       - cache
-      - es
+      - os
       - mq
       - db
   # Beat
@@ -73,7 +73,7 @@ services:
     image: rero-ils-beat
     links:
       - cache
-      - es
+      - os
       - mq
       - db
   # Monitoring
@@ -96,7 +96,7 @@ services:
     extends:
       file: docker-services.yml
       service: mq
-  es:
+  os:
     extends:
       file: docker-services.yml
-      service: es
+      service: os
