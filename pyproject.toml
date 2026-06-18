@@ -37,7 +37,7 @@ dependencies = [
     "invenio-app>=3.0.0",
     "invenio-base>=2.0.0",
     "invenio-celery>=2.0.0",
-    "invenio-config>=1.0.3,<2.0.0",
+    "invenio-config>=1.0.3",
     "invenio-db [postgresql]>=2.0.0",
     # Invenio base bundle
     "invenio-assets>=4.0.0",
@@ -59,13 +59,13 @@ dependencies = [
     "invenio-search-ui>=4.0.0",
     "python-dotenv >=0.13.0",
     ## MEF specific python modules
-    "PyYAML >=5.3.1",
-    "ijson >=2.5.1",
+    "PyYAML>=5.3.1",
+    "ijson>=2.5.1",
     "poethepoet",
     # problem with marcxml `leader`
     "pymarc<5.2.0",
     "sqlitedict>=2.1.0",
-    "rero-invenio-base>=0.3.1",
+    "rero-invenio-base>=1.1.0",
     "dojson>=1.7.0"
 ]
 
@@ -80,6 +80,7 @@ dev = [
     "ruff>=0.12.5",
     "pytest-ruff>=0.5",
     "mock>=2.0.0",
+    "python-semantic-release>=10.5.3",
 
 ]
 prod = [
@@ -225,6 +226,48 @@ update = {cmd = "./scripts/update", help = "Runs update"}
 run_tests = {cmd = "./scripts/test", help = "Runs all tests"}
 tests = {cmd = "pytest", help = "pytest"}
 tests_debug = {cmd = "pytest -s -vv --no-cov", help = "pytest -s -vv --no-cov"}
+
+# Release management
+[tool.poe.tasks.changelog]
+cmd = "semantic-release changelog"
+help = "Preview the next changelog without making changes"
+
+[tool.poe.tasks.version]
+cmd = "semantic-release version --print"
+help = "Print the next version number without making changes"
+
+[tool.poe.tasks.release]
+cmd = "semantic-release version --no-push --no-tag --no-commit"
+help = "Generate changelog and bump version locally (does not push, tag, or commit - for local testing only)"
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+tag_format = "v{version}"
+commit_message = "chore(release): v{version}"
+build_command = """
+    uv lock --upgrade-package rero-mef
+    git add uv.lock
+"""
+allow_zero_version = false
+
+[tool.semantic_release.commit_author]
+env = "GIT_COMMIT_AUTHOR"
+default = "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = ["feat", "fix", "docs", "style", "refactor", "perf", "test", "build", "ci", "chore"]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf", "chore", "docs", "style", "refactor", "test", "build", "ci"]
+
+[tool.semantic_release.changelog]
+exclude_commit_patterns = [
+    "chore\\(release\\):.*",
+]
+mode = "update"
+
+[tool.semantic_release.branches.staging]
+match = "staging"
+prerelease = false
 
 [tool.pytest.ini_options]
 live_server_scope = "module"

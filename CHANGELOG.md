@@ -1,5 +1,7 @@
 # Changelog
 
+<!-- version list -->
+
 ## [v0.17.0](https://github.com/rero/rero-mef/tree/v0.17.0) (2025-11-06)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.16.2...v0.17.0)
