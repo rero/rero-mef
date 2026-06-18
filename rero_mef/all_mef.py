@@ -1,9 +1,5 @@
-# RERO MEF
-# Copyright (C) 2026 RERO
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as published by
-# the Free Software Foundation, version 3 of the License.
+# SPDX-FileCopyrightText: Fondation RERO+
+# SPDX-License-Identifier: AGPL-3.0-or-later
 
 """Search API class for the all_mef alias."""
 
