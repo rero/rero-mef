@@ -6,8 +6,8 @@
 from datetime import UTC, datetime
 
 from dateutil import parser
-from elasticsearch_dsl import Q
 from flask import current_app
+from opensearch_dsl import Q
 
 from .api import Action, EntityRecord
 from .utils import generate, get_entity_class, get_entity_search_class, progressbar

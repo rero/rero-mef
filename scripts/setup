@@ -57,6 +57,7 @@ function db_init () {
     invenio index destroy --force --yes-i-know || true
     invenio index init --force
     invenio index queue init purge
+    invenio utils all_mef_alias
 
     # Create roles to rectict access
     invenio roles create admin
@@ -115,7 +116,6 @@ function sample_load () {
         info_msg "Importing ${ENTITY} place records:"
         dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY} -v
     done
-    invenio utils all_mef_alias
     oai_init
 }
 
@@ -133,7 +133,6 @@ function deploy () {
     oai_init
     invenio utils runindex --raise-on-error --concurrency 8 --delayed
     invenio utils runindex --raise-on-error
-    invenio utils all_mef_alias
     # invenio utils reindex-missing -v
 }
 
@@ -192,7 +191,6 @@ function viaf_init () {
     invenio fixtures load-csv viaf ${INPUT_DIR}/viaf_pidstore.csv ${INPUT_DIR}/viaf_metadata.csv --verbose --reindex
     invenio utils runindex --raise-on-error --concurrency 8 --delayed
     invenio utils runindex --raise-on-error
-    invenio utils all_mef_alias
     invenio agents create-from-viaf --online aggnd --online aidref --online agrero --progress
 }
 

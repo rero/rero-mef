@@ -6,10 +6,10 @@
 from datetime import UTC, datetime, timedelta
 
 import click
-from elasticsearch.exceptions import NotFoundError
 from flask import current_app
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 from invenio_search import RecordsSearch
+from opensearchpy.exceptions import NotFoundError
 
 from ..utils import get_entity_class, get_mefs_endpoints, progressbar
 
@@ -29,11 +29,11 @@ class Monitoring:
         self.time_delta = int(time_delta)
 
     def __str__(self):
-        """Table representation of database and elasticsearch differences.
+        """Table representation of database and search differences.
 
-        :return: string representation of database and elasticsearch
-        differences. Following columns are in the string: 1. database count minus elasticsearch count 2. document type
-        3. database count 4. elasticsearch index 5. elasticsearch count
+        :return: string representation of database and search
+        differences. Following columns are in the string: 1. database count minus search count 2. document type
+        3. database count 4. search index 5. search count
         """
         result = ""
         msg_head = f"DB - ES  {'type':>6} {'count':>10}"
@@ -68,9 +68,9 @@ class Monitoring:
 
     @classmethod
     def get_es_count(cls, index):
-        """Get elasticsearch count.
+        """Get search count.
 
-        Get count of items in elasticsearch for the given index.
+        Get count of items in search for the given index.
 
         :param index: index.
         :return: items count.
@@ -123,7 +123,7 @@ class Monitoring:
         Get count details for all records rest endpoints in JSON format.
 
         :param with_deleted: count also deleted items in database.
-        :return: dictionary with database, elasticsearch and database minus elasticsearch count information.
+        :return: dictionary with database, search and database minus search count information.
         """
         info = {}
         for doc_type, endpoint in current_app.config.get(
@@ -159,10 +159,10 @@ class Monitoring:
         return info
 
     def check(self, with_deleted=False, difference_db_es=False):
-        """Compaire elasticsearch with database counts.
+        """Compaire search with database counts.
 
         :param with_deleted: count also deleted items in database.
-        :return: dictionary with all document types with a difference in database and elasticsearch counts.
+        :return: dictionary with all document types with a difference in database and search counts.
         """
         checks = {}
         for info, data in self.info(
@@ -213,7 +213,7 @@ class Monitoring:
     def missing(self, doc_type, with_deleted=False):
         """Get missing pids.
 
-        Get missing pids in database and elasticsearch and find duplicate pids in elasticsearch.
+        Get missing pids in database and search and find duplicate pids in search.
 
         :param doc_type: doc type to get missing pids.
         :return: dictionary with all missing pids.
