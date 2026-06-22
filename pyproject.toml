@@ -21,7 +21,7 @@ package = true
 
 [project]
 name = "rero-mef"
-version = "1.0.0"
+version = "1.0.1"
 description = "Invenio digital library framework MEF."
 authors = [{name = "RERO+", email = "software@rero.ch"}]
 keywords = ["rero-mef", "invenio", "multilingual entity file"]

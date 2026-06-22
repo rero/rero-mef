@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.1 (2026-06-22)
+
+### Continuous Integration
+
+- **release**: Bump version.py on release and pin invenio-search-ui
+  ([`72cd91e`](https://github.com/rero/rero-mef/commit/72cd91eaa1e1690d8656ac1b6bf6fb0a251b9fab))
+
+
 ## v1.0.0 (2026-06-22)
 
 ### Bug Fixes
