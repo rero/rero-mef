@@ -30,7 +30,14 @@ class DeletedStateExtension(RecordExtension):
         # Iterate through all defined entity types (from the record's entities list)
         if hasattr(record, "entities"):
             for entity_name in record.entities:
-                if deleted := source_data.get(entity_name, {}).get("deleted"):
+                # A $ref pointing at a source entity that no longer exists in
+                # the database (e.g. purged by VIAF cluster-merge cleanup)
+                # resolves to None, and None has no .get().
+                try:
+                    deleted = source_data.get(entity_name, {}).get("deleted")
+                except AttributeError:
+                    deleted = None
+                if deleted:
                     record["deleted"] = deleted
                     changed = True
                     break
