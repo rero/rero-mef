@@ -56,7 +56,8 @@ dependencies = [
     "invenio-records-rest>=3.0.0",
     "invenio-records-ui>=2.0.0",
     "invenio-records>=4.0.0",
-    "invenio-search-ui>=4.0.0",
+    # Remove upper pin when https://github.com/inveniosoftware/invenio-search-ui/issues/254 is fixed
+    "invenio-search-ui>=4.0.0,<5.0.0",
     "python-dotenv >=0.13.0",
     ## MEF specific python modules
     "PyYAML>=5.3.1",
@@ -242,6 +243,7 @@ help = "Generate changelog and bump version locally (does not push, tag, or comm
 
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]
+version_variables = ["rero_mef/version.py:__version__"]
 tag_format = "v{version}"
 commit_message = "chore(release): v{version}"
 build_command = """
