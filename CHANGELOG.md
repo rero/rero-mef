@@ -2,6 +2,61 @@
 
 <!-- version list -->
 
+## v1.0.0 (2026-06-22)
+
+### Bug Fixes
+
+- **ES mappings**: Adds relation_pid
+  ([`f66239f`](https://github.com/rero/rero-mef/commit/f66239fc495ac3c3d0490cfe6a79e6d8cb05fdf0))
+
+- **monitoring**: Apply time_delta cutoff consistently to ES and DB queries
+  ([`6aff798`](https://github.com/rero/rero-mef/commit/6aff798cc5438ec9bc984687c11060ff8d78fe86))
+
+### Chores
+
+- Convert docs to markdown and clean up files
+  ([`9b291a0`](https://github.com/rero/rero-mef/commit/9b291a0e3a60d5abd5d3ebfe66fe8e951a5efd88))
+
+- **deps**: Update dependencies
+  ([`843652b`](https://github.com/rero/rero-mef/commit/843652bc636a37b3cb54022e6efd51d420b9b979))
+
+- **deps**: Update uv.lock dependency pins
+  ([`bfba72f`](https://github.com/rero/rero-mef/commit/bfba72f2cb9f6a9ccc1edd89184be3af4d01f522))
+
+- **deps**: Upgrade to Python 3.14
+  ([`5bf6dfd`](https://github.com/rero/rero-mef/commit/5bf6dfdb6abc5b1375204dd3057d1a4aa0894a73))
+
+### Code Style
+
+- Replace verbose license headers with SPDX tags
+  ([`32a6c6b`](https://github.com/rero/rero-mef/commit/32a6c6b34c8bed615d261ccb4631e6db8b9de51d))
+
+### Continuous Integration
+
+- Add automatic release workflow
+  ([`b332e86`](https://github.com/rero/rero-mef/commit/b332e86369ba8d11763bcfbf31f3122a163cba52))
+
+- Bump actions/checkout from 6.0.3 to 7.0.0
+  ([`4d5b5a3`](https://github.com/rero/rero-mef/commit/4d5b5a39cab79627111f24110e13658871787a6b))
+
+- Bump actions/setup-node from 6.3.0 to 6.4.0
+  ([`4f820e7`](https://github.com/rero/rero-mef/commit/4f820e7082bff993edca19a2e78f108726886309))
+
+### Features
+
+- **docs**: Comprehensive docstring updates and improvements
+  ([`8ceac7a`](https://github.com/rero/rero-mef/commit/8ceac7a90a5d2924ef781652e59cbff556b63665))
+
+- **extensions**: Add record extensions package
+  ([`017580c`](https://github.com/rero/rero-mef/commit/017580c65a37f3ee34721a517cfbf9b86bd4abaf))
+
+- **ui**: Add MEF search and preview views
+  ([`850ee18`](https://github.com/rero/rero-mef/commit/850ee1836f6b081fb1c3e0df265330995ff152c2))
+
+- **VIAF**: Add cluster refresh pipeline
+  ([`58184d0`](https://github.com/rero/rero-mef/commit/58184d0ebf4e07e075cdffb76a731c0526aaa985))
+
+
 ## [v0.17.0](https://github.com/rero/rero-mef/tree/v0.17.0) (2025-11-06)
 
 [Full Changelog](https://github.com/rero/rero-mef/compare/v0.16.2...v0.17.0)
