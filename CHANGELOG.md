@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.0.2 (2026-07-07)
+
+### Bug Fixes
+
+- **extensions**: Handle dangling $ref in DeletedStateExtension
+  ([`572c69c`](https://github.com/rero/rero-mef/commit/572c69c657c88af2064deaa8217163a6a50249e2))
+
+### Build System
+
+- Remove upper pin for invenio-search-ui
+  ([`dff0315`](https://github.com/rero/rero-mef/commit/dff0315395589b50472075fdce94420c54c6322a))
+
+
 ## v1.0.1 (2026-06-22)
 
 ### Continuous Integration
