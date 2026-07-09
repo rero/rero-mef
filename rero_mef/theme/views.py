@@ -281,16 +281,67 @@ def _relation_pid_detail_url(entity_type, rel, record_cls, src):
     """
     if not rel or not (target := rel.get("value")):
         return None, None
-    pids = record_cls.get_mef(target, src, pid_only=True)
-    if pids:
+    if pids := record_cls.get_mef(target, src, pid_only=True):
         return url_for(_DETAIL_ENDPOINT[entity_type], pid_value=pids[0]), None
     for other_type, other_cls in _ENTITY_DETAIL_CONFIG.items():
         if other_type == entity_type:
             continue
-        pids = other_cls["record_cls"].get_mef(target, src, pid_only=True)
-        if pids:
+        if pids := other_cls["record_cls"].get_mef(target, src, pid_only=True):
             return None, url_for(_DETAIL_ENDPOINT[other_type], pid_value=pids[0])
     return None, None
+
+
+def _reverse_relation_urls(record_cls, entity_type, src, src_pid):
+    """Search for records whose ``relation_pid`` points at (src, src_pid).
+
+    Covers the case where the pointer only exists on the other side of the
+    pair (GND puts it on the old record, IDREF puts it on the new one), so
+    whichever record you're viewing may have no ``relation_pid`` of its own.
+
+    :returns: (older_url, latest_url) tuple; either or both may be None.
+    """
+    older_url = None
+    latest_url = None
+    for hit in (
+        record_cls.search()
+        .filter("term", **{f"{src}__relation_pid__value": src_pid})
+        .scan()
+    ):
+        hit_src = hit.to_dict().get(src, {})
+        hit_rel_type = hit_src.get("relation_pid", {}).get("type")
+        hit_src_pid = hit_src.get("pid")
+        if not hit_src_pid:
+            continue
+        if not older_url and hit_rel_type == "redirect_to":
+            older_url = url_for(
+                _OLDER_ENDPOINT[entity_type], pid_type=src, pid=hit_src_pid
+            )
+        elif not latest_url and hit_rel_type == "redirect_from":
+            latest_url = url_for(
+                _LATEST_ENDPOINT[entity_type], pid_type=src, pid=hit_src_pid
+            )
+        if older_url and latest_url:
+            break
+    return older_url, latest_url
+
+
+def _own_relation_url(record_cls, entity_type, src, rel):
+    """Resolve a source sub-document's own ``relation_pid`` to a nav URL.
+
+    :param rel: The ``relation_pid`` dict from the source sub-document, or None.
+    :returns: (older_url, latest_url) tuple; both None if ``rel`` is absent,
+        malformed, or its target doesn't resolve to a MEF record.
+    """
+    if not rel or not (rel_value := rel.get("value")):
+        return None, None
+    rel_type = rel.get("type")
+    if rel_type not in ("redirect_to", "redirect_from"):
+        return None, None
+    if not record_cls.get_mef(rel_value, src, pid_only=True):
+        return None, None
+    if rel_type == "redirect_to":
+        return None, url_for(_LATEST_ENDPOINT[entity_type], pid_type=src, pid=rel_value)
+    return url_for(_OLDER_ENDPOINT[entity_type], pid_type=src, pid=rel_value), None
 
 
 def _compute_nav_urls(entity_type, record_cls, entities, resolved):
@@ -299,8 +350,8 @@ def _compute_nav_urls(entity_type, record_cls, entities, resolved):
     Handles two redirect patterns:
     - ``redirect_to`` on source (GND): source is old; latest points to current.
     - ``redirect_from`` on source (IDREF): source is current; older points to old record.
-    - Reverse lookup: search for records whose source ``redirect_to`` points at this
-      record's source PID, covering the GND case on the current/newer record.
+    - Falls back to :func:`_reverse_relation_urls` when the pointer isn't on this
+      record's own source sub-document.
     """
     latest_url = None
     older_url = None
@@ -308,33 +359,17 @@ def _compute_nav_urls(entity_type, record_cls, entities, resolved):
         src_data = resolved.get(src)
         if not isinstance(src_data, dict):
             continue
-        if rel := src_data.get("relation_pid"):
-            rel_type, rel_value = rel.get("type"), rel.get("value")
-            if rel_value and rel_type in ("redirect_to", "redirect_from"):
-                if record_cls.get_mef(rel_value, src, pid_only=True):
-                    if rel_type == "redirect_to":
-                        latest_url = url_for(
-                            _LATEST_ENDPOINT[entity_type], pid_type=src, pid=rel_value
-                        )
-                    else:
-                        older_url = url_for(
-                            _OLDER_ENDPOINT[entity_type], pid_type=src, pid=rel_value
-                        )
-        if not older_url and (src_pid := src_data.get("pid")):
-            for hit in (
-                record_cls.search()
-                .filter("term", **{f"{src}__relation_pid__value": src_pid})
-                .scan()
-            ):
-                hit_src = hit.to_dict().get(src, {})
-                if hit_src.get("relation_pid", {}).get("type") == "redirect_to":
-                    if older_src_pid := hit_src.get("pid"):
-                        older_url = url_for(
-                            _OLDER_ENDPOINT[entity_type],
-                            pid_type=src,
-                            pid=older_src_pid,
-                        )
-                        break
+        found_older, found_latest = _own_relation_url(
+            record_cls, entity_type, src, src_data.get("relation_pid")
+        )
+        older_url = older_url or found_older
+        latest_url = latest_url or found_latest
+        if (not older_url or not latest_url) and (src_pid := src_data.get("pid")):
+            found_older, found_latest = _reverse_relation_urls(
+                record_cls, entity_type, src, src_pid
+            )
+            older_url = older_url or found_older
+            latest_url = latest_url or found_latest
         if latest_url and older_url:
             break
     return latest_url, older_url
