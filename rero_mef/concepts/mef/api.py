@@ -139,41 +139,6 @@ class ConceptMefRecord(EntityMefRecord):
             data["sources"] = my_sources
         return data
 
-    @classmethod
-    def get_latest(cls, pid_type, pid, _visited=None):
-        """Get latest Mef record for pid_type and pid.
-
-        :param pid_type: pid type to use.
-        :param pid: pid to use.
-        :param _visited: set of already-seen pids used to break redirect cycles.
-        :returns: latest record.
-        """
-        visited = _visited or set()
-        if pid in visited:
-            return {}
-        visited.add(pid)
-        search = ConceptMefSearch().filter({"term": {f"{pid_type}.pid": pid}})
-        if search.count() > 0:
-            data = next(search.scan()).to_dict()
-            new_pid = None
-            if relation_pid := data.get(pid_type, {}).get("relation_pid"):
-                if relation_pid["type"] == "redirect_to":
-                    new_pid = relation_pid["value"]
-            elif pid_type == "idref":
-                # Find new pid from redirect_pid redirect_from
-                search = ConceptMefSearch().filter(
-                    "term", idref__relation_pid__value=pid
-                )
-                if search.count() > 0:
-                    new_data = next(search.scan()).to_dict()
-                    new_pid = new_data.get("idref", {}).get("pid")
-            return (
-                cls.get_latest(pid_type=pid_type, pid=new_pid, _visited=visited)
-                if new_pid
-                else data
-            )
-        return {}
-
 
 class ConceptMefIndexer(EntityIndexer):
     """Concept MEF indexer."""

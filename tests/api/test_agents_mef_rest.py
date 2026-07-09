@@ -138,6 +138,33 @@ def test_agents_mef_get_idref_latest(
     assert data == mef_data
 
 
+def test_agents_mef_find_redirect_target_via_idref(
+    agent_mef_record,
+    agent_idref_record,
+    agent_gnd_record,
+    agent_rero_record,
+    agent_idref_redirect_record,
+    agent_mef_idref_redirect_record,
+):
+    """_find_redirect_target follows an IDREF redirect even when reached via GND.
+
+    The GND source itself was never redirected: the redirect only exists on
+    the IDREF source. Builds the old record's resolved shape by hand so the
+    check is deterministic -- old and new share the same GND/RERO pids, so a
+    real get_latest() lookup by GND could match either one first in
+    Elasticsearch, which would make an end-to-end assertion order-dependent.
+    """
+    data = {
+        "gnd": {"pid": agent_gnd_record.pid},
+        "idref": {"pid": agent_idref_record.pid},
+        "rero": {"pid": agent_rero_record.pid},
+    }
+    assert AgentMefRecord._find_redirect_target(data) == (
+        "idref",
+        agent_idref_redirect_record.pid,
+    )
+
+
 def test_agents_mef_get_updated(
     client,
     agent_mef_record,

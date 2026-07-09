@@ -92,6 +92,15 @@ def test_agent_detail_older_button_gnd_reverse(
     assert "mef-older-link" in res.get_data(as_text=True)
 
 
+def test_agent_detail_latest_button_idref_reverse(
+    client, agent_mef_idref_redirect_record, agent_mef_record
+):
+    """Old IDREF record shows Latest button via reverse redirect_from lookup."""
+    res = client.get(f"/agents/{agent_mef_record.pid}")
+    assert res.status_code == 200
+    assert "mef-latest-link" in res.get_data(as_text=True)
+
+
 def test_agent_detail_crosstype_redirect(client, agent_mef_crosstype_redirect_record):
     """MEF record whose GND source (bf:Organisation) redirects to a bf:Person shows the type-conflict alert.
 

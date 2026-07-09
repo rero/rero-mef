@@ -214,6 +214,69 @@ class EntityMefRecord(EntityRecord):
         deleted = cls.get_deleted(missing_pids, from_date)
         return generate(search, deleted)
 
+    @classmethod
+    def _find_redirect_target(cls, data):
+        """Find a newer (pid_type, pid) that the MEF record *data* redirects to.
+
+        Checks every source linked to *data*, not just one -- a MEF record can
+        be superseded via a different source than the one it was looked up by
+        (e.g. its IDREF source moved on while its GND source stayed put).
+        Handles both redirect conventions:
+
+        - ``redirect_to`` on the source itself (GND: the pointer is on the old
+          record).
+        - ``redirect_from`` on another record pointing back at this one
+          (IDREF: the pointer is on the new record, found via reverse lookup).
+
+        :param data: A MEF record dict with resolved source sub-documents.
+        :returns: (pid_type, pid) tuple, or None if no redirect target is found.
+        """
+        for source in cls.entities:
+            source_data = data.get(source)
+            if not isinstance(source_data, dict):
+                continue
+            if relation_pid := source_data.get("relation_pid"):
+                if relation_pid.get("type") == "redirect_to" and (
+                    value := relation_pid.get("value")
+                ):
+                    return source, value
+            if source_pid := source_data.get("pid"):
+                reverse = cls.search().filter(
+                    "term", **{f"{source}__relation_pid__value": source_pid}
+                )
+                for hit in reverse.scan():
+                    reverse_data = hit.to_dict()
+                    reverse_rel = reverse_data.get(source, {}).get("relation_pid", {})
+                    if reverse_rel.get("type") == "redirect_from" and (
+                        new_pid := reverse_data.get(source, {}).get("pid")
+                    ):
+                        return source, new_pid
+        return None
+
+    @classmethod
+    def get_latest(cls, pid_type, pid, _visited=None):
+        """Get latest Mef record for pid_type and pid.
+
+        :param pid_type: pid type to use for the initial lookup.
+        :param pid: pid to use for the initial lookup.
+        :param _visited: set of already-seen (pid_type, pid) pairs used to
+            break redirect cycles.
+        :returns: latest record.
+        """
+        visited = _visited or set()
+        key = (pid_type, pid)
+        if key in visited:
+            return {}
+        visited.add(key)
+        search = cls.search().filter({"term": {f"{pid_type}.pid": pid}})
+        if search.count() == 0:
+            return {}
+        data = next(search.scan()).to_dict()
+        if target := cls._find_redirect_target(data):
+            new_pid_type, new_pid = target
+            return cls.get_latest(pid_type=new_pid_type, pid=new_pid, _visited=visited)
+        return data
+
     def delete_ref(self, record, dbcommit=False, reindex=False):
         """Delete $ref from record.
 
