@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.3 (2026-07-09)
+
+### Bug Fixes
+
+- **mef**: Resolve redirects via any linked source, not just one
+  ([`c254dc4`](https://github.com/rero/rero-mef/commit/c254dc41b6ba88803b7b7c73a404e1e05e87c61c))
+
+
 ## v1.0.2 (2026-07-07)
 
 ### Bug Fixes
