@@ -3,14 +3,24 @@
 
 """API for manipulating MEF records."""
 
+from copy import deepcopy
 from datetime import UTC, datetime
 
 from dateutil import parser
 from elasticsearch_dsl import Q
 from flask import current_app
 
-from .api import Action, EntityRecord
+from .api import Action, EntityIndexer, EntityRecord
 from .utils import generate, get_entity_class, get_entity_search_class, progressbar
+
+# Fields injected by before_record_index signal handlers (entity,
+# sort_authorized_access_point, pid_numeric, type_conflict) or by
+# MD5Extension (md5) that are internal bookkeeping and were never meant to
+# be part of a MEF record's public representation -- consumers validating
+# against a strict additionalProperties: false schema reject them.
+_INDEX_ONLY_FIELDS = frozenset(
+    {"entity", "md5", "pid_numeric", "sort_authorized_access_point", "type_conflict"}
+)
 
 
 class EntityMefRecord(EntityRecord):
@@ -212,53 +222,14 @@ class EntityMefRecord(EntityRecord):
         if not data.get("resolve"):
             search = search.source(["pid", "deleted", "_created", "_updated"])
         deleted = cls.get_deleted(missing_pids, from_date)
-        return generate(search, deleted)
-
-    @classmethod
-    def _find_redirect_target(cls, data):
-        """Find a newer (pid_type, pid) that the MEF record *data* redirects to.
-
-        Checks every source linked to *data*, not just one -- a MEF record can
-        be superseded via a different source than the one it was looked up by
-        (e.g. its IDREF source moved on while its GND source stayed put).
-        Handles both redirect conventions:
-
-        - ``redirect_to`` on the source itself (GND: the pointer is on the old
-          record).
-        - ``redirect_from`` on another record pointing back at this one
-          (IDREF: the pointer is on the new record, found via reverse lookup).
-
-        :param data: A MEF record dict with resolved source sub-documents.
-        :returns: (pid_type, pid) tuple, or None if no redirect target is found.
-        """
-        for source in cls.entities:
-            source_data = data.get(source)
-            if not isinstance(source_data, dict):
-                continue
-            if relation_pid := source_data.get("relation_pid"):
-                if relation_pid.get("type") == "redirect_to" and (
-                    value := relation_pid.get("value")
-                ):
-                    return source, value
-            if source_pid := source_data.get("pid"):
-                reverse = cls.search().filter(
-                    "term", **{f"{source}__relation_pid__value": source_pid}
-                )
-                for hit in reverse.scan():
-                    reverse_data = hit.to_dict()
-                    reverse_rel = reverse_data.get(source, {}).get("relation_pid", {})
-                    if reverse_rel.get("type") == "redirect_from" and (
-                        new_pid := reverse_data.get(source, {}).get("pid")
-                    ):
-                        return source, new_pid
-        return None
+        return generate(search, deleted, exclude_fields=_INDEX_ONLY_FIELDS)
 
     @classmethod
     def get_latest(cls, pid_type, pid, _visited=None):
         """Get latest Mef record for pid_type and pid.
 
-        :param pid_type: pid type to use for the initial lookup.
-        :param pid: pid to use for the initial lookup.
+        :param pid_type: pid type to use.
+        :param pid: pid to use.
         :param _visited: set of already-seen (pid_type, pid) pairs used to
             break redirect cycles.
         :returns: latest record.
@@ -272,9 +243,34 @@ class EntityMefRecord(EntityRecord):
         if search.count() == 0:
             return {}
         data = next(search.scan()).to_dict()
-        if target := cls._find_redirect_target(data):
-            new_pid_type, new_pid = target
-            return cls.get_latest(pid_type=new_pid_type, pid=new_pid, _visited=visited)
+        new_pid = None
+        if (
+            relation_pid := data.get(pid_type, {}).get("relation_pid")
+        ) and relation_pid["type"] == "redirect_to":
+            new_pid = relation_pid["value"]
+        if not new_pid and pid_type == "idref":
+            # Find a newer record whose relation_pid redirects_from this one
+            # (the IDREF convention: the pointer lives on the new record,
+            # not on this one). Runs regardless of whether this record has
+            # its own redirect_from pointer (documenting where it came
+            # from), since that says nothing about whether it was in turn
+            # superseded. Iterate every match rather than just the first: a
+            # record can be both redirected_to (by an older one) and
+            # redirected_from (by a newer one) at once, so the first hit
+            # isn't necessarily the one with the redirect_from pointer.
+            reverse = cls.search().filter("term", idref__relation_pid__value=pid)
+            for hit in reverse.scan():
+                hit_data = hit.to_dict()
+                hit_rel = hit_data.get("idref", {}).get("relation_pid", {})
+                if hit_rel.get("type") == "redirect_from" and (
+                    candidate := hit_data.get("idref", {}).get("pid")
+                ):
+                    new_pid = candidate
+                    break
+        if new_pid:
+            return cls.get_latest(pid_type=pid_type, pid=new_pid, _visited=visited)
+        for field in _INDEX_ONLY_FIELDS:
+            data.pop(field, None)
         return data
 
     def delete_ref(self, record, dbcommit=False, reindex=False):
@@ -327,3 +323,66 @@ class EntityMefRecord(EntityRecord):
             if entity_record := record_class.get_record_by_pid(entity["pid"]):
                 entities_records.append(entity_record)
         return entities_records
+
+    def replace_refs(self):
+        """Replace $ref with real data."""
+        data = super().replace_refs()
+        data["sources"] = [
+            entity
+            for entity in self.entities
+            if (entity_data := data.get(entity)) and not entity_data.get("status")
+        ]
+        return data
+
+    def add_information(self, resolve=False, sources=False):
+        """Add information to record.
+
+        Sources will be also added if resolve is True.
+        :param resolve: resolve $refs
+        :param sources: Add sources information to record
+        :returns: record
+        """
+        replace_refs_data = type(self)(deepcopy(self).replace_refs())
+        data = replace_refs_data if resolve else deepcopy(self)
+        my_sources = []
+        for entity in self.entities:
+            if entity_data := data.get(entity):
+                # we got a error status in data
+                if entity_data.get("status"):
+                    data.pop(entity)
+                    current_app.logger.error(
+                        f"MEF replace refs {data.get('pid')} {entity}"
+                        f" status: {entity_data.get('status')}"
+                        f" {entity_data.get('message')}"
+                    )
+                else:
+                    my_sources.append(entity)
+        for entity in self.entities:
+            if metadata := replace_refs_data.get(entity, {}).get("metadata"):
+                data[entity] = metadata
+        if my_sources and (resolve or sources):
+            data["sources"] = my_sources
+        for field in _INDEX_ONLY_FIELDS:
+            data.pop(field, None)
+        return data
+
+
+class MefIndexer(EntityIndexer):
+    """Shared indexer for MEF aggregation records (agents/concepts/places).
+
+    Defaults ``index``/``doc_type`` from the indexer's ``record_cls``, so
+    subclasses only need to set that one class attribute.
+    """
+
+    def bulk_index(self, record_id_iterator, index=None, doc_type=None):
+        """Bulk index records.
+
+        :param record_id_iterator: Iterator yielding record UUIDs.
+        :param index: Index name (optional).
+        :param doc_type: Document type (optional).
+        """
+        super().bulk_index(
+            record_id_iterator,
+            index=index or self.record_cls.search.Meta.index,
+            doc_type=doc_type or self.record_cls.provider.pid_type,
+        )

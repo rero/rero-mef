@@ -5,6 +5,11 @@
 
 from flask import url_for
 
+from rero_mef.agents import AgentGndRecord, AgentIdrefRecord, AgentMefRecord
+from rero_mef.utils import build_ref_string
+
+from ..utils import create_record
+
 
 def test_robots_txt(client):
     """robots.txt disallows all UI paths."""
@@ -113,3 +118,106 @@ def test_agent_detail_crosstype_redirect(client, agent_mef_crosstype_redirect_re
     body = res.get_data(as_text=True)
     assert "mef-type-conflict-alert" in body
     assert "mef-conflict-link" not in body
+
+
+def test_agent_detail_conflicting_latest_targets(app, client):
+    """GND and IDREF redirecting to two different records both show up as Latest links.
+
+    Self-contained fixtures (unique pids) rather than the shared module-scoped
+    ones, since this needs a record whose GND *and* IDREF sources each point to
+    a different successor -- none of the existing shared fixtures combine both
+    at once, and mutating them would affect other tests in this module.
+    """
+    gnd_old = create_record(
+        AgentGndRecord,
+        {
+            "pid": "9990001",
+            "type": "bf:Person",
+            "authorized_access_point": "Conflict GND Old",
+            "relation_pid": {"type": "redirect_to", "value": "9990002"},
+            "$schema": "https://mef.rero.ch/schemas/agents_gnd/gnd-agent-v0.0.1.json",
+        },
+    )
+    gnd_new = create_record(
+        AgentGndRecord,
+        {
+            "pid": "9990002",
+            "type": "bf:Person",
+            "authorized_access_point": "Conflict GND New",
+            "$schema": "https://mef.rero.ch/schemas/agents_gnd/gnd-agent-v0.0.1.json",
+        },
+    )
+    idref_old = create_record(
+        AgentIdrefRecord,
+        {
+            "pid": "9990003",
+            "type": "bf:Person",
+            "authorized_access_point": "Conflict IdRef Old",
+            "$schema": "https://mef.rero.ch/schemas/agents_idref/idref-agent-v0.0.1.json",
+        },
+    )
+    idref_new = create_record(
+        AgentIdrefRecord,
+        {
+            "pid": "9990004",
+            "type": "bf:Person",
+            "authorized_access_point": "Conflict IdRef New",
+            "relation_pid": {"type": "redirect_from", "value": "9990003"},
+            "$schema": "https://mef.rero.ch/schemas/agents_idref/idref-agent-v0.0.1.json",
+        },
+    )
+    mef_old = create_record(
+        AgentMefRecord,
+        {
+            "gnd": {
+                "$ref": build_ref_string(
+                    entity_type="agents", entity_name="gnd", entity_pid=gnd_old.pid
+                )
+            },
+            "idref": {
+                "$ref": build_ref_string(
+                    entity_type="agents", entity_name="idref", entity_pid=idref_old.pid
+                )
+            },
+            "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
+        },
+    )
+    mef_gnd_new = create_record(
+        AgentMefRecord,
+        {
+            "gnd": {
+                "$ref": build_ref_string(
+                    entity_type="agents", entity_name="gnd", entity_pid=gnd_new.pid
+                )
+            },
+            "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
+        },
+    )
+    mef_idref_new = create_record(
+        AgentMefRecord,
+        {
+            "idref": {
+                "$ref": build_ref_string(
+                    entity_type="agents", entity_name="idref", entity_pid=idref_new.pid
+                )
+            },
+            "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
+        },
+    )
+
+    res = client.get(f"/agents/{mef_old.pid}")
+    assert res.status_code == 200
+    body = res.get_data(as_text=True)
+    assert body.count("mef-latest-link") == 2
+    assert f"/agents/latest/gnd:{gnd_new.pid}" in body
+    assert f"/agents/latest/idref:{idref_new.pid}" in body
+    assert "Latest (GND)" in body
+    assert "Latest (IDREF)" in body
+
+    # each redirect route resolves to the correct, distinct MEF record
+    res = client.get(f"/agents/latest/gnd:{gnd_new.pid}", follow_redirects=True)
+    assert res.status_code == 200
+    assert res.request.path == f"/agents/{mef_gnd_new.pid}"
+    res = client.get(f"/agents/latest/idref:{idref_new.pid}", follow_redirects=True)
+    assert res.status_code == 200
+    assert res.request.path == f"/agents/{mef_idref_new.pid}"

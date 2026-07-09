@@ -10,7 +10,7 @@ from flask import url_for
 
 from rero_mef.agents import AgentMefRecord
 
-from ..utils import postdata
+from ..utils import postdata, strip_index_fields
 
 
 def test_view_agents_mef(
@@ -79,6 +79,7 @@ def test_mef_get_latest(
 ):
     """Test MEF get latest."""
     mef_data = agent_mef_record.add_information(resolve=True)
+    mef_data = strip_index_fields(mef_data)
     # No new record found
     assert AgentMefRecord.get_latest(pid_type="idref", pid="XXX") == {}
 
@@ -118,6 +119,7 @@ def test_agents_mef_get_idref_latest(
 ):
     """Test agents MEF get latest."""
     mef_data = agent_mef_idref_redirect_record.add_information(resolve=True)
+    mef_data = strip_index_fields(mef_data)
     # New IdRef record is one redirect IdRef record
     data = AgentMefRecord.get_latest(pid_type="idref", pid=agent_idref_record.pid)
     data.pop("_created")
@@ -136,33 +138,6 @@ def test_agents_mef_get_idref_latest(
     data.pop("_created")
     data.pop("_updated")
     assert data == mef_data
-
-
-def test_agents_mef_find_redirect_target_via_idref(
-    agent_mef_record,
-    agent_idref_record,
-    agent_gnd_record,
-    agent_rero_record,
-    agent_idref_redirect_record,
-    agent_mef_idref_redirect_record,
-):
-    """_find_redirect_target follows an IDREF redirect even when reached via GND.
-
-    The GND source itself was never redirected: the redirect only exists on
-    the IDREF source. Builds the old record's resolved shape by hand so the
-    check is deterministic -- old and new share the same GND/RERO pids, so a
-    real get_latest() lookup by GND could match either one first in
-    Elasticsearch, which would make an end-to-end assertion order-dependent.
-    """
-    data = {
-        "gnd": {"pid": agent_gnd_record.pid},
-        "idref": {"pid": agent_idref_record.pid},
-        "rero": {"pid": agent_rero_record.pid},
-    }
-    assert AgentMefRecord._find_redirect_target(data) == (
-        "idref",
-        agent_idref_redirect_record.pid,
-    )
 
 
 def test_agents_mef_get_updated(
@@ -284,3 +259,40 @@ def test_agents_mef_get_updated(
         },
         {"pid": "4"},
     ]
+
+
+def test_agents_mef_get_idref_latest_chain(
+    agent_mef_record,
+    agent_idref_record,
+    agent_gnd_record,
+    agent_rero_record,
+    agent_idref_redirect_record,
+    agent_mef_idref_redirect_record,
+    agent_idref_redirect_2_record,
+    agent_mef_idref_redirect_2_record,
+):
+    """A -> B -> C IDREF redirect chain resolves all the way to C.
+
+    Regression test: B has its own ``redirect_from`` relation_pid (documenting
+    that it superseded A), which must not stop ``get_latest`` from also
+    looking up whether B itself was later superseded by C. Placed last in the
+    module: it creates a fourth MEF record, and earlier tests in this file
+    (``test_agents_mef_get_updated``) hard-code the module's pid layout,
+    including pid "4" not existing yet.
+    """
+    mef_data = agent_mef_idref_redirect_2_record.add_information(resolve=True)
+    mef_data = strip_index_fields(mef_data)
+
+    # Starting from the oldest record (A) resolves through B all the way to C.
+    data = AgentMefRecord.get_latest(pid_type="idref", pid=agent_idref_record.pid)
+    data.pop("_created")
+    data.pop("_updated")
+    assert data == mef_data
+
+    # Starting from the middle record (B) also resolves to C, not to B itself.
+    data = AgentMefRecord.get_latest(
+        pid_type="idref", pid=agent_idref_redirect_record.pid
+    )
+    data.pop("_created")
+    data.pop("_updated")
+    assert data == mef_data

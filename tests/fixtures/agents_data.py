@@ -485,6 +485,23 @@ def agent_idref_redirect_data():
 
 
 @pytest.fixture(scope="module")
+def agent_idref_redirect_2_data():
+    """Agent IDREF record, third hop of an A -> B -> C redirect chain."""
+    return {
+        "pid": "IDREF_REDIRECT_2",
+        "type": "bf:Person",
+        "date_of_birth": "....",
+        "date_of_death": "1540",
+        "language": ["fre"],
+        "preferred_name": "Brissé, Nicolas, grammairien",
+        "authorized_access_point": "Brissé, Nicolas, ....-1540, grammairien",
+        "gender": "male",
+        "$schema": "https://mef.rero.ch/schemas/agents_idref/idref-agent-v0.0.1.json",
+        "relation_pid": {"type": "redirect_from", "value": "IDREF_REDIRECT"},
+    }
+
+
+@pytest.fixture(scope="module")
 def agent_mef_data():
     """Agent MEF record."""
     return {
@@ -515,6 +532,19 @@ def agent_mef_idref_redirect_data():
         "gnd": {"$ref": "https://mef.rero.ch/api/agents/gnd/12391664X"},
         "rero": {"$ref": "https://mef.rero.ch/api/agents/rero/A023655346"},
         "idref": {"$ref": "https://mef.rero.ch/api/agents/idref/IDREF_REDIRECT"},
+        "viaf_pid": "66739143",
+        "type": "bf:Person",
+    }
+
+
+@pytest.fixture(scope="module")
+def agent_mef_idref_redirect_2_data():
+    """Agent MEF record for the third (C) IDREF record of an A -> B -> C chain."""
+    return {
+        "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
+        "gnd": {"$ref": "https://mef.rero.ch/api/agents/gnd/12391664X"},
+        "rero": {"$ref": "https://mef.rero.ch/api/agents/rero/A023655346"},
+        "idref": {"$ref": "https://mef.rero.ch/api/agents/idref/IDREF_REDIRECT_2"},
         "viaf_pid": "66739143",
         "type": "bf:Person",
     }

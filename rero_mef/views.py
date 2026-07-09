@@ -25,7 +25,7 @@ from .agents import AgentMefRecord
 from .all_mef import AllMefSearch
 from .concepts import ConceptMefRecord
 from .places import PlaceMefRecord
-from .query import and_search_factory
+from .query import and_search_factory, mef_ui_query_parser
 
 api_blueprint = Blueprint("api_blueprint", __name__, url_prefix="/")
 
@@ -239,7 +239,7 @@ def all_mef_search():
 
     search = AllMefSearch()
     try:
-        search, _ = and_search_factory(None, search)
+        search, _ = and_search_factory(None, search, query_parser=mef_ui_query_parser)
     except InvalidQueryRESTError as e:
         return jsonify(
             {

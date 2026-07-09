@@ -345,16 +345,25 @@ def _own_relation_url(record_cls, entity_type, src, rel):
 
 
 def _compute_nav_urls(entity_type, record_cls, entities, resolved):
-    """Return (latest_url, older_url) navigation links for a MEF detail page.
+    """Return (latest_urls, older_urls) navigation links for a MEF detail page.
 
     Handles two redirect patterns:
     - ``redirect_to`` on source (GND): source is old; latest points to current.
     - ``redirect_from`` on source (IDREF): source is current; older points to old record.
     - Falls back to :func:`_reverse_relation_urls` when the pointer isn't on this
       record's own source sub-document.
+
+    Each linked source is resolved independently. Two sources can disagree
+    (e.g. both GND and IDREF redirected, to different successor records) --
+    when that happens both targets are returned rather than one silently
+    replacing the other; a source that agrees with one already found (same
+    URL) doesn't produce a second entry.
+
+    :returns: (latest_urls, older_urls) tuple of lists of ``{"source": src,
+        "url": url}`` dicts, in ``entities`` order; either list may be empty.
     """
-    latest_url = None
-    older_url = None
+    latest_by_url = {}
+    older_by_url = {}
     for src in entities:
         src_data = resolved.get(src)
         if not isinstance(src_data, dict):
@@ -362,17 +371,19 @@ def _compute_nav_urls(entity_type, record_cls, entities, resolved):
         found_older, found_latest = _own_relation_url(
             record_cls, entity_type, src, src_data.get("relation_pid")
         )
-        older_url = older_url or found_older
-        latest_url = latest_url or found_latest
-        if (not older_url or not latest_url) and (src_pid := src_data.get("pid")):
-            found_older, found_latest = _reverse_relation_urls(
+        if not (found_older and found_latest) and (src_pid := src_data.get("pid")):
+            rev_older, rev_latest = _reverse_relation_urls(
                 record_cls, entity_type, src, src_pid
             )
-            older_url = older_url or found_older
-            latest_url = latest_url or found_latest
-        if latest_url and older_url:
-            break
-    return latest_url, older_url
+            found_older = found_older or rev_older
+            found_latest = found_latest or rev_latest
+        if found_older:
+            older_by_url.setdefault(found_older, src)
+        if found_latest:
+            latest_by_url.setdefault(found_latest, src)
+    latest_urls = [{"source": src, "url": url} for url, src in latest_by_url.items()]
+    older_urls = [{"source": src, "url": url} for url, src in older_by_url.items()]
+    return latest_urls, older_urls
 
 
 def _mef_detail(entity_type, pid_value):
@@ -432,7 +443,7 @@ def _mef_detail(entity_type, pid_value):
             }
         )
 
-    latest_url, older_url = _compute_nav_urls(
+    latest_urls, older_urls = _compute_nav_urls(
         entity_type, config["record_cls"], record.entities, resolved
     )
     type_conflict = _detect_type_conflict(record)
@@ -442,8 +453,8 @@ def _mef_detail(entity_type, pid_value):
         version=__version__,
         home_url=url_for("rero_mef.all_mef_list"),
         back_url=_same_origin_referrer() or url_for("rero_mef.all_mef_list"),
-        latest_url=latest_url,
-        older_url=older_url,
+        latest_urls=latest_urls,
+        older_urls=older_urls,
         entity_label=config["label"],
         type_conflict=type_conflict,
         item_url=item_url,
