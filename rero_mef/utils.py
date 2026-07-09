@@ -1176,14 +1176,24 @@ def get_mefs_endpoints():
     return mefs
 
 
-def generate(search, deleted):
-    """Lagging genarator."""
+def generate(search, deleted, exclude_fields=None):
+    """Lagging genarator.
+
+    :param exclude_fields: top-level keys to drop from each indexed hit
+        before serializing, e.g. index-only bookkeeping fields (entity,
+        md5, pid_numeric, sort_authorized_access_point, type_conflict)
+        that a consumer's ``additionalProperties: false`` schema rejects.
+    """
+    exclude_fields = exclude_fields or ()
     yield "["
     idx = 0
     for hit in search.scan():
         if idx != 0:
             yield ", "
-        yield json.dumps(hit.to_dict())
+        data = hit.to_dict()
+        for field in exclude_fields:
+            data.pop(field, None)
+        yield json.dumps(data)
         idx += 1
     for idx_deleted, record in enumerate(deleted):
         if idx + idx_deleted != 0:

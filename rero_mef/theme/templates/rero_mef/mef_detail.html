@@ -44,12 +44,12 @@
         <div class="mef-detail-nav">
           <a class="mef-home-link" href="{{ home_url }}" title="All search"><i class="fa fa-home" aria-hidden="true"></i></a>
           <a class="mef-back-link" href="{{ back_url }}"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</a>
-          {%- if older_url %}
-          <a class="mef-older-link" href="{{ older_url }}"><i class="fa fa-step-backward" aria-hidden="true"></i> Older</a>
-          {%- endif %}
-          {%- if latest_url %}
-          <a class="mef-latest-link" href="{{ latest_url }}">Latest <i class="fa fa-step-forward" aria-hidden="true"></i></a>
-          {%- endif %}
+          {%- for item in older_urls %}
+          <a class="mef-older-link" href="{{ item.url }}"><i class="fa fa-step-backward" aria-hidden="true"></i> Older{% if older_urls|length > 1 %} ({{ item.source|upper }}){% endif %}</a>
+          {%- endfor %}
+          {%- for item in latest_urls %}
+          <a class="mef-latest-link" href="{{ item.url }}">Latest{% if latest_urls|length > 1 %} ({{ item.source|upper }}){% endif %} <i class="fa fa-step-forward" aria-hidden="true"></i></a>
+          {%- endfor %}
         </div>
         {%- if entity_label %}
         <span class="mef-detail-type-badge">{{ entity_label }}</span>

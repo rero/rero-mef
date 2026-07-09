@@ -10,7 +10,7 @@ from flask import url_for
 
 from rero_mef.places import PlaceMefRecord
 
-from ..utils import postdata
+from ..utils import postdata, strip_index_fields
 
 
 def test_view_places_mef(
@@ -74,6 +74,7 @@ def test_places_mef_get_latest(
 ):
     """Test places MEF get latest."""
     mef_data = place_mef_idref_redirect_record.add_information(resolve=True)
+    mef_data = strip_index_fields(mef_data)
     # New IdRef record is old IdRef record
     data = PlaceMefRecord.get_latest(
         pid_type="idref", pid=place_idref_redirect_record.pid

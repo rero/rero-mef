@@ -12,6 +12,7 @@ from invenio_records_rest.serializers.response import (
     search_responsify,
 )
 
+from ...api_mef import _INDEX_ONLY_FIELDS
 from ...utils import get_entity_classes
 
 
@@ -42,6 +43,25 @@ def local_link(concept, name, record):
 
 class ReroMefSerializer(JSONSerializer):
     """Mixin serializing records as JSON."""
+
+    @staticmethod
+    def preprocess_search_hit(pid, record_hit, links_factory=None, **kwargs):
+        """Strip index-only bookkeeping fields from a search hit's metadata.
+
+        ``record_hit["_source"]`` is the raw ES-indexed document, which
+        carries fields injected at index time (entity, pid_numeric,
+        sort_authorized_access_point, type_conflict) or by MD5Extension
+        (md5) that a strict ``additionalProperties: false`` consumer schema
+        (e.g. rero-ils's) rejects. Unlike the single-item ``serialize()``
+        path, which resolves through ``add_information()``, search results
+        go through this method instead and never touch that stripping.
+        """
+        record = JSONSerializer.preprocess_search_hit(
+            pid, record_hit, links_factory=links_factory, **kwargs
+        )
+        for field in _INDEX_ONLY_FIELDS:
+            record["metadata"].pop(field, None)
+        return record
 
     def serialize(self, pid, record, links_factory=None, **kwargs):
         """Serialize a single record and persistent identifier.

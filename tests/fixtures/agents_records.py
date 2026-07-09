@@ -29,6 +29,12 @@ def agent_idref_redirect_record(app, agent_idref_redirect_data):
 
 
 @pytest.fixture(scope="module")
+def agent_idref_redirect_2_record(app, agent_idref_redirect_2_data):
+    """Create the third (C) IdRef record of an A -> B -> C redirect chain."""
+    return create_record(AgentIdrefRecord, agent_idref_redirect_2_data)
+
+
+@pytest.fixture(scope="module")
 def agent_gnd_record(app, agent_gnd_data):
     """Create a GND record."""
     return create_record(AgentGndRecord, agent_gnd_data)
@@ -98,6 +104,14 @@ def agent_mef_idref_redirect_record(
 ):
     """Create a IdRef record."""
     return create_record(AgentMefRecord, agent_mef_idref_redirect_data)
+
+
+@pytest.fixture(scope="module")
+def agent_mef_idref_redirect_2_record(
+    app, agent_mef_idref_redirect_2_data, agent_idref_redirect_2_record
+):
+    """Create the MEF record for the third (C) IDREF record of an A -> B -> C chain."""
+    return create_record(AgentMefRecord, agent_mef_idref_redirect_2_data)
 
 
 @pytest.fixture(scope="module")

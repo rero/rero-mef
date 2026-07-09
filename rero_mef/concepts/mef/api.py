@@ -3,13 +3,9 @@
 
 """API for manipulating MEF records."""
 
-from copy import deepcopy
-
-from flask import current_app
 from invenio_search.api import RecordsSearch
 
-from rero_mef.api import EntityIndexer
-from rero_mef.api_mef import EntityMefRecord
+from rero_mef.api_mef import EntityMefRecord, MefIndexer
 
 from ..utils import get_concept_classes
 from .fetchers import mef_id_fetcher
@@ -102,58 +98,8 @@ class ConceptMefRecord(EntityMefRecord):
             **kwargs,
         )
 
-    def replace_refs(self):
-        """Replace $ref with real data."""
-        data = deepcopy(self)
-        data = super().replace_refs()
-        data["sources"] = [concept for concept in self.entities if data.get(concept)]
-        return data
 
-    def add_information(self, resolve=False, sources=False):
-        """Add information to record.
-
-        Sources will be also added if resolve is True.
-        :param resolve: resolve $refs
-        :param sources: Add sources information to record
-        :returns: record
-        """
-        replace_refs_data = ConceptMefRecord(deepcopy(self).replace_refs())
-        data = replace_refs_data if resolve else deepcopy(self)
-        my_sources = []
-        for concept in self.entities:
-            if concept_data := data.get(concept):
-                # we got a error status in data
-                if concept_data.get("status"):
-                    data.pop(concept)
-                    current_app.logger.error(
-                        f"MEF replace refs {data.get('pid')} {concept}"
-                        f" status: {concept_data.get('status')}"
-                        f" {concept_data.get('message')}"
-                    )
-                else:
-                    my_sources.append(concept)
-                for concept in self.entities:
-                    if metadata := replace_refs_data.get(concept, {}).get("metadata"):
-                        data[concept] = metadata
-        if my_sources and (resolve or sources):
-            data["sources"] = my_sources
-        return data
-
-
-class ConceptMefIndexer(EntityIndexer):
+class ConceptMefIndexer(MefIndexer):
     """Concept MEF indexer."""
 
     record_cls = ConceptMefRecord
-
-    def bulk_index(self, record_id_iterator, index=None, doc_type=None):
-        """Bulk index records.
-
-        :param record_id_iterator: Iterator yielding record UUIDs.
-        :param index: Index name (optional).
-        :param doc_type: Document type (optional).
-        """
-        super().bulk_index(
-            record_id_iterator,
-            index=index or ConceptMefSearch.Meta.index,
-            doc_type=doc_type or "comef",
-        )

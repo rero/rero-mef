@@ -3,13 +3,9 @@
 
 """API for manipulating MEF records."""
 
-from copy import deepcopy
-
-from flask import current_app
 from invenio_search.api import RecordsSearch
 
-from rero_mef.api import EntityIndexer
-from rero_mef.api_mef import EntityMefRecord
+from rero_mef.api_mef import EntityMefRecord, MefIndexer
 
 from .fetchers import mef_id_fetcher
 from .minters import mef_id_minter
@@ -80,54 +76,8 @@ class PlaceMefRecord(EntityMefRecord):
             **kwargs,
         )
 
-    def replace_refs(self):
-        """Replace $ref with real data."""
-        data = deepcopy(self)
-        data = super().replace_refs()
-        data["sources"] = [place for place in self.entities if data.get(place)]
-        return data
 
-    def add_information(self, resolve=False, sources=False):
-        """Add information to record.
-
-        Sources will be also added if resolve is True.
-        :param resolve: resolve $refs
-        :param sources: Add sources information to record
-        :returns: record
-        """
-        replace_refs_data = PlaceMefRecord(deepcopy(self).replace_refs())
-        data = replace_refs_data if resolve else deepcopy(self)
-        my_sources = []
-        for place in self.entities:
-            if place_data := data.get(place):
-                # we got a error status in data
-                if place_data.get("status"):
-                    data.pop(place)
-                    current_app.logger.error(
-                        f"MEF replace refs {data.get('pid')} {place}"
-                        f" status: {place_data.get('status')}"
-                        f" {place_data.get('message')}"
-                    )
-                else:
-                    my_sources.append(place)
-                for place in self.entities:
-                    if metadata := replace_refs_data.get(place, {}).get("metadata"):
-                        data[place] = metadata
-        if my_sources and (resolve or sources):
-            data["sources"] = my_sources
-        return data
-
-
-class PlaceMefIndexer(EntityIndexer):
+class PlaceMefIndexer(MefIndexer):
     """Place MEF indexer."""
 
     record_cls = PlaceMefRecord
-
-    def bulk_index(self, record_id_iterator):
-        """Bulk index records.
-
-        :param record_id_iterator: Iterator yielding record UUIDs.
-        """
-        super().bulk_index(
-            record_id_iterator, index=PlaceMefSearch.Meta.index, doc_type="plmef"
-        )

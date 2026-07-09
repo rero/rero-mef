@@ -10,7 +10,7 @@ from flask import url_for
 
 from rero_mef.concepts import ConceptMefRecord
 
-from ..utils import postdata
+from ..utils import postdata, strip_index_fields
 
 
 def test_view_concepts_mef(
@@ -78,6 +78,7 @@ def test_concepts_mef_get_latest(
 ):
     """Test concepts MEF get latest."""
     mef_data = concept_mef_rero_record.add_information(resolve=True)
+    mef_data = strip_index_fields(mef_data)
     # No new record found
     assert ConceptMefRecord.get_latest(pid_type="rero", pid="XXX") == {}
 
@@ -88,6 +89,7 @@ def test_concepts_mef_get_latest(
     assert data == mef_data
 
     mef_data = concept_mef_idref_redirect_record.add_information(resolve=True)
+    mef_data = strip_index_fields(mef_data)
     # New IdRef record is old IdRef record
     data = ConceptMefRecord.get_latest(
         pid_type="idref", pid=concept_idref_redirect_record.pid

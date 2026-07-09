@@ -9,12 +9,24 @@ from unittest.mock import Mock
 from flask import url_for
 from invenio_accounts.testutils import login_user_via_session
 
+from rero_mef.api_mef import _INDEX_ONLY_FIELDS
+
 
 def create_record(cls, data, delete_pid=False):
     """Create a record in DB and index it."""
     record = cls.create(data=data, delete_pid=delete_pid, dbcommit=True, reindex=True)
     cls.flush_indexes()
     return record
+
+
+def strip_index_fields(data):
+    """Remove ES-index-only fields (see ``rero_mef.api_mef._INDEX_ONLY_FIELDS``).
+
+    Useful when comparing ``get_latest()``'s output (already stripped) against
+    a record fetched via a different path, such as ``add_information()``,
+    that doesn't strip them.
+    """
+    return {k: v for k, v in data.items() if k not in _INDEX_ONLY_FIELDS}
 
 
 def create_and_login_monitoring_user(app, client):
