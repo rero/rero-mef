@@ -83,6 +83,8 @@ info_msg "Test formatting:"
 ruff format . --check
 info_msg "Test linting:"
 ruff check
+info_msg "Test mapping analysis settings:"
+python -m rero_mef.mapping_analysis check --verbose
 info_msg "Tests:"
 pytest --cov=rero_mef --cov-report=term-missing
 

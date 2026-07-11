@@ -38,6 +38,80 @@ def _make_fake_search(hits, total):
     return fake
 
 
+def test_mef_ui_query_parser_escapes_reserved_characters():
+    """Escape user input before interpolating it into the query-string clause."""
+    from rero_mef.query import mef_ui_query_parser
+
+    parsed = mef_ui_query_parser("foo + bar")
+    query = parsed.to_dict()["query_string"]["query"]
+
+    assert 'autocomplete_name:"foo \\+ bar"' in query
+    assert 'idref.authorized_access_point:"foo \\+ bar"' in query
+    assert 'gnd.authorized_access_point:"foo \\+ bar"' in query
+
+
+def test_mef_ui_query_parser_keeps_wildcards_usable():
+    """`*` and `?` stay unescaped so the search bar's wildcard terms still work."""
+    from rero_mef.query import mef_ui_query_parser
+
+    parsed = mef_ui_query_parser("Mozart*")
+    query = parsed.to_dict()["query_string"]["query"]
+
+    assert "(Mozart*)" in query
+    assert "\\*" not in query
+
+
+@pytest.mark.parametrize(
+    ("qstr", "expected"),
+    [
+        ("*foo", r"\*foo"),
+        ("?foo", r"\?foo"),
+        ("*", r"\*"),
+        ("?", r"\?"),
+        ("**", r"\*\*"),
+        ("Mozart *foo", r"Mozart \*foo"),
+    ],
+)
+def test_mef_ui_query_parser_escapes_leading_wildcards(qstr, expected):
+    """A term starting with a wildcard must not reach the unfielded clause.
+
+    `*` alone matches every record and `*foo` scans the whole term
+    dictionary, both through the unfielded `OR (...)` clause.
+    """
+    from rero_mef.query import mef_ui_query_parser
+
+    query = mef_ui_query_parser(qstr).to_dict()["query_string"]["query"]
+
+    assert f"({expected})" in query
+    assert f'autocomplete_name:"{expected}"' in query
+
+
+@pytest.mark.parametrize(
+    "qstr",
+    [
+        "Mozart* Wolfg?ng",
+        "foo*bar",
+        "foo?bar",
+        "organi*ation",
+    ],
+)
+def test_mef_ui_query_parser_keeps_non_leading_wildcards(qstr):
+    """Only a wildcard starting a term is escaped, the others stay usable.
+
+    Trailing truncation (`Mozart*`) and the internal truncation catalogue
+    users expect (`Wolfg?ng`) both reach the query untouched: the prefix in
+    front of the wildcard bounds the term enumeration, so neither carries
+    the whole-index cost that `*foo` does.
+    """
+    from rero_mef.query import mef_ui_query_parser
+
+    query = mef_ui_query_parser(qstr).to_dict()["query_string"]["query"]
+
+    assert f"({qstr})" in query
+    assert "\\*" not in query
+    assert "\\?" not in query
+
+
 # ── /api/all/mef/ ─────────────────────────────────────────────────────────────
 
 

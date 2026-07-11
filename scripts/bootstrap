@@ -93,6 +93,12 @@ flag="${flags[@]}"
 info_msg "Install with command: ${cmd} ${flag}"
 ${cmd} ${flags[@]}
 
+# Regenerate the mapping files' shared search-analysis settings from
+# rero_mef.mapping_analysis, so they're always in sync with the source of
+# truth regardless of whether a prior commit remembered to run `write`.
+info_msg "Regenerate mapping analysis settings"
+python -m rero_mef.mapping_analysis write --verbose
+
 # build the web assets
 info_msg "Build web assets: collect"
 invenio collect -v

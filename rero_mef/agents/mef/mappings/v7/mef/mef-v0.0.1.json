@@ -5,23 +5,72 @@
     "max_result_window": 100000000,
     "analysis": {
       "filter": {
-        "autocomplete_filter": {
-          "type": "edge_ngram",
-          "min_gram": 1,
-          "max_gram": 20
+        "french_elision": {
+          "type": "elision",
+          "articles_case": true,
+          "articles": [
+            "l",
+            "m",
+            "t",
+            "qu",
+            "n",
+            "s",
+            "j",
+            "d",
+            "c",
+            "jusqu",
+            "quoiqu",
+            "lorsqu",
+            "puisqu"
+          ]
         },
         "my_ascii_folding": {
           "type": "asciifolding",
           "preserve_original": true
+        },
+        "autocomplete_filter": {
+          "type": "edge_ngram",
+          "min_gram": 1,
+          "max_gram": 20
         }
       },
       "analyzer": {
-        "autocomplete": {
+        "french_access_point": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "french_elision",
+            "lowercase",
+            "my_ascii_folding"
+          ]
+        },
+        "german_access_point": {
           "type": "custom",
           "tokenizer": "standard",
           "filter": [
             "lowercase",
+            "german_normalization",
+            "my_ascii_folding"
+          ]
+        },
+        "autocomplete": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "french_elision",
+            "lowercase",
+            "german_normalization",
             "autocomplete_filter",
+            "my_ascii_folding"
+          ]
+        },
+        "autocomplete_search": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "french_elision",
+            "lowercase",
+            "german_normalization",
             "my_ascii_folding"
           ]
         }
@@ -111,7 +160,13 @@
           },
           "authorized_access_point": {
             "type": "text",
-            "copy_to": "autocomplete_name"
+            "analyzer": "german_access_point",
+            "copy_to": "autocomplete_name",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "qualifier": {
             "type": "keyword"
@@ -120,7 +175,13 @@
             "type": "keyword"
           },
           "variant_name": {
-            "type": "text"
+            "type": "text",
+            "analyzer": "german_access_point",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "date_of_establishment": {
             "type": "text"
@@ -133,11 +194,23 @@
           },
           "variant_access_point": {
             "type": "text",
-            "copy_to": "autocomplete_name"
+            "analyzer": "german_access_point",
+            "copy_to": "autocomplete_name",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "parallel_access_point": {
             "type": "text",
-            "copy_to": "autocomplete_name"
+            "copy_to": "autocomplete_name",
+            "analyzer": "german_access_point",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "country_associated": {
             "type": "keyword"
@@ -216,7 +289,13 @@
           },
           "authorized_access_point": {
             "type": "text",
-            "copy_to": "autocomplete_name"
+            "analyzer": "french_access_point",
+            "copy_to": "autocomplete_name",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "qualifier": {
             "type": "keyword"
@@ -225,7 +304,13 @@
             "type": "keyword"
           },
           "variant_name": {
-            "type": "text"
+            "type": "text",
+            "analyzer": "french_access_point",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "date_of_establishment": {
             "type": "text"
@@ -238,11 +323,23 @@
           },
           "variant_access_point": {
             "type": "text",
-            "copy_to": "autocomplete_name"
+            "analyzer": "french_access_point",
+            "copy_to": "autocomplete_name",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "parallel_access_point": {
             "type": "text",
-            "copy_to": "autocomplete_name"
+            "copy_to": "autocomplete_name",
+            "analyzer": "french_access_point",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "country_associated": {
             "type": "keyword"
@@ -321,7 +418,13 @@
           },
           "authorized_access_point": {
             "type": "text",
-            "copy_to": "autocomplete_name"
+            "analyzer": "french_access_point",
+            "copy_to": "autocomplete_name",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "qualifier": {
             "type": "keyword"
@@ -330,7 +433,13 @@
             "type": "keyword"
           },
           "variant_name": {
-            "type": "text"
+            "type": "text",
+            "analyzer": "french_access_point",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "date_of_establishment": {
             "type": "text"
@@ -343,11 +452,23 @@
           },
           "variant_access_point": {
             "type": "text",
-            "copy_to": "autocomplete_name"
+            "analyzer": "french_access_point",
+            "copy_to": "autocomplete_name",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "parallel_access_point": {
             "type": "text",
-            "copy_to": "autocomplete_name"
+            "copy_to": "autocomplete_name",
+            "analyzer": "french_access_point",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "country_associated": {
             "type": "keyword"
@@ -380,7 +501,7 @@
       "autocomplete_name": {
         "type": "text",
         "analyzer": "autocomplete",
-        "search_analyzer": "standard"
+        "search_analyzer": "autocomplete_search"
       },
       "_created": {
         "type": "date"

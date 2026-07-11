@@ -3,6 +3,8 @@
 
 """Query factories for REST API."""
 
+import re
+
 from elasticsearch_dsl.query import Q
 from flask import current_app, request
 from invenio_records_rest.errors import InvalidQueryRESTError
@@ -74,7 +76,7 @@ def and_search_factory(self, search, query_parser=None):
     return search, urlkwargs
 
 
-_QUERY_STRING_RESERVED_CHARS = '+-=!(){}[]^"~*?:\\/<>'
+_QUERY_STRING_RESERVED_CHARS = '+-=!(){}[]^"~:\\/<>'
 
 
 def _escape_query_string(qstr):
@@ -85,13 +87,28 @@ def _escape_query_string(qstr):
     ``query_string`` query. Whitespace is left untouched so multi-word input
     still searches as separate terms.
 
+    ``*`` and ``?`` are left unescaped everywhere except at the *start* of a
+    term: they can't switch fields, break clause structure, or add a boost on
+    their own, and the search bar relies on them both for trailing truncation
+    (``Mozart*``) and for the internal truncation catalogue users expect
+    (``Wolfg?ng``, ``organi*ation``). A term starting with a wildcard is
+    escaped, because the unfielded clause makes it reach the whole index:
+    ``*`` alone matches every record, and ``*foo`` forces a full
+    term-dictionary scan. An interior wildcard carries no such cost -- the
+    prefix in front of it bounds the term enumeration. Escaped, they search
+    for the literal characters, so ``*foo`` still finds ``foo``.
+
     :param qstr: raw user-supplied search term.
     :returns: ``qstr`` with reserved characters backslash-escaped.
     """
     escaped = qstr.replace("\\", "\\\\")
     for char in _QUERY_STRING_RESERVED_CHARS.replace("\\", ""):
         escaped = escaped.replace(char, f"\\{char}")
-    return escaped.replace("&&", r"\&\&").replace("||", r"\|\|")
+    escaped = escaped.replace("&&", r"\&\&").replace("||", r"\|\|")
+    return "".join(
+        part.replace("*", r"\*").replace("?", r"\?") if part.startswith(("*", "?")) else part
+        for part in re.split(r"(\s+)", escaped)
+    )
 
 
 def mef_ui_query_parser(qstr=None):
@@ -111,9 +128,11 @@ def mef_ui_query_parser(qstr=None):
     """
     if not qstr:
         return Q()
-    escaped = _escape_query_string(qstr)
+    escaped_qstr = _escape_query_string(qstr)
     query = (
-        f'(idref.authorized_access_point:"{escaped}" OR gnd.authorized_access_point:"{escaped}")^10 '
-        f'OR (autocomplete_name:"{escaped}" OR "{escaped}")^4 OR ({escaped})'
+        f'(idref.authorized_access_point:"{escaped_qstr}" '
+        f'OR gnd.authorized_access_point:"{escaped_qstr}")^10 '
+        f'OR (autocomplete_name:"{escaped_qstr}" OR "{escaped_qstr}")^4 '
+        f"OR ({escaped_qstr})"
     )
     return Q("query_string", query=query, default_operator="AND")

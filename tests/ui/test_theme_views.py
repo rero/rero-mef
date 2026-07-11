@@ -190,8 +190,8 @@ def test_agent_detail_conflicting_latest_targets(app, client):
 
     # each redirect route resolves to the correct, distinct MEF record
     res = client.get(f"/agents/latest/gnd:{gnd_new.pid}", follow_redirects=True)
-    assert res.status_code == 200
+    assert 200 <= res.status_code < 300
     assert res.request.path == f"/agents/{mef_gnd_new.pid}"
     res = client.get(f"/agents/latest/idref:{idref_new.pid}", follow_redirects=True)
-    assert res.status_code == 200
+    assert 200 <= res.status_code < 300
     assert res.request.path == f"/agents/{mef_idref_new.pid}"

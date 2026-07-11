@@ -2,7 +2,45 @@
   "settings": {
     "number_of_shards": 8,
     "number_of_replicas": 2,
-    "max_result_window": 100000000
+    "max_result_window": 100000000,
+    "analysis": {
+      "filter": {
+        "french_elision": {
+          "type": "elision",
+          "articles_case": true,
+          "articles": [
+            "l",
+            "m",
+            "t",
+            "qu",
+            "n",
+            "s",
+            "j",
+            "d",
+            "c",
+            "jusqu",
+            "quoiqu",
+            "lorsqu",
+            "puisqu"
+          ]
+        },
+        "my_ascii_folding": {
+          "type": "asciifolding",
+          "preserve_original": true
+        }
+      },
+      "analyzer": {
+        "french_access_point": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "french_elision",
+            "lowercase",
+            "my_ascii_folding"
+          ]
+        }
+      }
+    }
   },
   "mappings": {
     "date_detection": false,
@@ -44,10 +82,22 @@
         "type": "keyword"
       },
       "authorized_access_point": {
-        "type": "text"
+        "type": "text",
+        "analyzer": "french_access_point",
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
       },
       "variant_access_point": {
-        "type": "text"
+        "type": "text",
+        "analyzer": "french_access_point",
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
       },
       "broader": {
         "type": "object",
@@ -84,7 +134,8 @@
           },
           "name": {
             "type": "keyword"
-          }        }
+          }
+        }
       },
       "note": {
         "type": "object",
