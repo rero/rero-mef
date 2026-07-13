@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.4 (2026-07-13)
+
+### Refactoring
+
+- **mef**: Dedupe MEF helpers, restore UI redirect nav links
+  ([`d0003fb`](https://github.com/rero/rero-mef/commit/d0003fb8302aed036f3cca82de7113f969b00c68))
+
+
 ## v1.0.3 (2026-07-09)
 
 ### Bug Fixes

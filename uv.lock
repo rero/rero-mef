@@ -2761,7 +2761,7 @@ wheels = [
 
 [[package]]
 name = "rero-mef"
-version = "1.0.3"
+version = "1.0.4"
 source = { editable = "." }
 dependencies = [
     { name = "dojson" },
