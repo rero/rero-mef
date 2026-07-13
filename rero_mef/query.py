@@ -9,15 +9,6 @@ from invenio_records_rest.errors import InvalidQueryRESTError
 from invenio_records_rest.facets import default_facets_factory
 from invenio_records_rest.sorter import default_sorter_factory
 
-_DEFAULT_SEARCH_FIELDS = (
-    "pid",
-    "authorized_access_point",
-    "autocomplete_name",
-    "gnd.authorized_access_point",
-    "idref.authorized_access_point",
-    "rero.authorized_access_point",
-)
-
 
 def and_search_factory(self, search, query_parser=None):
     """Parse query using elasticsearch DSL query.
@@ -30,16 +21,27 @@ def and_search_factory(self, search, query_parser=None):
     def _default_parser(qstr=None):
         """Default parser for bare REST ``q`` searches.
 
-        Keep the search scoped to the common MEF fields the generic list routes
-        already expose, instead of allowing an unrestricted query across every
-        indexed field.
+        No ``fields`` restriction: this is the parser used by the generic
+        REST list routes that rero-ils's ``MEFProxyFactory`` calls directly
+        (see ``MEFProxyMixin._get_query_params``). rero-ils already
+        field-qualifies most of its own query, but deliberately also
+        includes a bare, unqualified fallback fragment (e.g. ``(term)``)
+        meant to match broadly. Restricting/boosting ``fields`` here was
+        tried to stop a record whose biography merely *mentions* a search
+        term (e.g. a "Victor Hugo") from outranking the record actually
+        *named* by that term -- but plain BM25 field-length normalization
+        already favours a precise short-field match over a long descriptive
+        one by a wide margin on its own. The actual bug that made ranking
+        look broken was a missing "-" in RECORDS_REST_DEFAULT_SORT's
+        "relevance" value (config.py), sorting ``_score`` ascending instead
+        of descending -- fixed there instead of adding field-scoping
+        complexity here for a problem the sort direction already caused.
         """
         if not qstr:
             return Q()
         return Q(
             "query_string",
             query=qstr,
-            fields=_DEFAULT_SEARCH_FIELDS,
             default_operator="AND",
         )
 
