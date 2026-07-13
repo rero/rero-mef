@@ -139,19 +139,19 @@ RECORDS_REST_SORT_OPTIONS = {
 
 RECORDS_REST_DEFAULT_SORT = {
     "all_mef": {
-        "query": "relevance",
+        "query": "-relevance",
         "noquery": "date_changed",
     },
     "mef": {
-        "query": "relevance",
+        "query": "-relevance",
         "noquery": "date_changed",
     },
     "concepts_mef": {
-        "query": "relevance",
+        "query": "-relevance",
         "noquery": "date_changed",
     },
     "places_mef": {
-        "query": "relevance",
+        "query": "-relevance",
         "noquery": "date_changed",
     },
 }
