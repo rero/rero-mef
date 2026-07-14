@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.5 (2026-07-14)
+
+### Bug Fixes
+
+- **mef**: Sort relevance descending, not ascending
+  ([`a6b3490`](https://github.com/rero/rero-mef/commit/a6b349066020713bdcaa5527159e4da996918eef))
+
+
 ## v1.0.4 (2026-07-13)
 
 ### Refactoring
