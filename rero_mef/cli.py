@@ -12,7 +12,6 @@ import click
 import redis
 import yaml
 from celery import current_app as current_celery
-from elasticsearch.exceptions import NotFoundError
 from flask import current_app
 from flask.cli import with_appcontext
 from flask_security.confirmable import confirm_user
@@ -24,6 +23,7 @@ from invenio_oauth2server.cli import process_scopes, process_user
 from invenio_oauth2server.models import Client, Token
 from invenio_records_rest.utils import obj_or_import_string
 from invenio_search import current_search_client
+from opensearchpy.exceptions import NotFoundError
 from sqlitedict import SqliteDict
 from werkzeug.local import LocalProxy
 from werkzeug.security import gen_salt
@@ -1001,11 +1001,11 @@ def export(output_path, pid_type, verbose, indent, schema):
     type=str,
     help="Name of the celery queue used to put the tasks into.",
 )
-@click.option("--version-type", help="Elasticsearch version type to use.")
+@click.option("--version-type", help="Search version type to use.")
 @click.option(
     "--raise-on-error/--skip-errors",
     default=True,
-    help=("Controls if Elasticsearch bulk indexing errors raises an exception."),
+    help=("Controls if Search bulk indexing errors raises an exception."),
 )
 @with_appcontext
 def run(
@@ -1016,8 +1016,8 @@ def run(
     :param delayed: Run indexing in background.
     :param concurrency: Number of concurrent indexing tasks to start.
     :param queue: Name of the celery queue used to put the tasks into.
-    :param version-type: Elasticsearch version type to use.
-    :param raise-on-error: 'Controls if Elasticsearch bulk indexing.
+    :param version-type: Search version type to use.
+    :param raise-on-error: 'Controls if Search bulk indexing.
     """
     celery_kwargs = {
         "kwargs": {

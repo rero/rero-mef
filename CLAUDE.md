@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 rero-mef is the Python/Flask backend for the RERO Metadata Enrichment Framework (MEF). It provides OAI harvesting, record processing, and metadata enrichment for library data pipelines. The project is built on Invenio, with PostgreSQL, Elasticsearch, Celery, and Redis for backend services. All development and task running is managed via `uv` and `poethepoet`.
 
-**Stack:** Python 3.12, Flask (Invenio), PostgreSQL, Elasticsearch 7, Celery, Redis
+**Stack:** Python 3.12, Flask (Invenio), PostgreSQL, OpenSearch 2, Celery, Redis
 **Package manager:** `uv` (with `poethepoet` for tasks)
 
 ## Development Workflow

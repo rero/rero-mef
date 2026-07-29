@@ -223,7 +223,7 @@ def get_all_missing_viaf_pids(verbose=False):
 def get_unlinked_agents(relink=False, dbcommit=False, reindex=False, progress=False):
     """Yield VIAF lookup tasks for MEF records that have no VIAF link.
 
-    Scans Elasticsearch directly to collect the entity source code and pid
+    Scans Search directly to collect the entity source code and pid
     needed for each VIAF lookup, avoiding per-record database reads.
     Excludes deleted MEF records, deleted linked entities, and entities that
     are already covered by an existing local VIAF record.

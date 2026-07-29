@@ -69,8 +69,8 @@ def test_all_mef_search_invalid_query(client):
 
 
 def test_all_mef_search_index_not_found(client):
-    """Return 404 when the ES index or alias is missing at query time."""
-    from elasticsearch.exceptions import NotFoundError
+    """Return 404 when the OpenSearch index or alias is missing at query time."""
+    from opensearchpy.exceptions import NotFoundError
 
     fake = mock.MagicMock()
     fake.extra.return_value = fake
@@ -139,7 +139,7 @@ def test_all_mef_search_total_as_int(client):
 def test_all_mef_search_total_above_10000(client):
     """Return the exact total when ES reports more than 10 000 hits.
 
-    Without track_total_hits=True, Elasticsearch caps total.value at 10 000
+    Without track_total_hits=True, Search caps total.value at 10 000
     even when the real count is higher.  The view must pass the full value
     through so the UI can display the correct number.
     """

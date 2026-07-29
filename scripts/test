@@ -58,40 +58,25 @@ set -e
 # Add exceptions below when a known vulnerability cannot yet be fixed.
 # Format: add_exception "VULN-ID"  # reason and upstream issue link
 info_msg "Check vulnerabilities:"
-# urllib3 1.26.x -> 2.x upgrade blocked by invenio-search[elasticsearch7]
-# which pins urllib3<2.0 via elasticsearch-py 7.x.
-# CVE-2025-50181 (fixed 2.5.0): HTTP redirects not disabled when PoolManager is configured to
-# disable them, potentially enabling SSRF or open-redirect bypass. Mitigation: rero-mef does not
-# configure PoolManager-level redirect disabling; all outbound HTTP goes through trusted
-# internal services or OAI endpoints where SSRF is not a concern.
-add_exceptions "CVE-2025-50181"
-# CVE-2025-66418 (fixed 2.6.0): unbounded number of links in the chained Content-Encoding
-# decompression pipeline (e.g. Content-Encoding: gzip, zstd, gzip, …), enabling DoS via CPU/memory exhaustion.
-# CVE-2025-66471 (fixed 2.6.0): streaming API improperly handles highly compressed data (decompression bomb).
-# CVE-2026-21441 (fixed 2.6.3): streaming API drains and decompresses response bodies
-# before the consumer reads them, bypassing configured read/size limits for any Content-Encoding.
-# Mitigation: all HTTP traffic goes through a reverse proxy (HAProxy/Nginx)
-# that enforces response size limits and strips unexpected Content-Encoding;
-# no untrusted streaming responses are consumed directly.
-add_exceptions "CVE-2025-66418"
-add_exceptions "CVE-2025-66471"
-add_exceptions "CVE-2026-21441"
-# CVE-2026-44431 (fixed 2.7.0): sensitive headers (Authorization, Cookie, Proxy-Authorization)
-# forwarded on cross-origin redirects via the low-level ProxyManager API with assert_same_host=False.
-# Mitigation: rero-mef does not use ProxyManager with assert_same_host=False; all outbound HTTP
-# goes through trusted internal services or OAI endpoints without cross-origin redirects.
-# Upgrade blocked by elasticsearch-py 7.13.4 which pins urllib3<2.0;
-# elasticsearch7 support cannot be dropped until the Invenio stack supports ES8/OpenSearch.
-add_exceptions "CVE-2026-44431"
 # sqlitedict 2.1.0 CVE-2024-35515 (no patched release):
 # Insecure deserialization via pickle. Mitigated: SqliteDict is instantiated with
 # encode=json.dumps / decode=json.loads, so pickle is never invoked.
 add_exceptions "CVE-2024-35515"
 # pytest 8.x CVE-2025-71176 (fixed in 9.0.3): local privilege escalation via predictable
-# /tmp/pytest-of-{user} directory names. Upgrade blocked by pytest-invenio<4.0.0 which
+# /tmp/pytest-of-{user} directory names. Upgrade blocked by pytest-invenio 4.0.1 which
 # pins pytest<9.0.0. Mitigated: tests run in isolated environments with a single trusted
 # user; no untrusted local users have access to the test runner's /tmp.
 add_exceptions "CVE-2025-71176"
+# flask-cors 6.0.2 PYSEC-2024-271 (no patched release — 6.0.2 is latest):
+# CRLF injection into log output. Only exploitable when the logger is at DEBUG level.
+# Mitigated: production deployments never run at DEBUG; development exposure is
+# limited to corrupted local log output with no code execution impact.
+add_exceptions "PYSEC-2024-271"
+# pyjwt 2.12.1 PYSEC-2025-183 (disputed by supplier — 2.12.1 is latest):
+# Advisory claims "weak encryption" due to short keys, but PyJWT maintainers dispute
+# this as a misattribution: key-length policy is the responsibility of the calling
+# application, not the library. No library-level fix is planned or possible.
+add_exceptions "PYSEC-2025-183"
 pip-audit "${pip_audit_exceptions[@]}"
 
 info_msg "Test formatting:"
