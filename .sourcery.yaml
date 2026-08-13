@@ -26,7 +26,7 @@ rule_settings:
     - line-length                 # Ruff enforces 120-char limit
     - import-order                # Ruff I rules handle this
     - docstring-style             # Ruff D rules handle this
-  python_version: "3.9"
+  python_version: "3.14"
 
 # Quality threshold encodes function-length and complexity budgets.
 # Sourcery blends multiple metrics (length, complexity, working memory, etc.)
