@@ -27,7 +27,7 @@ def enrich_place_data(
     if index_name in {PlaceGndSearch.Meta.index, PlaceIdrefSearch.Meta.index}:
         for identified_by in json.get("identifiedBy", []):
             identified_by["_identifier"] = make_identifier(identified_by)
-        for match_type in {"closeMatch", "exactMatch"}:
+        for match_type in ("closeMatch", "exactMatch"):
             for match in json.get(match_type, []):
                 for identified_by in match.get("identifiedBy", []):
                     identified_by["_identifier"] = make_identifier(identified_by)

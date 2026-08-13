@@ -57,7 +57,5 @@ class JsonLoader:
         """
         path = current_jsonschemas.url_to_path(uri)
         if path:
-            result = current_jsonschemas.get_schema(path=path)
-        else:
-            result = super().get_remote_json(uri, **kwargs)
-        return result
+            return current_jsonschemas.get_schema(path=path)
+        return super().get_remote_json(uri, **kwargs)

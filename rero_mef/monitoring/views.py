@@ -44,8 +44,8 @@ def db_connection_counts():
     """
     try:
         max_conn, used, res_for_super, free = db.session.execute(DB_CONNECTION_COUNTS_QUERY).first()
-    except SQLAlchemyError as error:
-        current_app.logger.exception(error)
+    except SQLAlchemyError:
+        current_app.logger.exception("Failed to get DB connection counts")
         return jsonify({"ERROR": "Internal server error"}), 500
     return jsonify(
         {
@@ -68,8 +68,8 @@ def db_connections():
     """
     try:
         results = db.session.execute(DB_CONNECTION_QUERY).fetchall()
-    except SQLAlchemyError as error:
-        current_app.logger.exception(error)
+    except SQLAlchemyError:
+        current_app.logger.exception("Failed to get DB connections")
         return jsonify({"ERROR": "Internal server error"}), 500
     data = {
         pid: {

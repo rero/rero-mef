@@ -44,16 +44,18 @@ def test_create_csv_viaf_mef(script_info, tmpdir):
         data = line.strip().split("\t")
         # don't use the first two lines with dates.
         assert data[3:] == [
-            '{"bne_pid": "XX871391", '
-            '"wiki": ['
-            '"https://ar.wikipedia.org/wiki/\\\\u0642\\\\u0627\\\\u064a'
-            '_\\\\u0633\\\\u062a\\\\u064a\\\\u0631\\\\u0646", '
-            '"https://de.wikipedia.org/wiki/Guy_Stern", '
-            '"https://en.wikipedia.org/wiki/Guy_Stern"'
-            "], "
-            '"rero_pid": "A003863577", '
-            '"pid": "108685760", '
-            '"$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json"}',
+            (
+                '{"bne_pid": "XX871391", '
+                '"wiki": ['
+                '"https://ar.wikipedia.org/wiki/\\\\u0642\\\\u0627\\\\u064a'
+                '_\\\\u0633\\\\u062a\\\\u064a\\\\u0631\\\\u0646", '
+                '"https://de.wikipedia.org/wiki/Guy_Stern", '
+                '"https://en.wikipedia.org/wiki/Guy_Stern"'
+                "], "
+                '"rero_pid": "A003863577", '
+                '"pid": "108685760", '
+                '"$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json"}'
+            ),
             "1",
         ]
     with open(viaf_pidstore) as in_file:
@@ -179,8 +181,7 @@ def test_create_from_viaf_with_viaf_file(app, script_info, tmpdir):
     viaf_file = tmpdir.join("test_viaf.json")
     viaf_data = [{"pid": "123456"}, {"pid": "789012"}]
     with open(viaf_file, "w") as f:
-        for record in viaf_data:
-            f.write(json.dumps(record) + "\n")
+        f.writelines(json.dumps(record) + "\n" for record in viaf_data)
 
     runner = CliRunner()
 

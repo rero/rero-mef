@@ -85,7 +85,7 @@ class Transformation:
                 date = int(date) if (date := field_033.get("d")) else 0
                 uris[date] = field_033["a"].strip()
         if uris:
-            latest = sorted(uris)[-1]
+            latest = max(uris)
             identifiers.append({"type": "uri", "value": uris[latest], "source": "BNF"})
         if identifiers:
             self.json_dict["identifiedBy"] = identifiers
@@ -117,7 +117,7 @@ class Transformation:
                 date = int(date) if (date := field_035.get("d")) else 0
                 bnf_ids[date] = subfield_z.strip()
         if bnf_ids:
-            latest = sorted(bnf_ids)[-1]
+            latest = max(bnf_ids)
             self.json_dict.setdefault("identifiedBy", []).append(
                 {
                     "source": "BNF",

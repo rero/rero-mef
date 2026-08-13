@@ -106,10 +106,8 @@ class AgentRecord(EntityRecord):
                 mef_actions[mef.pid] = Action.DISCARD
             # Update first MEF record
             mef_record = mef_records[0]
-            if old_ref := mef_record.get(self.name):
-                old_pid = old_ref["$ref"].split("/")[-1]
-            else:
-                old_pid = None
+            old_ref = mef_record.get(self.name)
+            old_pid = old_ref["$ref"].split("/")[-1] if old_ref else None
             if old_pid != self.pid:
                 if old_pid:
                     old_pids.add(old_pid)

@@ -45,7 +45,7 @@ class MrcIterator:
                 error = []
             error.append(err)
             if self.exceptions:
-                raise Exception(err)
+                raise
             rec, error = self.__next_valid__(error)
             return rec, error
         return rec, None
@@ -60,7 +60,7 @@ class MrcIterator:
         except Exception as err:
             self.error = err
             if self.exceptions:
-                raise Exception(err)
+                raise
             return None, err, False
         return rec, "", False
 

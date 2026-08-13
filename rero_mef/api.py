@@ -814,7 +814,7 @@ class EntityIndexer(RecordIndexer):
             except Exception:
                 message.reject()
                 uid = payload.get("id", "???")
-                current_app.logger.error(f"Failed to index record {uid}", exc_info=True)
+                current_app.logger.exception(f"Failed to index record {uid}")
 
     def _index_action(self, payload):
         """Create a bulk index action from a message payload.

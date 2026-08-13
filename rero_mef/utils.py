@@ -70,6 +70,9 @@ def _apply_oai_overlap(last_run, from_date):
 # TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 TIME_FORMAT = "%Y-%m-%d"
 
+# Shared stateless decoder used as the default for read_json_record.
+JSON_DECODER = JSONDecoder()
+
 
 class SickleWithRetries(Sickle):
     """Sickle class for OAI harvesting."""
@@ -368,13 +371,16 @@ def oai_process_records_from_dates(
                         msg = f"Creating {name} {idx}: {err} {record}"
                         if rec:
                             msg = f"{msg}\n{rec}"
-                        current_app.logger.error(msg, exc_info=True, stack_info=True)
+                        current_app.logger.exception(msg, stack_info=True)
             except NoRecordsMatch:
                 # get the next from to until dates
                 from_date = until_date
                 continue
-            except Exception as err:
-                current_app.logger.error(err, exc_info=True, stack_info=True)
+            except Exception:
+                current_app.logger.exception(
+                    f"OAI {name} spec({spec}): {dates['from']} .. {dates['until']}",
+                    stack_info=True,
+                )
                 count = -1
             # get the next from to until dates
             from_date = until_date
@@ -507,7 +513,7 @@ def oai_get_record(id_, name, transformation, access_token=None, identifier=None
     return trans_record, msg
 
 
-def read_json_record(json_file, buf_size=1024, decoder=JSONDecoder()):
+def read_json_record(json_file, buf_size=1024, decoder=JSON_DECODER):
     """Read lasy JSON records from file.
 
     :param json_file: JSON file handle
