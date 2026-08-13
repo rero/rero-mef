@@ -197,10 +197,7 @@ class EntityMefRecord(EntityRecord):
             missing_pids.extend(pid for pid in pids if cls.search().filter("term", pid=pid).count() == 0)
         else:
             # Get all deleted pids.
-            try:
-                missing_pids = cls.get_all_deleted_pids(from_date=data.get("from_date"))
-            except Exception as err:
-                raise Exception(err)
+            missing_pids = cls.get_all_deleted_pids(from_date=data.get("from_date"))
 
         if not data.get("resolve"):
             search = search.source(["pid", "deleted", "_created", "_updated"])

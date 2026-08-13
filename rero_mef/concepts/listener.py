@@ -27,7 +27,7 @@ def enrich_concept_data(
     if index_name in {ConceptGndSearch.Meta.index, ConceptIdrefSearch.Meta.index}:
         for identified_by in json.get("identifiedBy", []):
             identified_by["_identifier"] = make_identifier(identified_by)
-        for match_type in {"exactMatch", "closeMatch"}:
+        for match_type in ("exactMatch", "closeMatch"):
             for match in json.get(match_type, []):
                 for identified_by in match.get("identifiedBy", []):
                     identified_by["_identifier"] = make_identifier(identified_by)

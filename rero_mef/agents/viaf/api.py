@@ -176,9 +176,9 @@ class AgentViafRecord(EntityRecord):
         """
         super().__init__(data or {}, model=model, **kwargs)
         self.sources_used = {}
-        for data in self.sources.values():
-            if record_class := data.get("record_class"):
-                self.sources_used[data["name"]] = record_class
+        for source in self.sources.values():
+            if record_class := source.get("record_class"):
+                self.sources_used[source["name"]] = record_class
 
     @classmethod
     def filters(cls):
@@ -504,7 +504,7 @@ class AgentViafRecord(EntityRecord):
                     if wiki_urls := result.get("wiki"):
                         result["wiki"] = sorted(wiki_urls)
             except Exception as e:
-                current_app.logger.exception(f"Error parsing VIAF response for {pid}: {e}")
+                current_app.logger.exception(f"Error parsing VIAF response for {pid}")
                 return {}, f"VIAF get: {pid:<15} {url} | PARSE ERROR: {e}"
 
         # make sure we got a VIAF with the same pid for source
@@ -601,8 +601,8 @@ class AgentViafRecord(EntityRecord):
                 reindex=reindex,
                 test_md5=True,
             )
-        except Exception as e:
-            current_app.logger.exception(f"Failed to create/update target VIAF {redirect_to_pid}: {e}")
+        except Exception:
+            current_app.logger.exception(f"Failed to create/update target VIAF {redirect_to_pid}")
             if delete_if_not_found:
                 current_app.logger.info(f"Deleting old VIAF record {old_pid} due to target creation error")
                 self.delete(force=True, dbcommit=dbcommit, delindex=reindex)
@@ -784,10 +784,9 @@ class AgentViafRecord(EntityRecord):
         for hit in progress:
             viaf_pid = hit.pid
             data = hit.to_dict()
-            for source in multiple_pids:
+            for source, source_pids in multiple_pids.items():
                 if pid := data.get(source):
-                    multiple_pids[source].setdefault(pid, [])
-                    multiple_pids[source][pid].append(viaf_pid)
+                    source_pids.setdefault(pid, []).append(viaf_pid)
         for source, pids in multiple_pids.items():
             for pid, viaf_pids in pids.items():
                 if len(viaf_pids) > 1:

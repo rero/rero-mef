@@ -108,7 +108,7 @@ class Transformation:
         GND_Aenderungsdienst/gndAenderungsdienst_node.html
         """
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_relation_pid")
+            self.logger.info("Call Function: %s", "trans_gnd_relation_pid")
         for field_682 in self.marc.get_fields("682"):
             if field_682.get("i") == "Umlenkung":
                 for subfield_0 in field_682.get_subfields("0"):
@@ -241,7 +241,7 @@ class Transformation:
     def trans_gnd_biographical_information(self):
         """Transformation biographical_information 678 $abu."""
         if self.logger and self.verbose:
-            self.logger.info("Call Function", "trans_gnd_biographical_information")
+            self.logger.info("Call Function: %s", "trans_gnd_biographical_information")
         subfields = {"a": ", ", "b": ", ", "u": ", "}
         if biographical_information := build_string_list_from_fields(self.marc, "678", subfields):
             self.json_dict["biographical_information"] = biographical_information

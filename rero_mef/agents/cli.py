@@ -150,7 +150,7 @@ def create_from_viaf(
         counts.pop("viaf", None)
         msgs = [f"mef: {counts['mef']['old']}|{counts['mef']['new']}"]
         counts.pop("mef", None)
-        msgs.extend(f"{agent}: {value['old']}|{counts[agent]['new']}" for agent, value in counts.items())
+        msgs.extend(f"{agent}: {value['old']}|{value['new']}" for agent, value in counts.items())
 
         click.secho(f"COUNTS: {', '.join(msgs)}", fg="blue")
 
