@@ -21,9 +21,7 @@ from .viaf.api import AgentViafSearch
 def add_links(pid, record):
     """Add MEF link to agents."""
     links = {}
-    for idx, mef_pid in enumerate(
-        AgentMefRecord.get_mef(record.pid, record.name, pid_only=True)
-    ):
+    for idx, mef_pid in enumerate(AgentMefRecord.get_mef(record.pid, record.name, pid_only=True)):
         number = f"-{idx}" if idx else ""
         links[f"mef{number}"] = "{scheme}://{host}/api/agents/mef/" + str(mef_pid)
 
@@ -53,9 +51,7 @@ class ReroMefSerializer(JSONSerializer):
         :param record: Record instance.
         :param links_factory: Factory function for record links.
         """
-        return super().serialize(
-            pid=pid, record=record, links_factory=add_links, **kwargs
-        )
+        return super().serialize(pid=pid, record=record, links_factory=add_links, **kwargs)
 
 
 json_ = ReroMefSerializer(RecordSchemaJSONV1)

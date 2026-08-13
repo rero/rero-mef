@@ -92,9 +92,7 @@ class Monitoring:
             date = datetime.now(UTC) - timedelta(minutes=self.time_delta)
             pids_es = {}
             query = RecordsSearch(index=index).filter("range", _created={"lte": date})
-            progress = progressbar(
-                items=query.source("pid").scan(), length=query.count(), verbose=verbose
-            )
+            progress = progressbar(items=query.source("pid").scan(), length=query.count(), verbose=verbose)
             for hit in progress:
                 if pids_es.get(hit.pid):
                     pids_es_double.append(hit.pid)
@@ -126,19 +124,13 @@ class Monitoring:
         :return: dictionary with database, elasticsearch and database minus elasticsearch count information.
         """
         info = {}
-        for doc_type, endpoint in current_app.config.get(
-            "RECORDS_REST_ENDPOINTS"
-        ).items():
+        for doc_type, endpoint in current_app.config.get("RECORDS_REST_ENDPOINTS").items():
             info[doc_type] = {}
             count_db = self.get_db_count(doc_type, with_deleted=with_deleted)
             info[doc_type]["db"] = count_db
             if index := endpoint.get("search_index", ""):
                 count_es = self.get_es_count(index)
-                db_es = (
-                    count_db - count_es
-                    if isinstance(count_db, int) and isinstance(count_es, int)
-                    else None
-                )
+                db_es = count_db - count_es if isinstance(count_db, int) and isinstance(count_es, int) else None
                 info[doc_type]["index"] = index
                 info[doc_type]["es"] = count_es
                 info[doc_type]["db-es"] = db_es
@@ -148,9 +140,7 @@ class Monitoring:
                         missing_in_es,
                         pids_es_double,
                         index,
-                    ) = self.get_es_db_missing_pids(
-                        doc_type=doc_type, with_deleted=with_deleted
-                    )
+                    ) = self.get_es_db_missing_pids(doc_type=doc_type, with_deleted=with_deleted)
                     if index:
                         if missing_in_db:
                             info[doc_type]["db-"] = list(missing_in_db)
@@ -165,9 +155,7 @@ class Monitoring:
         :return: dictionary with all document types with a difference in database and elasticsearch counts.
         """
         checks = {}
-        for info, data in self.info(
-            with_deleted=with_deleted, difference_db_es=difference_db_es
-        ).items():
+        for info, data in self.info(with_deleted=with_deleted, difference_db_es=difference_db_es).items():
             db_es = data.get("db-es", "")
             if db_es is None:
                 checks.setdefault(info, {})
@@ -194,18 +182,14 @@ class Monitoring:
             for entity in mef["endpoints"]:
                 entity_class = get_entity_class(entity)
                 try:
-                    mef_count = (
-                        mef_search().filter("exists", field=entity_class.name).count()
-                    )
+                    mef_count = mef_search().filter("exists", field=entity_class.name).count()
                 except NotFoundError:
                     mef_count = f"No >>{mef['mef_class'].search.Meta.index}<< in ES"
                 db_count = entity_class.count()
                 checks[entity] = {
                     "mef": mef_count,
                     "db": db_count,
-                    "mef-db": mef_count - db_count
-                    if isinstance(mef_count, int) and isinstance(db_count, int)
-                    else "",
+                    "mef-db": mef_count - db_count if isinstance(mef_count, int) and isinstance(db_count, int) else "",
                     "index": entity,
                 }
         return checks
@@ -247,10 +231,6 @@ class Monitoring:
                     fg="red",
                 )
             if missing.get("ES"):
-                click.secho(
-                    f"ES missing {doc_type}: {', '.join(missing['ES'])}", fg="red"
-                )
+                click.secho(f"ES missing {doc_type}: {', '.join(missing['ES'])}", fg="red")
             if missing.get("DB"):
-                click.secho(
-                    f"DB missing {doc_type}: {', '.join(missing['DB'])}", fg="red"
-                )
+                click.secho(f"DB missing {doc_type}: {', '.join(missing['DB'])}", fg="red")

@@ -13,9 +13,7 @@ from rero_mef.places import PlaceMefRecord
 from ..utils import postdata, strip_index_fields
 
 
-def test_view_places_mef(
-    client, place_mef_idref_redirect_record, place_idref_redirect_record
-):
+def test_view_places_mef(client, place_mef_idref_redirect_record, place_idref_redirect_record):
     """Test places MEF."""
     pid = place_mef_idref_redirect_record.get("pid")
     url = url_for("invenio_records_rest.pidref_list")
@@ -76,9 +74,7 @@ def test_places_mef_get_latest(
     mef_data = place_mef_idref_redirect_record.add_information(resolve=True)
     mef_data = strip_index_fields(mef_data)
     # New IdRef record is old IdRef record
-    data = PlaceMefRecord.get_latest(
-        pid_type="idref", pid=place_idref_redirect_record.pid
-    )
+    data = PlaceMefRecord.get_latest(pid_type="idref", pid=place_idref_redirect_record.pid)
     data.pop("_created")
     data.pop("_updated")
     assert data == mef_data
@@ -123,17 +119,13 @@ def test_places_mef_get_updated(
     pids = sorted([rec.get("pid") for rec in data])
     assert pids == ["2"]
 
-    res, data = postdata(
-        client, "api_blueprint.place_mef_get_updated", {"from_date": "2022-02-02"}
-    )
+    res, data = postdata(client, "api_blueprint.place_mef_get_updated", {"from_date": "2022-02-02"})
     assert res.status_code == 200
     pids = sorted([rec.get("pid") for rec in data])
     assert pids == ["1", "2"]
 
     date = datetime.now(UTC) + timedelta(days=1)
-    res, data = postdata(
-        client, "api_blueprint.place_mef_get_updated", {"from_date": date.isoformat()}
-    )
+    res, data = postdata(client, "api_blueprint.place_mef_get_updated", {"from_date": date.isoformat()})
     assert res.status_code == 200
     pids = sorted([rec.get("pid") for rec in data])
     assert pids == []

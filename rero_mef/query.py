@@ -67,9 +67,7 @@ def and_search_factory(self, search, query_parser=None):
 
     # Check if deleted records should be included in search results
     # By default, exclude deleted records unless explicitly requested
-    with_deleted = request.args.get(
-        "with_deleted", default=False, type=lambda v: v.lower() in ["true", "1"]
-    )
+    with_deleted = request.args.get("with_deleted", default=False, type=lambda v: v.lower() in ["true", "1"])
     if not with_deleted:
         search = search.exclude("exists", field="deleted")
 

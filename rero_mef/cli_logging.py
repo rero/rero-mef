@@ -7,9 +7,7 @@ from flask import current_app
 
 def _dedupe_stream_handlers(logger):
     """Keep only one plain StreamHandler on the given logger."""
-    stream_handlers = [
-        handler for handler in logger.handlers if type(handler) is logging.StreamHandler
-    ]
+    stream_handlers = [handler for handler in logger.handlers if type(handler) is logging.StreamHandler]
     if len(stream_handlers) <= 1:
         return
     for handler in stream_handlers[1:]:

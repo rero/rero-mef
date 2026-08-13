@@ -61,6 +61,4 @@ class AgentGndIndexer(AgentIndexer):
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        super().bulk_index(
-            record_id_iterator, index=AgentGndSearch.Meta.index, doc_type="aggnd"
-        )
+        super().bulk_index(record_id_iterator, index=AgentGndSearch.Meta.index, doc_type="aggnd")

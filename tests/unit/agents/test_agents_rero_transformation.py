@@ -79,9 +79,7 @@ def test_rero_biographical_information():
      """
     trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_biographical_information()
-    assert trans.json == {
-        "biographical_information": ["Romancière. - Charlotte Brontë."]
-    }
+    assert trans.json == {"biographical_information": ["Romancière. - Charlotte Brontë."]}
 
 
 def test_rero_preferred_name():
@@ -221,9 +219,7 @@ def test_rero_parallel_access_point():
      """
     trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_parallel_access_point()
-    assert trans.json == {
-        "parallel_access_point": ["Brontë, Charlotte, 1816-1855 écrivain"]
-    }
+    assert trans.json == {"parallel_access_point": ["Brontë, Charlotte, 1816-1855 écrivain"]}
 
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="710">

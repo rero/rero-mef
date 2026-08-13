@@ -22,11 +22,7 @@ class Transformation:
 
     def _transform(self):
         """Call the transformation functions."""
-        if (
-            self.marc.get_fields("100")
-            or self.marc.get_fields("110")
-            or self.marc.get_fields("111")
-        ):
+        if self.marc.get_fields("100") or self.marc.get_fields("110") or self.marc.get_fields("111"):
             for func in dir(self):
                 if func.startswith("trans"):
                     func = getattr(self, func)
@@ -53,9 +49,7 @@ class Transformation:
                 identifier = f"http://data.rero.ch/02-{pid}"
                 self.json_dict["pid"] = pid
                 identified_by = self.json_dict.get("identifiedBy", [])
-                identified_by.append(
-                    {"source": "RERO", "type": "uri", "value": identifier}
-                )
+                identified_by.append({"source": "RERO", "type": "uri", "value": identifier})
                 self.json_dict["identifiedBy"] = identified_by
 
     def trans_rero_birth_and_death_dates(self):
@@ -97,9 +91,7 @@ class Transformation:
         biographical_information = []
         subfields = {"a": ", "}
         for tag in [680]:
-            biographical_information += build_string_list_from_fields(
-                self.marc, str(tag), subfields
-            )
+            biographical_information += build_string_list_from_fields(self.marc, str(tag), subfields)
         if biographical_information:
             self.json_dict["biographical_information"] = biographical_information
 

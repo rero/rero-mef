@@ -26,9 +26,7 @@ def test_create_csv_viaf_mef(script_info, tmpdir):
     runner = CliRunner()
     viaf_text_file = join(dirname(__file__), "../../data/viaf.txt")
     output_directory = tempfile.mkdtemp()
-    res = runner.invoke(
-        create_csv_viaf, [viaf_text_file, output_directory], obj=script_info
-    )
+    res = runner.invoke(create_csv_viaf, [viaf_text_file, output_directory], obj=script_info)
     assert res.output.strip().split("\n") == [
         "Create VIAF CSV files.",
         f"  VIAF input file: {viaf_text_file}",
@@ -65,9 +63,7 @@ def test_create_csv_viaf_mef(script_info, tmpdir):
     copy2(join(dirname(__file__), "../../data/aggnd_pidstore.csv"), output_directory)
     copy2(join(dirname(__file__), "../../data/aidref_pidstore.csv"), output_directory)
     copy2(join(dirname(__file__), "../../data/agrero_pidstore.csv"), output_directory)
-    res = runner.invoke(
-        create_csv_mef, [viaf_metadata, output_directory], obj=script_info
-    )
+    res = runner.invoke(create_csv_mef, [viaf_metadata, output_directory], obj=script_info)
     assert res.output.strip().split("\n") == [
         "Create MEF CSV files from VIAF metadata.",
         f"  VIAF input file: {viaf_metadata}",
@@ -164,9 +160,7 @@ def test_create_from_viaf_with_enqueue(script_info, agent_viaf_record):
     runner = CliRunner()
 
     # Test with enqueue flag
-    with mock.patch(
-        "rero_mef.agents.cli.task_create_mef_and_agents_from_viaf.delay"
-    ) as mock_delay:
+    with mock.patch("rero_mef.agents.cli.task_create_mef_and_agents_from_viaf.delay") as mock_delay:
         mock_delay.return_value = mock.Mock(id="task-123")
         res = runner.invoke(
             create_from_viaf,
@@ -191,9 +185,7 @@ def test_create_from_viaf_with_viaf_file(app, script_info, tmpdir):
     runner = CliRunner()
 
     # Test with viaf_file
-    with mock.patch(
-        "rero_mef.agents.cli.task_create_mef_and_agents_from_viaf"
-    ) as mock_task:
+    with mock.patch("rero_mef.agents.cli.task_create_mef_and_agents_from_viaf") as mock_task:
         res = runner.invoke(
             create_from_viaf,
             ["-f", str(viaf_file), "--progress"],
@@ -221,9 +213,7 @@ def test_create_from_viaf_with_viaf_file_cleans_non_existing_pids(script_info, t
             "rero_mef.agents.cli.get_entity_classes",
             return_value={"viaf": entity_class},
         ),
-        mock.patch(
-            "rero_mef.agents.cli.task_create_mef_and_agents_from_viaf"
-        ) as mock_task,
+        mock.patch("rero_mef.agents.cli.task_create_mef_and_agents_from_viaf") as mock_task,
         mock.patch(
             "rero_mef.agents.cli.get_all_missing_viaf_pids",
             return_value=([], stale_links),
@@ -259,16 +249,12 @@ def test_create_from_viaf_with_enqueue_cleans_non_existing_pids(script_info):
             "rero_mef.agents.cli.get_entity_classes",
             return_value={"viaf": entity_class},
         ),
-        mock.patch(
-            "rero_mef.agents.cli.AgentViafRecord.get_all_pids", return_value=["1"]
-        ),
+        mock.patch("rero_mef.agents.cli.AgentViafRecord.get_all_pids", return_value=["1"]),
         mock.patch(
             "rero_mef.agents.cli.get_all_missing_viaf_pids",
             return_value=([], stale_links),
         ),
-        mock.patch(
-            "rero_mef.agents.cli.task_create_mef_and_agents_from_viaf.delay"
-        ) as mock_delay,
+        mock.patch("rero_mef.agents.cli.task_create_mef_and_agents_from_viaf.delay") as mock_delay,
         mock.patch(
             "rero_mef.agents.cli._clean_non_existing_viaf_links",
             return_value=1,
@@ -410,9 +396,7 @@ def test_harvest_viaf_unlinked_propagates_unexpected_lookup_errors(script_info):
 def test_clean_non_existing_viaf_links_removes_matching_links():
     """Test cleanup removes stale viaf_pid when values still match."""
     mef_record = mock.MagicMock()
-    mef_record.get.side_effect = lambda key, default=None: {"viaf_pid": "v123"}.get(
-        key, default
-    )
+    mef_record.get.side_effect = lambda key, default=None: {"viaf_pid": "v123"}.get(key, default)
 
     with mock.patch(
         "rero_mef.agents.mef.api.AgentMefRecord.get_record_by_pid",
@@ -428,9 +412,7 @@ def test_clean_non_existing_viaf_links_removes_matching_links():
 def test_clean_non_existing_viaf_links_skips_changed_or_missing_records():
     """Test cleanup skips records when MEF missing or viaf_pid changed."""
     mef_record = mock.MagicMock()
-    mef_record.get.side_effect = lambda key, default=None: {"viaf_pid": "v999"}.get(
-        key, default
-    )
+    mef_record.get.side_effect = lambda key, default=None: {"viaf_pid": "v999"}.get(key, default)
 
     def _get_record_by_pid(mef_pid):
         if mef_pid == "mef1":

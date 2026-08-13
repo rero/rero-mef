@@ -74,9 +74,7 @@ def test_all_mef_search_index_not_found(client):
 
     fake = mock.MagicMock()
     fake.extra.return_value = fake
-    fake.__getitem__.return_value.execute.side_effect = NotFoundError(
-        404, "index_not_found", {}
-    )
+    fake.__getitem__.return_value.execute.side_effect = NotFoundError(404, "index_not_found", {})
 
     with (
         mock.patch("rero_mef.views._ensure_all_mef_alias", return_value=True),
@@ -161,9 +159,7 @@ def test_all_mef_search_total_above_10000(client):
 
 def test_all_mef_search_pagination_next(client):
     """Next link appears when more pages exist."""
-    hits = [
-        {"_id": str(i), "_index": "mef", "_source": {"pid": str(i)}} for i in range(5)
-    ]
+    hits = [{"_id": str(i), "_index": "mef", "_source": {"pid": str(i)}} for i in range(5)]
     fake = _make_fake_search(hits, 20)
 
     with (
@@ -179,9 +175,7 @@ def test_all_mef_search_pagination_next(client):
 
 def test_all_mef_search_pagination_prev(client):
     """Prev link appears on page 2+."""
-    hits = [
-        {"_id": str(i), "_index": "mef", "_source": {"pid": str(i)}} for i in range(5)
-    ]
+    hits = [{"_id": str(i), "_index": "mef", "_source": {"pid": str(i)}} for i in range(5)]
     fake = _make_fake_search(hits, 20)
 
     with (
@@ -236,9 +230,7 @@ def test_endpoint_for_all_mef_pid_concepts(app):
     from rero_mef.views import _endpoint_for_all_mef_pid
 
     with (
-        mock.patch(
-            "rero_mef.views.AgentMefRecord.get_record_by_pid", return_value=None
-        ),
+        mock.patch("rero_mef.views.AgentMefRecord.get_record_by_pid", return_value=None),
         mock.patch(
             "rero_mef.views.ConceptMefRecord.get_record_by_pid",
             return_value={"pid": "2001"},
@@ -252,12 +244,8 @@ def test_endpoint_for_all_mef_pid_places(app):
     from rero_mef.views import _endpoint_for_all_mef_pid
 
     with (
-        mock.patch(
-            "rero_mef.views.AgentMefRecord.get_record_by_pid", return_value=None
-        ),
-        mock.patch(
-            "rero_mef.views.ConceptMefRecord.get_record_by_pid", return_value=None
-        ),
+        mock.patch("rero_mef.views.AgentMefRecord.get_record_by_pid", return_value=None),
+        mock.patch("rero_mef.views.ConceptMefRecord.get_record_by_pid", return_value=None),
         mock.patch(
             "rero_mef.views.PlaceMefRecord.get_record_by_pid",
             return_value={"pid": "3001"},
@@ -271,15 +259,9 @@ def test_endpoint_for_all_mef_pid_not_found(app):
     from rero_mef.views import _endpoint_for_all_mef_pid
 
     with (
-        mock.patch(
-            "rero_mef.views.AgentMefRecord.get_record_by_pid", return_value=None
-        ),
-        mock.patch(
-            "rero_mef.views.ConceptMefRecord.get_record_by_pid", return_value=None
-        ),
-        mock.patch(
-            "rero_mef.views.PlaceMefRecord.get_record_by_pid", return_value=None
-        ),
+        mock.patch("rero_mef.views.AgentMefRecord.get_record_by_pid", return_value=None),
+        mock.patch("rero_mef.views.ConceptMefRecord.get_record_by_pid", return_value=None),
+        mock.patch("rero_mef.views.PlaceMefRecord.get_record_by_pid", return_value=None),
     ):
         assert _endpoint_for_all_mef_pid("UNKNOWN") is None
 

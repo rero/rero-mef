@@ -58,9 +58,7 @@ class _FakeRecord(dict):
         self.update_calls = []
 
     def update(self, data, dbcommit=False, reindex=False):
-        self.update_calls.append(
-            {"data": dict(data), "dbcommit": dbcommit, "reindex": reindex}
-        )
+        self.update_calls.append({"data": dict(data), "dbcommit": dbcommit, "reindex": reindex})
         return self
 
 
@@ -68,9 +66,7 @@ def test_create_agent_record_with_viaf_links(
     app, agent_viaf_data, agent_gnd_data, agent_rero_data, agent_idref_data, tmpdir
 ):
     """Test create agent record with VIAF links."""
-    viaf_record, action = AgentViafRecord.create_or_update(
-        agent_viaf_data, dbcommit=True, reindex=True
-    )
+    viaf_record, action = AgentViafRecord.create_or_update(agent_viaf_data, dbcommit=True, reindex=True)
     AgentViafRecord.flush_indexes()
     assert action == Action.CREATE
     assert viaf_record["pid"] == "66739143"
@@ -82,9 +78,7 @@ def test_create_agent_record_with_viaf_links(
     _, pids_viaf = viaf_record.get_missing_entity_pids("aidref")
     assert pids_viaf == ["66739143"]
 
-    gnd_record, action = AgentGndRecord.create_or_update(
-        data=agent_gnd_data, dbcommit=True, reindex=True
-    )
+    gnd_record, action = AgentGndRecord.create_or_update(data=agent_gnd_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert gnd_record["pid"] == "12391664X"
 
@@ -98,19 +92,14 @@ def test_create_agent_record_with_viaf_links(
         "type": "bf:Person",
         "viaf_pid": "66739143",
     }
-    assert [
-        {k: v for k, v in r.items() if k != "md5"}
-        for r in viaf_record.get_entities_records()
-    ] == [agent_gnd_data]
+    assert [{k: v for k, v in r.items() if k != "md5"} for r in viaf_record.get_entities_records()] == [agent_gnd_data]
     assert viaf_record.get_viaf(m_record) == [viaf_record]
     assert viaf_record.get_viaf(gnd_record) == [viaf_record]
     pids_db, pids_viaf = viaf_record.get_missing_entity_pids("aggnd")
     assert pids_db == []
     assert pids_viaf == []
 
-    rero_record, action = AgentReroRecord.create_or_update(
-        data=agent_rero_data, dbcommit=True, reindex=True
-    )
+    rero_record, action = AgentReroRecord.create_or_update(data=agent_rero_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert rero_record["pid"] == "A023655346"
     m_record, m_actions = rero_record.create_or_update_mef(dbcommit=True, reindex=True)
@@ -124,14 +113,12 @@ def test_create_agent_record_with_viaf_links(
         "type": "bf:Person",
         "viaf_pid": "66739143",
     }
-    assert [
-        {k: v for k, v in r.items() if k != "md5"}
-        for r in viaf_record.get_entities_records()
-    ] == [agent_gnd_data, agent_rero_data]
+    assert [{k: v for k, v in r.items() if k != "md5"} for r in viaf_record.get_entities_records()] == [
+        agent_gnd_data,
+        agent_rero_data,
+    ]
 
-    idref_record, action = AgentIdrefRecord.create_or_update(
-        data=agent_idref_data, dbcommit=True, reindex=True
-    )
+    idref_record, action = AgentIdrefRecord.create_or_update(data=agent_idref_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert idref_record["pid"] == "069774331"
     m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
@@ -146,30 +133,17 @@ def test_create_agent_record_with_viaf_links(
         "type": "bf:Person",
         "viaf_pid": "66739143",
     }
-    assert [
-        {k: v for k, v in r.items() if k != "md5"}
-        for r in viaf_record.get_entities_records()
-    ] == [
+    assert [{k: v for k, v in r.items() if k != "md5"} for r in viaf_record.get_entities_records()] == [
         agent_idref_data,
         agent_gnd_data,
         agent_rero_data,
     ]
 
+    assert m_record == AgentMefRecord.get_mef(entity_pid=idref_record.pid, entity_name=idref_record.name)[0]
     assert (
-        m_record
-        == AgentMefRecord.get_mef(
-            entity_pid=idref_record.pid, entity_name=idref_record.name
-        )[0]
+        m_record.pid == AgentMefRecord.get_mef(entity_pid=gnd_record.pid, entity_name=gnd_record.name, pid_only=True)[0]
     )
-    assert (
-        m_record.pid
-        == AgentMefRecord.get_mef(
-            entity_pid=gnd_record.pid, entity_name=gnd_record.name, pid_only=True
-        )[0]
-    )
-    mef_rec_resolved = AgentMefRecord.get_mef(
-        entity_pid=viaf_record.pid, entity_name=viaf_record.name
-    )[0]
+    mef_rec_resolved = AgentMefRecord.get_mef(entity_pid=viaf_record.pid, entity_name=viaf_record.name)[0]
     assert m_record == mef_rec_resolved
 
     mef_rec_resolved = mef_rec_resolved.replace_refs()
@@ -196,21 +170,15 @@ def test_create_agent_record_with_viaf_links(
     assert "$schema" not in open(tmp_file_name).read()
 
     # Test update agent record with VIAF links.
-    returned_record, action = AgentGndRecord.create_or_update(
-        data=agent_gnd_data, dbcommit=True, reindex=True
-    )
+    returned_record, action = AgentGndRecord.create_or_update(data=agent_gnd_data, dbcommit=True, reindex=True)
     assert action == Action.REPLACE
     assert returned_record["pid"] == "12391664X"
 
-    returned_record, action = AgentReroRecord.create_or_update(
-        data=agent_rero_data, dbcommit=True, reindex=True
-    )
+    returned_record, action = AgentReroRecord.create_or_update(data=agent_rero_data, dbcommit=True, reindex=True)
     assert action == Action.REPLACE
     assert returned_record["pid"] == "A023655346"
 
-    returned_record, action = AgentIdrefRecord.create_or_update(
-        data=agent_idref_data, dbcommit=True, reindex=True
-    )
+    returned_record, action = AgentIdrefRecord.create_or_update(data=agent_idref_data, dbcommit=True, reindex=True)
     assert action == Action.REPLACE
     assert returned_record["pid"] == "069774331"
 
@@ -241,12 +209,8 @@ def test_create_agent_record_with_viaf_links(
         {"pid": idref_record.pid, "source": "idref", "record_class": AgentIdrefRecord},
         {"pid": gnd_record.pid, "source": "gnd", "record_class": AgentGndRecord},
     ]
-    mef_record_rero = AgentMefRecord.get_mef(
-        entity_pid=rero_record.pid, entity_name=rero_record.name
-    )[0]
-    assert mef_record_rero.get_entities_pids() == [
-        {"pid": rero_record.pid, "record_class": AgentReroRecord}
-    ]
+    mef_record_rero = AgentMefRecord.get_mef(entity_pid=rero_record.pid, entity_name=rero_record.name)[0]
+    assert mef_record_rero.get_entities_pids() == [{"pid": rero_record.pid, "record_class": AgentReroRecord}]
 
     # VIAF update with merge
     viaf_record = AgentViafRecord.get_record_by_pid(viaf_record.pid)
@@ -280,12 +244,8 @@ def test_get_unlinked_agents_relink_uses_record_id(app):
     """Test relinking uses search hit record id instead of pid lookup."""
     from rero_mef.agents.api import get_unlinked_agents
 
-    fake_viaf_search = _FakeSearch(
-        [_FakeHit({"pid": "viaf-1", "gnd_pid": "gnd-1"}, "viaf-record")]
-    )
-    fake_mef_search = _FakeSearch(
-        [_FakeHit({"pid": "mef-1", "gnd": {"pid": "gnd-1"}}, "mef-record-id")]
-    )
+    fake_viaf_search = _FakeSearch([_FakeHit({"pid": "viaf-1", "gnd_pid": "gnd-1"}, "viaf-record")])
+    fake_mef_search = _FakeSearch([_FakeHit({"pid": "mef-1", "gnd": {"pid": "gnd-1"}}, "mef-record-id")])
     fake_record = _FakeRecord({"pid": "mef-1"})
 
     fake_entity_class = type(
@@ -304,9 +264,7 @@ def test_get_unlinked_agents_relink_uses_record_id(app):
             "rero_mef.agents.mef.api.AgentMefSearch",
             return_value=fake_mef_search,
         ),
-        mock.patch(
-            "rero_mef.agents.api.get_entity_class", return_value=fake_entity_class
-        ),
+        mock.patch("rero_mef.agents.api.get_entity_class", return_value=fake_entity_class),
         mock.patch(
             "rero_mef.agents.mef.api.AgentMefRecord.get_record",
             return_value=fake_record,
@@ -357,9 +315,7 @@ def test_get_unlinked_agents_yields_all_tasks(app):
             "rero_mef.agents.mef.api.AgentMefSearch",
             return_value=fake_mef_search,
         ),
-        mock.patch(
-            "rero_mef.agents.api.get_entity_class", return_value=fake_entity_class
-        ),
+        mock.patch("rero_mef.agents.api.get_entity_class", return_value=fake_entity_class),
     ):
         tasks = list(get_unlinked_agents(relink=False, dbcommit=False, reindex=False))
 
@@ -404,9 +360,7 @@ def test_create_or_update_mef_skips_missing_displaced_agent(app):
             }
         )
         # Must not raise AttributeError
-        mef_record, mef_actions = record.create_or_update_mef(
-            dbcommit=False, reindex=False
-        )
+        mef_record, mef_actions = record.create_or_update_mef(dbcommit=False, reindex=False)
 
     # The displaced pid was skipped, so it does not appear in mef_actions
     assert "gnd-old" not in mef_actions

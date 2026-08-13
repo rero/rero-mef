@@ -71,9 +71,7 @@ class ConceptMefRecord(EntityMefRecord):
         :returns: the modified record
         """
         data = self._set_type(data)
-        return super().update(
-            data=data, commit=commit, dbcommit=dbcommit, reindex=reindex
-        )
+        return super().update(data=data, commit=commit, dbcommit=dbcommit, reindex=reindex)
 
     @classmethod
     def create(

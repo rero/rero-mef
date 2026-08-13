@@ -114,8 +114,7 @@ class AgentViafRecord(EntityRecord):
         "BNF": {"name": "bnf", "info": "National Library of France"},
         "ICCU": {
             "name": "iccu",
-            "info": "Central Institute for the Union Catalogue of the "
-            "Italian libraries",
+            "info": "Central Institute for the Union Catalogue of the Italian libraries",
         },
         "ISNI": {"name": "isni", "info": "ISNI"},
         "WKP": {"name": "wiki", "info": "Wikidata"},
@@ -184,10 +183,7 @@ class AgentViafRecord(EntityRecord):
     @classmethod
     def filters(cls):
         """Filters for sources."""
-        return {
-            source["name"]: exists_filter(f"{source['name']}_pid")
-            for source in cls.sources.values()
-        }
+        return {source["name"]: exists_filter(f"{source['name']}_pid") for source in cls.sources.values()}
 
     @classmethod
     def aggregations(cls):
@@ -233,9 +229,7 @@ class AgentViafRecord(EntityRecord):
                 if online_verbose:
                     click.echo(f"\n{msg}")
                 if data and not data.get("NO TRANSFORMATION"):
-                    agent_record, action = agent_class.create_or_update(
-                        data=data, dbcommit=dbcommit, reindex=reindex
-                    )
+                    agent_record, action = agent_class.create_or_update(data=data, dbcommit=dbcommit, reindex=reindex)
             else:
                 agent_record = agent_class.get_record_by_pid(pid)
             return agent_record, action
@@ -283,13 +277,9 @@ class AgentViafRecord(EntityRecord):
             self.flush_indexes()
         # Recreate MEF records
         for data in viaf_agents_data:
-            agent_record, action = update_online(
-                agent_class=data["record_class"], pid=data["pid"], online=online
-            )
+            agent_record, action = update_online(agent_class=data["record_class"], pid=data["pid"], online=online)
             if agent_record:
-                _, mef_actions = agent_record.create_or_update_mef(
-                    dbcommit=dbcommit, reindex=reindex, viaf_record=self
-                )
+                _, mef_actions = agent_record.create_or_update_mef(dbcommit=dbcommit, reindex=reindex, viaf_record=self)
                 actions = set_actions(
                     actions=actions,
                     pid=agent_record.pid,
@@ -301,9 +291,7 @@ class AgentViafRecord(EntityRecord):
                 mef_records = AgentMefRecord.get_mef(data["pid"], data["record_class"])
                 mef_actions = {}
                 for mef_record in mef_records:
-                    mef_record.update(
-                        data=mef_record, dbcommit=dbcommit, reindex=reindex
-                    )
+                    mef_record.update(data=mef_record, dbcommit=dbcommit, reindex=reindex)
                     mef_actions[mef_record.pid] = Action.DISCARD
                 actions = set_actions(
                     actions=actions,
@@ -329,9 +317,7 @@ class AgentViafRecord(EntityRecord):
                             data=viaf_data, dbcommit=dbcommit, reindex=reindex
                         )
                         if new_viaf_record:
-                            new_viaf_record.create_mef_and_agents(
-                                dbcommit=dbcommit, reindex=reindex
-                            )
+                            new_viaf_record.create_mef_and_agents(dbcommit=dbcommit, reindex=reindex)
                         actions.setdefault(entity_pid, {})
                         actions[entity_pid]["viaf_update"] = viaf_action
                         viaf_updated = viaf_action in (
@@ -341,13 +327,9 @@ class AgentViafRecord(EntityRecord):
                         )
                 except RetryableVIAFError as err:
                     if verbose:
-                        click.echo(
-                            f"  VIAF lookup failed for {agent.name}:{entity_pid}: {err}"
-                        )
+                        click.echo(f"  VIAF lookup failed for {agent.name}:{entity_pid}: {err}")
             if not viaf_updated:
-                mef_record, mef_actions = agent.create_or_update_mef(
-                    dbcommit=dbcommit, reindex=reindex
-                )
+                mef_record, mef_actions = agent.create_or_update_mef(dbcommit=dbcommit, reindex=reindex)
                 actions.setdefault(entity_pid, {})
                 actions[entity_pid].setdefault("MEF", {})
                 for pid, action in mef_actions.items():
@@ -379,9 +361,7 @@ class AgentViafRecord(EntityRecord):
         total_timeout = current_app.config.get("RERO_MEF_VIAF_TOTAL_TIMEOUT")
         request_delay = current_app.config.get("RERO_MEF_VIAF_REQUEST_DELAY")
         request_jitter = current_app.config.get("RERO_MEF_VIAF_REQUEST_JITTER", 0)
-        retry_after_default = current_app.config.get(
-            "RERO_MEF_VIAF_RETRY_AFTER_DEFAULT"
-        )
+        retry_after_default = current_app.config.get("RERO_MEF_VIAF_RETRY_AFTER_DEFAULT")
         retry_after_max = current_app.config.get("RERO_MEF_VIAF_RETRY_AFTER_MAX")
         user_agent = current_app.config.get(
             "RERO_MEF_VIAF_USER_AGENT",
@@ -408,11 +388,7 @@ class AgentViafRecord(EntityRecord):
         retry_statuses = (500, 502, 503, 504)
 
         def _perform_request():
-            if (
-                total_timeout
-                and hasattr(signal, "SIGALRM")
-                and threading.current_thread() is threading.main_thread()
-            ):
+            if total_timeout and hasattr(signal, "SIGALRM") and threading.current_thread() is threading.main_thread():
 
                 def _on_timeout(_signum, _frame):
                     raise TimeoutError(f"request exceeded {total_timeout}s")
@@ -462,20 +438,12 @@ class AgentViafRecord(EntityRecord):
 
             retry_after = response.headers.get("Retry-After")
             try:
-                requested_sleep = (
-                    int(retry_after) if retry_after else retry_after_default
-                )
+                requested_sleep = int(retry_after) if retry_after else retry_after_default
             except TypeError, ValueError:
                 requested_sleep = retry_after_default
             capped_sleep = min(requested_sleep, retry_after_max)
-            wait_msg = (
-                f"VIAF get: {pid:<15} {url} | RATE LIMITED (429) "
-                f"Retry-After={requested_sleep}s"
-                + (
-                    f" (capped to {capped_sleep}s)"
-                    if capped_sleep < requested_sleep
-                    else ""
-                )
+            wait_msg = f"VIAF get: {pid:<15} {url} | RATE LIMITED (429) Retry-After={requested_sleep}s" + (
+                f" (capped to {capped_sleep}s)" if capped_sleep < requested_sleep else ""
             )
             if attempt >= max_attempts:
                 raise RetryableVIAFError(wait_msg)
@@ -502,13 +470,9 @@ class AgentViafRecord(EntityRecord):
                 result["pid"] = str(viaf_id) if viaf_id else None
 
                 # Extract sources (handle both old and new format with ns1: prefix)
-                sources_data = (
-                    data_json.get("sources") or data_json.get("ns1:sources") or {}
-                )
+                sources_data = data_json.get("sources") or data_json.get("ns1:sources") or {}
                 if isinstance(sources_data, dict):
-                    sources = sources_data.get("source") or sources_data.get(
-                        "ns1:source"
-                    )
+                    sources = sources_data.get("source") or sources_data.get("ns1:source")
                 else:
                     sources = None
 
@@ -527,14 +491,8 @@ class AgentViafRecord(EntityRecord):
                                 result[bib_source] = nsid
 
                     # get Wikipedia URLs (handle both old and new format)
-                    x_links_data = (
-                        data_json.get("xLinks") or data_json.get("ns1:xLinks") or {}
-                    )
-                    x_links = (
-                        x_links_data.get("xLink", [])
-                        if isinstance(x_links_data, dict)
-                        else []
-                    )
+                    x_links_data = data_json.get("xLinks") or data_json.get("ns1:xLinks") or {}
+                    x_links = x_links_data.get("xLink", []) if isinstance(x_links_data, dict) else []
                     if not isinstance(x_links, list):
                         x_links = [x_links]
                     for x_link in x_links:
@@ -542,15 +500,11 @@ class AgentViafRecord(EntityRecord):
                             # Handle both old and new format
                             text = x_link.get("content") or x_link.get("#text")
                             if text and "wikipedia" in text:
-                                result.setdefault("wiki", []).append(
-                                    text.replace('"', "%22")
-                                )
+                                result.setdefault("wiki", []).append(text.replace('"', "%22"))
                     if wiki_urls := result.get("wiki"):
                         result["wiki"] = sorted(wiki_urls)
             except Exception as e:
-                current_app.logger.exception(
-                    f"Error parsing VIAF response for {pid}: {e}"
-                )
+                current_app.logger.exception(f"Error parsing VIAF response for {pid}: {e}")
                 return {}, f"VIAF get: {pid:<15} {url} | PARSE ERROR: {e}"
 
         # make sure we got a VIAF with the same pid for source
@@ -560,13 +514,8 @@ class AgentViafRecord(EntityRecord):
             # Redirect detected: VIAF cluster was merged into another
             if result.get("pid"):
                 result["redirect_from"] = pid
-                return None, (
-                    f"VIAF get: {pid:<15} {url} | REDIRECT -> {result['pid']}"
-                )
-        elif (
-            result.get(f"{cls.sources.get(viaf_source_code, {}).get('name')}_pid")
-            == pid
-        ):
+                return None, (f"VIAF get: {pid:<15} {url} | REDIRECT -> {result['pid']}")
+        elif result.get(f"{cls.sources.get(viaf_source_code, {}).get('name')}_pid") == pid:
             return result, msg
         return {}, f"VIAF get: {pid:<15} {url} | NO RECORD"
 
@@ -578,9 +527,7 @@ class AgentViafRecord(EntityRecord):
         :returns: record and actions message.
         """
         try:
-            online_data, msg = self.get_online_record(
-                viaf_source_code="VIAF", pid=self.pid
-            )
+            online_data, msg = self.get_online_record(viaf_source_code="VIAF", pid=self.pid)
         except RetryableVIAFError as err:
             current_app.logger.warning(f"VIAF update failed for {self.pid}: {err}")
             return None, Action.ERROR
@@ -602,9 +549,7 @@ class AgentViafRecord(EntityRecord):
             )
         return None, Action.DISCARD
 
-    def handle_redirect(
-        self, redirect_to_pid, dbcommit=False, reindex=False, delete_if_not_found=False
-    ):
+    def handle_redirect(self, redirect_to_pid, dbcommit=False, reindex=False, delete_if_not_found=False):
         """Handle VIAF cluster merge (redirect).
 
         When a VIAF cluster is merged into another, the old VIAF ID
@@ -627,35 +572,24 @@ class AgentViafRecord(EntityRecord):
         current_app.logger.info(f"VIAF redirect: {old_pid} -> {redirect_to_pid}")
         # Fetch the target VIAF record
         try:
-            target_data, msg = self.get_online_record(
-                viaf_source_code="VIAF", pid=redirect_to_pid
-            )
+            target_data, msg = self.get_online_record(viaf_source_code="VIAF", pid=redirect_to_pid)
         except RetryableVIAFError as err:
             current_app.logger.warning(
-                f"VIAF redirect target fetch failed transiently: "
-                f"{old_pid} -> {redirect_to_pid} | {err}"
+                f"VIAF redirect target fetch failed transiently: {old_pid} -> {redirect_to_pid} | {err}"
             )
             return None, Action.ERROR, redirect_info
         if redirected_to_pid := _get_redirect_pid_from_msg(msg):
             current_app.logger.warning(
-                f"VIAF redirect target chained: "
-                f"{old_pid} -> {redirect_to_pid} -> {redirected_to_pid} | {msg}"
+                f"VIAF redirect target chained: {old_pid} -> {redirect_to_pid} -> {redirected_to_pid} | {msg}"
             )
             if delete_if_not_found:
-                current_app.logger.info(
-                    f"Deleting old VIAF record {old_pid} due to chained redirect"
-                )
+                current_app.logger.info(f"Deleting old VIAF record {old_pid} due to chained redirect")
                 self.delete(force=True, dbcommit=dbcommit, delindex=reindex)
             return None, Action.ERROR, redirect_info
         if not target_data:
-            current_app.logger.warning(
-                f"VIAF redirect target not found: "
-                f"{old_pid} -> {redirect_to_pid} | {msg}"
-            )
+            current_app.logger.warning(f"VIAF redirect target not found: {old_pid} -> {redirect_to_pid} | {msg}")
             if delete_if_not_found:
-                current_app.logger.info(
-                    f"Deleting old VIAF record {old_pid} as target not found"
-                )
+                current_app.logger.info(f"Deleting old VIAF record {old_pid} as target not found")
                 self.delete(force=True, dbcommit=dbcommit, delindex=reindex)
             return None, Action.ERROR, redirect_info
         target_data = _md5.add_md5(target_data)
@@ -668,13 +602,9 @@ class AgentViafRecord(EntityRecord):
                 test_md5=True,
             )
         except Exception as e:
-            current_app.logger.exception(
-                f"Failed to create/update target VIAF {redirect_to_pid}: {e}"
-            )
+            current_app.logger.exception(f"Failed to create/update target VIAF {redirect_to_pid}: {e}")
             if delete_if_not_found:
-                current_app.logger.info(
-                    f"Deleting old VIAF record {old_pid} due to target creation error"
-                )
+                current_app.logger.info(f"Deleting old VIAF record {old_pid} due to target creation error")
                 self.delete(force=True, dbcommit=dbcommit, delindex=reindex)
             return None, Action.ERROR, redirect_info
 
@@ -703,9 +633,7 @@ class AgentViafRecord(EntityRecord):
             .params(preserve_order=True)
             .sort({"_updated": {"order": "desc"}})
         )
-        viaf_records = [
-            cls.get_record_by_pid(hit.pid) for hit in query.source("pid").scan()
-        ]
+        viaf_records = [cls.get_record_by_pid(hit.pid) for hit in query.source("pid").scan()]
         if len(viaf_records) > 1:
             current_app.logger.error(
                 f"MULTIPLE VIAF FOUND FOR: {agent.name} {agent.pid} | "
@@ -754,9 +682,7 @@ class AgentViafRecord(EntityRecord):
             mef_actions[mef_record.pid] = {}
             mef_agents_records = mef_record.get_entities_records()
             if len(mef_agents_records):
-                mef_actions[mef_record.pid][mef_agents_records[0].name] = {
-                    mef_agents_records[0].pid: Action.UPDATE
-                }
+                mef_actions[mef_record.pid][mef_agents_records[0].name] = {mef_agents_records[0].pid: Action.UPDATE}
             # Guard: if create_mef_and_agents for a redirect target already migrated
             # this MEF record to a new VIAF cluster, the DB record's viaf_pid no longer
             # matches self.pid (ES may still show the old value when reindex=False).
@@ -768,9 +694,7 @@ class AgentViafRecord(EntityRecord):
             for mef_agent_record in mef_agents_records[1:]:
                 if mef_agent_record in agents_records:
                     mef_record.pop(mef_agent_record.name)
-                    mef_actions[mef_record.pid][mef_agent_record.name] = {
-                        mef_agent_record.pid: Action.DELETE
-                    }
+                    mef_actions[mef_record.pid][mef_agent_record.name] = {mef_agent_record.pid: Action.DELETE}
                     old_agent_records[mef_agent_record.pid] = mef_agent_record
             mef_record.pop("viaf_pid", None)
             mef_actions[mef_record.pid]["viaf"] = {current_viaf_pid: Action.DELETE}
@@ -779,9 +703,7 @@ class AgentViafRecord(EntityRecord):
         # recreate MEF records for agents
         for agent_record in old_agent_records.values():
             mef, _ = agent_record.create_or_update_mef(dbcommit=True, reindex=True)
-            mef_actions[mef.pid] = {
-                agent_record.name: {agent_record.pid: Action.CREATE}
-            }
+            mef_actions[mef.pid] = {agent_record.name: {agent_record.pid: Action.CREATE}}
         AgentMefRecord.flush_indexes()
         return result, Action.DELETE, mef_actions
 
@@ -790,9 +712,7 @@ class AgentViafRecord(EntityRecord):
         agents = []
         for source, record_class in self.sources_used.items():
             if source_pid := self.get(f"{source}_pid"):
-                agents.append(
-                    {"source": source, "record_class": record_class, "pid": source_pid}
-                )
+                agents.append({"source": source, "record_class": record_class, "pid": source_pid})
         return agents
 
     def get_entities_records(self, verbose=False):
@@ -804,8 +724,7 @@ class AgentViafRecord(EntityRecord):
                 agent_records.append(agent_record)
             elif verbose:
                 current_app.logger.warning(
-                    f"Record not found VIAF: {self.pid} "
-                    f"{agent['record_class'].name}: {agent['pid']}"
+                    f"Record not found VIAF: {self.pid} {agent['record_class'].name}: {agent['pid']}"
                 )
         return agent_records
 
@@ -830,9 +749,7 @@ class AgentViafRecord(EntityRecord):
             entity_pid_name = f"{record_class.name}_pid"
             if verbose:
                 click.echo(f"Get pids from VIAF with {entity_pid_name} ...")
-            query = AgentViafSearch().filter(
-                "bool", should=[Q("exists", field=entity_pid_name)]
-            )
+            query = AgentViafSearch().filter("bool", should=[Q("exists", field=entity_pid_name)])
             progress = progressbar(
                 items=query.source(["pid", entity_pid_name]).scan(),
                 length=query.count(),
@@ -857,15 +774,10 @@ class AgentViafRecord(EntityRecord):
         :param verbose: Verbose.
         :returns: pids.
         """
-        multiple_pids = {
-            f"{source}_pid": {} for source in AgentViafRecord(data={}).sources_used
-        }
+        multiple_pids = {f"{source}_pid": {} for source in AgentViafRecord(data={}).sources_used}
         cleaned_pids = deepcopy(multiple_pids)
         progress = progressbar(
-            items=AgentViafSearch()
-            .params(preserve_order=True)
-            .sort({"pid": {"order": "asc"}})
-            .scan(),
+            items=AgentViafSearch().params(preserve_order=True).sort({"pid": {"order": "asc"}}).scan(),
             length=AgentViafSearch().count(),
             verbose=verbose,
         )
@@ -893,6 +805,4 @@ class AgentViafIndexer(EntityIndexer):
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        super().bulk_index(
-            record_id_iterator, index=AgentViafSearch.Meta.index, doc_type="viaf"
-        )
+        super().bulk_index(record_id_iterator, index=AgentViafSearch.Meta.index, doc_type="viaf")

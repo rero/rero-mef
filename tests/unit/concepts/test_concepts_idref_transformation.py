@@ -80,9 +80,7 @@ def test_idref_authorized_access_point():
     """
     trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_authorized_access_point()
-    assert trans.json == {
-        "authorized_access_point": "Lecture - Méthodes d'apprentissage"
-    }
+    assert trans.json == {"authorized_access_point": "Lecture - Méthodes d'apprentissage"}
 
     xml_part_to_add = """
         <controlfield tag="008">Td6</controlfield>
@@ -95,9 +93,7 @@ def test_idref_authorized_access_point():
     """
     trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_authorized_access_point()
-    assert trans.json == {
-        "authorized_access_point": "Littérature espagnole - 20e siècle"
-    }
+    assert trans.json == {"authorized_access_point": "Littérature espagnole - 20e siècle"}
 
 
 def test_idref_variant_access_point():
@@ -140,9 +136,7 @@ def test_idref_variant_access_point():
     """
     trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_idref_variant_access_point()
-    assert trans.json == {
-        "variant_access_point": ["Brevets (droit commercial)", "Certificats d'addition"]
-    }
+    assert trans.json == {"variant_access_point": ["Brevets (droit commercial)", "Certificats d'addition"]}
 
 
 def test_idref_relation():

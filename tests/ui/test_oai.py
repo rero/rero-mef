@@ -49,18 +49,14 @@ def test_oai_date(app, init_oai, capsys):
 
     oai_set_last_run("agents.gnd", "wrong_date", verbose=True)
     captured = capsys.readouterr()
-    assert captured.out == (
-        "OAI set lastrun agents.gnd: invalid literal for int() with base 10: b'wron'\n"
-    )
+    assert captured.out == ("OAI set lastrun agents.gnd: invalid literal for int() with base 10: b'wron'\n")
 
     date = oai_set_last_run("agents.gnd", "2023-01-01")
     assert date == oai_get_last_run("agents.gnd", verbose=True)
 
 
 @mock.patch("requests.Session.get")
-def test_oai_get_record(
-    mock_get, app, init_oai, aggnd_oai_139205527, aggnd_data_139205527, capsys
-):
+def test_oai_get_record(mock_get, app, init_oai, aggnd_oai_139205527, aggnd_data_139205527, capsys):
     """Test oai harvesting."""
     mock_get.return_value = mock_response(content=aggnd_oai_139205527)
     online_gnd, msg = AgentGndRecord.get_online_record("139205527")
@@ -111,9 +107,7 @@ def test_oai_save_to_file(
     tmpdir,
 ):
     """Test oai harvesting save file."""
-    mock_sickle.side_effect = MultipleResponses(
-        empty=aggnd_oai_list_records_empty, response=aggnd_oai_list_records
-    )
+    mock_sickle.side_effect = MultipleResponses(empty=aggnd_oai_list_records_empty, response=aggnd_oai_list_records)
     temp_file_name = os.path.join(tmpdir, "temp_gnd.xml")
     count = save_records_from_dates(
         file_name=temp_file_name,
@@ -130,9 +124,7 @@ def test_oai_process_records_from_dates(
 ):
     """Test oai harvesting."""
     last_run = oai_get_last_run("agents.gnd")
-    mock_sickle.side_effect = MultipleResponses(
-        empty=aggnd_oai_list_records_empty, response=aggnd_oai_list_records
-    )
+    mock_sickle.side_effect = MultipleResponses(empty=aggnd_oai_list_records_empty, response=aggnd_oai_list_records)
     # tray first time harvesting with records creation
     count, action_count, mef_action_count = process_records_from_dates(
         from_date="2022-01-01",
@@ -147,9 +139,7 @@ def test_oai_process_records_from_dates(
     assert mef_action_count == {Action.CREATE: 1}
     assert last_run == oai_get_last_run("agents.gnd")
 
-    mock_sickle.side_effect = MultipleResponses(
-        empty=aggnd_oai_list_records_empty, response=aggnd_oai_list_records
-    )
+    mock_sickle.side_effect = MultipleResponses(empty=aggnd_oai_list_records_empty, response=aggnd_oai_list_records)
     # try second time harvesting with records update
     count, action_count, mef_action_count = process_records_from_dates(
         dbcommit=True, reindex=True, verbose=True, debug=True

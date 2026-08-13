@@ -28,9 +28,7 @@ def test_cli_access_token(app, client, script_info):
     """Test access token cli."""
     email = create_and_login_monitoring_user(app, client)
     runner = CliRunner()
-    res = runner.invoke(
-        tokens_create, ["-n", "test", "-u", email, "-t", "my_token"], obj=script_info
-    )
+    res = runner.invoke(tokens_create, ["-n", "test", "-u", email, "-t", "my_token"], obj=script_info)
     assert res.output.strip().split("\n") == ["my_token"]
 
 
@@ -39,20 +37,14 @@ def test_cli_create_or_update_delete(app, script_info):
     assert app
     aggnd_file_name = join(dirname(__file__), "../data/aggnd.json")
     runner = CliRunner()
-    res = runner.invoke(
-        create_or_update, ["aggnd", aggnd_file_name, "-l", "-v"], obj=script_info
-    )
+    res = runner.invoke(create_or_update, ["aggnd", aggnd_file_name, "-l", "-v"], obj=script_info)
     outputs = res.output.strip().split("\n")
     assert outputs[0] == "Update records: aggnd"
-    assert outputs[1] == (
-        "1          aggnd  pid:  00401653X                 CREATE | mef: 1 CREATE"
-    )
+    assert outputs[1] == ("1          aggnd  pid:  00401653X                 CREATE | mef: 1 CREATE")
 
     aggnd_file_name = join(dirname(__file__), "../data/aggnd.json")
     runner = CliRunner()
-    res = runner.invoke(
-        create_or_update, ["aggnd", aggnd_file_name, "-5", "-v"], obj=script_info
-    )
+    res = runner.invoke(create_or_update, ["aggnd", aggnd_file_name, "-5", "-v"], obj=script_info)
     outputs = res.output.strip().split("\n")
     assert outputs[0] == "Update records: aggnd"
     assert outputs[1] == ("1          aggnd  pid:  00401653X                 UPTODATE")
@@ -153,9 +145,7 @@ def test_cli_clean_multiple_mef_flushes_before_orphan_scan(app, script_info):
                 None,
             ),
         ),
-        mock.patch(
-            "rero_mef.cli.AgentMefRecord.flush_indexes", side_effect=_flush_indexes
-        ),
+        mock.patch("rero_mef.cli.AgentMefRecord.flush_indexes", side_effect=_flush_indexes),
         mock.patch(
             "rero_mef.cli.AgentMefRecord.get_all_pids_without_entities_and_viaf",
             side_effect=_get_orphans,

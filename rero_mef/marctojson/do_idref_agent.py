@@ -98,16 +98,9 @@ def build_language_string_list_from_fields(
                     subdelimiter = grouping.get("subdelimiter", "")
 
             if subfield_string:
-                subfield_string += (
-                    delimiter
-                    + grouping_start
-                    + subdelimiter.join(group[1])
-                    + grouping_end
-                )
+                subfield_string += delimiter + grouping_start + subdelimiter.join(group[1]) + grouping_end
             else:
-                subfield_string = (
-                    grouping_start + subdelimiter.join(group[1]) + grouping_end
-                )
+                subfield_string = grouping_start + subdelimiter.join(group[1]) + grouping_end
 
         if subfield_string:
             script_code = get_script_code(field)
@@ -202,11 +195,7 @@ class Transformation:
         if self.logger and self.verbose:
             self.logger.info("Call Function: %s", "trans_idref_language")
         if (fields_101 := self.marc.get_fields("101")) and (
-            language_list := [
-                language
-                for language in fields_101[0].get_subfields("a")
-                if language in LANGUAGES
-            ]
+            language_list := [language for language in fields_101[0].get_subfields("a") if language in LANGUAGES]
         ):
             self.json_dict["language"] = language_list
 
@@ -223,9 +212,7 @@ class Transformation:
             self.logger.info("Call Function: %s", "trans_idref_identifier")
         if fields_003 := self.marc.get_fields("003"):
             identified_by = self.json_dict.get("identifiedBy", [])
-            identified_by.append(
-                {"source": "IDREF", "type": "uri", "value": fields_003[0].data}
-            )
+            identified_by.append({"source": "IDREF", "type": "uri", "value": fields_003[0].data})
             self.json_dict["identifiedBy"] = identified_by
 
     def trans_idref_birth_and_death_dates(self):
@@ -288,16 +275,12 @@ class Transformation:
     def trans_idref_biographical_information(self):
         """Transformation biographical_information 300 $a 34x $a."""
         if self.logger and self.verbose:
-            self.logger.info(
-                "Call Function: %s", "trans_idref_biographical_information"
-            )
+            self.logger.info("Call Function: %s", "trans_idref_biographical_information")
         tag_list = [300, *list(range(340, 349 + 1))]  # 300, 340:349
         biographical_information = []
         subfields = {"a": ", "}
         for tag in tag_list:
-            biographical_information += build_string_list_from_fields(
-                self.marc, str(tag), subfields
-            )
+            biographical_information += build_string_list_from_fields(self.marc, str(tag), subfields)
         if biographical_information:
             self.json_dict["biographical_information"] = biographical_information
 

@@ -35,9 +35,7 @@ def create_and_login_monitoring_user(app, client):
     email = "monitoring@rero.ch"
     user = datastore.get_user(email)
     if not user:
-        user = datastore.create_user(
-            email="monitoring@rero.ch", password="1234", active=True
-        )
+        user = datastore.create_user(email="monitoring@rero.ch", password="1234", active=True)
         role = datastore.create_role(name="monitoring", description="Monitoring Group")
         datastore.add_role_to_user(user, role)
         datastore.commit()
@@ -50,9 +48,7 @@ def get_json(response):
     return json.loads(response.get_data(as_text=True))
 
 
-def postdata(
-    client, endpoint, data=None, headers=None, url_data=None, force_data_as_json=True
-):
+def postdata(client, endpoint, data=None, headers=None, url_data=None, force_data_as_json=True):
     """Build URL from given endpoint and send given data to it.
 
     :param force_data_as_json: the data sent forced json.

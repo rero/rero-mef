@@ -36,6 +36,4 @@ class PlaceMefProvider(BaseProvider):
         kwargs.setdefault("status", cls.default_status)
         if object_type and object_uuid:
             kwargs["status"] = PIDStatus.REGISTERED
-        return super().create(
-            object_type=object_type, object_uuid=object_uuid, **kwargs
-        )
+        return super().create(object_type=object_type, object_uuid=object_uuid, **kwargs)

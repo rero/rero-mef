@@ -13,9 +13,7 @@ def place_idref_data():
         "$schema": "https://mef.rero.ch/schemas/places_idref/idref-place-v0.0.1.json",
         "authorized_access_point": "Port-Valais (Suisse)",
         "bnf_type": "sujet Rameau",
-        "classification": [
-            {"classificationPortion": "914", "type": "bf:ClassificationDdc"}
-        ],
+        "classification": [{"classificationPortion": "914", "type": "bf:ClassificationDdc"}],
         "identifiedBy": [
             {
                 "source": "IDREF",
@@ -32,15 +30,16 @@ def place_idref_data():
             {
                 "label": [
                     "Port-Valais - http://www.port-valais.ch (2015-05-18)",
-                    "Dict. historique de la Suisse - "
-                    "http://www.hls-dhs-dss.ch (2015-05-18)",
+                    "Dict. historique de la Suisse - http://www.hls-dhs-dss.ch (2015-05-18)",
                 ],
                 "noteType": "dataSource",
             },
             {
                 "label": [
-                    "Commune du canton du Valais, district de Monthey, "
-                    "comprenant les villages du Bouveret et des Evouettes"
+                    (
+                        "Commune du canton du Valais, district de Monthey, "
+                        "comprenant les villages du Bouveret et des Evouettes"
+                    )
                 ],
                 "noteType": "general",
             },
@@ -57,9 +56,7 @@ def place_idref_redirect_data():
         "$schema": "https://mef.rero.ch/schemas/places_idref/idref-place-v0.0.1.json",
         "authorized_access_point": "Port-Valais (Suisse)",
         "bnf_type": "sujet Rameau",
-        "classification": [
-            {"classificationPortion": "914", "type": "bf:ClassificationDdc"}
-        ],
+        "classification": [{"classificationPortion": "914", "type": "bf:ClassificationDdc"}],
         "identifiedBy": [
             {
                 "source": "IDREF",
@@ -76,15 +73,16 @@ def place_idref_redirect_data():
             {
                 "label": [
                     "Port-Valais - http://www.port-valais.ch (2015-05-18)",
-                    "Dict. historique de la Suisse - "
-                    "http://www.hls-dhs-dss.ch (2015-05-18)",
+                    "Dict. historique de la Suisse - http://www.hls-dhs-dss.ch (2015-05-18)",
                 ],
                 "noteType": "dataSource",
             },
             {
                 "label": [
-                    "Commune du canton du Valais, district de Monthey, "
-                    "comprenant les villages du Bouveret et des Evouettes"
+                    (
+                        "Commune du canton du Valais, district de Monthey, "
+                        "comprenant les villages du Bouveret et des Evouettes"
+                    )
                 ],
                 "noteType": "general",
             },

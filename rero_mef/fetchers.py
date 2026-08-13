@@ -20,6 +20,4 @@ def id_fetcher(_record_uuid, data, provider, pid_key="pid"):
     :returns: A :data:`rero_mef.fetchers.FetchedPID` instance.
     :raises KeyError: If ``pid_key`` is not present in ``data``.
     """
-    return FetchedPID(
-        provider=provider, pid_type=provider.pid_type, pid_value=data[pid_key]
-    )
+    return FetchedPID(provider=provider, pid_type=provider.pid_type, pid_value=data[pid_key])

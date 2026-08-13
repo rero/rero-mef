@@ -32,7 +32,5 @@ def enrich_concept_data(
                 for identified_by in match.get("identifiedBy", []):
                     identified_by["_identifier"] = make_identifier(identified_by)
 
-        if not json.get("deleted") and (
-            association_identifier := record.association_identifier
-        ):
+        if not json.get("deleted") and (association_identifier := record.association_identifier):
             json["_association_identifier"] = association_identifier

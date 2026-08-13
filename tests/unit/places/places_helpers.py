@@ -19,11 +19,7 @@ def trans_prep(transformation, source, xml_part_to_add):
     file_name = os.path.join(current_dir, "examples/xml_minimal_record.xml")
     records = marcxml.parse_xml_to_array(file_name, strict=False, normalize_form=None)
     logger = Logger()
-    trans = {
-        "places": transformation(
-            marc=records[0], logger=logger, verbose=True, transform=False
-        )
-    }
+    trans = {"places": transformation(marc=records[0], logger=logger, verbose=True, transform=False)}
     return trans.get(source)
 
 

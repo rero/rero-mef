@@ -154,11 +154,7 @@ def _match_identifier_items(match_list, link_src):
     for match in match_list:
         aap = match.get("authorized_access_point", "")
         if link_id := next(
-            (
-                i
-                for i in match.get("identifiedBy", [])
-                if i.get("source") == link_src and i.get("type") != "uri"
-            ),
+            (i for i in match.get("identifiedBy", []) if i.get("source") == link_src and i.get("type") != "uri"),
             None,
         ):
             val = link_id.get("value", "")
@@ -186,9 +182,7 @@ def _field_to_row(key, label, value, ctx):
     if key == "identifiedBy" and isinstance(value, list):
         items = [
             {
-                "url": item.get("value")
-                if str(item.get("value", "")).startswith("http")
-                else None,
+                "url": item.get("value") if str(item.get("value", "")).startswith("http") else None,
                 "text": item.get("value", ""),
                 "linking": id_linking_fn(item) if id_linking_fn else False,
             }
@@ -258,9 +252,7 @@ def _build_rows(
         "relation_pid_conflict_url": relation_pid_conflict_url,
         "identifier_override": identifier_override or {},
     }
-    ordered = [k for k in _FIRST_FIELDS if k in data] + [
-        k for k in data if k not in _FIRST_FIELDS
-    ]
+    ordered = [k for k in _FIRST_FIELDS if k in data] + [k for k in data if k not in _FIRST_FIELDS]
     rows = []
     for key in ordered:
         value = data[key]
@@ -302,24 +294,16 @@ def _reverse_relation_urls(record_cls, entity_type, src, src_pid):
     """
     older_url = None
     latest_url = None
-    for hit in (
-        record_cls.search()
-        .filter("term", **{f"{src}__relation_pid__value": src_pid})
-        .scan()
-    ):
+    for hit in record_cls.search().filter("term", **{f"{src}__relation_pid__value": src_pid}).scan():
         hit_src = hit.to_dict().get(src, {})
         hit_rel_type = hit_src.get("relation_pid", {}).get("type")
         hit_src_pid = hit_src.get("pid")
         if not hit_src_pid:
             continue
         if not older_url and hit_rel_type == "redirect_to":
-            older_url = url_for(
-                _OLDER_ENDPOINT[entity_type], pid_type=src, pid=hit_src_pid
-            )
+            older_url = url_for(_OLDER_ENDPOINT[entity_type], pid_type=src, pid=hit_src_pid)
         elif not latest_url and hit_rel_type == "redirect_from":
-            latest_url = url_for(
-                _LATEST_ENDPOINT[entity_type], pid_type=src, pid=hit_src_pid
-            )
+            latest_url = url_for(_LATEST_ENDPOINT[entity_type], pid_type=src, pid=hit_src_pid)
         if older_url and latest_url:
             break
     return older_url, latest_url
@@ -368,13 +352,9 @@ def _compute_nav_urls(entity_type, record_cls, entities, resolved):
         src_data = resolved.get(src)
         if not isinstance(src_data, dict):
             continue
-        found_older, found_latest = _own_relation_url(
-            record_cls, entity_type, src, src_data.get("relation_pid")
-        )
+        found_older, found_latest = _own_relation_url(record_cls, entity_type, src, src_data.get("relation_pid"))
         if not (found_older and found_latest) and (src_pid := src_data.get("pid")):
-            rev_older, rev_latest = _reverse_relation_urls(
-                record_cls, entity_type, src, src_pid
-            )
+            rev_older, rev_latest = _reverse_relation_urls(record_cls, entity_type, src, src_pid)
             found_older = found_older or rev_older
             found_latest = found_latest or rev_latest
         if found_older:
@@ -443,9 +423,7 @@ def _mef_detail(entity_type, pid_value):
             }
         )
 
-    latest_urls, older_urls = _compute_nav_urls(
-        entity_type, config["record_cls"], record.entities, resolved
-    )
+    latest_urls, older_urls = _compute_nav_urls(entity_type, config["record_cls"], record.entities, resolved)
     type_conflict = _detect_type_conflict(record)
 
     return render_template(

@@ -18,9 +18,7 @@ from .utils import generate, get_entity_class, get_entity_search_class, progress
 # MD5Extension (md5) that are internal bookkeeping and were never meant to
 # be part of a MEF record's public representation -- consumers validating
 # against a strict additionalProperties: false schema reject them.
-_INDEX_ONLY_FIELDS = frozenset(
-    {"entity", "md5", "pid_numeric", "sort_authorized_access_point", "type_conflict"}
-)
+_INDEX_ONLY_FIELDS = frozenset({"entity", "md5", "pid_numeric", "sort_authorized_access_point", "type_conflict"})
 
 
 class EntityMefRecord(EntityRecord):
@@ -43,9 +41,7 @@ class EntityMefRecord(EntityRecord):
         :param reindex: reindex the record.
         :returns: the modified record
         """
-        return super().update(
-            data=data, commit=commit, dbcommit=dbcommit, reindex=reindex
-        )
+        return super().update(data=data, commit=commit, dbcommit=dbcommit, reindex=reindex)
 
     @classmethod
     def get_mef(cls, entity_pid, entity_name, pid_only=False):
@@ -71,10 +67,7 @@ class EntityMefRecord(EntityRecord):
             mef_records = [cls.get_record(hit.meta.id) for hit in query.scan()]
         if len(mef_records) > 1:
             mef_pids = mef_records if pid_only else [mef.pid for mef in mef_records]
-            current_app.logger.error(
-                f"MULTIPLE MEF FOUND FOR: {entity_name} {entity_pid} | "
-                f"mef: {', '.join(mef_pids)}"
-            )
+            current_app.logger.error(f"MULTIPLE MEF FOUND FOR: {entity_name} {entity_pid} | mef: {', '.join(mef_pids)}")
         return mef_records
 
     @classmethod
@@ -134,11 +127,7 @@ class EntityMefRecord(EntityRecord):
         # Get all pids from MEF
         date = datetime.now(UTC)
         progress = progressbar(
-            items=cls.search()
-            .params(preserve_order=True)
-            .sort({"_updated": {"order": "desc"}})
-            .source(sources)
-            .scan(),
+            items=cls.search().params(preserve_order=True).sort({"_updated": {"order": "desc"}}).source(sources).scan(),
             length=cls.search().count(),
             verbose=verbose,
         )
@@ -150,9 +139,7 @@ class EntityMefRecord(EntityRecord):
                     if entity_pid := entity_data.get("pid"):
                         pids[record_type].setdefault(entity_pid, []).append(mef_pid)
                         if len(pids[record_type][entity_pid]) > 1:
-                            multiple_pids[record_type][entity_pid] = pids[record_type][
-                                entity_pid
-                            ]
+                            multiple_pids[record_type][entity_pid] = pids[record_type][entity_pid]
                     else:
                         none_pids[record_type].append(mef_pid)
         # Get all entities pids and compare with MEF pids
@@ -200,18 +187,14 @@ class EntityMefRecord(EntityRecord):
         :param pid: pid to use..
         :returns: latest record.
         """
-        search = (
-            cls.search().params(preserve_order=True).sort({"pid": {"order": "asc"}})
-        )
+        search = cls.search().params(preserve_order=True).sort({"pid": {"order": "asc"}})
         deleted = []
         if from_date := data.get("from_date"):
             search = search.filter("range", _updated={"gte": from_date})
         missing_pids = []
         if pids := data.get("pids"):
             search = search.filter("terms", pid=pids)
-            missing_pids.extend(
-                pid for pid in pids if cls.search().filter("term", pid=pid).count() == 0
-            )
+            missing_pids.extend(pid for pid in pids if cls.search().filter("term", pid=pid).count() == 0)
         else:
             # Get all deleted pids.
             try:
@@ -244,9 +227,7 @@ class EntityMefRecord(EntityRecord):
             return {}
         data = next(search.scan()).to_dict()
         new_pid = None
-        if (
-            relation_pid := data.get(pid_type, {}).get("relation_pid")
-        ) and relation_pid["type"] == "redirect_to":
+        if (relation_pid := data.get(pid_type, {}).get("relation_pid")) and relation_pid["type"] == "redirect_to":
             new_pid = relation_pid["value"]
         if not new_pid and pid_type == "idref":
             # Find a newer record whose relation_pid redirects_from this one
@@ -262,9 +243,7 @@ class EntityMefRecord(EntityRecord):
             for hit in reverse.scan():
                 hit_data = hit.to_dict()
                 hit_rel = hit_data.get("idref", {}).get("relation_pid", {})
-                if hit_rel.get("type") == "redirect_from" and (
-                    candidate := hit_data.get("idref", {}).get("pid")
-                ):
+                if hit_rel.get("type") == "redirect_from" and (candidate := hit_data.get("idref", {}).get("pid")):
                     new_pid = candidate
                     break
         if new_pid:
@@ -328,9 +307,7 @@ class EntityMefRecord(EntityRecord):
         """Replace $ref with real data."""
         data = super().replace_refs()
         data["sources"] = [
-            entity
-            for entity in self.entities
-            if (entity_data := data.get(entity)) and not entity_data.get("status")
+            entity for entity in self.entities if (entity_data := data.get(entity)) and not entity_data.get("status")
         ]
         return data
 

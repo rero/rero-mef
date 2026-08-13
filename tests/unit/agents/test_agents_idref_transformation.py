@@ -140,9 +140,7 @@ def test_idref_identifier():
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_identifier()
     assert trans.json == {
-        "identifiedBy": [
-            {"source": "IDREF", "type": "uri", "value": "http://www.idref.fr/069774331"}
-        ],
+        "identifiedBy": [{"source": "IDREF", "type": "uri", "value": "http://www.idref.fr/069774331"}],
     }
 
 
@@ -355,9 +353,7 @@ def test_idref_biographical_information():
      """
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_biographical_information()
-    assert trans.json == {
-        "biographical_information": ["Giacomo Nicolini da Sabbio.", "Venezia, Italia"]
-    }
+    assert trans.json == {"biographical_information": ["Giacomo Nicolini da Sabbio.", "Venezia, Italia"]}
 
 
 def test_idref_biographical_information_missing():
@@ -552,9 +548,7 @@ def test_idref_parallel_access_point():
      """
     trans = trans_prep("idref", xml_part_to_add)
     trans.trans_idref_parallel_access_point()
-    assert trans.json == {
-        "parallel_access_point": ["Brontë, Charlotte, 1816-1855, écrivain"]
-    }
+    assert trans.json == {"parallel_access_point": ["Brontë, Charlotte, 1816-1855, écrivain"]}
 
     xml_part_to_add = """
         <datafield ind1=" " ind2=" " tag="710">

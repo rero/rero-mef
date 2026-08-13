@@ -91,9 +91,7 @@ def test_concepts_mef_get_latest(
     mef_data = concept_mef_idref_redirect_record.add_information(resolve=True)
     mef_data = strip_index_fields(mef_data)
     # New IdRef record is old IdRef record
-    data = ConceptMefRecord.get_latest(
-        pid_type="idref", pid=concept_idref_redirect_record.pid
-    )
+    data = ConceptMefRecord.get_latest(pid_type="idref", pid=concept_idref_redirect_record.pid)
     data.pop("_created")
     data.pop("_updated")
     assert data == mef_data
@@ -135,24 +133,18 @@ def test_concepts_mef_get_updated(
     pids = sorted([rec.get("pid") for rec in data])
     assert pids == ["1", "2", "3"]
 
-    res, data = postdata(
-        client, "api_blueprint.concept_mef_get_updated", {"pids": ["2"]}
-    )
+    res, data = postdata(client, "api_blueprint.concept_mef_get_updated", {"pids": ["2"]})
     assert res.status_code == 200
     pids = sorted([rec.get("pid") for rec in data])
     assert pids == ["2"]
 
-    res, data = postdata(
-        client, "api_blueprint.concept_mef_get_updated", {"from_date": "2022-02-02"}
-    )
+    res, data = postdata(client, "api_blueprint.concept_mef_get_updated", {"from_date": "2022-02-02"})
     assert res.status_code == 200
     pids = sorted([rec.get("pid") for rec in data])
     assert pids == ["1", "2", "3"]
 
     date = datetime.now(UTC) + timedelta(days=1)
-    res, data = postdata(
-        client, "api_blueprint.concept_mef_get_updated", {"from_date": date.isoformat()}
-    )
+    res, data = postdata(client, "api_blueprint.concept_mef_get_updated", {"from_date": date.isoformat()})
     assert res.status_code == 200
     pids = sorted([rec.get("pid") for rec in data])
     assert pids == []

@@ -23,15 +23,11 @@ def _no_md5(record):
 
 def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     """Test create place record links."""
-    idref_record, action = PlaceIdrefRecord.create_or_update(
-        data=place_idref_data, dbcommit=True, reindex=True
-    )
+    idref_record, action = PlaceIdrefRecord.create_or_update(data=place_idref_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert idref_record["pid"] == "271330163"
 
-    m_idref_record, m_action = idref_record.create_or_update_mef(
-        dbcommit=True, reindex=True
-    )
+    m_idref_record, m_action = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_action == {"1": Action.CREATE}
     assert "md5" in m_idref_record
     assert _no_md5(m_idref_record) == {
@@ -41,9 +37,7 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
         "type": "bf:Place",
     }
     PlaceMefRecord.flush_indexes()
-    m_idref_record, m_action = idref_record.create_or_update_mef(
-        dbcommit=True, reindex=True
-    )
+    m_idref_record, m_action = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_action == {"1": Action.REPLACE}
     assert "md5" in m_idref_record
     assert _no_md5(m_idref_record) == {
@@ -70,9 +64,7 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     assert number_records_in_file(tmp_file_name, "json") == 1
     assert "$schema" not in open(tmp_file_name).read()
 
-    returned_record, action = PlaceIdrefRecord.create_or_update(
-        data=place_idref_data, dbcommit=True, reindex=True
-    )
+    returned_record, action = PlaceIdrefRecord.create_or_update(data=place_idref_data, dbcommit=True, reindex=True)
     assert action == Action.REPLACE
     assert returned_record["pid"] == "271330163"
 
@@ -85,16 +77,12 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
 
     PlaceMefRecord.flush_indexes()
     # Test GND create
-    gnd_record, action = PlaceGndRecord.create_or_update(
-        data=place_gnd_data, dbcommit=True, reindex=True
-    )
+    gnd_record, action = PlaceGndRecord.create_or_update(data=place_gnd_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert gnd_record["pid"] == "040754766"
 
     PlaceMefRecord.flush_indexes()
-    m_gnd_record, m_action = gnd_record.create_or_update_mef(
-        dbcommit=True, reindex=True
-    )
+    m_gnd_record, m_action = gnd_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_action == {"2": Action.CREATE}
     assert "md5" in m_gnd_record
     assert _no_md5(m_gnd_record) == {
@@ -112,9 +100,7 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     idref_record = idref_record.update(data=idref_record, dbcommit=True, reindex=True)
 
     PlaceMefRecord.flush_indexes()
-    m_idref_record, m_action = idref_record.create_or_update_mef(
-        dbcommit=True, reindex=True
-    )
+    m_idref_record, m_action = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_action == {"1": Action.REPLACE, "2": Action.DELETE_ENTITY}
     assert "md5" in m_idref_record
     assert _no_md5(m_idref_record) == {
@@ -128,9 +114,7 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     assert PlaceMefSearch().filter("term", gnd__pid="040754766").count() == 1
 
     # Retest IDREF and GND record MEF update
-    m_idref_record, m_action = idref_record.create_or_update_mef(
-        dbcommit=True, reindex=True
-    )
+    m_idref_record, m_action = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_action == {"1": Action.REPLACE}
     assert "md5" in m_idref_record
     assert _no_md5(m_idref_record) == {
@@ -140,9 +124,7 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
         "pid": "1",
         "type": "bf:Place",
     }
-    m_gnd_record, m_action = gnd_record.create_or_update_mef(
-        dbcommit=True, reindex=True
-    )
+    m_gnd_record, m_action = gnd_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_action == {"1": Action.REPLACE}
     assert "md5" in m_gnd_record
     assert _no_md5(m_gnd_record) == {
@@ -160,9 +142,7 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     idref_record = idref_record.update(data=idref_record, dbcommit=True, reindex=True)
 
     PlaceMefRecord.flush_indexes()
-    m_idref_record, m_action = idref_record.create_or_update_mef(
-        dbcommit=True, reindex=True
-    )
+    m_idref_record, m_action = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_action == {"1": Action.REPLACE, "3": Action.CREATE}
     assert "md5" in m_idref_record
     assert _no_md5(m_idref_record) == {
@@ -182,9 +162,7 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     }
 
     place_gnd_data["pid"] = "TEST"
-    gnd_record, action = PlaceGndRecord.create_or_update(
-        data=place_gnd_data, dbcommit=True, reindex=True
-    )
+    gnd_record, action = PlaceGndRecord.create_or_update(data=place_gnd_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert gnd_record["pid"] == "TEST"
 
@@ -192,9 +170,7 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     PlaceGndRecord.flush_indexes()
     PlaceMefRecord.flush_indexes()
 
-    m_gnd_record, m_action = gnd_record.create_or_update_mef(
-        dbcommit=True, reindex=True
-    )
+    m_gnd_record, m_action = gnd_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_action == {"1": Action.REPLACE}
     assert "md5" in m_gnd_record
     assert _no_md5(m_gnd_record) == {
@@ -207,13 +183,9 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
 
     # test idref changes to other gnd
     place_gnd_data["pid"] = "TEST2"
-    gnd_record_2 = PlaceGndRecord.create(
-        data=place_gnd_data, dbcommit=True, reindex=True, delete_pid=False
-    )
+    gnd_record_2 = PlaceGndRecord.create(data=place_gnd_data, dbcommit=True, reindex=True, delete_pid=False)
     assert gnd_record_2.pid == "TEST2"
-    m_gnd_record_2, m_action = gnd_record_2.create_or_update_mef(
-        dbcommit=True, reindex=True
-    )
+    m_gnd_record_2, m_action = gnd_record_2.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_action == {"4": Action.CREATE}
     assert "md5" in m_gnd_record_2
     assert _no_md5(m_gnd_record_2) == {
@@ -229,9 +201,7 @@ def test_create_place_record(app, place_idref_data, place_gnd_data, tmpdir):
     idref_record = idref_record.update(data=idref_record, dbcommit=True, reindex=True)
 
     PlaceMefRecord.flush_indexes()
-    m_idref_record, m_action = idref_record.create_or_update_mef(
-        dbcommit=True, reindex=True
-    )
+    m_idref_record, m_action = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_action == {"1": Action.DELETE_ENTITY, "4": Action.REPLACE}
     assert "md5" in m_idref_record
     assert _no_md5(m_idref_record) == {
@@ -299,9 +269,7 @@ def test_make_identifier(app):
     """make_identifier builds type|(source)value or type:value strings."""
     from rero_mef.places.utils import make_identifier
 
-    assert make_identifier({"type": "bf:Nbn", "source": "GND", "value": "12345"}) == (
-        "bf:Nbn|(GND)12345"
-    )
+    assert make_identifier({"type": "bf:Nbn", "source": "GND", "value": "12345"}) == ("bf:Nbn|(GND)12345")
     assert make_identifier({"type": "bf:Nbn", "value": "12345"}) == "bf:Nbn|12345"
 
 
@@ -309,9 +277,7 @@ def test_place_record_delete(app, place_idref_data):
     """PlaceRecord.delete removes the ref from linked MEF records."""
     from copy import deepcopy
 
-    idref_record, _ = PlaceIdrefRecord.create_or_update(
-        data=deepcopy(place_idref_data), dbcommit=True, reindex=True
-    )
+    idref_record, _ = PlaceIdrefRecord.create_or_update(data=deepcopy(place_idref_data), dbcommit=True, reindex=True)
     m_record, _ = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_record.get("idref") is not None
 

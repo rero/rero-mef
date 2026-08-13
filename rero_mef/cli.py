@@ -218,9 +218,7 @@ def marc_to_json(entity, marc_file, json_file, error_file, verbose):
     :param json_file: JSON output file.
     :param verbose: Verbose.
     """
-    json_deleted_file_name = (
-        f"{os.path.splitext(json_file)[0]}_deleted{os.path.splitext(json_file)[-1]}"
-    )
+    json_deleted_file_name = f"{os.path.splitext(json_file)[0]}_deleted{os.path.splitext(json_file)[-1]}"
     click.secho(
         f" Transform {entity} MARC to JSON. {json_file} {json_deleted_file_name}",
         err=True,
@@ -241,9 +239,7 @@ def marc_to_json(entity, marc_file, json_file, error_file, verbose):
     pids = {}
     count_errors = 0
     for record, count in records:
-        data = transformation[entity](
-            marc=record, logger=current_app.logger, verbose=True
-        )
+        data = transformation[entity](marc=record, logger=current_app.logger, verbose=True)
         if json_data := data.json:
             if msg := json_data.get("NO TRANSFORMATION"):
                 if verbose:
@@ -252,9 +248,7 @@ def marc_to_json(entity, marc_file, json_file, error_file, verbose):
             else:
                 pid = json_data.get("pid")
                 if pids.get(pid):
-                    click.secho(
-                        f"  {count:8} Error duplicate pid in {entity}: {pid}", fg="red"
-                    )
+                    click.secho(f"  {count:8} Error duplicate pid in {entity}: {pid}", fg="red")
                 else:
                     pids[pid] = 1
                     _md5.add_md5(json_data)
@@ -345,9 +339,7 @@ def create_csv(entity, json_file, output_directory, verbose):
 )
 @click.option("-v", "--verbose", "verbose", is_flag=True, default=False)
 @with_appcontext
-def load_csv(
-    entity, pidstore_file, metadata_file, ids_file, bulk_count, reindex, verbose
-):
+def load_csv(entity, pidstore_file, metadata_file, ids_file, bulk_count, reindex, verbose):
     """Entity load CSV.
 
     :param entity: entity [aidref, aggnd, agrero, corero, viaf, mef].
@@ -363,26 +355,21 @@ def load_csv(
     click.secho(f"  CSV input files: {pidstore_file}|{metadata_file} ", err=True)
 
     click.secho(
-        "  Number of records in pidstore to load: "
-        f"{number_records_in_file(pidstore_file, 'csv')}.",
+        f"  Number of records in pidstore to load: {number_records_in_file(pidstore_file, 'csv')}.",
         fg="green",
         err=True,
     )
     bulk_load_pids(entity, pidstore_file, bulk_count=bulk_count, verbose=verbose)
 
     click.secho(
-        f"  Number of records in metadata to load: "
-        f"{number_records_in_file(metadata_file, 'csv')}.",
+        f"  Number of records in metadata to load: {number_records_in_file(metadata_file, 'csv')}.",
         fg="green",
         err=True,
     )
-    bulk_load_metadata(
-        entity, metadata_file, bulk_count=bulk_count, verbose=verbose, reindex=reindex
-    )
+    bulk_load_metadata(entity, metadata_file, bulk_count=bulk_count, verbose=verbose, reindex=reindex)
     if ids_file:
         click.secho(
-            "  Number of records in id to load: "
-            f"{number_records_in_file(ids_file, 'csv')}",
+            f"  Number of records in id to load: {number_records_in_file(ids_file, 'csv')}",
             fg="green",
             err=True,
         )
@@ -433,9 +420,7 @@ def save_csv(entities, output_directory, verbose):
         "pidref": "places.idref",
     }
     for entity in entities:
-        click.secho(
-            f"Save {entity} CSV files to directory: {output_directory}", fg="green"
-        )
+        click.secho(f"Save {entity} CSV files to directory: {output_directory}", fg="green")
         file_name = os.path.join(output_directory, f"{entity}_metadata.csv")
         if verbose:
             click.echo(f"  Save metadata: {file_name}")
@@ -471,15 +456,11 @@ def csv_to_json(csv_metadata_file, json_output_file, indent, verbose):
     :param indent: indent for output
     :param verbose: Verbose.
     """
-    click.secho(
-        f"CSV to JSON transform: {csv_metadata_file} -> {json_output_file}", fg="green"
-    )
+    click.secho(f"CSV to JSON transform: {csv_metadata_file} -> {json_output_file}", fg="green")
     with open(csv_metadata_file) as metadata_file:
         output_file = JsonWriter(json_output_file, indent=indent)
         length = number_records_in_file(csv_metadata_file, "csv")
-        progress_bar = progressbar(
-            items=metadata_file, length=length, label="Transform:", verbose=verbose
-        )
+        progress_bar = progressbar(items=metadata_file, length=length, label="Transform:", verbose=verbose)
         for count, metadata_line in enumerate(progress_bar, 1):
             data = json.loads(metadata_line.split("\t")[3])
             if verbose:
@@ -489,17 +470,13 @@ def csv_to_json(csv_metadata_file, json_output_file, indent, verbose):
 
 @fixtures.command()
 @click.argument("csv_metadata_file")
-@click.option(
-    "-c", "-csv_metadata_file_compair", "csv_metadata_file_compair", default=None
-)
+@click.option("-c", "-csv_metadata_file_compair", "csv_metadata_file_compair", default=None)
 @click.option("-e", "--entity", "entity", default=None)
 @click.option("-o", "--output", "output", is_flag=True, default=False)
 @click.option("-v", "--verbose", "verbose", is_flag=True, default=False)
 @click.option("-s", "--sqlite_dict", "sqlite_dict", default="sqlite_dict.db")
 @with_appcontext
-def csv_diff(
-    csv_metadata_file, csv_metadata_file_compair, entity, output, verbose, sqlite_dict
-):
+def csv_diff(csv_metadata_file, csv_metadata_file_compair, entity, output, verbose, sqlite_dict):
     """Entities record diff.
 
     :param csv_metadata_file: CSV metadata file to compair.
@@ -611,9 +588,7 @@ def csv_diff(
                     counts["changed"] += 1
                     if verbose:
                         click.echo("DIFF: ")
-                        click.echo(
-                            f" old:\t{json.dumps(existing_data, sort_keys=True)}"
-                        )
+                        click.echo(f" old:\t{json.dumps(existing_data, sort_keys=True)}")
                         click.echo(f" new:\t{json.dumps(data, sort_keys=True)}")
                     if output:
                         _md5.add_md5(data)
@@ -655,12 +630,8 @@ def csv_diff(
 @oaiharvester.command("addsource")
 @click.argument("name")
 @click.argument("baseurl")
-@click.option(
-    "-m", "--metadataprefix", default="marc21", help="The prefix for the metadata"
-)
-@click.option(
-    "-s", "--setspecs", default="", help="The 'set' criteria for the harvesting"
-)
+@click.option("-m", "--metadataprefix", default="marc21", help="The prefix for the metadata")
+@click.option("-s", "--setspecs", default="", help="The 'set' criteria for the harvesting")
 @click.option("-c", "--comment", default="", help="Comment")
 @click.option("-u", "--update", is_flag=True, default=False, help="Update config")
 @with_appcontext
@@ -735,9 +706,7 @@ def oaiharvester_info():
 
 
 @oaiharvester.command()
-@click.option(
-    "-n", "--name", "name", default="", help="Name of persistent configuration to use."
-)
+@click.option("-n", "--name", "name", default="", help="Name of persistent configuration to use.")
 @with_appcontext
 def get_last_run(name):
     """Gets the lastrun for a OAI harvest configuration."""
@@ -745,9 +714,7 @@ def get_last_run(name):
 
 
 @oaiharvester.command()
-@click.option(
-    "-n", "--name", default="", help="Name of persistent configuration to use."
-)
+@click.option("-n", "--name", default="", help="Name of persistent configuration to use.")
 @click.option("-d", "--date", default=None, help="Last date to set for the harvesting.")
 @with_appcontext
 def set_last_run(name, date):
@@ -756,9 +723,7 @@ def set_last_run(name, date):
 
 
 @oaiharvester.command()
-@click.option(
-    "-n", "--name", default=None, help="Name of persistent configuration to use."
-)
+@click.option("-n", "--name", default=None, help="Name of persistent configuration to use.")
 @click.option(
     "-f",
     "--from-date",
@@ -811,9 +776,7 @@ def set_last_run(name, date):
     help="Print debug informations",
 )
 @with_appcontext
-def harvestname(
-    name, from_date, until_date, arguments, quiet, enqueue, test_md5, debug, viaf_online
-):
+def harvestname(name, from_date, until_date, arguments, quiet, enqueue, test_md5, debug, viaf_online):
     """Harvest records from an OAI repository.
 
     :param name: Name of persistent configuration to use.
@@ -828,9 +791,7 @@ def harvestname(
     click.secho(f"Harvest {name} ...", fg="green")
     arguments = dict(x.split("=", 1) for x in arguments)
     try:
-        harvest_task = obj_or_import_string(
-            f"rero_mef.{name}.tasks:process_records_from_dates"
-        )
+        harvest_task = obj_or_import_string(f"rero_mef.{name}.tasks:process_records_from_dates")
     except ImportError:
         oai_names = [oai.name for oai in OAIHarvestConfig.query.all()]
         click.secho(f'Config "{name}" not found in {oai_names}', fg="red", err=True)
@@ -860,23 +821,14 @@ def harvestname(
                 viaf_online=viaf_online,
                 **arguments,
             )
-            actions = ", ".join(
-                [f"{action.value}={count}" for action, count in action_count.items()]
-            )
-            mef_actions = ", ".join(
-                [
-                    f"{action.value}={count}"
-                    for action, count in mef_action_count.items()
-                ]
-            )
+            actions = ", ".join([f"{action.value}={count}" for action, count in action_count.items()])
+            mef_actions = ", ".join([f"{action.value}={count}" for action, count in mef_action_count.items()])
             click.echo(f"Count: {count} agent: {actions} mef: {mef_actions}")
 
 
 @oaiharvester.command()
 @click.argument("output_file_name")
-@click.option(
-    "-n", "--name", default=None, help="Name of persistent configuration to use."
-)
+@click.option("-n", "--name", default=None, help="Name of persistent configuration to use.")
 @click.option(
     "-f",
     "--from-date",
@@ -966,9 +918,7 @@ def export(output_path, pid_type, verbose, indent, schema):
         output_file_name = os.path.join(output_path, f"{p_type}.json")
         click.secho(f"Export {p_type} records: {output_file_name}", fg="green")
         record_class = obj_or_import_string(
-            current_app.config.get("RECORDS_REST_ENDPOINTS")
-            .get(p_type)
-            .get("record_class")
+            current_app.config.get("RECORDS_REST_ENDPOINTS").get(p_type).get("record_class")
         )
         export_json_records(
             pids=record_class.get_all_pids(),
@@ -1008,9 +958,7 @@ def export(output_path, pid_type, verbose, indent, schema):
     help=("Controls if Elasticsearch bulk indexing errors raises an exception."),
 )
 @with_appcontext
-def run(
-    delayed, concurrency, with_stats, version_type=None, queue=None, raise_on_error=True
-):
+def run(delayed, concurrency, with_stats, version_type=None, queue=None, raise_on_error=True):
     """Run bulk record indexing.
 
     :param delayed: Run indexing in background.
@@ -1106,14 +1054,10 @@ def rabbitmq_queue_count():
             try:
                 for queue_name in queues:
                     try:
-                        _, message_count, _ = channel.queue_declare(
-                            queue=queue_name, passive=True
-                        )
+                        _, message_count, _ = channel.queue_declare(queue=queue_name, passive=True)
                         count += message_count
                     except Exception:
-                        current_app.logger.exception(
-                            f"Failed to inspect RabbitMQ queue '{queue_name}'"
-                        )
+                        current_app.logger.exception(f"Failed to inspect RabbitMQ queue '{queue_name}'")
                         return None
             finally:
                 channel.close()
@@ -1157,9 +1101,7 @@ def wait_empty_tasks(delay, verbose=False):
                 f"retrying in {backoff}s{exc_info}"
             )
             if inspection_failures >= max_inspection_failures:
-                msg = (
-                    "Task queue inspection failed repeatedly; aborting wait_empty_tasks"
-                )
+                msg = "Task queue inspection failed repeatedly; aborting wait_empty_tasks"
                 current_app.logger.warning(msg)
                 raise RuntimeError(msg)
 
@@ -1247,12 +1189,8 @@ def all_mef_alias():
     except NotFoundError:
         current_members = set()
 
-    actions = [
-        {"remove": {"index": old, "alias": alias_name}}
-        for old in current_members - desired
-    ] + [
-        {"add": {"index": new, "alias": alias_name}}
-        for new in desired - current_members
+    actions = [{"remove": {"index": old, "alias": alias_name}} for old in current_members - desired] + [
+        {"add": {"index": new, "alias": alias_name}} for new in desired - current_members
     ]
 
     if not actions:
@@ -1313,14 +1251,9 @@ def reindex_missing(entities, verbose):
     for entity in entities:
         click.secho(f"Reindex missing {entity} from ES.", fg="green")
         get_entity_class(entity)
-        pids_es, pids_db, pids_es_double, index = Monitoring().get_es_db_missing_pids(
-            doc_type=entity, verbose=verbose
-        )
+        pids_es, pids_db, pids_es_double, index = Monitoring().get_es_db_missing_pids(doc_type=entity, verbose=verbose)
         if verbose:
-            click.secho(
-                f"  {entity} ES: {len(pids_es)} DB: {len(pids_db)} "
-                f"Double:{len(pids_es_double)}"
-            )
+            click.secho(f"  {entity} ES: {len(pids_es)} DB: {len(pids_db)} Double:{len(pids_es_double)}")
             progress_bar = progressbar(items=pids_db, length=len(pids_db), verbose=True)
             for pid in progress_bar:
                 if rec := entity.get_record_by_pid(pid):
@@ -1335,9 +1268,7 @@ def reindex_missing(entities, verbose):
     "--record-type",
     "record_types",
     multiple=True,
-    type=click.Choice(
-        ["aidref", "aggnd", "agrero", "cidref", "cognd", "corero", "pidref", "plgnd"]
-    ),
+    type=click.Choice(["aidref", "aggnd", "agrero", "cidref", "cognd", "corero", "pidref", "plgnd"]),
     help="Limit cleanup to specific record types.",
 )
 @click.option("--dry-run", "dry_run", is_flag=True, default=False)
@@ -1370,17 +1301,11 @@ def clean_multiple_mef(record_types, dry_run, verbose):
 
     for group_name, mef_cls, group_types in plans:
         if current_types := (
-            [
-                record_type
-                for record_type in group_types
-                if record_type in selected_types
-            ]
+            [record_type for record_type in group_types if record_type in selected_types]
             if selected_types
             else group_types
         ):
-            _, multiple_pids, _, _ = mef_cls.get_multiple_missing_pids(
-                record_types=current_types, verbose=verbose
-            )
+            _, multiple_pids, _, _ = mef_cls.get_multiple_missing_pids(record_types=current_types, verbose=verbose)
             for pid_type, entity_map in multiple_pids.items():
                 if not entity_map:
                     continue
@@ -1400,9 +1325,7 @@ def clean_multiple_mef(record_types, dry_run, verbose):
                         reconciled_count += 1
                         info["reconciled"] += 1
                     elif verbose:
-                        click.secho(
-                            f"Missing {pid_type} record: {entity_pid}", fg="yellow"
-                        )
+                        click.secho(f"Missing {pid_type} record: {entity_pid}", fg="yellow")
                 if not dry_run:
                     mef_cls.flush_indexes()
             orphan_pids = list(mef_cls.get_all_pids_without_entities_and_viaf())
@@ -1429,18 +1352,14 @@ def clean_multiple_mef(record_types, dry_run, verbose):
         if dry_run:
             click.echo(f"{pid_type}: duplicates={info['duplicates']}")
         else:
-            click.echo(
-                f"{pid_type}: duplicates={info['duplicates']} reconciled={info['reconciled']}"
-            )
+            click.echo(f"{pid_type}: duplicates={info['duplicates']} reconciled={info['reconciled']}")
 
     for group_name in [plan[0] for plan in plans if plan[0] in orphan_details]:
         info = orphan_details[group_name]
         if dry_run:
             click.echo(f"{group_name}: orphaned={info['orphaned']}")
         else:
-            click.echo(
-                f"{group_name}: orphaned={info['orphaned']} deleted={info['deleted']}"
-            )
+            click.echo(f"{group_name}: orphaned={info['orphaned']} deleted={info['deleted']}")
 
     if dry_run:
         click.secho(
@@ -1481,9 +1400,7 @@ def create_personal(name, user_id, scopes=None, is_internal=False, access_token=
         client.gen_salt()
 
         if not access_token:
-            access_token = gen_salt(
-                current_app.config.get("OAUTH2SERVER_TOKEN_PERSONAL_SALT_LEN")
-            )
+            access_token = gen_salt(current_app.config.get("OAUTH2SERVER_TOKEN_PERSONAL_SALT_LEN"))
         token = Token(
             client_id=client.client_id,
             user_id=user_id,
@@ -1502,9 +1419,7 @@ def create_personal(name, user_id, scopes=None, is_internal=False, access_token=
 
 @utils.command("tokens_create")
 @click.option("-n", "--name", required=True)
-@click.option(
-    "-u", "--user", required=True, callback=process_user, help="User ID or email."
-)
+@click.option("-u", "--user", required=True, callback=process_user, help="User ID or email.")
 @click.option("-s", "--scope", "scopes", multiple=True, callback=process_scopes)
 @click.option("-i", "--internal", is_flag=True)
 @click.option(
@@ -1517,8 +1432,6 @@ def create_personal(name, user_id, scopes=None, is_internal=False, access_token=
 @with_appcontext
 def tokens_create(name, user, scopes, internal, access_token):
     """Create a personal OAuth token."""
-    token = create_personal(
-        name, user.id, scopes=scopes, is_internal=internal, access_token=access_token
-    )
+    token = create_personal(name, user.id, scopes=scopes, is_internal=internal, access_token=access_token)
     db.session.commit()
     click.secho(token.access_token, fg="blue")

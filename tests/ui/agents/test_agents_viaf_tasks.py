@@ -34,17 +34,13 @@ def test_refresh_viaf_record_create(mock_get, app, agent_viaf_online_response):
 
 
 @mock.patch("requests.Session.get")
-def test_refresh_viaf_record_update(
-    mock_get, app, agent_viaf_record, agent_viaf_online_response
-):
+def test_refresh_viaf_record_update(mock_get, app, agent_viaf_record, agent_viaf_online_response):
     """Test _refresh_viaf_record updates existing record."""
     pid = agent_viaf_record.pid
 
     # Add MD5 to existing record first
 
-    agent_viaf_record.update(
-        _md5.add_md5(dict(agent_viaf_record)), dbcommit=True, reindex=True
-    )
+    agent_viaf_record.update(_md5.add_md5(dict(agent_viaf_record)), dbcommit=True, reindex=True)
 
     # Modify data and mock response with different content
     modified_data = deepcopy(agent_viaf_online_response)
@@ -62,9 +58,7 @@ def test_refresh_viaf_record_update(
 
 
 @mock.patch("requests.Session.get")
-def test_refresh_viaf_record_redirect(
-    mock_get, app, agent_viaf_record, agent_viaf_online_response
-):
+def test_refresh_viaf_record_redirect(mock_get, app, agent_viaf_record, agent_viaf_online_response):
     """Test _refresh_viaf_record handles redirect."""
     old_pid = agent_viaf_record.pid
     new_pid = "999999999"
@@ -75,9 +69,7 @@ def test_refresh_viaf_record_redirect(
     mock_get.return_value = mock_response(json_data=redirected_data)
 
     # Refresh should handle redirect
-    action = _refresh_viaf_record(
-        pid=old_pid, dbcommit=True, reindex=True, verbose=False
-    )
+    action = _refresh_viaf_record(pid=old_pid, dbcommit=True, reindex=True, verbose=False)
 
     assert action == Action.REDIRECT
     # Old record should be deleted
@@ -120,9 +112,7 @@ def test_process_viaf_refresh_default_batch(mock_refresh, app, agent_viaf_record
 
 
 @mock.patch("requests.Session.get")
-def test_refresh_viaf_record_verbose_output(
-    mock_get, app, agent_viaf_online_response, capsys
-):
+def test_refresh_viaf_record_verbose_output(mock_get, app, agent_viaf_online_response, capsys):
     """Test _refresh_viaf_record with verbose output."""
     pid = "124294761"
 
@@ -166,20 +156,14 @@ def test_refresh_viaf_record_update_agents(mock_get, app, agent_viaf_online_resp
         "rero_mef.agents.viaf.tasks.AgentViafRecord.create_or_update",
         return_value=(mock_record, Action.CREATE),
     ):
-        action = _refresh_viaf_record(
-            pid=pid, dbcommit=True, reindex=True, update_agents=True
-        )
+        action = _refresh_viaf_record(pid=pid, dbcommit=True, reindex=True, update_agents=True)
 
     assert action == Action.CREATE
-    mock_record.create_mef_and_agents.assert_called_once_with(
-        dbcommit=True, reindex=True
-    )
+    mock_record.create_mef_and_agents.assert_called_once_with(dbcommit=True, reindex=True)
 
 
 @mock.patch("requests.Session.get")
-def test_refresh_viaf_record_uptodate_touches_timestamp(
-    mock_get, app, agent_viaf_online_response
-):
+def test_refresh_viaf_record_uptodate_touches_timestamp(mock_get, app, agent_viaf_online_response):
     """Test _refresh_viaf_record commits UPTODATE records to advance their _updated."""
     pid = "555555555"
     mock_get.return_value = mock_response(json_data=agent_viaf_online_response)
@@ -197,9 +181,7 @@ def test_refresh_viaf_record_uptodate_touches_timestamp(
 
 
 @mock.patch("requests.Session.get")
-def test_refresh_viaf_record_uptodate_no_touch_when_no_dbcommit(
-    mock_get, app, agent_viaf_online_response
-):
+def test_refresh_viaf_record_uptodate_no_touch_when_no_dbcommit(mock_get, app, agent_viaf_online_response):
     """Test _refresh_viaf_record skips commit when dbcommit=False."""
     pid = "555555555"
     mock_get.return_value = mock_response(json_data=agent_viaf_online_response)

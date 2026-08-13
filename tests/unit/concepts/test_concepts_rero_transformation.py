@@ -61,9 +61,7 @@ def test_rero_authorized_access_point():
     """
     trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_rero_authorized_access_point()
-    assert trans.json == {
-        "authorized_access_point": "Bibliothèques publiques - Services audiovisuels"
-    }
+    assert trans.json == {"authorized_access_point": "Bibliothèques publiques - Services audiovisuels"}
 
     xml_part_to_add = """
         <datafield tag="155" ind1=" " ind2=" ">
@@ -191,11 +189,7 @@ def test_rero_close_match():
     """
     trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_rero_close_match()
-    assert trans.json == {
-        "closeMatch": [
-            {"authorized_access_point": "Public Libraries", "source": "LCSH"}
-        ]
-    }
+    assert trans.json == {"closeMatch": [{"authorized_access_point": "Public Libraries", "source": "LCSH"}]}
 
 
 def test_rero_notes():

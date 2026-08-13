@@ -70,9 +70,7 @@ def test_gnd_authorized_access_point():
     """
     trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_gnd_authorized_access_point()
-    assert trans.json == {
-        "authorized_access_point": "Magnet (Druckschrift, Offenbach, Main)"
-    }
+    assert trans.json == {"authorized_access_point": "Magnet (Druckschrift, Offenbach, Main)"}
 
 
 def test_gnd_variant_access_point():

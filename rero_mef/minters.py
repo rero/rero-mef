@@ -4,9 +4,7 @@
 """Persistent identifier minters."""
 
 
-def id_minter(
-    record_uuid, data, provider, pid_key="pid", object_type="rec", recid_field=""
-):
+def id_minter(record_uuid, data, provider, pid_key="pid", object_type="rec", recid_field=""):
     """Mint a persistent identifier for a record.
 
     Creates a new persistent identifier and assigns it to the record data. The PID value is extracted from the specified
@@ -24,9 +22,7 @@ def id_minter(
     # assert pid_key not in data
     assert recid_field in data
     pid_value = data[recid_field]
-    provider = provider.create(
-        object_type=object_type, object_uuid=record_uuid, pid_value=pid_value
-    )
+    provider = provider.create(object_type=object_type, object_uuid=record_uuid, pid_value=pid_value)
     pid = provider.pid
     data[pid_key] = pid.pid_value
     return pid

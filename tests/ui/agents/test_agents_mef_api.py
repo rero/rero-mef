@@ -12,9 +12,7 @@ def test_get_all_pids_without_entities_and_viaf(app):
     """Test get all pids without agents and VIAF."""
     record = {"$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json"}
     m_record = create_record(AgentMefRecord, record)
-    assert list(AgentMefRecord.get_all_pids_without_entities_and_viaf()) == [
-        m_record.pid
-    ]
+    assert list(AgentMefRecord.get_all_pids_without_entities_and_viaf()) == [m_record.pid]
 
 
 def test_get_multiple_missing_pids(app, agent_mef_data, agent_viaf_record):
@@ -28,9 +26,7 @@ def test_get_multiple_missing_pids(app, agent_mef_data, agent_viaf_record):
         multiple_pids,
         missing_pids,
         none_pids,
-    ) = AgentMefRecord.get_multiple_missing_pids(
-        record_types=["aidref", "aggnd", "agrero"]
-    )
+    ) = AgentMefRecord.get_multiple_missing_pids(record_types=["aidref", "aggnd", "agrero"])
     assert pids == {"aggnd": {}, "agrero": {}, "aidref": {}}
     assert multiple_pids == {
         "aggnd": {"12391664X": [m_record_2.pid, m_record_1.pid]},

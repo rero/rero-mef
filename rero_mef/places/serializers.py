@@ -17,9 +17,7 @@ from .mef.api import PlaceMefRecord
 def add_links(pid, record):
     """Add MEF link to places."""
     links = {}
-    for idx, mef_pid in enumerate(
-        PlaceMefRecord.get_mef(record.pid, record.name, pid_only=True)
-    ):
+    for idx, mef_pid in enumerate(PlaceMefRecord.get_mef(record.pid, record.name, pid_only=True)):
         number = f"-{idx}" if idx else ""
         links[f"mef{number}"] = "{scheme}://{host}/api/places/mef/" + str(mef_pid)
 
@@ -37,9 +35,7 @@ class ReroMefSerializer(JSONSerializer):
         :param record: Record instance.
         :param links_factory: Factory function for record links.
         """
-        return super().serialize(
-            pid=pid, record=record, links_factory=add_links, **kwargs
-        )
+        return super().serialize(pid=pid, record=record, links_factory=add_links, **kwargs)
 
 
 json_ = ReroMefSerializer(RecordSchemaJSONV1)

@@ -31,9 +31,7 @@ def test_propagate_deleted_all_refs_dangling():
         def replace_refs(self):
             return {"viaf": None, "idref": None}
 
-    record = AllDangling(
-        pid="1", viaf={"$ref": "..."}, idref={"$ref": "..."}, deleted="stale"
-    )
+    record = AllDangling(pid="1", viaf={"$ref": "..."}, idref={"$ref": "..."}, deleted="stale")
 
     assert DeletedStateExtension()._propagate_deleted(record) is True
     assert "deleted" not in record

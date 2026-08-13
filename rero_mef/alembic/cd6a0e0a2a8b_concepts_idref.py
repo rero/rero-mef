@@ -68,9 +68,7 @@ def update_mapping():
         for index, f_mapping in iter(current_search.aliases.get(alias).items()):
             mapping = json.load(open(f_mapping))
             try:
-                res = current_search_client.indices.put_mapping(
-                    body=mapping.get("mappings"), index=index
-                )
+                res = current_search_client.indices.put_mapping(body=mapping.get("mappings"), index=index)
             except Exception as excep:
                 click.secho(f"error: {excep}", fg="red")
             if res.get("acknowledged"):
@@ -84,9 +82,7 @@ def upgrade():
     f_mapping = list(current_search.aliases.get("concepts_idref").values()).pop()
     mapping = json.load(open(f"{f_mapping}"))
     current_search_client.indices.create(INDEX_CIDREF, mapping)
-    current_search_client.indices.put_alias(
-        INDEX_CIDREF, "concepts_idref-idref-concept-v0.0.1"
-    )
+    current_search_client.indices.put_alias(INDEX_CIDREF, "concepts_idref-idref-concept-v0.0.1")
     current_search_client.indices.put_alias(INDEX_CIDREF, "concepts_idref")
     click.secho(f"Index {INDEX_CIDREF} has been created.", fg="green")
     update_mapping()
@@ -98,9 +94,7 @@ def upgrade():
 def downgrade():
     """Downgrade database."""
     result = current_search_client.indices.delete(index=INDEX_CIDREF, ignore=[400, 404])
-    click.secho(
-        f"Index {INDEX_CIDREF} has been deleted. {json.dumps(result)}", fg="yellow"
-    )
+    click.secho(f"Index {INDEX_CIDREF} has been deleted. {json.dumps(result)}", fg="yellow")
     update_mapping()
     reindex_concepts()
     delete_oai_harvest_config(["agents.idref", "agents.gnd", "concepts.idref"])

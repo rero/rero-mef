@@ -61,12 +61,8 @@ def upgrade():
                 new_source="IDREF",
             )
             if identifier := rec.get("identifier"):
-                if not has_identified_by_uri(
-                    rec.get("identifiedBy", []), identifier, name
-                ):
-                    rec.setdefault("identifiedBy", []).append(
-                        {"type": "uri", "value": identifier, "source": name}
-                    )
+                if not has_identified_by_uri(rec.get("identifiedBy", []), identifier, name):
+                    rec.setdefault("identifiedBy", []).append({"type": "uri", "value": identifier, "source": name})
             rec["type"] = rec["bf:Agent"]
             ids.append(rec.id)
             rec.update(data=rec, dbcommit=False, reindex=False)

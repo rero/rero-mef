@@ -53,9 +53,7 @@ def test_monitoring(app, agent_idref_data, script_info):
     assert mon.get_es_count("xxx") == "No >>xxx<< in ES"
     assert mon.get_db_count("xxx") == "No >>xxx<< in DB"
 
-    idref = AgentIdrefRecord.create(
-        data=agent_idref_data, delete_pid=False, dbcommit=True, reindex=False
-    )
+    idref = AgentIdrefRecord.create(data=agent_idref_data, delete_pid=False, dbcommit=True, reindex=False)
     idref_pid = idref.pid
     assert mon.get_db_count("aidref") == 1
     assert mon.get_es_count("agents_idref") == 0
@@ -121,9 +119,7 @@ def test_monitoring_print_missing_error(app, script_info):
 def test_monitoring_info_difference_db_es(app, agent_idref_data):
     """info(difference_db_es=True) is called when DB==ES counts."""
     mon = Monitoring(time_delta=0)
-    idref = AgentIdrefRecord.create(
-        data=agent_idref_data, delete_pid=False, dbcommit=True, reindex=True
-    )
+    idref = AgentIdrefRecord.create(data=agent_idref_data, delete_pid=False, dbcommit=True, reindex=True)
     AgentIdrefRecord.flush_indexes()
     # counts match → difference_db_es branch is entered
     info = mon.info(difference_db_es=True)
@@ -200,9 +196,7 @@ def test_monitoring_cli_db_connection_counts_error_exits_non_zero(app, script_in
 def test_monitoring_cli_db_connections(app, script_info):
     """db_connections CLI prints per-connection details (mocked DB query)."""
     mock_result = MagicMock()
-    mock_result.fetchall.return_value = [
-        (1, "app", "127.0.0.1", 5432, "t1", "t2", "t3", None, "idle", "x")
-    ]
+    mock_result.fetchall.return_value = [(1, "app", "127.0.0.1", 5432, "t1", "t2", "t3", None, "idle", "x")]
     with patch("rero_mef.monitoring.cli.db") as mock_db:
         mock_db.session.execute.return_value = mock_result
         runner = CliRunner()
