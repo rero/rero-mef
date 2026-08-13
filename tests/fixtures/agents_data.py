@@ -701,8 +701,7 @@ def agent_viaf_online_response():
                         "@tag": "111",
                         "subfield": [
                             {
-                                "#text": "Congre\\u0300s Litte\\u0301raire "
-                                "International",
+                                "#text": "Congre\\u0300s Litte\\u0301raire International",
                                 "@code": "a",
                             },
                             {"#text": "1878", "@code": "d"},
@@ -727,8 +726,7 @@ def agent_viaf_online_response():
                         "@tag": "111",
                         "subfield": [
                             {
-                                "#text": "Congre\\u0300s litte\\u0301raire "
-                                "international",
+                                "#text": "Congre\\u0300s litte\\u0301raire international",
                                 "@code": "a",
                             },
                             {"#text": "(1878 :", "@code": "d"},
@@ -756,8 +754,7 @@ def agent_viaf_online_response():
                             {"#text": "frefre", "@code": "8"},
                             {"#text": "20", "@code": "9"},
                             {
-                                "#text": "Congre\\u0300s litte\\u0301raire "
-                                "international",
+                                "#text": "Congre\\u0300s litte\\u0301raire international",
                                 "@code": "a",
                             },
                             {"#text": "1878", "@code": "f"},
@@ -918,9 +915,7 @@ def aggnd_data_139205527():
         "type": "bf:Person",
         "country_associated": "it",
         "gender": "female",
-        "identifiedBy": [
-            {"source": "GND", "type": "uri", "value": "http://d-nb.info/gnd/139205527"}
-        ],
+        "identifiedBy": [{"source": "GND", "type": "uri", "value": "http://d-nb.info/gnd/139205527"}],
         "pid": "139205527",
         "preferred_name": "Parisi, Chiara",
     }

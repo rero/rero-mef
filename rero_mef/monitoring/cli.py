@@ -142,14 +142,10 @@ def es_indices():
 def db_connection_counts():
     """Display DB connection counts."""
     try:
-        max_conn, used, res_for_super, free = db.session.execute(
-            DB_CONNECTION_COUNTS_QUERY
-        ).first()
+        max_conn, used, res_for_super, free = db.session.execute(DB_CONNECTION_COUNTS_QUERY).first()
     except Exception as error:
         raise click.ClickException(str(error)) from error
-    click.secho(
-        f"max: {max_conn}, used: {used}, res_super: {res_for_super}, free: {free}"
-    )
+    click.secho(f"max: {max_conn}, used: {used}, res_super: {res_for_super}, free: {free}")
 
 
 @monitoring.command("db_connections")

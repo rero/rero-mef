@@ -8,18 +8,14 @@ from rero_mef.agents import Action, AgentGndRecord, AgentMefSearch, AgentViafRec
 
 def test_create_mef_with_viaf_links(app, agent_viaf_data, agent_gnd_data):
     """Test create MEF record from agent with VIAF links."""
-    v_record, action = AgentViafRecord.create_or_update(
-        data=agent_viaf_data, dbcommit=True, reindex=True
-    )
+    v_record, action = AgentViafRecord.create_or_update(data=agent_viaf_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert v_record["pid"] == "66739143"
     assert v_record["gnd_pid"] == "12391664X"
     assert v_record["rero_pid"] == "A023655346"
     assert v_record["idref_pid"] == "069774331"
 
-    record, action = AgentGndRecord.create_or_update(
-        data=agent_gnd_data, dbcommit=True, reindex=True
-    )
+    record, action = AgentGndRecord.create_or_update(data=agent_gnd_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert record["pid"] == "12391664X"
 

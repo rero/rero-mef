@@ -17,13 +17,9 @@ def test_mef_minter(app, agent_gnd_data, concept_idref_data):
     assert mef_aggnd_rec.pid == "1"
     assert mef_aggnd_rec.get("gnd")
 
-    cidref_rec = ConceptIdrefRecord.create(
-        data=concept_idref_data, dbcommit=True, reindex=True
-    )
+    cidref_rec = ConceptIdrefRecord.create(data=concept_idref_data, dbcommit=True, reindex=True)
     assert cidref_rec.pid == concept_idref_data.get("pid")
-    mef_cidref_rec, action = cidref_rec.create_or_update_mef(
-        dbcommit=True, reindex=True
-    )
+    mef_cidref_rec, action = cidref_rec.create_or_update_mef(dbcommit=True, reindex=True)
     assert action == {"2": Action.CREATE}
     assert mef_cidref_rec.pid == "2"
     assert mef_cidref_rec.get("idref")

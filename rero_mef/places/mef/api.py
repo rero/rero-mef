@@ -49,9 +49,7 @@ class PlaceMefRecord(EntityMefRecord):
         :returns: the modified record
         """
         data["type"] = "bf:Place"
-        return super().update(
-            data=data, commit=commit, dbcommit=dbcommit, reindex=reindex
-        )
+        return super().update(data=data, commit=commit, dbcommit=dbcommit, reindex=reindex)
 
     @classmethod
     def create(

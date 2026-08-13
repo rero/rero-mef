@@ -30,9 +30,7 @@ _WEBPACK_MANIFEST_STUBS = {
 def webpack_manifest():
     """Create a stub webpack manifest so UI templates render without assets."""
     dist_dir = os.path.join(
-        os.environ.get(
-            "INVENIO_INSTANCE_PATH", os.path.join(os.getcwd(), ".venv/var/instance")
-        ),
+        os.environ.get("INVENIO_INSTANCE_PATH", os.path.join(os.getcwd(), ".venv/var/instance")),
         "static",
         "dist",
     )
@@ -54,9 +52,7 @@ def create_app(instance_path):
 @pytest.fixture(scope="module")
 def init_oai(app):
     """OAI init."""
-    configs = yaml.load(
-        open(join(dirname(__file__), "../data/oaisources.yml")), Loader=yaml.FullLoader
-    )
+    configs = yaml.load(open(join(dirname(__file__), "../data/oaisources.yml")), Loader=yaml.FullLoader)
     for name, values in sorted(configs.items()):
         add_oai_source(
             name=name,

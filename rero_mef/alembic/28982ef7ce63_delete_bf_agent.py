@@ -40,9 +40,7 @@ def upgrade():
     for agent in agents:
         agent_class = get_entity_class(agent)
 
-        count = agent_class.model_cls.query.filter(
-            agent_class.model_cls.json.op("->")("bf:Agent") is not None
-        ).update(
+        count = agent_class.model_cls.query.filter(agent_class.model_cls.json.op("->")("bf:Agent") is not None).update(
             {agent_class.model_cls.json: agent_class.model_cls.json - "bf:Agent"},
             synchronize_session=False,
         )
@@ -59,9 +57,7 @@ def downgrade():
     for agent in agents:
         agent_class = get_entity_class(agent)
 
-        count = agent_class.model_cls.query.filter(
-            agent_class.model_cls.json.op("->")("type") is not None
-        ).update(
+        count = agent_class.model_cls.query.filter(agent_class.model_cls.json.op("->")("type") is not None).update(
             {
                 "json": func.jsonb_set(
                     agent_class.model_cls.json,

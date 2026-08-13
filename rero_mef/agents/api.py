@@ -85,13 +85,10 @@ class AgentRecord(EntityRecord):
                 mef_records.append(mef)
         if len(mef_records) > 1:
             current_app.logger.error(
-                f"MULTIPLE MEF FOUND FOR: {self.name} {self.pid} | "
-                f"mef: {', '.join([mef.pid for mef in mef_records])}"
+                f"MULTIPLE MEF FOUND FOR: {self.name} {self.pid} | mef: {', '.join([mef.pid for mef in mef_records])}"
             )
 
-        ref_string = build_ref_string(
-            entity_type="agents", entity_name=self.name, entity_pid=self.pid
-        )
+        ref_string = build_ref_string(entity_type="agents", entity_name=self.name, entity_pid=self.pid)
         viaf_pid = viaf_records[0].pid if viaf_records else None
         old_pids = set()
         if mef_records:
@@ -120,9 +117,7 @@ class AgentRecord(EntityRecord):
                 mef_record[self.name] = {"$ref": ref_string}
             if viaf_pid and mef_record.get("viaf_pid") != viaf_pid:
                 mef_record["viaf_pid"] = viaf_pid
-            mef_record = mef_record.update(
-                data=mef_record, dbcommit=dbcommit, reindex=reindex
-            )
+            mef_record = mef_record.update(data=mef_record, dbcommit=dbcommit, reindex=reindex)
             mef_actions[mef_record.pid] = Action.UPDATE
         else:
             # No MEF record create one.
@@ -211,11 +206,7 @@ def get_all_missing_viaf_pids(verbose=False):
         verbose=verbose,
         label="VIAF from MEF",
     )
-    non_existing_pids = {
-        hit.pid: hit.viaf_pid
-        for hit in progress
-        if not missing_pids.pop(hit.viaf_pid, None)
-    }
+    non_existing_pids = {hit.pid: hit.viaf_pid for hit in progress if not missing_pids.pop(hit.viaf_pid, None)}
 
     return list(missing_pids), non_existing_pids
 
@@ -254,11 +245,7 @@ def get_unlinked_agents(relink=False, dbcommit=False, reindex=False, progress=Fa
     entity_names = list(entity_by_name)
     covered_pids = {}
     for name in entity_names:
-        covered_search = (
-            AgentViafSearch()
-            .filter("exists", field=f"{name}_pid")
-            .source(["pid", f"{name}_pid"])
-        )
+        covered_search = AgentViafSearch().filter("exists", field=f"{name}_pid").source(["pid", f"{name}_pid"])
         covered_pids[name] = {
             hit_dict[f"{name}_pid"]: hit_dict["pid"]
             for hit in covered_search.scan()

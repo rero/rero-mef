@@ -46,9 +46,7 @@ def _refresh_viaf_record(
     :returns: Action performed.
     """
     try:
-        online_data, msg = AgentViafRecord.get_online_record(
-            viaf_source_code="VIAF", pid=pid
-        )
+        online_data, msg = AgentViafRecord.get_online_record(viaf_source_code="VIAF", pid=pid)
     except RetryableVIAFError as err:
         if verbose:
             click.echo(str(err))
@@ -71,9 +69,7 @@ def _refresh_viaf_record(
             return action
 
         try:
-            online_data, msg = AgentViafRecord.get_online_record(
-                viaf_source_code="VIAF", pid=redirect_to_pid
-            )
+            online_data, msg = AgentViafRecord.get_online_record(viaf_source_code="VIAF", pid=redirect_to_pid)
         except RetryableVIAFError as err:
             if verbose:
                 click.echo(str(err))
@@ -116,9 +112,7 @@ def _refresh_viaf_record(
         # Force-sync agents even though VIAF data is unchanged — useful after
         # a bug fix in agent processing without needing to modify VIAF records.
         # update_viaf=True: also search VIAF online for displaced agents.
-        actions = viaf_record.create_mef_and_agents(
-            dbcommit=dbcommit, reindex=reindex, update_viaf=True
-        )
+        actions = viaf_record.create_mef_and_agents(dbcommit=dbcommit, reindex=reindex, update_viaf=True)
         if verbose:
             click.echo(f"  VIAF {pid}: agents force-updated {actions}")
 
@@ -162,9 +156,7 @@ def process_viaf_refresh(
         with SqliteDict(db_path, autocommit=True) as pid_dict:
             if not pid_dict:
                 # Query oldest-updated VIAF records, fetch only PIDs
-                query = (
-                    AgentViafSearch().sort({"_updated": {"order": "asc"}}).source("pid")
-                )
+                query = AgentViafSearch().sort({"_updated": {"order": "asc"}}).source("pid")
                 # Estimate total for progress bar (if possible)
                 total = AgentViafRecord.count()
                 if batch_size is not None:

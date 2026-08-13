@@ -6,9 +6,7 @@
 from .providers import ConceptMefProvider
 
 
-def mef_id_minter(
-    record_uuid, data, provider=ConceptMefProvider, pid_key="pid", object_type="rec"
-):
+def mef_id_minter(record_uuid, data, provider=ConceptMefProvider, pid_key="pid", object_type="rec"):
     """RERO ILS MEF concept pid minter."""
     assert pid_key not in data
     provider = provider.create(object_type=object_type, object_uuid=record_uuid)

@@ -206,9 +206,7 @@ class EntityRecord(Record):
             original_data = {k: v for k, v in agent_record.items() if k in copy_fields}
             data = original_data | data
             if test_md5:
-                incoming_md5 = _md5.create_md5(
-                    {k: v for k, v in data.items() if k not in ("$schema", "md5")}
-                )
+                incoming_md5 = _md5.create_md5({k: v for k, v in data.items() if k not in ("$schema", "md5")})
                 if incoming_md5 == agent_record.get("md5"):
                     return_record = agent_record
                     action = Action.UPTODATE
@@ -216,9 +214,7 @@ class EntityRecord(Record):
                         cls.flush_indexes()
                     return return_record, action
 
-            return_record = agent_record.replace(
-                data=data, dbcommit=dbcommit, reindex=reindex
-            )
+            return_record = agent_record.replace(data=data, dbcommit=dbcommit, reindex=reindex)
             action = Action.REPLACE
         else:
             try:
@@ -231,9 +227,7 @@ class EntityRecord(Record):
                 )
                 action = Action.CREATE
             except Exception as err:
-                current_app.logger.error(
-                    f"ERROR create_or_update {cls.name} {data.get('pid')} {err}"
-                )
+                current_app.logger.error(f"ERROR create_or_update {cls.name} {data.get('pid')} {err}")
                 action = Action.ERROR
         if reindex:
             cls.flush_indexes()
@@ -293,9 +287,7 @@ class EntityRecord(Record):
         if not pid:
             raise EntityRecordError.PidMissing(f"missing pid={self.pid}")
         self.clear()
-        return self.update(
-            data=new_data, commit=commit, dbcommit=dbcommit, reindex=reindex
-        )
+        return self.update(data=new_data, commit=commit, dbcommit=dbcommit, reindex=reindex)
 
     def dbcommit(self, reindex=False, forceindex=False):
         """Commit changes to the database.
@@ -331,20 +323,14 @@ class EntityRecord(Record):
         assert cls.provider
         for attempt in range(5):
             try:
-                persistent_identifier = PersistentIdentifier.get(
-                    cls.provider.pid_type, pid
-                )
-                return super().get_record(
-                    persistent_identifier.object_uuid, with_deleted=with_deleted
-                )
+                persistent_identifier = PersistentIdentifier.get(cls.provider.pid_type, pid)
+                return super().get_record(persistent_identifier.object_uuid, with_deleted=with_deleted)
             except PIDDoesNotExistError:
                 return None
             except NoResultFound:
                 return None
             except OperationalError:
-                current_app.logger.exception(
-                    f"Get record OperationalError: {attempt + 1} {pid}"
-                )
+                current_app.logger.exception(f"Get record OperationalError: {attempt + 1} {pid}")
                 db.session.rollback()
                 sleep(2**attempt)
         current_app.logger.error(f"Get record failed after 5 retries: {pid}")
@@ -367,9 +353,7 @@ class EntityRecord(Record):
         :param id_: The UUID of the record.
         :returns: The persistent identifier object.
         """
-        return PersistentIdentifier.get_by_object(
-            cls.provider.pid_type, cls.object_type, id_
-        )
+        return PersistentIdentifier.get_by_object(cls.provider.pid_type, cls.object_type, id_)
 
     @classmethod
     def _get_all(cls, with_deleted=False, date=None):
@@ -411,9 +395,7 @@ class EntityRecord(Record):
         :param from_date: If provided, only include records deleted on or after this date.
         :yields: PID values of deleted records one at a time.
         """
-        query = PersistentIdentifier.query.filter_by(
-            pid_type=cls.provider.pid_type
-        ).filter_by(status=PIDStatus.DELETED)
+        query = PersistentIdentifier.query.filter_by(pid_type=cls.provider.pid_type).filter_by(status=PIDStatus.DELETED)
         if from_date:
             query = query.filter(func.DATE(PersistentIdentifier.updated) >= from_date)
         query = query.order_by(PersistentIdentifier.id)
@@ -465,9 +447,7 @@ class EntityRecord(Record):
             try:
                 return cls._get_all(with_deleted=with_deleted).count()
             except OperationalError:
-                current_app.logger.exception(
-                    f"Get count OperationalError: {attempt + 1}"
-                )
+                current_app.logger.exception(f"Get count OperationalError: {attempt + 1}")
                 db.session.rollback()
                 sleep(2**attempt)
         raise EntityRecordError.DatabaseRetryError("Get count failed after 5 retries")
@@ -504,9 +484,7 @@ class EntityRecord(Record):
         """
         try:
             indexer = obj_or_import_string(
-                current_app.config["RECORDS_REST_ENDPOINTS"][cls.provider.pid_type][
-                    "indexer_class"
-                ]
+                current_app.config["RECORDS_REST_ENDPOINTS"][cls.provider.pid_type]["indexer_class"]
             )
         except Exception:
             # provide default indexer if no indexer is defined in config.
@@ -523,9 +501,7 @@ class EntityRecord(Record):
         try:
             indexer().delete(self)
         except NotFoundError:
-            current_app.logger.warning(
-                f"Can not delete from index {self.__class__.__name__}: {self.pid}"
-            )
+            current_app.logger.warning(f"Can not delete from index {self.__class__.__name__}: {self.pid}")
 
     @property
     def pid(self):
@@ -581,26 +557,18 @@ class ConceptPlaceRecord(EntityRecord):
         """
         if association_identifier := self.association_identifier:
             # Test if my identifier is unique
-            count = (
-                self.search()
-                .filter("term", _association_identifier=association_identifier)
-                .count()
-            )
+            count = self.search().filter("term", _association_identifier=association_identifier).count()
             if count > 1:
                 current_app.logger.error(
-                    f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
-                    f"| {association_identifier}"
+                    f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} | {association_identifier}"
                 )
                 return None
             # Get associated record
-            query = association_search().filter(
-                "term", _association_identifier=association_identifier
-            )
+            query = association_search().filter("term", _association_identifier=association_identifier)
             associated_count = query.count()
             if associated_count > 1:
                 current_app.logger.error(
-                    f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
-                    f"| {association_identifier}"
+                    f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} | {association_identifier}"
                 )
             elif associated_count == 1:
                 hit = next(query.source("pid").scan())
@@ -667,16 +635,12 @@ class ConceptPlaceRecord(EntityRecord):
             mef_records = mef_cls.get_mef(entity_name=name, entity_pid=pid)
             if len(mef_records) > 1:
                 mef_pids = [mef_record.pid for mef_record in mef_records]
-                current_app.logger.error(
-                    f"MULTIPLE MEF FOUND FOR: {name} {pid} | mef: {', '.join(mef_pids)}"
-                )
+                current_app.logger.error(f"MULTIPLE MEF FOUND FOR: {name} {pid} | mef: {', '.join(mef_pids)}")
             return mef_records[0] if len(mef_records) == 1 else None
 
         association_info = self.association_info
         # Get direct MEF record
-        mef_record = get_mef_record(
-            mef_cls=association_info["mef_cls"], name=self.name, pid=self.pid
-        )
+        mef_record = get_mef_record(mef_cls=association_info["mef_cls"], name=self.name, pid=self.pid)
         # Get associated MEF record
         mef_associated_record = None
         if associated_record := association_info["record"]:
@@ -699,9 +663,7 @@ class ConceptPlaceRecord(EntityRecord):
             )
         else:
             mef_pids = mef_record.ref_pids if mef_record else {}
-            mef_association_pids = (
-                mef_associated_record.ref_pids if mef_associated_record else {}
-            )
+            mef_association_pids = mef_associated_record.ref_pids if mef_associated_record else {}
             association_name = association_info["record_cls"].name
             mef_self_pid = mef_pids.get(self.name)
             mef_self_association_pid = mef_association_pids.get(self.name)
@@ -718,16 +680,10 @@ class ConceptPlaceRecord(EntityRecord):
                         entity_pid=self.pid,
                     )
                 }
-            if (
-                not bool(mef_self_association_pid)
-                and not bool(mef_other_association_pid)
-                and bool(mef_other_pid)
-            ):
+            if not bool(mef_self_association_pid) and not bool(mef_other_association_pid) and bool(mef_other_pid):
                 # Delete associated ref from MEF and create a new one
                 new_mef_record.pop(association_name)
-                if association_record := association_info[
-                    "record_cls"
-                ].get_record_by_pid(mef_other_pid):
+                if association_record := association_info["record_cls"].get_record_by_pid(mef_other_pid):
                     _, action = mef_create(
                         mef_cls=association_info["mef_cls"],
                         data=association_record,
@@ -760,16 +716,12 @@ class ConceptPlaceRecord(EntityRecord):
             ):
                 # Delete entity from new MEF and add it to old MEF
                 ref = new_mef_record.pop(self.name)
-                new_mef_record.replace(
-                    data=new_mef_record, dbcommit=dbcommit, reindex=reindex
-                )
+                new_mef_record.replace(data=new_mef_record, dbcommit=dbcommit, reindex=reindex)
                 actions[new_mef_record.pid] = Action.DELETE_ENTITY
                 mef_associated_record[self.name] = ref
                 new_mef_record = mef_associated_record
 
-            mef_record = new_mef_record.replace(
-                data=new_mef_record, dbcommit=dbcommit, reindex=reindex
-            )
+            mef_record = new_mef_record.replace(data=new_mef_record, dbcommit=dbcommit, reindex=reindex)
             actions[mef_record.pid] = Action.REPLACE
 
         association_info["mef_cls"].flush_indexes()
@@ -804,9 +756,7 @@ class EntityIndexer(RecordIndexer):
         :param index: Optional search engine index name override.
         :param doc_type: Optional document type for cross-type indexing.
         """
-        self._bulk_op(
-            record_id_iterator, op_type="index", index=index, doc_type=doc_type
-        )
+        self._bulk_op(record_id_iterator, op_type="index", index=index, doc_type=doc_type)
 
     def process_bulk_queue(self, search_bulk_kwargs=None, stats_only=True):
         """Process and execute bulk indexing operations from the queue.

@@ -13,9 +13,7 @@ def get_concept_endpoints():
     """Get all contributions from config."""
     concepts = current_app.config.get("RERO_CONCEPTS", [])
     endpoints = current_app.config.get("RECORDS_REST_ENDPOINTS", {})
-    return {
-        endpoint: data for endpoint, data in endpoints.items() if endpoint in concepts
-    }
+    return {endpoint: data for endpoint, data in endpoints.items() if endpoint in concepts}
 
 
 def get_concept_classes(without_mef=True):

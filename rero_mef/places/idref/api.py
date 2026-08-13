@@ -66,9 +66,7 @@ class PlaceIdrefRecord(PlaceRecord):
             )
         )
         if len(pids) > 1:
-            current_app.logger.error(
-                f"MULTIPLE ASSOCIATIONS FOUND FOR: {self.name} {self.pid} | {', '.join(pids)}"
-            )
+            current_app.logger.error(f"MULTIPLE ASSOCIATIONS FOUND FOR: {self.name} {self.pid} | {', '.join(pids)}")
         if len(pids) == 1:
             return pids[0]
         return None
@@ -80,9 +78,7 @@ class PlaceIdrefRecord(PlaceRecord):
 
         PlaceGndRecord.flush_indexes()
         return {
-            "record": self.get_association_record(
-                association_cls=PlaceGndRecord, association_search=PlaceGndSearch
-            ),
+            "record": self.get_association_record(association_cls=PlaceGndRecord, association_search=PlaceGndSearch),
             "record_cls": PlaceGndRecord,
             "search_cls": PlaceGndSearch,
             "mef_cls": PlaceMefRecord,
@@ -99,6 +95,4 @@ class PlaceIdrefIndexer(PlaceIndexer):
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        super().bulk_index(
-            record_id_iterator, index=PlaceIdrefSearch.Meta.index, doc_type="pidref"
-        )
+        super().bulk_index(record_id_iterator, index=PlaceIdrefSearch.Meta.index, doc_type="pidref")

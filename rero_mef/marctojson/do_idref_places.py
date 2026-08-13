@@ -127,9 +127,7 @@ class Transformation:
             self.logger.info("Call Function: %s", "trans_idref_variant_access_point")
         tag = "415"
         subfields = {"a": ", ", "x": " - ", "y": " - ", "z": " - "}
-        if variant_access_points := build_string_list_from_fields(
-            self.marc, tag, subfields
-        ):
+        if variant_access_points := build_string_list_from_fields(self.marc, tag, subfields):
             self.json_dict["variant_access_point"] = variant_access_points
 
     def trans_idref_relation(self):
@@ -159,9 +157,7 @@ class Transformation:
                     subfields = {"a": ", ", "x": " - ", "y": " - ", "z": " - "}
                     if authorized_ap := build_string_from_field(field, subfields):
                         relations.setdefault(relation_type, [])
-                        relations[relation_type].append(
-                            {"authorized_access_point": authorized_ap}
-                        )
+                        relations[relation_type].append({"authorized_access_point": authorized_ap})
         for relation, value in relations.items():
             if value:
                 self.json_dict[relation] = value

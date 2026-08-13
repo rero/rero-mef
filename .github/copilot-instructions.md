@@ -166,10 +166,11 @@ elif action == Action.DISCARD:
 ```python
 from celery import shared_task
 
+
 @shared_task
 def my_task(param, dbcommit=True, reindex=True, verbose=False):
     """Task description.
-    
+
     :param param: Description.
     :param dbcommit: Commit to database.
     :param reindex: Reindex records.
@@ -189,12 +190,7 @@ def my_task(param, dbcommit=True, reindex=True, verbose=False):
 def my_command(verbose, progress):
     """Command description."""
     items = get_items()
-    progress_bar = progressbar(
-        items=items,
-        length=len(items),
-        verbose=progress,
-        label="Processing"
-    )
+    progress_bar = progressbar(items=items, length=len(items), verbose=progress, label="Processing")
     for item in progress_bar:
         process_item(item, verbose=verbose)
 ```

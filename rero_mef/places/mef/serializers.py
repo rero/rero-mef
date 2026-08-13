@@ -35,9 +35,7 @@ def local_link(place, name, record):
     """Change links to actual links."""
     if name in record and (ref := record[name].get("$ref")):
         my_pid = ref.split("/")[-1]
-        url = url_for(
-            f"invenio_records_rest.{place}_item", pid_value=my_pid, _external=True
-        )
+        url = url_for(f"invenio_records_rest.{place}_item", pid_value=my_pid, _external=True)
         record[name].update({"$ref": url})
 
 
@@ -56,9 +54,7 @@ class ReroMefSerializer(JSONSerializer):
         path, which resolves through ``add_information()``, search results
         go through this method instead and never touch that stripping.
         """
-        record = JSONSerializer.preprocess_search_hit(
-            pid, record_hit, links_factory=links_factory, **kwargs
-        )
+        record = JSONSerializer.preprocess_search_hit(pid, record_hit, links_factory=links_factory, **kwargs)
         for field in _INDEX_ONLY_FIELDS:
             record["metadata"].pop(field, None)
         return record
@@ -73,12 +69,8 @@ class ReroMefSerializer(JSONSerializer):
         rec = record
         if request:
             rec = rec.add_information(
-                resolve=request.args.get(
-                    "resolve", default=False, type=lambda v: v.lower() in ["true", "1"]
-                ),
-                sources=request.args.get(
-                    "sources", default=False, type=lambda v: v.lower() in ["true", "1"]
-                ),
+                resolve=request.args.get("resolve", default=False, type=lambda v: v.lower() in ["true", "1"]),
+                sources=request.args.get("sources", default=False, type=lambda v: v.lower() in ["true", "1"]),
             )
             # because the replace_refs loose the record original model. We need
             # to reset it to have correct 'created'/'updated' output data

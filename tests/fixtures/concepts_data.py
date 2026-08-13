@@ -40,8 +40,7 @@ def concept_rero_data():
 def concept_idref_data():
     """Concept IdRef data."""
     return {
-        "$schema": "https://mef.rero.ch/schemas/concepts_idref/"
-        "idref-concept-v0.0.1.json",
+        "$schema": "https://mef.rero.ch/schemas/concepts_idref/idref-concept-v0.0.1.json",
         "authorized_access_point": "Franco-provençal (langue) - Dialectes",
         "bnf_type": "sujet Rameau",
         "classification": [
@@ -52,9 +51,7 @@ def concept_idref_data():
             }
         ],
         "deleted": "2022-09-03T07:07:32.526780+00:00",
-        "identifiedBy": [
-            {"source": "IDREF", "type": "uri", "value": "http://www.idref.fr/050548115"}
-        ],
+        "identifiedBy": [{"source": "IDREF", "type": "uri", "value": "http://www.idref.fr/050548115"}],
         "narrower": [
             {"authorized_access_point": "Valdôtain (dialecte)"},
             {"authorized_access_point": "Dauphinois (dialecte)"},
@@ -67,14 +64,16 @@ def concept_idref_data():
         "note": [
             {
                 "label": [
-                    "Sous cette vedette, éventuellement suivie d'une subdivision "
-                    "géographique, on trouve les ouvrages sur les variantes "
-                    "dialectales dans les régions franco-provençales "
-                    "(Suisse romande, Val d'Aoste, Savoie, Bresse, Lyonnais, "
-                    "Forez, Dauphiné), par ex. Franco-provençal (langue) -- "
-                    "Dialectes -- France -- Bourg-en-Bresse ; pour les ouvrages "
-                    "sur un des dialectes suivants, voir au nom de celui-ci, "
-                    "par ex. Savoyard (dialecte)"
+                    (
+                        "Sous cette vedette, éventuellement suivie d'une subdivision "
+                        "géographique, on trouve les ouvrages sur les variantes "
+                        "dialectales dans les régions franco-provençales "
+                        "(Suisse romande, Val d'Aoste, Savoie, Bresse, Lyonnais, "
+                        "Forez, Dauphiné), par ex. Franco-provençal (langue) -- "
+                        "Dialectes -- France -- Bourg-en-Bresse ; pour les ouvrages "
+                        "sur un des dialectes suivants, voir au nom de celui-ci, "
+                        "par ex. Savoyard (dialecte)"
+                    )
                 ],
                 "noteType": "general",
             }
@@ -89,8 +88,7 @@ def concept_idref_data():
 def concept_idref_redirect_data():
     """Concept IdRef data with redirect from."""
     return {
-        "$schema": "https://mef.rero.ch/schemas/concepts_idref/"
-        "idref-concept-v0.0.1.json",
+        "$schema": "https://mef.rero.ch/schemas/concepts_idref/idref-concept-v0.0.1.json",
         "authorized_access_point": "Francoprovençal (langue)",
         "bnf_type": "sujet Rameau",
         "broader": [{"authorized_access_point": "Langues romanes"}],
@@ -144,32 +142,38 @@ def concept_idref_redirect_data():
         "note": [
             {
                 "label": [
-                    "Encycl. universalis (art. : France - Langues régionales) - "
-                    "http://www.universalis-edu.com (2009-02-10)",
+                    (
+                        "Encycl. universalis (art. : France - Langues régionales) - "
+                        "http://www.universalis-edu.com (2009-02-10)"
+                    ),
                     "Grand Larousse universel : franco-provençal",
                     "Les langues du monde / M. Sala, I. Vintila-Radulescu, 1984",
                     "L'aventure des langues en Occident / H. Walter, 1994",
-                    "L'aménagement linguistique dans le monde : franco-provençal"
-                    " - http://www.tlfq.ulaval.ca (2009-02-10)",
-                    "Les langues du monde / A. Meillet, M. Cohen, 1981 : "
-                    "franco-provençal",
-                    "Ethnologue (15th ed.) : Franco-provençal - "
-                    "http://www.ethnologue.com (2009-02-10)",
+                    (
+                        "L'aménagement linguistique dans le monde : franco-provençal"
+                        " - http://www.tlfq.ulaval.ca (2009-02-10)"
+                    ),
+                    "Les langues du monde / A. Meillet, M. Cohen, 1981 : franco-provençal",
+                    "Ethnologue (15th ed.) : Franco-provençal - http://www.ethnologue.com (2009-02-10)",
                 ],
                 "noteType": "dataSource",
             },
             {
                 "label": [
-                    "Ensemble de dialectes intermédiaires entre les parlers d'oc "
-                    "et les parlers d'oïl, parlés en France, en Italie et en "
-                    "Suisse",
-                    "Sous cette vedette, on trouve les documents sur l'ensemble "
-                    "des dialectes francoprovençaux, ou sur plusieurs dialectes. "
-                    "Les documents sur un dialecte particulier se trouvent sous "
-                    "les vedettes spécifiques, par ex. : Savoyard (dialecte), ou "
-                    "sous la vedette Francoprovençal (langue) suivie d'une "
-                    "subdivision géographique, par ex. : Francoprovençal (langue) "
-                    "-- France -- Bresse (France)",
+                    (
+                        "Ensemble de dialectes intermédiaires entre les parlers d'oc "
+                        "et les parlers d'oïl, parlés en France, en Italie et en "
+                        "Suisse"
+                    ),
+                    (
+                        "Sous cette vedette, on trouve les documents sur l'ensemble "
+                        "des dialectes francoprovençaux, ou sur plusieurs dialectes. "
+                        "Les documents sur un dialecte particulier se trouvent sous "
+                        "les vedettes spécifiques, par ex. : Savoyard (dialecte), ou "
+                        "sous la vedette Francoprovençal (langue) suivie d'une "
+                        "subdivision géographique, par ex. : Francoprovençal (langue) "
+                        "-- France -- Bresse (France)"
+                    ),
                 ],
                 "noteType": "general",
             },
@@ -273,9 +277,7 @@ def concept_idref_frbnf_data_exact():
         "$schema": "https://mef.rero.ch/schemas/concepts_idref/idref-concept-v0.0.1.json",
         "authorized_access_point": "Traitement réparti",
         "bnf_type": "sujet Rameau",
-        "classification": [
-            {"classificationPortion": "621", "type": "bf:ClassificationDdc"}
-        ],
+        "classification": [{"classificationPortion": "621", "type": "bf:ClassificationDdc"}],
         "closeMatch": [
             {
                 "authorized_access_point": "Electronic data processing--Distributed processing",
@@ -500,11 +502,15 @@ def concept_gnd_frbnf_data_exact():
         "note": [
             {
                 "label": [
-                    "Form der elektronischen Datenverarbeitung, bei der mehrere Rechner zwar über Rechnernetz "
-                    "verbunden sind, Daten austauschen und gemeinsame Ressourcen nutzen können, jedoch jeweils "
-                    "autonom eigene Aufgaben erledigen. (B Computer)",
-                    "Für das Arbeiten mehrerer vernetzter Rechner an Teilaufgaben desselben Problems verwende "
-                    "Verteiltes System.",
+                    (
+                        "Form der elektronischen Datenverarbeitung, bei der mehrere Rechner zwar über Rechnernetz "
+                        "verbunden sind, Daten austauschen und gemeinsame Ressourcen nutzen können, jedoch jeweils "
+                        "autonom eigene Aufgaben erledigen. (B Computer)"
+                    ),
+                    (
+                        "Für das Arbeiten mehrerer vernetzter Rechner an Teilaufgaben desselben Problems verwende "
+                        "Verteiltes System."
+                    ),
                 ],
                 "noteType": "general",
             }

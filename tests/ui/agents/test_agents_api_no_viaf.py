@@ -6,13 +6,9 @@
 from rero_mef.agents import Action, AgentGndRecord, AgentIdrefRecord, AgentReroRecord
 
 
-def test_create_agent_record_no_viaf_links(
-    app, agent_gnd_data, agent_rero_data, agent_idref_data
-):
+def test_create_agent_record_no_viaf_links(app, agent_gnd_data, agent_rero_data, agent_idref_data):
     """Test create agent record without VIAF links."""
-    gnd_record, action = AgentGndRecord.create_or_update(
-        data=agent_gnd_data, dbcommit=True, reindex=True
-    )
+    gnd_record, action = AgentGndRecord.create_or_update(data=agent_gnd_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert gnd_record["pid"] == "12391664X"
 
@@ -26,9 +22,7 @@ def test_create_agent_record_no_viaf_links(
         "type": "bf:Person",
     }
 
-    rero_record, action = AgentReroRecord.create_or_update(
-        data=agent_rero_data, dbcommit=True, reindex=True
-    )
+    rero_record, action = AgentReroRecord.create_or_update(data=agent_rero_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert rero_record["pid"] == "A023655346"
 
@@ -42,9 +36,7 @@ def test_create_agent_record_no_viaf_links(
         "type": "bf:Person",
     }
 
-    idref_record, action = AgentIdrefRecord.create_or_update(
-        data=agent_idref_data, dbcommit=True, reindex=True
-    )
+    idref_record, action = AgentIdrefRecord.create_or_update(data=agent_idref_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert idref_record["pid"] == "069774331"
 

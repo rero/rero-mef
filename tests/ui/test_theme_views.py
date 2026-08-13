@@ -60,9 +60,7 @@ def test_agent_latest_redirect(client, agent_mef_gnd_redirect_record, agent_mef_
     assert client.get("/agents/latest/gnd:UNKNOWN").status_code == 404
 
 
-def test_agent_older_redirect(
-    client, agent_mef_idref_redirect_record, agent_mef_record
-):
+def test_agent_older_redirect(client, agent_mef_idref_redirect_record, agent_mef_record):
     """Older route resolves the old IDREF source PID and redirects to the older MEF page."""
     res = client.get("/agents/older/idref:069774331")
     assert res.status_code == 302
@@ -70,36 +68,28 @@ def test_agent_older_redirect(
     assert client.get("/agents/older/idref:UNKNOWN").status_code == 404
 
 
-def test_agent_detail_latest_button(
-    client, agent_mef_gnd_redirect_record, agent_mef_record
-):
+def test_agent_detail_latest_button(client, agent_mef_gnd_redirect_record, agent_mef_record):
     """Old GND record (redirect_to) shows Latest button on its detail page."""
     res = client.get(f"/agents/{agent_mef_gnd_redirect_record.pid}")
     assert res.status_code == 200
     assert "mef-latest-link" in res.get_data(as_text=True)
 
 
-def test_agent_detail_older_button_idref(
-    client, agent_mef_idref_redirect_record, agent_mef_record
-):
+def test_agent_detail_older_button_idref(client, agent_mef_idref_redirect_record, agent_mef_record):
     """Canonical IDREF record (redirect_from) shows Older button on its detail page."""
     res = client.get(f"/agents/{agent_mef_idref_redirect_record.pid}")
     assert res.status_code == 200
     assert "mef-older-link" in res.get_data(as_text=True)
 
 
-def test_agent_detail_older_button_gnd_reverse(
-    client, agent_mef_record, agent_mef_gnd_redirect_record
-):
+def test_agent_detail_older_button_gnd_reverse(client, agent_mef_record, agent_mef_gnd_redirect_record):
     """Current GND record shows Older button via reverse redirect_to lookup."""
     res = client.get(f"/agents/{agent_mef_record.pid}")
     assert res.status_code == 200
     assert "mef-older-link" in res.get_data(as_text=True)
 
 
-def test_agent_detail_latest_button_idref_reverse(
-    client, agent_mef_idref_redirect_record, agent_mef_record
-):
+def test_agent_detail_latest_button_idref_reverse(client, agent_mef_idref_redirect_record, agent_mef_record):
     """Old IDREF record shows Latest button via reverse redirect_from lookup."""
     res = client.get(f"/agents/{agent_mef_record.pid}")
     assert res.status_code == 200
@@ -169,38 +159,22 @@ def test_agent_detail_conflicting_latest_targets(app, client):
     mef_old = create_record(
         AgentMefRecord,
         {
-            "gnd": {
-                "$ref": build_ref_string(
-                    entity_type="agents", entity_name="gnd", entity_pid=gnd_old.pid
-                )
-            },
-            "idref": {
-                "$ref": build_ref_string(
-                    entity_type="agents", entity_name="idref", entity_pid=idref_old.pid
-                )
-            },
+            "gnd": {"$ref": build_ref_string(entity_type="agents", entity_name="gnd", entity_pid=gnd_old.pid)},
+            "idref": {"$ref": build_ref_string(entity_type="agents", entity_name="idref", entity_pid=idref_old.pid)},
             "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
         },
     )
     mef_gnd_new = create_record(
         AgentMefRecord,
         {
-            "gnd": {
-                "$ref": build_ref_string(
-                    entity_type="agents", entity_name="gnd", entity_pid=gnd_new.pid
-                )
-            },
+            "gnd": {"$ref": build_ref_string(entity_type="agents", entity_name="gnd", entity_pid=gnd_new.pid)},
             "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
         },
     )
     mef_idref_new = create_record(
         AgentMefRecord,
         {
-            "idref": {
-                "$ref": build_ref_string(
-                    entity_type="agents", entity_name="idref", entity_pid=idref_new.pid
-                )
-            },
+            "idref": {"$ref": build_ref_string(entity_type="agents", entity_name="idref", entity_pid=idref_new.pid)},
             "$schema": "https://mef.rero.ch/schemas/mef/mef-v0.0.1.json",
         },
     )

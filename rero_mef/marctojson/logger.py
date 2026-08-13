@@ -46,19 +46,13 @@ class Logger:
         self.logger = logging.getLogger(name)
         if log_master:
             self.logger.setLevel(log_level)
-            formatter = logging.Formatter(
-                "%(id)9s\t%(levelname)8s\t%(error)25s\t%(message)s"
-            )
+            formatter = logging.Formatter("%(id)9s\t%(levelname)8s\t%(error)25s\t%(message)s")
             # create file handler logger
             if log_output_file is not None:
                 try:
-                    log_filehandler = logging.FileHandler(
-                        log_output_file, mode="w", encoding="UTF-8"
-                    )
+                    log_filehandler = logging.FileHandler(log_output_file, mode="w", encoding="UTF-8")
                 except OSError:
-                    raise LoggerError.InvalidNameError(
-                        f"Output file: {log_output_file} cannot be created."
-                    )
+                    raise LoggerError.InvalidNameError(f"Output file: {log_output_file} cannot be created.")
                 log_filehandler.setFormatter(formatter)
                 self.logger.addHandler(log_filehandler)
             # create console handler logger

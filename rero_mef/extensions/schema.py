@@ -19,9 +19,7 @@ class SchemaExtension(RecordExtension):
 
     def _set_schema(self, record):
         """Set ``$schema`` on *record* if it can be resolved."""
-        if (entity := self._infer_entity(record)) and (
-            schema_url := self._get_schema_url(entity)
-        ):
+        if (entity := self._infer_entity(record)) and (schema_url := self._get_schema_url(entity)):
             record["$schema"] = schema_url
 
     def pre_create(self, record, *args, **kwargs):
@@ -41,9 +39,7 @@ class SchemaExtension(RecordExtension):
         :param record: An Invenio Record instance.
         :returns: The ``pid_type`` string, or ``None``.
         """
-        provider = getattr(record, "provider", None) or getattr(
-            type(record), "provider", None
-        )
+        provider = getattr(record, "provider", None) or getattr(type(record), "provider", None)
         return getattr(provider, "pid_type", None) if provider else None
 
     def get_schema_url_for_entity(self, entity):

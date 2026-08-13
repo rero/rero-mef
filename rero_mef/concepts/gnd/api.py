@@ -54,9 +54,7 @@ class ConceptGndRecord(ConceptRecord):
     @property
     def association_identifier(self):
         """Get associated identifier."""
-        for match_type, max_count in current_app.config.get(
-            "RERO_MEF_CONCEPTS_GND_MATCHES", {}
-        ).items():
+        for match_type, max_count in current_app.config.get("RERO_MEF_CONCEPTS_GND_MATCHES", {}).items():
             matches = self.get(match_type, [])
             match_count = 0
             match_value = ""
@@ -91,25 +89,17 @@ class ConceptGndRecord(ConceptRecord):
             )
             if exact_count != 1:
                 # we have 0 or multiple exact matches
-                count = (
-                    self.search()
-                    .filter("term", _association_identifier=association_identifier)
-                    .count()
-                )
+                count = self.search().filter("term", _association_identifier=association_identifier).count()
                 if count > 1:
                     current_app.logger.error(
-                        f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
-                        f"| {association_identifier}"
+                        f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} | {association_identifier}"
                     )
                     return None
             # Get associated record
-            query = association_search().filter(
-                "term", _association_identifier=association_identifier
-            )
+            query = association_search().filter("term", _association_identifier=association_identifier)
             if query.count() > 1:
                 current_app.logger.error(
-                    f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
-                    f"| {association_identifier}"
+                    f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} | {association_identifier}"
                 )
             elif query.count() == 1:
                 hit = next(query.source("pid").scan())
@@ -148,6 +138,4 @@ class ConceptGndIndexer(ConceptIndexer):
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        super().bulk_index(
-            record_id_iterator, index=ConceptGndSearch.Meta.index, doc_type="cognd"
-        )
+        super().bulk_index(record_id_iterator, index=ConceptGndSearch.Meta.index, doc_type="cognd")

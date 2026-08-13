@@ -25,9 +25,7 @@ def test_no_person_or_organisation():
     file_name = os.path.join(current_dir, "examples/xml_minimal_record.xml")
     records = marcxml.parse_xml_to_array(file_name, strict=False, normalize_form=None)
     data = Transformation(marc=records[0], logger=None, verbose=False, transform=True)
-    assert data.json_dict == {
-        "NO TRANSFORMATION": "Not a person or organisation: bf:Topic"
-    }
+    assert data.json_dict == {"NO TRANSFORMATION": "Not a person or organisation: bf:Topic"}
 
 
 def test_no_100_110_111():
@@ -176,9 +174,7 @@ def test_gnd_identifier():
     trans = trans_prep("gnd", xml_part_to_add)
     trans.trans_gnd_identifier()
     assert trans.json == {
-        "identifiedBy": [
-            {"source": "GND", "type": "uri", "value": "http://d-nb.info/gnd/100000193"}
-        ],
+        "identifiedBy": [{"source": "GND", "type": "uri", "value": "http://d-nb.info/gnd/100000193"}],
     }
 
 
@@ -571,9 +567,7 @@ def test_gnd_parallel_access_point():
     """
     trans = trans_prep("gnd", xml_part_to_add)
     trans.trans_gnd_parallel_access_point()
-    assert trans.json == {
-        "parallel_access_point": ["Goethe, Johann Wolfgang von, 1749-1832"]
-    }
+    assert trans.json == {"parallel_access_point": ["Goethe, Johann Wolfgang von, 1749-1832"]}
 
 
 def test_gnd_parallel_access_point_organisation():

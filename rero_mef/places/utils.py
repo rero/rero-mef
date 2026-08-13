@@ -13,9 +13,7 @@ def get_place_endpoints():
     """Get all places from config."""
     places = current_app.config.get("RERO_PLACES", [])
     endpoints = current_app.config.get("RECORDS_REST_ENDPOINTS", {})
-    return {
-        endpoint: data for endpoint, data in endpoints.items() if endpoint in places
-    }
+    return {endpoint: data for endpoint, data in endpoints.items() if endpoint in places}
 
 
 def make_identifier(identified_by):

@@ -1321,14 +1321,10 @@ def remove_trailing_punctuation(data, punctuation=",", spaced_punctuation=":;/-"
     The spaced_punctuation parameter lists the punctuation characters needing one or more preceding space(s) in order to
     be removed.
     """
-    return re.sub(
-        rf"([{punctuation}]|\s+[{spaced_punctuation}])$", "", data.rstrip()
-    ).rstrip()
+    return re.sub(rf"([{punctuation}]|\s+[{spaced_punctuation}])$", "", data.rstrip()).rstrip()
 
 
-def build_string_from_field(
-    field, subfields, punctuation=",", spaced_punctuation=":;/-", tag_grouping=None
-):
+def build_string_from_field(field, subfields, punctuation=",", spaced_punctuation=":;/-", tag_grouping=None):
     """Build a string (one per field).
 
     Build a string from the given field using specified subfields. The punctuation characters
@@ -1373,13 +1369,9 @@ def build_string_from_field(
                 subdelimiter = grouping.get("subdelimiter", "")
 
         if subfield_string:
-            subfield_string += (
-                delimiter + grouping_start + subdelimiter.join(group[1]) + grouping_end
-            )
+            subfield_string += delimiter + grouping_start + subdelimiter.join(group[1]) + grouping_end
         else:
-            subfield_string = (
-                grouping_start + subdelimiter.join(group[1]) + grouping_end
-            )
+            subfield_string = grouping_start + subdelimiter.join(group[1]) + grouping_end
     return subfield_string.strip()
 
 

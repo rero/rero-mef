@@ -69,9 +69,7 @@ def test_gnd_authorized_access_point():
     """
     trans = trans_prep(Transformation, "places", xml_part_to_add)
     trans.trans_gnd_authorized_access_point()
-    assert trans.json == {
-        "authorized_access_point": "Maria Königin (Grünwald, München)"
-    }
+    assert trans.json == {"authorized_access_point": "Maria Königin (Grünwald, München)"}
 
 
 def test_gnd_variant_access_point():
@@ -87,9 +85,7 @@ def test_gnd_variant_access_point():
     """
     trans = trans_prep(Transformation, "places", xml_part_to_add)
     trans.trans_gnd_variant_access_point()
-    assert trans.json == {
-        "variant_access_point": ["Tiefenbach-Kiesling", "Kießling (Tiefenbach, Passau)"]
-    }
+    assert trans.json == {"variant_access_point": ["Tiefenbach-Kiesling", "Kießling (Tiefenbach, Passau)"]}
 
 
 def test_gnd_relation():

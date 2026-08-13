@@ -10,9 +10,7 @@ from flask import url_for
 # ── concepts serializer: add_links + ReroMefSerializer.serialize ──────────────
 
 
-def test_concept_rero_item_serializer(
-    client, concept_rero_record, concept_mef_rero_record
-):
+def test_concept_rero_item_serializer(client, concept_rero_record, concept_mef_rero_record):
     """Fetching a concept entity record exercises concepts/serializers.py add_links."""
     pid = concept_rero_record.get("pid")
     url = url_for("invenio_records_rest.corero_item", pid_value=pid)
@@ -33,9 +31,7 @@ def test_concept_rero_list_serializer(client, concept_rero_record):
     assert body["hits"]["total"] >= 1
 
 
-def test_concept_idref_item_serializer(
-    client, concept_idref_record, concept_mef_idref_record
-):
+def test_concept_idref_item_serializer(client, concept_idref_record, concept_mef_idref_record):
     """Fetching an idref concept record exercises add_links for coidref endpoint."""
     pid = concept_idref_record.get("pid")
     url = url_for("invenio_records_rest.cidref_item", pid_value=pid)
@@ -48,9 +44,7 @@ def test_concept_idref_item_serializer(
 # ── places serializer: add_links + ReroMefSerializer.serialize ───────────────
 
 
-def test_place_idref_item_serializer(
-    client, place_idref_record, place_mef_idref_record
-):
+def test_place_idref_item_serializer(client, place_idref_record, place_mef_idref_record):
     """Fetching a place idref record exercises places/serializers.py add_links."""
     pid = place_idref_record.get("pid")
     url = url_for("invenio_records_rest.pidref_item", pid_value=pid)

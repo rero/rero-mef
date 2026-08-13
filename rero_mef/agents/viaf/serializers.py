@@ -21,9 +21,7 @@ def add_links(pid, record):
     """Add MEF link to VIAF."""
     links = {}
     viaf_pid = record.get("pid")
-    mef_pid_search = (
-        AgentMefSearch().filter("term", viaf_pid=viaf_pid).source(["pid"]).scan()
-    )
+    mef_pid_search = AgentMefSearch().filter("term", viaf_pid=viaf_pid).source(["pid"]).scan()
     with contextlib.suppress(Exception):
         for idx, search in enumerate(mef_pid_search):
             url = "{scheme}://{host}/api/agents/mef/" + str(search.pid)
@@ -42,9 +40,7 @@ def local_link(agent, name, record):
     """Change links to actual links."""
     if name in record and (ref := record[name].get("$ref")):
         my_pid = ref.split("/")[-1]
-        url = url_for(
-            f"invenio_records_rest.{agent}_item", pid_value=my_pid, _external=True
-        )
+        url = url_for(f"invenio_records_rest.{agent}_item", pid_value=my_pid, _external=True)
         record[name].update({"$ref": url})
 
 
@@ -58,9 +54,7 @@ class ReroMefSerializer(JSONSerializer):
         :param record: Record instance.
         :param links_factory: Factory function for record links.
         """
-        return super().serialize(
-            pid=pid, record=record, links_factory=add_links, **kwargs
-        )
+        return super().serialize(pid=pid, record=record, links_factory=add_links, **kwargs)
 
 
 json_ = ReroMefSerializer(RecordSchemaJSONV1)

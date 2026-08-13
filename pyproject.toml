@@ -278,6 +278,7 @@ testpaths = "tests rero_mef"
 filterwarnings = "ignore::PendingDeprecationWarning"
 
 [tool.ruff]
+line-length = 120
 extend-exclude = ["config.py"]
 
 [tool.ruff.lint]

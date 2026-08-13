@@ -42,11 +42,7 @@ def _endpoint_for_all_mef_pid(pid_value):
         (PlaceMefRecord, "invenio_records_rest.plmef_item"),
     )
     return next(
-        (
-            endpoint
-            for record_cls, endpoint in endpoint_map
-            if record_cls.get_record_by_pid(pid_value)
-        ),
+        (endpoint for record_cls, endpoint in endpoint_map if record_cls.get_record_by_pid(pid_value)),
         None,
     )
 
@@ -71,9 +67,7 @@ def _ensure_all_mef_alias():
     except NotFoundError:
         pass
     except Exception:
-        current_app.logger.exception(
-            "Unexpected error checking all_mef alias existence"
-        )
+        current_app.logger.exception("Unexpected error checking all_mef alias existence")
         raise
 
     for target in targets:
@@ -83,9 +77,7 @@ def _ensure_all_mef_alias():
         except NotFoundError:
             pass
         except Exception:
-            current_app.logger.exception(
-                "Unexpected error checking index existence for %s", target
-            )
+            current_app.logger.exception("Unexpected error checking index existence for %s", target)
             raise
 
     return False
@@ -230,10 +222,7 @@ def all_mef_search():
             }
         ), 404
 
-    cache_key = (
-        "all_mef:"
-        + hashlib.md5(_json.dumps(sorted(request.args.lists())).encode()).hexdigest()
-    )
+    cache_key = "all_mef:" + hashlib.md5(_json.dumps(sorted(request.args.lists())).encode()).hexdigest()
     if cached := current_cache.get(cache_key):
         return jsonify(cached)
 
@@ -244,8 +233,7 @@ def all_mef_search():
         return jsonify(
             {
                 "status": 400,
-                "message": e.description
-                or "The syntax of the search query is invalid.",
+                "message": e.description or "The syntax of the search query is invalid.",
             }
         ), 400
 
@@ -257,10 +245,7 @@ def all_mef_search():
         return jsonify(
             {
                 "status": 404,
-                "message": (
-                    "No such index or alias [all_mef]. "
-                    "Ensure mef/concepts_mef/places_mef indexes exist."
-                ),
+                "message": ("No such index or alias [all_mef]. Ensure mef/concepts_mef/places_mef indexes exist."),
             }
         ), 404
 
@@ -272,19 +257,11 @@ def all_mef_search():
     args["size"] = str(size)
     args.pop("page", None)
 
-    links = {
-        "self": url_for(
-            "api_blueprint.all_mef_search", page=page, **args, _external=True
-        )
-    }
+    links = {"self": url_for("api_blueprint.all_mef_search", page=page, **args, _external=True)}
     if page * size < total:
-        links["next"] = url_for(
-            "api_blueprint.all_mef_search", page=page + 1, **args, _external=True
-        )
+        links["next"] = url_for("api_blueprint.all_mef_search", page=page + 1, **args, _external=True)
     if page > 1:
-        links["prev"] = url_for(
-            "api_blueprint.all_mef_search", page=page - 1, **args, _external=True
-        )
+        links["prev"] = url_for("api_blueprint.all_mef_search", page=page - 1, **args, _external=True)
 
     result = {
         "hits": {

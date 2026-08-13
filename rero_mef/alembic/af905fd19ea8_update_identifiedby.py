@@ -31,9 +31,7 @@ def upgrade():
         {"search_cls": ConceptIdrefSearch, "record_cls": ConceptIdrefRecord},
         {"search_cls": PlaceIdrefSearch, "record_cls": PlaceIdrefRecord},
     ]:
-        query = record_type["search_cls"]().filter(
-            "exists", field="closeMatch.identifiedBy"
-        )
+        query = record_type["search_cls"]().filter("exists", field="closeMatch.identifiedBy")
         pids = [hit.pid for hit in query.source("pid").scan()]
         name = record_type["search_cls"].Meta.index
         LOGGER.info(f"Change closeMatch.identifiedBy to list {name}: {len(pids)}")
@@ -47,17 +45,13 @@ def upgrade():
                 new_close_matchs = []
                 for close_match in record.get("closeMatch", []):
                     new_close_matchs.append(close_match)
-                    if (
-                        ifidentified_by := close_match.get("identifiedBy")
-                    ) and not isinstance(ifidentified_by, list):
+                    if (ifidentified_by := close_match.get("identifiedBy")) and not isinstance(ifidentified_by, list):
                         new_close_matchs[-1]["identifiedBy"] = [ifidentified_by]
                 record["closeMatch"] = new_close_matchs
                 record.update(data=record, dbcommit=True, reindex=True)
 
         query = record_type["search_cls"]().filter("exists", field="identifiedBy")
-        identified_by_pids = [
-            hit.pid for hit in query.source("pid").scan() if hit.pid not in pids
-        ]
+        identified_by_pids = [hit.pid for hit in query.source("pid").scan() if hit.pid not in pids]
         LOGGER.info(f"Reindex identifiedBy {name}: {len(identified_by_pids)}")
         progress_bar = progressbar(
             items=identified_by_pids,
@@ -78,9 +72,7 @@ def downgrade():
         {"search_cls": ConceptIdrefSearch, "record_cls": ConceptIdrefRecord},
         {"search_cls": PlaceIdrefSearch, "record_cls": PlaceIdrefRecord},
     ]:
-        query = record_type["search_cls"]().filter(
-            "exists", field="closeMatch.identifiedBy"
-        )
+        query = record_type["search_cls"]().filter("exists", field="closeMatch.identifiedBy")
         pids = [hit.pid for hit in query.source("pid").scan()]
         name = record_type["search_cls"].Meta.index
         LOGGER.info(f"Change identifiedBy to object {name}: {query.count()}")
@@ -95,9 +87,7 @@ def downgrade():
                 new_close_matchs = []
                 for close_match in record.get("closeMatch", []):
                     new_close_matchs.append(close_match)
-                    if (
-                        ifidentified_by := close_match.get("identifiedBy")
-                    ) and isinstance(ifidentified_by, list):
+                    if (ifidentified_by := close_match.get("identifiedBy")) and isinstance(ifidentified_by, list):
                         new_close_matchs[-1]["identifiedBy"] = ifidentified_by[0]
                 record["closeMatch"] = new_close_matchs
                 record.update(data=record, dbcommit=True, reindex=True)

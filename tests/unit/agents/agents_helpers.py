@@ -23,15 +23,9 @@ def trans_prep(source, xml_part_to_add):
     records = marcxml.parse_xml_to_array(file_name, strict=False, normalize_form=None)
     logger = Logger()
     trans = {
-        "gnd": Transformation_gnd(
-            marc=records[0], logger=logger, verbose=True, transform=False
-        ),
-        "idref": Transformation_idref(
-            marc=records[0], logger=logger, verbose=True, transform=False
-        ),
-        "rero": Transformation_rero(
-            marc=records[0], logger=logger, verbose=True, transform=False
-        ),
+        "gnd": Transformation_gnd(marc=records[0], logger=logger, verbose=True, transform=False),
+        "idref": Transformation_idref(marc=records[0], logger=logger, verbose=True, transform=False),
+        "rero": Transformation_rero(marc=records[0], logger=logger, verbose=True, transform=False),
     }
     return trans.get(source)
 

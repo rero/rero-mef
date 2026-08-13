@@ -61,8 +61,7 @@ class Transformation:
             )
         for field_679 in self.marc.get_fields("679"):
             identifiers.extend(
-                {"type": "uri", "value": subfield_u.strip()}
-                for subfield_u in field_679.get_subfields("u")
+                {"type": "uri", "value": subfield_u.strip()} for subfield_u in field_679.get_subfields("u")
             )
         if identifiers:
             self.json_dict["identifiedBy"] = identifiers
@@ -89,9 +88,7 @@ class Transformation:
             self.logger.info("Call Function: %s", "trans_rero_variant_access_point")
         tag = "455" if self.marc.get_fields("455") else "450"
         subfields = {"a": ", ", "x": " - "}
-        if variant_access_points := build_string_list_from_fields(
-            self.marc, tag, subfields
-        ):
+        if variant_access_points := build_string_list_from_fields(self.marc, tag, subfields):
             self.json_dict["variant_access_point"] = variant_access_points
 
     def trans_rero_relation(self):
@@ -111,9 +108,7 @@ class Transformation:
             if field.get("0"):
                 relations[relation_type].append({"$ref": field["0"]})
             elif field.get("a"):
-                relations[relation_type].append(
-                    {"authorized_access_point": field["a"].strip()}
-                )
+                relations[relation_type].append({"authorized_access_point": field["a"].strip()})
 
         for relation, value in relations.items():
             if value:

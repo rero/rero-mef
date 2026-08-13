@@ -62,9 +62,7 @@ def init_entity_pids(input_directory, verbose):
                         click.echo(f"  Read pids from: {file_name}")
                     length = number_records_in_file(file_name, "csv")
                     pids[name] = {}
-                    progress = progressbar(
-                        items=open(file_name), length=length, verbose=verbose
-                    )
+                    progress = progressbar(items=open(file_name), length=length, verbose=verbose)
                     for line in progress:
                         pid = line.split("\t")[3]
                         pids[name][pid] = 1
@@ -106,11 +104,7 @@ def create_mef_files(
         base_url = current_app.config.get("RERO_MEF_APP_BASE_URL")
         endpoint = current_app.config.get("JSONSCHEMAS_ENDPOINT", "")
         mef_path = schemas.get("mef")
-        schema = (
-            urljoin(base_url, f"{endpoint}{mef_path}")
-            if base_url and mef_path
-            else None
-        )
+        schema = urljoin(base_url, f"{endpoint}{mef_path}") if base_url and mef_path else None
         # Create MEF with VIAF
         if verbose:
             click.echo(f"  Create MEF with VIAF pid: {viaf_metadata_file_name}")
@@ -130,9 +124,7 @@ def create_mef_files(
                 if entity_pid and pids.get(name, {}).get(entity_pid):
                     corresponding_data["viaf_pid"] = viaf_pid
                     pids[name].pop(entity_pid)
-                    corresponding_data[name] = {
-                        "$ref": f"{base_url}/api/{name}/{entity_pid}"
-                    }
+                    corresponding_data[name] = {"$ref": f"{base_url}/api/{name}/{entity_pid}"}
             if corresponding_data.get("viaf_pid"):
                 # Write MEF with VIAF to file
                 mef_pid = write_mef_files(
@@ -187,11 +179,7 @@ def create_viaf_files(
         click.echo("  Start ...")
     count = 0
     corresponding_data = {}
-    sources_used = [
-        source
-        for source, data in AgentViafRecord.sources.items()
-        if data.get("record_class")
-    ]
+    sources_used = [source for source, data in AgentViafRecord.sources.items() if data.get("record_class")]
     use = False
     with (
         open(viaf_pidstore_file_name, "w", encoding="utf-8") as viaf_pidstore,
@@ -258,9 +246,7 @@ def get_agent_endpoints():
     """Get all agents from config."""
     agents = current_app.config.get("RERO_AGENTS", [])
     endpoints = current_app.config.get("RECORDS_REST_ENDPOINTS", {})
-    return {
-        endpoint: data for endpoint, data in endpoints.items() if endpoint in agents
-    }
+    return {endpoint: data for endpoint, data in endpoints.items() if endpoint in agents}
 
 
 def get_agent_classes():

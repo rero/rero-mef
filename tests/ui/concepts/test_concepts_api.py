@@ -24,9 +24,7 @@ def _no_md5(record):
 
 def test_create_concept_record(app, concept_rero_data, concept_idref_data, tmpdir):
     """Test create concept record."""
-    idref_record, action = ConceptIdrefRecord.create_or_update(
-        data=concept_idref_data, dbcommit=True, reindex=True
-    )
+    idref_record, action = ConceptIdrefRecord.create_or_update(data=concept_idref_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert idref_record["pid"] == "050548115"
 
@@ -41,9 +39,7 @@ def test_create_concept_record(app, concept_rero_data, concept_idref_data, tmpdi
         "type": "bf:Topic",
     }
 
-    rero_record, action = ConceptReroRecord.create_or_update(
-        data=concept_rero_data, dbcommit=True, reindex=True
-    )
+    rero_record, action = ConceptReroRecord.create_or_update(data=concept_rero_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert rero_record["pid"] == concept_rero_data["pid"]
     m_record, m_actions = rero_record.create_or_update_mef(dbcommit=True, reindex=True)
@@ -51,9 +47,7 @@ def test_create_concept_record(app, concept_rero_data, concept_idref_data, tmpdi
     assert "md5" in m_record
     assert _no_md5(m_record) == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
-        "rero": {
-            "$ref": f"https://mef.rero.ch/api/concepts/rero/{concept_rero_data['pid']}"
-        },
+        "rero": {"$ref": f"https://mef.rero.ch/api/concepts/rero/{concept_rero_data['pid']}"},
         "pid": "2",
         "type": "bf:Topic",
     }
@@ -80,15 +74,11 @@ def test_create_concept_record(app, concept_rero_data, concept_idref_data, tmpdi
     assert "$schema" not in open(tmp_file_name).read()
 
     # Test update concept record.
-    returned_record, action = ConceptReroRecord.create_or_update(
-        data=concept_rero_data, dbcommit=True, reindex=True
-    )
+    returned_record, action = ConceptReroRecord.create_or_update(data=concept_rero_data, dbcommit=True, reindex=True)
     assert action == Action.REPLACE
     assert returned_record["pid"] == concept_rero_data["pid"]
 
-    returned_record, action = ConceptIdrefRecord.create_or_update(
-        data=concept_idref_data, dbcommit=True, reindex=True
-    )
+    returned_record, action = ConceptIdrefRecord.create_or_update(data=concept_idref_data, dbcommit=True, reindex=True)
     assert action == Action.REPLACE
     assert returned_record["pid"] == concept_idref_data["pid"]
 
@@ -116,18 +106,14 @@ def test_create_concept_record(app, concept_rero_data, concept_idref_data, tmpdi
     assert "md5" in m_record
     assert _no_md5(m_record) == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
-        "idref": {
-            "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_data['pid']}"
-        },
+        "idref": {"$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_data['pid']}"},
         "deleted": "2022-09-03T07:07:32.526780+00:00",
         "pid": "1",
         "type": "bf:Temporal",
     }
 
 
-def test_create_concept_frbnf_record(
-    app, concept_idref_frbnf_data_close, concept_gnd_frbnf_data_close, tmpdir
-):
+def test_create_concept_frbnf_record(app, concept_idref_frbnf_data_close, concept_gnd_frbnf_data_close, tmpdir):
     """Test create concept record with frbnf links."""
     mef_count = ConceptMefRecord.count()
     # Create idref record with identifiedBy `FRBNF12352687`.
@@ -143,9 +129,7 @@ def test_create_concept_frbnf_record(
     assert "md5" in m_record
     assert _no_md5(m_record) == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
-        "idref": {
-            "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
-        },
+        "idref": {"$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"},
         "pid": f"{mef_count + 1}",
         "type": "bf:Topic",
     }
@@ -165,12 +149,8 @@ def test_create_concept_frbnf_record(
     assert "md5" in m_record
     assert _no_md5(m_record) == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
-        "gnd": {
-            "$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_close['pid']}"
-        },
-        "idref": {
-            "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
-        },
+        "gnd": {"$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_close['pid']}"},
+        "idref": {"$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"},
         "pid": f"{mef_count + 1}",
         "type": "bf:Topic",
     }
@@ -182,9 +162,7 @@ def test_create_concept_frbnf_record(
     idref_record["identifiedBy"] = [
         {"source": "IDREF", "type": "uri", "value": "http://www.idref.fr/032510934"},
     ]
-    idref_record, action = ConceptIdrefRecord.create_or_update(
-        data=idref_record, dbcommit=True, reindex=True
-    )
+    idref_record, action = ConceptIdrefRecord.create_or_update(data=idref_record, dbcommit=True, reindex=True)
     assert action == Action.REPLACE
     assert idref_record["identifiedBy"] == [
         {"source": "IDREF", "type": "uri", "value": "http://www.idref.fr/032510934"},
@@ -200,9 +178,7 @@ def test_create_concept_frbnf_record(
     assert "md5" in m_record
     assert _no_md5(m_record) == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
-        "idref": {
-            "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
-        },
+        "idref": {"$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"},
         "pid": f"{mef_count + 1}",
         "type": "bf:Topic",
     }
@@ -216,9 +192,7 @@ def test_create_concept_frbnf_record(
         },
         {"source": "BNF", "type": "bf:Nbn", "value": "FRBNF12352687"},
     ]
-    idref_record, action = ConceptIdrefRecord.create_or_update(
-        data=idref_record, dbcommit=True, reindex=True
-    )
+    idref_record, action = ConceptIdrefRecord.create_or_update(data=idref_record, dbcommit=True, reindex=True)
     assert action == Action.REPLACE
     assert idref_record["identifiedBy"] == [
         {
@@ -239,21 +213,15 @@ def test_create_concept_frbnf_record(
     assert "md5" in m_record
     assert _no_md5(m_record) == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
-        "idref": {
-            "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
-        },
-        "gnd": {
-            "$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_close['pid']}"
-        },
+        "idref": {"$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"},
+        "gnd": {"$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_close['pid']}"},
         "pid": f"{mef_count + 1}",
         "type": "bf:Topic",
     }
 
     # Delete identifiedBy `FRBNF12352687` from GND record.
     close_match = gnd_record.pop("closeMatch")
-    gnd_record, action = ConceptGndRecord.create_or_update(
-        data=gnd_record, dbcommit=True, reindex=True
-    )
+    gnd_record, action = ConceptGndRecord.create_or_update(data=gnd_record, dbcommit=True, reindex=True)
     assert action == Action.REPLACE
     assert not idref_record.get("closeMatch")
 
@@ -267,18 +235,14 @@ def test_create_concept_frbnf_record(
     assert "md5" in m_record
     assert _no_md5(m_record) == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
-        "idref": {
-            "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
-        },
+        "idref": {"$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"},
         "pid": f"{mef_count + 1}",
         "type": "bf:Topic",
     }
 
     # Add identifiedBy `FRBNF12352687` to GND record
     gnd_record["exactMatch"] = close_match
-    gnd_record, action = ConceptGndRecord.create_or_update(
-        data=gnd_record, dbcommit=True, reindex=True
-    )
+    gnd_record, action = ConceptGndRecord.create_or_update(data=gnd_record, dbcommit=True, reindex=True)
     assert action == Action.REPLACE
     assert gnd_record.get("exactMatch") == close_match
 
@@ -292,12 +256,8 @@ def test_create_concept_frbnf_record(
     assert "md5" in m_record
     assert _no_md5(m_record) == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
-        "gnd": {
-            "$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_close['pid']}"
-        },
-        "idref": {
-            "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
-        },
+        "gnd": {"$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_close['pid']}"},
+        "idref": {"$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"},
         "pid": m_record.pid,
         "type": "bf:Topic",
     }
@@ -307,9 +267,7 @@ def test_create_concept_frbnf_record(
     gnd_record_close_match["pid"] = f"{gnd_record_close_match['pid']}_2"
     match = gnd_record_close_match.pop("exactMatch")
     gnd_record_close_match["closeMatch"] = match
-    gnd_record_close_match = ConceptGndRecord.create(
-        data=gnd_record_close_match, dbcommit=True, reindex=True
-    )
+    gnd_record_close_match = ConceptGndRecord.create(data=gnd_record_close_match, dbcommit=True, reindex=True)
     ConceptGndRecord.flush_indexes()
     m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
 
@@ -317,12 +275,8 @@ def test_create_concept_frbnf_record(
     assert "md5" in m_record
     assert _no_md5(m_record) == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
-        "gnd": {
-            "$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_close['pid']}"
-        },
-        "idref": {
-            "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
-        },
+        "gnd": {"$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_close['pid']}"},
+        "idref": {"$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"},
         "pid": f"{m_record.pid}",
         "type": "bf:Topic",
     }
@@ -330,9 +284,7 @@ def test_create_concept_frbnf_record(
     # Change exact match to close match
     match = gnd_record.pop("exactMatch")
     gnd_record["closeMatch"] = match
-    gnd_record = ConceptGndRecord.create_or_update(
-        data=gnd_record, dbcommit=True, reindex=True
-    )
+    gnd_record = ConceptGndRecord.create_or_update(data=gnd_record, dbcommit=True, reindex=True)
     ConceptGndRecord.flush_indexes()
     m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     mef_count = ConceptMefRecord.count()
@@ -340,17 +292,13 @@ def test_create_concept_frbnf_record(
     assert "md5" in m_record
     assert _no_md5(m_record) == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
-        "idref": {
-            "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"
-        },
+        "idref": {"$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_close['pid']}"},
         "pid": f"{m_record.pid}",
         "type": "bf:Topic",
     }
 
 
-def test_create_concept_frbnf_record_exact(
-    app, concept_idref_frbnf_data_exact, concept_gnd_frbnf_data_exact, tmpdir
-):
+def test_create_concept_frbnf_record_exact(app, concept_idref_frbnf_data_exact, concept_gnd_frbnf_data_exact, tmpdir):
     """Test create concept record with frbnf links."""
     mef_count = ConceptMefRecord.count()
     # Create idref record with identifiedBy `FRBNF12352687`.
@@ -374,12 +322,8 @@ def test_create_concept_frbnf_record_exact(
     assert "md5" in m_record
     assert _no_md5(m_record) == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
-        "idref": {
-            "$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_exact['pid']}"
-        },
-        "gnd": {
-            "$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_exact['pid']}"
-        },
+        "idref": {"$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_exact['pid']}"},
+        "gnd": {"$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_exact['pid']}"},
         "pid": f"{mef_count + 1}",
         "type": "bf:Topic",
     }

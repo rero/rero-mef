@@ -25,9 +25,7 @@ def test_ensure_all_mef_alias_es_not_reachable(app):
     from elasticsearch.exceptions import ConnectionError as ESConnectionError
 
     mock_client = MagicMock()
-    mock_client.indices.exists_alias.side_effect = ESConnectionError(
-        "N/A", "Connection refused"
-    )
+    mock_client.indices.exists_alias.side_effect = ESConnectionError("N/A", "Connection refused")
 
     ext = REROMEFAPP.__new__(REROMEFAPP)
     with patch("rero_mef.ext.current_search_client", mock_client):
@@ -53,9 +51,7 @@ def test_ensure_all_mef_alias_get_alias_not_found(app):
     from elasticsearch.exceptions import NotFoundError
 
     mock_client = MagicMock()
-    mock_client.indices.get_alias.side_effect = NotFoundError(
-        404, "index_not_found", {}
-    )
+    mock_client.indices.get_alias.side_effect = NotFoundError(404, "index_not_found", {})
     mock_client.indices.put_alias.return_value = True
 
     ext = REROMEFAPP.__new__(REROMEFAPP)
@@ -87,9 +83,7 @@ def test_ensure_all_mef_alias_put_alias_not_found(app):
 
     mock_client = MagicMock()
     mock_client.indices.get_alias.return_value = {"some-index": {}}
-    mock_client.indices.put_alias.side_effect = NotFoundError(
-        404, "index_not_found", {}
-    )
+    mock_client.indices.put_alias.side_effect = NotFoundError(404, "index_not_found", {})
 
     ext = REROMEFAPP.__new__(REROMEFAPP)
     with patch("rero_mef.ext.current_search_client", mock_client):

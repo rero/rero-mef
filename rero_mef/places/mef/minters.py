@@ -6,9 +6,7 @@
 from .providers import PlaceMefProvider
 
 
-def mef_id_minter(
-    record_uuid, data, provider=PlaceMefProvider, pid_key="pid", object_type="rec"
-):
+def mef_id_minter(record_uuid, data, provider=PlaceMefProvider, pid_key="pid", object_type="rec"):
     """RERO ILS MEF place pid minter."""
     assert pid_key not in data
     provider = provider.create(object_type=object_type, object_uuid=record_uuid)

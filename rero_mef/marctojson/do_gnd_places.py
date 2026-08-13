@@ -209,9 +209,7 @@ class Transformation:
                     relations.setdefault(relation_type, [])
                     if authorized_ap not in authorized_aps:
                         authorized_aps.add(authorized_ap)
-                        relations[relation_type].append(
-                            {"authorized_access_point": authorized_ap}
-                        )
+                        relations[relation_type].append({"authorized_access_point": authorized_ap})
         for relation, value in relations.items():
             if value:
                 self.json_dict[relation] = value

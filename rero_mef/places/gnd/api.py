@@ -83,6 +83,4 @@ class PlaceGndIndexer(PlaceIndexer):
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        super().bulk_index(
-            record_id_iterator, index=PlaceGndSearch.Meta.index, doc_type="plgnd"
-        )
+        super().bulk_index(record_id_iterator, index=PlaceGndSearch.Meta.index, doc_type="plgnd")

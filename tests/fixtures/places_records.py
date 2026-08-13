@@ -41,8 +41,6 @@ def place_mef_idref_record(app, place_mef_idref_data, place_idref_record):
 
 
 @pytest.fixture(scope="module")
-def place_mef_idref_redirect_record(
-    app, place_mef_idref_redirect_data, place_idref_redirect_record
-):
+def place_mef_idref_redirect_record(app, place_mef_idref_redirect_data, place_idref_redirect_record):
     """Create a IdRef record."""
     return create_record(PlaceMefRecord, place_mef_idref_redirect_data)

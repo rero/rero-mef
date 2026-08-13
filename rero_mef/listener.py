@@ -36,9 +36,7 @@ def _get_entity_class_by_ref(ref_url):
     # Reconstruct the list_route as "/<group>/<type>/"
     route = f"/{parts[-3]}/{parts[-2]}/"
     endpoints = current_app.config.get("RECORDS_REST_ENDPOINTS", {})
-    key = next(
-        (k for k, cfg in endpoints.items() if cfg.get("list_route") == route), None
-    )
+    key = next((k for k, cfg in endpoints.items() if cfg.get("list_route") == route), None)
     return get_entity_class(key) if key else None
 
 

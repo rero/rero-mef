@@ -60,21 +60,14 @@ class ConceptIdrefRecord(ConceptRecord):
         """
         if association_identifier := self.association_identifier:
             # Test if my identifier is unique
-            count = (
-                self.search()
-                .filter("term", _association_identifier=association_identifier)
-                .count()
-            )
+            count = self.search().filter("term", _association_identifier=association_identifier).count()
             if count > 1:
                 current_app.logger.error(
-                    f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
-                    f"| {association_identifier}"
+                    f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} | {association_identifier}"
                 )
                 return None
             # Get associated record
-            query = association_search().filter(
-                "term", _association_identifier=association_identifier
-            )
+            query = association_search().filter("term", _association_identifier=association_identifier)
             associated_count = query.count()
             if associated_count > 1:
                 # GND sometimes has multiple records sharing the same BNF identifier.
@@ -93,8 +86,7 @@ class ConceptIdrefRecord(ConceptRecord):
                 if len(exact_pids) == 1:
                     return association_cls.get_record_by_pid(exact_pids[0])
                 current_app.logger.error(
-                    f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} "
-                    f"| {association_identifier}"
+                    f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} | {association_identifier}"
                 )
             elif associated_count == 1:
                 hit = next(query.source("pid").scan())
@@ -107,13 +99,10 @@ class ConceptIdrefRecord(ConceptRecord):
         if pids := [
             identified_by.get("value")
             for identified_by in self.get("identifiedBy", [])
-            if identified_by.get("source") == "BNF"
-            and identified_by.get("value", "").startswith("FRBNF")
+            if identified_by.get("source") == "BNF" and identified_by.get("value", "").startswith("FRBNF")
         ]:
             if len(pids) > 1:
-                current_app.logger.error(
-                    f"MULTIPLE ASSOCIATIONS FOUND FOR: {self.name} {self.pid} | {', '.join(pids)}"
-                )
+                current_app.logger.error(f"MULTIPLE ASSOCIATIONS FOUND FOR: {self.name} {self.pid} | {', '.join(pids)}")
             if pids:
                 return pids[-1]
         return None
@@ -149,6 +138,4 @@ class ConceptIdrefIndexer(ConceptIndexer):
 
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
-        super().bulk_index(
-            record_id_iterator, index=ConceptIdrefSearch.Meta.index, doc_type="cidref"
-        )
+        super().bulk_index(record_id_iterator, index=ConceptIdrefSearch.Meta.index, doc_type="cidref")

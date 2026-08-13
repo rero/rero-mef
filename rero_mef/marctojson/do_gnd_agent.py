@@ -140,11 +140,7 @@ class Transformation:
         if self.logger and self.verbose:
             self.logger.info("Call Function: %s", "trans_gnd_language")
         if (field_377 := self.marc.get_fields("377")) and (
-            language_list := [
-                language
-                for language in field_377[0].get_subfields("a")
-                if language in LANGUAGES
-            ]
+            language_list := [language for language in field_377[0].get_subfields("a") if language in LANGUAGES]
         ):
             self.json_dict["language"] = language_list
 
@@ -213,11 +209,7 @@ class Transformation:
                     dates_per_tag["100"]["death_date"] = format_100_date(dates[1])
 
         for field_548 in self.marc.get_fields("548"):
-            if (
-                field_548.get("a")
-                and field_548.get("4")
-                and field_548["4"] in ("datl", "datx", "datb")
-            ):
+            if field_548.get("a") and field_548.get("4") and field_548["4"] in ("datl", "datx", "datb"):
                 dates = field_548["a"].split("-")
                 if birth_date := format_548_date(dates[0]):
                     dates_per_tag.setdefault(field_548["4"], {})
@@ -251,9 +243,7 @@ class Transformation:
         if self.logger and self.verbose:
             self.logger.info("Call Function", "trans_gnd_biographical_information")
         subfields = {"a": ", ", "b": ", ", "u": ", "}
-        if biographical_information := build_string_list_from_fields(
-            self.marc, "678", subfields
-        ):
+        if biographical_information := build_string_list_from_fields(self.marc, "678", subfields):
             self.json_dict["biographical_information"] = biographical_information
 
     def trans_gnd_numeration(self):
@@ -301,9 +291,7 @@ class Transformation:
             self.logger.info("Call Function: %s", "trans_gnd_preferred_name")
         variant_names = self.json_dict.get("variant_name", [])
         for tag in tags:
-            preferred_names = build_string_list_from_fields(
-                record=self.marc, tag=tag, subfields=subfields
-            )
+            preferred_names = build_string_list_from_fields(record=self.marc, tag=tag, subfields=subfields)
             for idx, preferred_name in enumerate(preferred_names):
                 if idx == 0:
                     self.json_dict["preferred_name"] = preferred_name
@@ -341,9 +329,7 @@ class Transformation:
             self.logger.info("Call Function: %s", "trans_gnd_authorized_access_point")
         variant_access_points = self.json_dict.get("variant_access_point", [])
         for tag in tags:
-            authorized_access_points = build_string_list_from_fields(
-                record=self.marc, tag=tag, subfields=subfields
-            )
+            authorized_access_points = build_string_list_from_fields(record=self.marc, tag=tag, subfields=subfields)
             for authorized_access_point in authorized_access_points:
                 self.json_dict["type"] = agent
                 if self.json_dict.get("authorized_access_point"):
@@ -366,9 +352,7 @@ class Transformation:
             if self.marc.get_fields("411"):
                 tag = "411"
         variant_names = self.json_dict.get("variant_name", [])
-        if variant_name := build_string_list_from_fields(
-            record=self.marc, tag=tag, subfields=subfields
-        ):
+        if variant_name := build_string_list_from_fields(record=self.marc, tag=tag, subfields=subfields):
             variant_names += variant_name
         if variant_names:
             self.json_dict["variant_name"] = variant_names
@@ -396,9 +380,7 @@ class Transformation:
                 tag = "411"
         if self.logger and self.verbose:
             self.logger.info("Call Function: %s", "trans_gnd_variant_access_point")
-        if variant_access_point := build_string_list_from_fields(
-            record=self.marc, tag=tag, subfields=subfields
-        ):
+        if variant_access_point := build_string_list_from_fields(record=self.marc, tag=tag, subfields=subfields):
             self.json_dict["variant_access_point"] = variant_access_point
 
     def trans_gnd_parallel_access_point(self):
@@ -424,9 +406,7 @@ class Transformation:
                 tag = "711"
         if self.logger and self.verbose:
             self.logger.info("Call Function: %s", "trans_gnd_parallel_access_point")
-        if parallel_access_point := build_string_list_from_fields(
-            record=self.marc, tag=tag, subfields=subfields
-        ):
+        if parallel_access_point := build_string_list_from_fields(record=self.marc, tag=tag, subfields=subfields):
             self.json_dict["parallel_access_point"] = parallel_access_point
 
     def trans_gnd_country_associated(self):

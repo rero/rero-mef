@@ -49,9 +49,7 @@ def test_rero_get_record_success(app):
     mock_marc = MagicMock()
     with (
         patch("rero_mef.agents.rero.tasks.requests_retry_session") as mock_sess,
-        patch(
-            "rero_mef.agents.rero.tasks.parse_xml_to_array", return_value=[mock_marc]
-        ),
+        patch("rero_mef.agents.rero.tasks.parse_xml_to_array", return_value=[mock_marc]),
         patch(
             "rero_mef.agents.rero.tasks.Transformation",
             return_value=_mock_trans("A000069866"),
@@ -69,9 +67,7 @@ def test_rero_get_record_pid_mismatch(app):
     mock_marc = MagicMock()
     with (
         patch("rero_mef.agents.rero.tasks.requests_retry_session") as mock_sess,
-        patch(
-            "rero_mef.agents.rero.tasks.parse_xml_to_array", return_value=[mock_marc]
-        ),
+        patch("rero_mef.agents.rero.tasks.parse_xml_to_array", return_value=[mock_marc]),
         patch(
             "rero_mef.agents.rero.tasks.Transformation",
             return_value=_mock_trans("OTHER"),
@@ -133,9 +129,7 @@ def test_concept_gnd_get_record_success(app):
     mock_marc = MagicMock()
     with (
         patch("rero_mef.concepts.gnd.tasks.requests_retry_session") as mock_sess,
-        patch(
-            "rero_mef.concepts.gnd.tasks.parse_xml_to_array", return_value=[mock_marc]
-        ),
+        patch("rero_mef.concepts.gnd.tasks.parse_xml_to_array", return_value=[mock_marc]),
         patch(
             "rero_mef.concepts.gnd.tasks.Transformation",
             return_value=_mock_trans("007355440"),
@@ -153,9 +147,7 @@ def test_concept_gnd_get_record_pid_mismatch(app):
     mock_marc = MagicMock()
     with (
         patch("rero_mef.concepts.gnd.tasks.requests_retry_session") as mock_sess,
-        patch(
-            "rero_mef.concepts.gnd.tasks.parse_xml_to_array", return_value=[mock_marc]
-        ),
+        patch("rero_mef.concepts.gnd.tasks.parse_xml_to_array", return_value=[mock_marc]),
         patch(
             "rero_mef.concepts.gnd.tasks.Transformation",
             return_value=_mock_trans("OTHER"),
@@ -209,9 +201,7 @@ def test_concept_gnd_get_record_debug_reraises(app):
 
 def test_concept_gnd_process_records_from_dates(app):
     """process_records_from_dates delegates to oai_process_records_from_dates."""
-    with patch(
-        "rero_mef.concepts.gnd.tasks.oai_process_records_from_dates"
-    ) as mock_oai:
+    with patch("rero_mef.concepts.gnd.tasks.oai_process_records_from_dates") as mock_oai:
         mock_oai.return_value = {"concepts.gnd": {}}
         result = concept_gnd_process()
     mock_oai.assert_called_once()

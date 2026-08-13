@@ -53,9 +53,7 @@ def agent_rero_record(app, agent_rero_data):
 
 
 @pytest.fixture(scope="module")
-def agent_viaf_record(
-    app, agent_viaf_data, agent_idref_record, agent_rero_record, agent_gnd_record
-):
+def agent_viaf_record(app, agent_viaf_data, agent_idref_record, agent_rero_record, agent_gnd_record):
     """Create a VIAF record."""
     return create_record(AgentViafRecord, agent_viaf_data)
 
@@ -91,25 +89,19 @@ def agent_mef_record(app, agent_mef_data, agent_viaf_record):
 
 
 @pytest.fixture(scope="module")
-def agent_mef_gnd_redirect_record(
-    app, agent_mef_gnd_redirect_data, agent_viaf_gnd_redirect_record
-):
+def agent_mef_gnd_redirect_record(app, agent_mef_gnd_redirect_data, agent_viaf_gnd_redirect_record):
     """Create a IdRef record."""
     return create_record(AgentMefRecord, agent_mef_gnd_redirect_data)
 
 
 @pytest.fixture(scope="module")
-def agent_mef_idref_redirect_record(
-    app, agent_mef_idref_redirect_data, agent_viaf_idref_redirect_record
-):
+def agent_mef_idref_redirect_record(app, agent_mef_idref_redirect_data, agent_viaf_idref_redirect_record):
     """Create a IdRef record."""
     return create_record(AgentMefRecord, agent_mef_idref_redirect_data)
 
 
 @pytest.fixture(scope="module")
-def agent_mef_idref_redirect_2_record(
-    app, agent_mef_idref_redirect_2_data, agent_idref_redirect_2_record
-):
+def agent_mef_idref_redirect_2_record(app, agent_mef_idref_redirect_2_data, agent_idref_redirect_2_record):
     """Create the MEF record for the third (C) IDREF record of an A -> B -> C chain."""
     return create_record(AgentMefRecord, agent_mef_idref_redirect_2_data)
 

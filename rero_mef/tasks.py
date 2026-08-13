@@ -27,9 +27,7 @@ def process_bulk_queue(version_type=None, search_bulk_kwargs=None, stats_only=Tr
 
 
 @shared_task
-def create_or_update(
-    idx, record, entity, dbcommit=True, reindex=True, test_md5=False, verbose=False
-):
+def create_or_update(idx, record, entity, dbcommit=True, reindex=True, test_md5=False, verbose=False):
     """Create or update record task.
 
     :param index: index of record
@@ -52,9 +50,7 @@ def create_or_update(
         Action.UPDATE,
         Action.REPLACE,
     ):
-        mef_record, mef_actions = record.create_or_update_mef(
-            dbcommit=dbcommit, reindex=reindex
-        )
+        mef_record, mef_actions = record.create_or_update_mef(dbcommit=dbcommit, reindex=reindex)
     rec_id = record.get("pid")
     id_type = "pid:"
     if not rec_id:

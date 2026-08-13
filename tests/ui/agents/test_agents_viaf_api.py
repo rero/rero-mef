@@ -75,25 +75,15 @@ def test_get_online(mock_get, app, agent_viaf_online_response):
         "pid": "124294761",
         "idref_pid": "076515788",
     }
-    assert msg == (
-        "VIAF get: 076515788       "
-        "http://www.viaf.org/viaf/sourceID/SUDOC%7C076515788 | OK"
-    )
+    assert msg == ("VIAF get: 076515788       http://www.viaf.org/viaf/sourceID/SUDOC%7C076515788 | OK")
 
     mock_get.return_value = mock_response(json_data=agent_viaf_online_response)
-    data, msg = AgentViafRecord.get_online_record(
-        "SUDOC", "076515788", rec_format="raw"
-    )
+    data, msg = AgentViafRecord.get_online_record("SUDOC", "076515788", rec_format="raw")
     assert data == agent_viaf_online_response
-    assert msg == (
-        "VIAF get: 076515788       "
-        "http://www.viaf.org/viaf/sourceID/SUDOC%7C076515788 | OK"
-    )
+    assert msg == ("VIAF get: 076515788       http://www.viaf.org/viaf/sourceID/SUDOC%7C076515788 | OK")
 
 
-def test_create_mef_and_agents(
-    app, agent_viaf_record, agent_gnd_record, agent_rero_record, agent_idref_record
-):
+def test_create_mef_and_agents(app, agent_viaf_record, agent_gnd_record, agent_rero_record, agent_idref_record):
     """Test create MEF and agents."""
     monitor = Monitoring()
 
@@ -171,9 +161,7 @@ def test_create_mef_and_agents(
     # Create missing RERO record
     agent_rero_data_2 = deepcopy(agent_rero_record)
     agent_rero_data_2["pid"] = "AXXXXXXXXX"
-    agent_rero_record_2 = AgentReroRecord.create(
-        data=agent_rero_data_2, dbcommit=True, reindex=True
-    )
+    agent_rero_record_2 = AgentReroRecord.create(data=agent_rero_data_2, dbcommit=True, reindex=True)
     agent_rero_record_2.create_or_update_mef(dbcommit=True, reindex=True)
     assert AgentMefRecord.count() == 2
 
@@ -318,9 +306,7 @@ def test_create_mef_and_agents(
 
 
 @mock.patch("requests.Session.get")
-def test_create_mef_and_agents_online(
-    mock_session_get, app, aggnd_oai_139205527, script_info
-):
+def test_create_mef_and_agents_online(mock_session_get, app, aggnd_oai_139205527, script_info):
     """Test online agent creation from a mocked GND response."""
     # We need OAI harvest informations for the online functions.
     runner = CliRunner()
@@ -344,9 +330,7 @@ def test_create_mef_and_agents_online(
 
     mock_session_get.return_value = mock_response(content=aggnd_oai_139205527)
 
-    actions = viaf_record.create_mef_and_agents(
-        dbcommit=True, reindex=True, online=["aggnd"], verbose=True
-    )
+    actions = viaf_record.create_mef_and_agents(dbcommit=True, reindex=True, online=["aggnd"], verbose=True)
     mef_pid = AgentMefRecord.get_mef(
         entity_pid=viaf_record.pid,
         entity_name=viaf_record.name,
@@ -371,9 +355,7 @@ def test_handle_redirect(mock_get, app, agent_viaf_online_response):
         "gnd_pid": "12391664X",
         "idref_pid": "069774331",
     }
-    agent_viaf_record = AgentViafRecord.create(
-        data=viaf_data, dbcommit=True, reindex=True
-    )
+    agent_viaf_record = AgentViafRecord.create(data=viaf_data, dbcommit=True, reindex=True)
     new_pid = "999999999"
 
     # Mock the target VIAF record online data
@@ -410,9 +392,7 @@ def test_handle_redirect_target_not_found(mock_get, app):
         "pid": old_pid,
         "gnd_pid": "12391664X",
     }
-    agent_viaf_record = AgentViafRecord.create(
-        data=viaf_data, dbcommit=True, reindex=True
-    )
+    agent_viaf_record = AgentViafRecord.create(data=viaf_data, dbcommit=True, reindex=True)
     old_pid = agent_viaf_record.pid
     new_pid = "999999999"
 
@@ -451,9 +431,7 @@ def test_get_online_with_redirect(mock_get, app, agent_viaf_online_response):
 
 
 @mock.patch("requests.Session.get")
-def test_update_online_handles_redirect(
-    mock_get, app, agent_viaf_record, agent_viaf_online_response
-):
+def test_update_online_handles_redirect(mock_get, app, agent_viaf_record, agent_viaf_online_response):
     """Test update_online reconciles merged VIAF clusters via handle_redirect."""
     viaf_record = AgentViafRecord.get_record_by_pid(agent_viaf_record.pid)
     if viaf_record is None:
@@ -491,9 +469,7 @@ def test_handle_redirect_chained(mock_get, app):
         "pid": old_pid,
         "gnd_pid": "12391664X",
     }
-    agent_viaf_record = AgentViafRecord.create(
-        data=viaf_data, dbcommit=True, reindex=True
-    )
+    agent_viaf_record = AgentViafRecord.create(data=viaf_data, dbcommit=True, reindex=True)
     new_pid = "22222222"
 
     # Mock response with chained redirect (redirect_from still present)
@@ -534,9 +510,7 @@ def test_get_online_other_source(mock_get, app, agent_viaf_online_response):
 @mock.patch("requests.Session.get")
 @mock.patch("rero_mef.agents.viaf.api.click.echo")
 @mock.patch("rero_mef.agents.viaf.api._sleep_with_countdown")
-def test_get_online_rate_limit_retry_after_capped(
-    mock_wait, mock_echo, mock_get, app, agent_viaf_online_response
-):
+def test_get_online_rate_limit_retry_after_capped(mock_wait, mock_echo, mock_get, app, agent_viaf_online_response):
     """Cap Retry-After to RERO_MEF_VIAF_RETRY_AFTER_MAX and retry successfully."""
     old_delay = app.config.get("RERO_MEF_VIAF_REQUEST_DELAY")
     old_max = app.config.get("RERO_MEF_VIAF_RETRY_AFTER_MAX")
@@ -565,9 +539,7 @@ def test_get_online_rate_limit_retry_after_capped(
 @mock.patch("requests.Session.get")
 @mock.patch("rero_mef.agents.viaf.api.click.echo")
 @mock.patch("rero_mef.agents.viaf.api._sleep_with_countdown")
-def test_get_online_rate_limit_without_header_uses_default(
-    mock_wait, mock_echo, mock_get, app
-):
+def test_get_online_rate_limit_without_header_uses_default(mock_wait, mock_echo, mock_get, app):
     """Use the default wait and raise on repeated 429 responses."""
     old_delay = app.config.get("RERO_MEF_VIAF_REQUEST_DELAY")
     old_default = app.config.get("RERO_MEF_VIAF_RETRY_AFTER_DEFAULT")
@@ -622,9 +594,7 @@ def test_handle_redirect_retryable_target_failure_does_not_delete_old_record(app
 
 
 @mock.patch("requests.Session.get")
-def test_handle_redirect_create_or_update_exception(
-    mock_get, app, agent_viaf_online_response
-):
+def test_handle_redirect_create_or_update_exception(mock_get, app, agent_viaf_online_response):
     """Test handle_redirect when create_or_update raises an exception."""
     old_pid = "11111112"
     new_pid = "99999998"
@@ -639,9 +609,7 @@ def test_handle_redirect_create_or_update_exception(
     target_data["viafID"] = new_pid
     mock_get.return_value = mock_response(json_data=target_data)
 
-    with mock.patch.object(
-        AgentViafRecord, "create_or_update", side_effect=Exception("DB error")
-    ):
+    with mock.patch.object(AgentViafRecord, "create_or_update", side_effect=Exception("DB error")):
         new_record, action, redirect_info = viaf_record.handle_redirect(
             redirect_to_pid=new_pid, dbcommit=True, reindex=True
         )

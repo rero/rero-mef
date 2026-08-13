@@ -13,9 +13,7 @@ from rero_mef.agents import AgentMefRecord
 from ..utils import postdata, strip_index_fields
 
 
-def test_view_agents_mef(
-    client, agent_mef_record, agent_gnd_record, agent_rero_record, agent_idref_record
-):
+def test_view_agents_mef(client, agent_mef_record, agent_gnd_record, agent_rero_record, agent_idref_record):
     """Test redirect MEF."""
     pid = agent_mef_record.get("pid")
     url = url_for("invenio_records_rest.mef_list")
@@ -186,18 +184,9 @@ def test_agents_mef_get_updated(
     assert pids == ["1", "2", "3"]
     assert data[0]["pid"] == agent_mef_record.pid
     assert data[0]["_created"] == utf_isoformat(agent_mef_record.created)
-    assert (
-        data[0]["gnd"]["authorized_access_point"]
-        == "Cavalieri, Giovanni Battista, 1525-1601"
-    )
-    assert (
-        data[0]["idref"]["authorized_access_point"]
-        == "Brissé, Nicolas, ....-1540, grammairien"
-    )
-    assert (
-        data[0]["rero"]["authorized_access_point"]
-        == "Cavalieri, Giovanni Battista,, ca.1525-1601"
-    )
+    assert data[0]["gnd"]["authorized_access_point"] == "Cavalieri, Giovanni Battista, 1525-1601"
+    assert data[0]["idref"]["authorized_access_point"] == "Brissé, Nicolas, ....-1540, grammairien"
+    assert data[0]["rero"]["authorized_access_point"] == "Cavalieri, Giovanni Battista,, ca.1525-1601"
 
     res, data = postdata(client, "api_blueprint.agent_mef_get_updated", {"pids": ["2"]})
     assert res.status_code == 200
@@ -209,9 +198,7 @@ def test_agents_mef_get_updated(
         }
     ]
 
-    res, data = postdata(
-        client, "api_blueprint.agent_mef_get_updated", {"from_date": "2022-02-02"}
-    )
+    res, data = postdata(client, "api_blueprint.agent_mef_get_updated", {"from_date": "2022-02-02"})
     assert res.status_code == 200
     assert data == [
         {
@@ -232,9 +219,7 @@ def test_agents_mef_get_updated(
     ]
 
     date = datetime.now(UTC) + timedelta(days=1)
-    res, data = postdata(
-        client, "api_blueprint.agent_mef_get_updated", {"from_date": date.isoformat()}
-    )
+    res, data = postdata(client, "api_blueprint.agent_mef_get_updated", {"from_date": date.isoformat()})
     assert res.status_code == 200
     assert data == []
 
@@ -247,9 +232,7 @@ def test_agents_mef_get_updated(
     assert res.status_code == 200
     assert data == [{"pid": "4"}]
 
-    res, data = postdata(
-        client, "api_blueprint.agent_mef_get_updated", {"pids": ["2", "4"]}
-    )
+    res, data = postdata(client, "api_blueprint.agent_mef_get_updated", {"pids": ["2", "4"]})
     assert res.status_code == 200
     assert data == [
         {
@@ -290,9 +273,7 @@ def test_agents_mef_get_idref_latest_chain(
     assert data == mef_data
 
     # Starting from the middle record (B) also resolves to C, not to B itself.
-    data = AgentMefRecord.get_latest(
-        pid_type="idref", pid=agent_idref_redirect_record.pid
-    )
+    data = AgentMefRecord.get_latest(pid_type="idref", pid=agent_idref_redirect_record.pid)
     data.pop("_created")
     data.pop("_updated")
     assert data == mef_data

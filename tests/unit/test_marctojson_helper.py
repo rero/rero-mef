@@ -65,9 +65,4 @@ def test_build_string_list_from_fields():
             },
         ],
     )
-    assert data == [
-        "Place of public./distr."
-        ". Address/publisher/dist."
-        " (Name of publisher/dist.)"
-        " (Date; Place; Address)"
-    ]
+    assert data == ["Place of public./distr.. Address/publisher/dist. (Name of publisher/dist.) (Date; Place; Address)"]

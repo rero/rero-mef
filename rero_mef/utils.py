@@ -62,9 +62,7 @@ def _apply_oai_overlap(last_run, from_date):
     """
     if last_run and not from_date:
         overlap_days = current_app.config.get("RERO_MEF_OAI_LASTRUN_OVERLAP", 1)
-        return (parser.isoparse(last_run) - timedelta(days=overlap_days)).strftime(
-            TIME_FORMAT
-        )
+        return (parser.isoparse(last_run) - timedelta(days=overlap_days)).strftime(TIME_FORMAT)
     return last_run
 
 
@@ -84,15 +82,9 @@ class SickleWithRetries(Sickle):
         """
         http_response = self._request(kwargs)
         for _ in range(self.max_retries):
-            if (
-                self._is_error_code(http_response.status_code)
-                and http_response.status_code in self.retry_status_codes
-            ):
+            if self._is_error_code(http_response.status_code) and http_response.status_code in self.retry_status_codes:
                 retry_after = self.get_retry_after(http_response)
-                current_app.logger.warning(
-                    f"HTTP {http_response.status_code}! "
-                    f"Retrying after {retry_after} seconds..."
-                )
+                current_app.logger.warning(f"HTTP {http_response.status_code}! Retrying after {retry_after} seconds...")
                 time.sleep(retry_after)
                 http_response = self._request(kwargs)
         http_response.raise_for_status()
@@ -101,9 +93,7 @@ class SickleWithRetries(Sickle):
         return OAIResponse(http_response, params=kwargs)
 
 
-def add_oai_source(
-    name, baseurl, metadataprefix="marc21", setspecs="", comment="", update=False
-):
+def add_oai_source(name, baseurl, metadataprefix="marc21", setspecs="", comment="", update=False):
     """Add OAIHarvestConfig."""
     with current_app.app_context():
         source = OAIHarvestConfig.query.filter_by(name=name).first()
@@ -180,9 +170,7 @@ class MyOAIItemIterator(OAIItemIterator):
     def next_resumption_token_and_items(self):
         """Get next resumtion token and items."""
         self.resumption_token = self._get_resumption_token()
-        self._items = self.oai_response.xml.iterfind(
-            f".//{self.sickle.oai_namespace}{self.element}"
-        )
+        self._items = self.oai_response.xml.iterfind(f".//{self.sickle.oai_namespace}{self.element}")
 
     def _next_response(self):
         """Get the next response from the OAI server."""
@@ -198,9 +186,7 @@ class MyOAIItemIterator(OAIItemIterator):
         for count in range(5):
             try:
                 self.oai_response = self.sickle.harvest(**params)
-                _ = (
-                    self.oai_response.xml
-                )  # force parse; raises XMLSyntaxError if malformed
+                _ = self.oai_response.xml  # force parse; raises XMLSyntaxError if malformed
                 break  # Success, exit retry loop
             except (
                 requests.RequestException,
@@ -225,9 +211,7 @@ class MyOAIItemIterator(OAIItemIterator):
         if self.resumption_token:
             # Verify we received a complete response with resumption token
             # Incomplete responses can occur due to network issues or server problems
-            resumption_token_element = self.oai_response.xml.find(
-                f".//{self.sickle.oai_namespace}resumptionToken"
-            )
+            resumption_token_element = self.oai_response.xml.find(f".//{self.sickle.oai_namespace}resumptionToken")
 
             if resumption_token_element is None:
                 # Missing resumption token indicates an incomplete response.
@@ -284,10 +268,7 @@ def oai_process_records_from_dates(
         "until": until_date or datetime.now().strftime(TIME_FORMAT),
     }
     # Sanity check
-    if (
-        dates_initial["until"] is not None
-        and dates_initial["from"] > dates_initial["until"]
-    ):
+    if dates_initial["until"] is not None and dates_initial["from"] > dates_initial["until"]:
         raise WrongDateCombination("'Until' date larger than 'from' date.")
 
     # If we don't have specifications for set searches the setspecs will be
@@ -329,14 +310,10 @@ def oai_process_records_from_dates(
                     rec = None
                     try:
                         try:
-                            updated = datetime.strptime(
-                                records[0]["005"].data, "%Y%m%d%H%M%S.%f"
-                            )
+                            updated = datetime.strptime(records[0]["005"].data, "%Y%m%d%H%M%S.%f")
                         except ValueError, AttributeError:
                             updated = "????"
-                        if rec := transformation(
-                            records[0], logger=current_app.logger
-                        ).json:
+                        if rec := transformation(records[0], logger=current_app.logger).json:
                             if msg := rec.get("NO TRANSFORMATION"):
                                 if verbose:
                                     click.secho(
@@ -363,9 +340,7 @@ def oai_process_records_from_dates(
                                     Action.UPDATE,
                                     Action.REPLACE,
                                 ]:
-                                    m_record, m_actions = record.create_or_update_mef(
-                                        dbcommit=True, reindex=True
-                                    )
+                                    m_record, m_actions = record.create_or_update_mef(dbcommit=True, reindex=True)
                                     # Track MEF-level actions separately from entity-level actions
                                     for m_action in m_actions.values():
                                         mef_action_count.setdefault(m_action, 0)
@@ -378,10 +353,7 @@ def oai_process_records_from_dates(
                                     mef_action_count[m_action] += 1
 
                                 if verbose:
-                                    msg = (
-                                        f"OAI {name} spec({spec}): {pid}"
-                                        f" updated: {updated} {action.value}"
-                                    )
+                                    msg = f"OAI {name} spec({spec}): {pid} updated: {updated} {action.value}"
                                     for mef_pid, m_action in m_actions.items():
                                         msg = f"{msg} | mef: {mef_pid} {m_action.value}"
                                     if viaf_pid := m_record.get("viaf_pid"):
@@ -389,9 +361,7 @@ def oai_process_records_from_dates(
                                     click.echo(msg)
                         elif verbose:
                             click.secho(
-                                f"OAI {name} spec({spec}): {idx}"
-                                f"NO TRANSFORMATION:"
-                                f"\n{records[0]}",
+                                f"OAI {name} spec({spec}): {idx}NO TRANSFORMATION:\n{records[0]}",
                                 fg="yellow",
                             )
                     except Exception as err:
@@ -462,9 +432,7 @@ def oai_save_records_from_dates(
                 params["set"] = spec
 
             from_date = parser.isoparse(dates_initial["from"])
-            real_until_date = parser.isoparse(
-                f"{dates_initial['until']} 23:59:59.999999"
-            )
+            real_until_date = parser.isoparse(f"{dates_initial['until']} 23:59:59.999999")
             while from_date < real_until_date:
                 until_date = from_date + timedelta(days=days_span)
                 until_date = min(until_date, real_until_date)
@@ -502,9 +470,7 @@ def oai_save_records_from_dates(
     return count
 
 
-def oai_get_record(
-    id_, name, transformation, access_token=None, identifier=None, debug=False, **kwargs
-):
+def oai_get_record(id_, name, transformation, access_token=None, identifier=None, debug=False, **kwargs):
     """Get record from an OAI repo.
 
     :param identifier: identifier of record.
@@ -577,9 +543,7 @@ def read_json_record(json_file, buf_size=1024, decoder=JSONDecoder()):
                     buffer = buffer[1:].lstrip()
 
 
-def export_json_records(
-    pids, pid_type, output_file_name, indent=2, schema=True, verbose=False
-):
+def export_json_records(pids, pid_type, output_file_name, indent=2, schema=True, verbose=False):
     """Writes records from record_class to file.
 
     :param pids: pids to use
@@ -749,9 +713,7 @@ def bulk_index(entity, uuids, verbose=False):
             minutes *= 2
 
 
-def bulk_load_entity(
-    entity, data, table, columns, bulk_count=0, verbose=False, reindex=False
-):
+def bulk_load_entity(entity, data, table, columns, bulk_count=0, verbose=False, reindex=False):
     """Bulk load entity data to table."""
     if bulk_count <= 0:
         bulk_count = current_app.config.get("BULK_CHUNK_COUNT", 100000)
@@ -794,9 +756,7 @@ def bulk_load_entity(
         if verbose:
             end_time = datetime.now(UTC)
             diff_time = end_time - start_time
-            click.echo(
-                f"{entity} copy from file: {count} {diff_time.seconds}s", nl=False
-            )
+            click.echo(f"{entity} copy from file: {count} {diff_time.seconds}s", nl=False)
         buffer.flush()
         buffer.seek(0)
         db_copy_from(buffer=buffer, table=table, columns=columns)
@@ -879,9 +839,7 @@ def bulk_save_metadata(entity, file_name, verbose=False):
     entity_class = get_entity_class(entity)
     metadata, identifier = entity_class.get_metadata_identifier_names()
     columns = ("created", "updated", "id", "json", "version_id")
-    bulk_save_entity(
-        file_name=file_name, table=metadata, columns=columns, verbose=verbose
-    )
+    bulk_save_entity(file_name=file_name, table=metadata, columns=columns, verbose=verbose)
 
 
 def bulk_save_pids(entity, file_name, verbose=False):
@@ -899,9 +857,7 @@ def bulk_save_pids(entity, file_name, verbose=False):
         "object_uuid",
     )
     tmp_file_name = f"{file_name}_tmp"
-    bulk_save_entity(
-        file_name=tmp_file_name, table=table, columns=columns, verbose=verbose
-    )
+    bulk_save_entity(file_name=tmp_file_name, table=table, columns=columns, verbose=verbose)
     # clean pid file
     with open(tmp_file_name) as file_in, open(file_name, "w") as file_out:
         file_out.writelines(line for line in file_in if entity in line)
@@ -915,9 +871,7 @@ def bulk_save_ids(entity, file_name, verbose=False):
     entity_class = get_entity_class(entity)
     metadata, identifier = entity_class.get_metadata_identifier_names()
     columns = ("recid",)
-    bulk_save_entity(
-        file_name=file_name, table=identifier, columns=columns, verbose=verbose
-    )
+    bulk_save_entity(file_name=file_name, table=identifier, columns=columns, verbose=verbose)
 
 
 def create_csv_file(input_file, entity, pidstore, metadata):
@@ -940,9 +894,7 @@ def create_csv_file(input_file, entity, pidstore, metadata):
 
             entity_metadata_file.write(metadata_csv_line(record, record_uuid, date))
 
-            entity_pids_file.write(
-                pidstore_csv_line(entity, record["pid"], record_uuid, date)
-            )
+            entity_pids_file.write(pidstore_csv_line(entity, record["pid"], record_uuid, date))
             count += 1
     return count
 
@@ -991,9 +943,7 @@ def get_entity_indexer_class(entity):
     return None
 
 
-def write_viaf_json(
-    pidstore_file, metadata_file, viaf_pid, corresponding_data, verbose=False
-):
+def write_viaf_json(pidstore_file, metadata_file, viaf_pid, corresponding_data, verbose=False):
     """Write a JSON record into VIAF file."""
     from rero_mef.agents import AgentViafRecord
 
@@ -1030,11 +980,7 @@ def append_fixtures_new_identifiers(identifier, pids, pid_type):
             db.session.add(identifier(recid=pid))
         max_pid = (
             PersistentIdentifier.query.filter_by(pid_type=pid_type)
-            .order_by(
-                sqlalchemy.desc(
-                    sqlalchemy.cast(PersistentIdentifier.pid_value, sqlalchemy.Integer)
-                )
-            )
+            .order_by(sqlalchemy.desc(sqlalchemy.cast(PersistentIdentifier.pid_value, sqlalchemy.Integer)))
             .first()
             .pid_value
         )
@@ -1139,17 +1085,13 @@ def mef_get_all_missing_entity_pids(mef_class, entity, verbose=False):
     no_pids = []
     if verbose:
         click.echo(f"Get pids from {entity} ...")
-    progress = progressbar(
-        items=record_class.get_all_pids(), length=record_class.count(), verbose=verbose
-    )
+    progress = progressbar(items=record_class.get_all_pids(), length=record_class.count(), verbose=verbose)
     missing_pids = dict.fromkeys(progress, 1)
     name = record_class.name
     if verbose:
         click.echo(f"Get pids for {name} from MEF and calculate missing ...")
     query = mef_class.search().filter("exists", field=name)
-    progress = progressbar(
-        items=query.source(["pid", name]).scan(), length=query.count(), verbose=True
-    )
+    progress = progressbar(items=query.source(["pid", name]).scan(), length=query.count(), verbose=True)
     for hit in progress:
         data = hit.to_dict()
         if entity_pid := data.get(name, {}).get("pid"):
@@ -1202,9 +1144,7 @@ def generate(search, deleted, exclude_fields=None):
     yield "]"
 
 
-def requests_retry_session(
-    retries=5, backoff_factor=0.5, status_forcelist=(500, 502, 504), session=None
-):
+def requests_retry_session(retries=5, backoff_factor=0.5, status_forcelist=(500, 502, 504), session=None):
     """Request retry session.
 
     :params retries: The total number of retry attempts to make.
@@ -1248,7 +1188,4 @@ def build_ref_string(entity_type, entity_name, entity_pid):
     :returns: Reference string to record.
     """
     with current_app.app_context():
-        return (
-            f"{current_app.config.get('RERO_MEF_APP_BASE_URL')}"
-            f"/api/{entity_type}/{entity_name}/{entity_pid}"
-        )
+        return f"{current_app.config.get('RERO_MEF_APP_BASE_URL')}/api/{entity_type}/{entity_name}/{entity_pid}"

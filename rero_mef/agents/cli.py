@@ -50,10 +50,7 @@ def _clean_non_existing_viaf_links(non_existing_pids, verbose=False):
 
         if mef_record.get("viaf_pid") != viaf_pid:
             if verbose:
-                click.echo(
-                    f"  Skip MEF {mef_pid}: viaf_pid changed "
-                    f"({mef_record.get('viaf_pid')} != {viaf_pid})"
-                )
+                click.echo(f"  Skip MEF {mef_pid}: viaf_pid changed ({mef_record.get('viaf_pid')} != {viaf_pid})")
             continue
 
         mef_record.pop("viaf_pid", None)
@@ -106,10 +103,7 @@ def create_from_viaf(
     click.secho("Create MEF and Agency from VIAF.", fg="green")
     non_existing_pids = {}
     agent_classes = get_entity_classes(without_mef_viaf=False)
-    counts = {
-        name: {"old": agent_class.count()}
-        for name, agent_class in agent_classes.items()
-    }
+    counts = {name: {"old": agent_class.count()} for name, agent_class in agent_classes.items()}
 
     if viaf_file:
         progress_bar = progressbar(
@@ -129,9 +123,7 @@ def create_from_viaf(
     click.echo("Create MEF and agents from VIAF")
     for pid in progress_bar:
         if enqueue:
-            task = task_create_mef_and_agents_from_viaf.delay(
-                pid=pid, dbcommit=True, reindex=True, online=online
-            )
+            task = task_create_mef_and_agents_from_viaf.delay(pid=pid, dbcommit=True, reindex=True, online=online)
             click.echo(f"viaf pid: {pid} task:{task}")
         else:
             task_create_mef_and_agents_from_viaf(
@@ -158,10 +150,7 @@ def create_from_viaf(
         counts.pop("viaf", None)
         msgs = [f"mef: {counts['mef']['old']}|{counts['mef']['new']}"]
         counts.pop("mef", None)
-        msgs.extend(
-            f"{agent}: {value['old']}|{counts[agent]['new']}"
-            for agent, value in counts.items()
-        )
+        msgs.extend(f"{agent}: {value['old']}|{counts[agent]['new']}" for agent, value in counts.items())
 
         click.secho(f"COUNTS: {', '.join(msgs)}", fg="blue")
 
@@ -243,9 +232,7 @@ def create_csv_mef(viaf_metadata_file, output_directory, verbose):
     default=False,
     help="Delete old VIAF record if redirect target not found or fails.",
 )
-@click.option(
-    "-P", "--pid", "viaf_pid", default=None, help="Harvest a single VIAF PID."
-)
+@click.option("-P", "--pid", "viaf_pid", default=None, help="Harvest a single VIAF PID.")
 @click.option(
     "-U",
     "--unlinked",
@@ -322,9 +309,7 @@ def harvest_viaf(
                     return mef_pid, viaf_source_code, entity_pid, None, str(e)
                 return mef_pid, viaf_source_code, entity_pid, data, msg
 
-        db_path = os.path.join(
-            tempfile.gettempdir(), f"viaf_unlinked_{uuid.uuid4().hex}.sqlite"
-        )
+        db_path = os.path.join(tempfile.gettempdir(), f"viaf_unlinked_{uuid.uuid4().hex}.sqlite")
         try:
             with SqliteDict(db_path, autocommit=True) as task_dict:
                 for mef_pid, viaf_source_code, entity_pid in get_unlinked_agents(
@@ -351,9 +336,7 @@ def harvest_viaf(
                     if not data:
                         if "NO RECORD" in msg:
                             if verbose:
-                                click.echo(
-                                    f"  No VIAF found for mef:{mef_pid} {viaf_source_code}:{entity_pid}"
-                                )
+                                click.echo(f"  No VIAF found for mef:{mef_pid} {viaf_source_code}:{entity_pid}")
                         else:
                             click.secho(
                                 f"  VIAF lookup failed for mef:{mef_pid} {viaf_source_code}:{entity_pid}: {msg}",
@@ -363,20 +346,14 @@ def harvest_viaf(
                         continue
                     if data.get("NO TRANSFORMATION") or not data.get("pid"):
                         if verbose:
-                            click.echo(
-                                f"  Invalid VIAF data for mef:{mef_pid} {viaf_source_code}:{entity_pid}: {msg}"
-                            )
+                            click.echo(f"  Invalid VIAF data for mef:{mef_pid} {viaf_source_code}:{entity_pid}: {msg}")
                         continue
                     viaf_pid_new = data["pid"]
-                    viaf_record, _ = AgentViafRecord.create_or_update(
-                        data=data, dbcommit=True, reindex=True
-                    )
+                    viaf_record, _ = AgentViafRecord.create_or_update(data=data, dbcommit=True, reindex=True)
                     if viaf_record:
                         viaf_record.create_mef_and_agents(dbcommit=True, reindex=True)
                     if verbose and viaf_record:
-                        click.echo(
-                            f"  mef_pid: {mef_pid} linked viaf_pid: {viaf_pid_new}"
-                        )
+                        click.echo(f"  mef_pid: {mef_pid} linked viaf_pid: {viaf_pid_new}")
         finally:
             with contextlib.suppress(OSError):
                 os.remove(db_path)
