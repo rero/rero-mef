@@ -7,112 +7,62 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 ## Overview
 
-rero-mef is the Python/Flask backend for the RERO Metadata Enrichment Framework (MEF). It provides OAI harvesting, record processing, and metadata enrichment for library data pipelines. The project is built on Invenio, with PostgreSQL, Elasticsearch, Celery, and Redis for backend services. All development and task running is managed via `uv` and `poethepoet`.
-
-**Stack:** Python 3.12, Flask (Invenio), PostgreSQL, Elasticsearch 7, Celery, Redis
-**Package manager:** `uv` (with `poethepoet` for tasks)
+rero-mef is the Python/Flask backend for the RERO Multilingual Entity File (MEF). It provides OAI harvesting, record processing, and metadata enrichment for library data pipelines.
 
 ## Development Workflow
 
-All commands must be run through the project’s virtual environment using `uv run`.
+All commands must be run through the project's virtual environment using `uv run`. Never use `pip`, `python -m pytest`, or bare `pytest`.
 
 ### Linting and Formatting
 
-Run these before every commit:
+**IMPORTANT:** After editing files, make sure that there are no formatting or linting errors.
 
 ```bash
-uv run poe lint     # ruff check rero_mef tests
-uv run poe format   # ruff format rero_mef tests
+uv run poe lint     # ruff check
+uv run poe format   # ruff format
 ```
 
-### Running Tests
+### Running the tests (done by humans)
 
-Use the provided scripts or poe tasks:
+`tests/unit/` runs without any backing service. The other suites need PostgreSQL, Elasticsearch and Redis, and human developers run those containers and the full suite on their own terms.
 
-```bash
-uv run poe run_tests    # Full test suite
-uv run poe tests        # Fast pytest run
-uv run poe format       # ruff format
-uv run poe lint         # test ruf lint
-uv run pytest tests/api/test_file.py  # Specific test file
-uv run poe tests_debug  # Debug mode (verbose)
-```
-
-Never use `pip`, `python -m pytest`, or bare `pytest` — always use `uv`.
-
-## Project Architecture
-
-- All business logic is in `rero_mef/`.
-- Configuration is in `pyproject.toml`.
-- CLI scripts are in `scripts/`.
-- Tests are in `tests/` (see below).
+## Architecture
 
 ### Extension Pattern
 
-- All record-level extensions (e.g., MD5, $schema) are implemented as Invenio extensions in `rero_mef/extensions/`.
-- Extensions are registered globally in `rero_mef/ext.py` by appending to `Record._extensions` at import time.
-- All extension imports must use the shortest possible path (relative within `rero_mef`).
+- Record-level extensions (`$schema`, MD5, deleted state) are Invenio record extensions in `rero_mef/extensions/`.
+- They are attached through the `_extensions` class attribute of `EntityRecord` in `rero_mef/api.py`. A few modules also instantiate an extension directly to reuse a single behaviour outside the record lifecycle (e.g. recomputing an MD5).
+- Extension imports must use the shortest possible path (relative within `rero_mef`).
 
-### Code Style
+### OAI Harvesting
 
-- Linting and formatting are enforced by Ruff (see `pyproject.toml`).
-- Line length: 120 characters.
-- Docstrings: Sphinx-style, only on public symbols where needed.
-- Imports: Standard library → third-party → local, sorted within groups. Always place imports at the top of the file. Deferred (inside-function) imports are only acceptable when they genuinely break a circular dependency — document why with a comment in that case.
-- Commit messages: [Conventional Commits](https://www.conventionalcommits.org)
+- Harvesting applies a configurable overlap to the `lastrun` date so that consecutive runs cannot leave a gap.
+- Harvester configuration is code-driven and must be kept DRY.
+
+## Code Style
+
+- Be clear and concise in the docstrings and do not over-comment the code.
+- Docstrings use Sphinx field lists (`:param x:`, `:return:`), only on public symbols where needed.
+- Ruff is configured in `pyproject.toml`: `line-length = 120` under `[tool.ruff]`, the enabled rule sets and the ignore list under `[tool.ruff.lint]`, exceptions under `[tool.ruff.lint.per-file-ignores]`, and the pep257 docstring convention under `[tool.ruff.lint.pydocstyle]`.
+- The rule sets use `extend-select`, which extends ruff's *default* selection: upgrading ruff can enable new rules without any config change.
+- Imports: standard library → third-party → local, sorted within groups. Always place imports at the top of the file. Deferred (inside-function) imports are only acceptable when they genuinely break a circular dependency — document why with a comment in that case.
+- Since Python 3.14 (PEP 758), parentheses around multiple exception types are optional when the `except`/`except*` clause has no `as` target: `except ValueError, AttributeError:` is valid and equivalent to `except (ValueError, AttributeError):` — not the old Python 2 comma syntax. `ruff format` removes the parentheses in that case; this is expected, not a bug. Parentheses are still required when binding the exception: `except (ValueError, AttributeError) as error:`.
+- Commit messages: [Conventional Commits](https://www.conventionalcommits.org).
 
 ### Sourcery
 
-Sourcery is configured in `.sourcery.yaml`. Apply suggestions from the enabled rules; ignore the disabled ones — they conflict with Ruff or project style.
-
-**Apply these refactorings:**
-- `simplify-boolean-expression` — e.g. `x.get("k") and x["k"] == v` → `x.get("k") == v`
-- `use-named-expression` — walrus operator to combine assignment + conditional
-- `remove-redundant-if` — collapse always-true/always-false branches
-- `hoist-similar-statement-from-if` — move duplicated code out of if/else
-- `extract-method` — split long or complex functions
-- `split-complex-comprehension` — break deeply nested comprehensions into loops
-
-**Do not apply:**
-- `use-fstring-for-formatting` — Ruff handles f-string upgrades
-- `merge-nested-ifs` — conflicts with `SIM102` being ignored in Ruff
-- `lift-return-into-if` — conflicts with `RET` rules
-- `swap-if-else` — can reduce readability
-- `line-length`, `import-order`, `docstring-style` — all owned by Ruff
-
-Quality threshold is 25/100. Functions below that score should be refactored.
+Sourcery is configured in `.sourcery.yaml`. Apply the enabled refactorings, ignore the disabled ones — they conflict with Ruff or project style — and refactor functions that score below the configured quality threshold.
 
 ### Copyright
 
-- All files must have the correct copyright header.
-- License: GPLv3 (see LICENSE).
+Every file starts with the project SPDX header:
+
+```python
+# SPDX-FileCopyrightText: Fondation RERO+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+```
 
 ## Testing
 
-- Tests are organized in `tests/api/`, `tests/unit/`, `tests/ui/`, `tests/e2e/`.
-- Fixtures: `tests/fixtures/`, `tests/conftest.py`.
-- Sample data: `tests/data/`, `data/`.
-
-### Test-Driven Development
-
 - Each commit must include tests for new or changed functionality.
-- Tests should only cover project-specific behavior, not external dependencies.
-
-## OAI Harvesting & Overlap
-
-- OAI harvesting supports configurable overlap and robust lastrun logic.
-- All harvester configuration is code-driven and must be kept DRY.
-
-## Documentation
-
-- This file (CLAUDE.md) summarizes conventions and architecture.
-- See `README.md`, `INSTALL.md`, and `overview.md` for further details.
-
-## Contributing
-
-- Follow the code style and commit message conventions.
-- Run all tests and linting before submitting changes.
-
-## Contact
-
-For questions, see the project README or contact the maintainers.
+- Tests should only cover project-specific behaviour, not the behaviour of external dependencies (e.g. Invenio).
