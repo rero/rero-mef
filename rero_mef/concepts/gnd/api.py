@@ -6,7 +6,14 @@
 from flask import current_app
 from invenio_search.api import RecordsSearch
 
+from rero_mef.api import Association
+
 from ..api import ConceptIndexer, ConceptRecord
+from ..utils import (
+    MATCH_TYPES,
+    bnf_ark_disagreements_by_match_type,
+    bnf_association_identifiers,
+)
 from .fetchers import gnd_id_fetcher
 from .minters import gnd_id_minter
 from .models import ConceptGndMetadata
@@ -51,60 +58,40 @@ class ConceptGndRecord(ConceptRecord):
 
         return gnd_get_record(id_=id_, debug=debug)
 
-    @property
-    def association_identifier(self):
-        """Get associated identifier."""
-        for match_type, max_count in current_app.config.get("RERO_MEF_CONCEPTS_GND_MATCHES", {}).items():
-            matches = self.get(match_type, [])
-            match_count = 0
-            match_value = ""
-            for match in matches:
-                for identified_by in match.get("identifiedBy", []):
-                    if (
-                        identified_by.get("source") == "BNF"
-                        and identified_by.get("type") == "bf:Nbn"
-                        and identified_by.get("value", "").startswith("FRBNF")
-                    ):
-                        match_count += 1
-                        match_value = identified_by.get("value")
-            if match_value and match_count <= max_count:
-                return match_value[:13]
-        return None
+    def _warn_about_arks(self):
+        """Warn when the BNF ark uris of a match type state a number its `bf:Nbn` values do not.
 
-    def get_association_record(self, association_cls, association_search):
-        """Get associated record.
-
-        :params association_cls: Association class
-        :params association_search: Association search class.
-        :returns: Associated record.
+        Every match type is audited, not only the one the association is read from: a contradiction in a block the
+        selection never reaches is still a source data error to fix in GND.
         """
-        if association_identifier := self.association_identifier:
-            # Test if my identifier is unique
-            exact_count = (
-                self.search()
-                .filter("term", exactMatch__identifiedBy__source="BNF")
-                .filter("term", exactMatch__identifiedBy__type="bf:Nbn")
-                .filter("term", exactMatch__identifiedBy__value=association_identifier)
-                .count()
+        for match_type, only_ark in bnf_ark_disagreements_by_match_type(self).items():
+            current_app.logger.warning(
+                f"BNF ARK DISAGREES WITH bf:Nbn: {self.name} {self.pid} | "
+                f"{match_type} ark {', '.join(sorted(only_ark))}"
             )
-            if exact_count != 1:
-                # we have 0 or multiple exact matches
-                count = self.search().filter("term", _association_identifier=association_identifier).count()
-                if count > 1:
-                    current_app.logger.error(
-                        f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} | {association_identifier}"
+
+    @property
+    def association(self):
+        """Get the BNF association identifier and the match type it comes from.
+
+        `exactMatch` asserts equivalence and wins over `closeMatch`, which only asserts relatedness, so the first
+        block type carrying a BNF number decides. A record naming several different numbers states no usable
+        identifier at all.
+
+        :returns: An :class:`Association` carrying the BNF number and the match type it was read from.
+        """
+        self._warn_about_arks()
+        for match_type in MATCH_TYPES:
+            matches = self.get(match_type, [])
+            if identifiers := bnf_association_identifiers(match.get("identifiedBy", []) for match in matches):
+                if len(identifiers) > 1:
+                    current_app.logger.info(
+                        f"MULTIPLE ASSOCIATIONS FOUND FOR: {self.name} {self.pid} | "
+                        f"{match_type} {', '.join(sorted(identifiers))}"
                     )
-                    return None
-            # Get associated record
-            query = association_search().filter("term", _association_identifier=association_identifier)
-            if query.count() > 1:
-                current_app.logger.error(
-                    f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} | {association_identifier}"
-                )
-            elif query.count() == 1:
-                hit = next(query.source("pid").scan())
-                return association_cls.get_record_by_pid(hit.pid)
-        return None
+                    return Association()
+                return Association(frozenset(identifiers), match_type)
+        return Association()
 
     @property
     def association_info(self):
@@ -117,7 +104,6 @@ class ConceptGndRecord(ConceptRecord):
 
         ConceptIdrefRecord.flush_indexes()
         return {
-            "identifier": self.association_identifier,
             "record": self.get_association_record(
                 association_cls=ConceptIdrefRecord,
                 association_search=ConceptIdrefSearch,

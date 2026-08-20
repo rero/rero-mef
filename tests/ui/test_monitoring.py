@@ -5,10 +5,20 @@
 
 from unittest.mock import MagicMock, patch
 
+import pytest
 from click.testing import CliRunner
+from invenio_db import db
+from invenio_pidstore.errors import PIDDoesNotExistError
+from invenio_pidstore.models import PersistentIdentifier
 
 from rero_mef.agents.idref.api import AgentIdrefRecord
 from rero_mef.monitoring.api import Monitoring
+from rero_mef.monitoring.cli import (
+    dangling_pids_cli,
+    es_db_counts_cli,
+    es_db_missing_cli,
+    mef_counts_cli,
+)
 from rero_mef.monitoring.cli import (
     db_connection_counts as db_conn_counts_cmd,
 )
@@ -17,11 +27,6 @@ from rero_mef.monitoring.cli import (
 )
 from rero_mef.monitoring.cli import (
     es as es_cli,
-)
-from rero_mef.monitoring.cli import (
-    es_db_counts_cli,
-    es_db_missing_cli,
-    mef_counts_cli,
 )
 from rero_mef.monitoring.cli import (
     es_indices as es_indices_cli,
@@ -203,3 +208,35 @@ def test_monitoring_cli_db_connections(app, script_info):
         res = runner.invoke(db_conns_cmd, [], obj=script_info)
     assert res.exit_code == 0
     assert "application_name" in res.output
+
+
+def test_monitoring_dangling_pids(app, agent_idref_data, script_info):
+    """A pid whose record row is gone is reported, and deleted on request."""
+    idref = AgentIdrefRecord.create(data=agent_idref_data, delete_pid=False, dbcommit=True, reindex=False)
+    pid = idref.pid
+    assert Monitoring.get_dangling_pids("aidref") == []
+
+    # Strand the pid the way a refused record used to: drop the record row, keep the pid.
+    db.session.delete(idref.model)
+    db.session.commit()
+    assert Monitoring.get_dangling_pids("aidref") == [pid]
+
+    runner = CliRunner()
+    res = runner.invoke(dangling_pids_cli, [], obj=script_info)
+    assert res.exit_code == 0
+    assert f"aidref      1 found: {pid}" in res.output
+    assert Monitoring.get_dangling_pids("aidref") == [pid]
+
+    res = runner.invoke(dangling_pids_cli, ["--delete"], obj=script_info)
+    assert res.exit_code == 0
+    assert f"aidref      1 deleted: {pid}" in res.output
+    assert Monitoring.get_dangling_pids("aidref") == []
+    with pytest.raises(PIDDoesNotExistError):
+        PersistentIdentifier.get("aidref", pid)
+
+
+def test_monitoring_dangling_pids_ignores_a_deleted_record(app, agent_idref_data):
+    """A deleted record keeps its row, so its pid is not dangling."""
+    idref = AgentIdrefRecord.create(data=agent_idref_data, delete_pid=False, dbcommit=True, reindex=False)
+    idref.delete(force=False, dbcommit=True, delindex=False)
+    assert Monitoring.get_dangling_pids("aidref") == []

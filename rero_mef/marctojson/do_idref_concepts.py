@@ -79,14 +79,13 @@ class Transformation:
         if field_003 := self.marc.get_fields("003"):
             uri = field_003[0].data.strip()
             identifiers.append({"type": "uri", "value": uri, "source": "IDREF"})
-        uris = {}
+        # A merged heading keeps one 033 per BNF record it absorbed, so all of them are kept: picking the latest
+        # dropped every other ark, and two arks sharing one $d silently overwrote each other.
         for field_033 in self.marc.get_fields("033"):
             if field_033.get("2") == "BNF" and field_033.get("a"):
-                date = int(date) if (date := field_033.get("d")) else 0
-                uris[date] = field_033["a"].strip()
-        if uris:
-            latest = max(uris)
-            identifiers.append({"type": "uri", "value": uris[latest], "source": "BNF"})
+                uri = field_033["a"].strip()
+                if uri not in {identifier["value"] for identifier in identifiers}:
+                    identifiers.append({"type": "uri", "value": uri, "source": "BNF"})
         if identifiers:
             self.json_dict["identifiedBy"] = identifiers
 
@@ -94,7 +93,7 @@ class Transformation:
         """Transformation old pids 035 $a $9 = sudoc."""
         if self.logger and self.verbose:
             self.logger.info("Call Function: %s", "trans_idref_relation_pid")
-        bnf_ids = {}
+        bnf_ids = []
         for field_035 in self.marc.get_fields("035"):
             subfield_a = field_035.get("a")
             subfield_2 = field_035.get("2")
@@ -114,15 +113,15 @@ class Transformation:
                     }
                 )
             elif subfield_z:
-                date = int(date) if (date := field_035.get("d")) else 0
-                bnf_ids[date] = subfield_z.strip()
-        if bnf_ids:
-            latest = max(bnf_ids)
+                bnf_ids.append(subfield_z.strip())
+        # Same as the 033 arks: every absorbed BNF record states its number here, and these fields carry no $d, so
+        # keeping only the "latest" kept whichever happened to come last.
+        for bnf_id in dict.fromkeys(bnf_ids):
             self.json_dict.setdefault("identifiedBy", []).append(
                 {
                     "source": "BNF",
                     "type": "bf:Nbn",
-                    "value": bnf_ids[latest],
+                    "value": bnf_id,
                 }
             )
 

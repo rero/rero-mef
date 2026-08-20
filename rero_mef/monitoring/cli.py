@@ -68,6 +68,23 @@ def es_db_counts_cli(missing, delay):
         mon.print_missing(missing_doc_type)
 
 
+@monitoring.command("dangling_pids")
+@click.option("-d", "--delete", "delete", is_flag=True, default=False, help="delete the pids found")
+@with_appcontext
+def dangling_pids_cli(delete):
+    """Print the pids resolving to no record, and optionally delete them.
+
+    A record refused by its schema used to leave its minted pid behind, claimed and resolving to nothing, so the
+    record could never be created again under it.
+    """
+    for doc_type in sorted(current_app.config.get("RECORDS_REST_ENDPOINTS", {})):
+        pid_values = Monitoring.remove_dangling_pids(doc_type) if delete else Monitoring.get_dangling_pids(doc_type)
+        if not pid_values:
+            continue
+        action = "deleted" if delete else "found"
+        click.secho(f"{doc_type:>6} {len(pid_values):>6} {action}: {', '.join(pid_values)}", fg="red")
+
+
 @monitoring.command("mef_counts")
 @click.option(
     "-d",

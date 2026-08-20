@@ -96,6 +96,28 @@ class Transformation:
                         }
                     )
 
+    def trans_gnd_bnf_type(self):
+        """Transformation bnf_type from field 075.
+
+        GND states the entity subtype in ``075 $b`` under ``$2 gndspec``. ``saf``
+        marks a record usable as a form designation -- the RDA DACH
+        ``Formangabe``, which ``667`` spells out on those records -- and that is
+        what a RAMEAU ``genre/forme`` heading has to be matched against. Kept in
+        ``bnf_type``, "Genre or Form" in the common concept schema and the same
+        field IdRef fills with ``sujet Rameau`` or ``genre/forme Rameau``, so
+        both sources state their own type in their own vocabulary.
+        """
+        if self.logger and self.verbose:
+            self.logger.info("Call Function: %s", "trans_gnd_bnf_type")
+        codes = {
+            code
+            for field_075 in self.marc.get_fields("075")
+            if field_075.get("2") == "gndspec"
+            for code in field_075.get_subfields("b")
+        }
+        if codes:
+            self.json_dict["bnf_type"] = "Formangabe GND" if "saf" in codes else "Sachbegriff GND"
+
     def trans_gnd_authorized_access_point(self):
         """Transformation authorized_access_point 150."""
         if self.logger and self.verbose:

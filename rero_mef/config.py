@@ -11,9 +11,9 @@ You overwrite and set instance-specific configuration by either:
 
 from __future__ import absolute_import, print_function
 
-import sys
 from datetime import timedelta
 
+from celery.schedules import crontab
 from invenio_records_rest.facets import terms_filter
 
 from .agents import AgentViafRecord
@@ -197,7 +197,17 @@ CELERY_BEAT_SCHEDULE = {
     "accounts": {
         "task": "invenio_accounts.tasks.clean_session_table",
         "schedule": timedelta(minutes=60),
-    }
+    },
+    # A harvest only reprocesses the record that changed, so a link stays stored after a second record starts
+    # claiming its identifier. The harvests run three times a day, so the audit runs daily too; it costs three index
+    # scans and repairs only what diverges, nothing when the file is clean. 00:00 UTC is the one quiet window: after
+    # the last concept harvest of the day (concepts_idref 20:30 UTC, concepts_gnd 17:30) and an hour before rero-ils
+    # pulls from us, its `celery.sync-entities` running daily at 01:00 UTC. A repair landing after that pull would
+    # sit here unseen for a day.
+    "repair-stale-associations": {
+        "task": "rero_mef.tasks.repair_stale_associations",
+        "schedule": crontab(minute=0, hour=0),
+    },
 }
 CELERY_BROKER_HEARTBEAT = 0
 #: Override invenio-celery msgpack defaults — JSON is accepted by Kombu without
@@ -299,8 +309,6 @@ RERO_MEF_AGENTS_GND_GET_RECORD = (
     "?version=1.1&operation=searchRetrieve&query=idn%3D{id}"
     "&recordSchema=MARC21-xml"
 )
-RERO_MEF_CONCEPTS_GND_MATCHES = {"exactMatch": sys.maxsize, "closeMatch": 1}
-
 SEARCH_CLIENT_CONFIG = dict(
     timeout=60,
     max_retries=5,

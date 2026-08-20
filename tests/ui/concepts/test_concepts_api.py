@@ -155,8 +155,8 @@ def test_create_concept_frbnf_record(app, concept_idref_frbnf_data_close, concep
         "type": "bf:Topic",
     }
 
-    assert idref_record.association_identifier == "FRBNF12352687"
-    assert gnd_record.association_identifier == "FRBNF12352687"
+    assert idref_record.association.identifiers == {"FRBNF12352687"}
+    assert gnd_record.association.identifiers == {"FRBNF12352687"}
 
     # Delete identifiedBy `FRBNF12352687` from IDREF record
     idref_record["identifiedBy"] = [
@@ -327,6 +327,51 @@ def test_create_concept_frbnf_record_exact(app, concept_idref_frbnf_data_exact, 
         "pid": f"{mef_count + 1}",
         "type": "bf:Topic",
     }
+
+
+def test_create_concept_live_frbnf_record(app, concept_idref_027269698_data, concept_gnd_040048454_data):
+    """Link the supplied live IdRef and GND concept records."""
+    idref_record, _ = ConceptIdrefRecord.create_or_update(
+        data=concept_idref_027269698_data, dbcommit=True, reindex=True
+    )
+    gnd_record, _ = ConceptGndRecord.create_or_update(data=concept_gnd_040048454_data, dbcommit=True, reindex=True)
+
+    ConceptIdrefRecord.flush_indexes()
+    ConceptGndRecord.flush_indexes()
+
+    mef_record, _ = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
+
+    assert mef_record["idref"]["$ref"].endswith("/idref/027269698")
+    assert mef_record["gnd"]["$ref"].endswith("/gnd/040048454")
+    assert gnd_record.association_info["record"].pid == idref_record.pid
+
+
+def test_create_concept_live_frbnf_record_multiple_close_matches(
+    app, concept_idref_027269698_data, concept_gnd_040048454_data
+):
+    """Do not link when a GND record has multiple BNF close-match FRBNFs."""
+    gnd_data = deepcopy(concept_gnd_040048454_data)
+    gnd_data["closeMatch"].append(
+        {
+            "authorized_access_point": "Arbres",
+            "identifiedBy": [{"source": "BNF", "type": "bf:Nbn", "value": "FRBNF11934787"}],
+            "source": "BNF",
+        }
+    )
+
+    idref_record, _ = ConceptIdrefRecord.create_or_update(
+        data=concept_idref_027269698_data, dbcommit=True, reindex=True
+    )
+    gnd_record, _ = ConceptGndRecord.create_or_update(data=gnd_data, dbcommit=True, reindex=True)
+
+    ConceptIdrefRecord.flush_indexes()
+    ConceptGndRecord.flush_indexes()
+
+    mef_record, _ = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
+
+    assert not gnd_record.association.identifiers
+    assert gnd_record.association_info["record"] is None
+    assert "gnd" not in mef_record
 
 
 def test_concept_record_delete(app, concept_idref_data):

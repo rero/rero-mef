@@ -5,6 +5,7 @@
 
 from invenio_search.api import RecordsSearch
 
+from rero_mef.api import Association
 from rero_mef.places.api import PlaceIndexer, PlaceRecord
 
 from .fetchers import gnd_id_fetcher
@@ -52,9 +53,12 @@ class PlaceGndRecord(PlaceRecord):
         return gnd_get_record(id_=id_, debug=debug)
 
     @property
-    def association_identifier(self):
-        """Get associated identifier."""
-        return self.pid
+    def association(self):
+        """Get the association of a GND place: places are clustered on the GND pid itself.
+
+        :returns: An :class:`Association` carrying this record's pid.
+        """
+        return Association(frozenset({self.pid}))
 
     @property
     def association_info(self):
@@ -63,7 +67,6 @@ class PlaceGndRecord(PlaceRecord):
 
         PlaceIdrefRecord.flush_indexes()
         return {
-            "identifier": self.association_identifier,
             "record": self.get_association_record(
                 association_cls=PlaceIdrefRecord, association_search=PlaceIdrefSearch
             ),

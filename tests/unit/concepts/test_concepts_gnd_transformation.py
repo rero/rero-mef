@@ -221,6 +221,50 @@ def test_gnd_close_match():
     }
 
 
+def test_gnd_bnf_type_form():
+    """Test trans_gnd_bnf_type 075 -> saf marks a form designation."""
+    xml_part_to_add = """
+        <datafield tag="075" ind1=" " ind2=" ">
+            <subfield code="b">s</subfield>
+            <subfield code="2">gndgen</subfield>
+        </datafield>
+        <datafield tag="075" ind1=" " ind2=" ">
+            <subfield code="b">saz</subfield>
+            <subfield code="b">saf</subfield>
+            <subfield code="2">gndspec</subfield>
+        </datafield>
+    """
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
+    trans.trans_gnd_bnf_type()
+    assert trans.json == {"bnf_type": "Formangabe GND"}
+
+
+def test_gnd_bnf_type_topic():
+    """Test trans_gnd_bnf_type 075 -> a subtype without saf stays a Sachbegriff."""
+    xml_part_to_add = """
+        <datafield tag="075" ind1=" " ind2=" ">
+            <subfield code="b">saz</subfield>
+            <subfield code="2">gndspec</subfield>
+        </datafield>
+    """
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
+    trans.trans_gnd_bnf_type()
+    assert trans.json == {"bnf_type": "Sachbegriff GND"}
+
+
+def test_gnd_bnf_type_missing():
+    """Test trans_gnd_bnf_type 075 -> gndgen alone says nothing about the form."""
+    xml_part_to_add = """
+        <datafield tag="075" ind1=" " ind2=" ">
+            <subfield code="b">s</subfield>
+            <subfield code="2">gndgen</subfield>
+        </datafield>
+    """
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
+    trans.trans_gnd_bnf_type()
+    assert trans.json is None
+
+
 def test_gnd_notes():
     """Test trans_gnd_note 670 677 678 680."""
     xml_part_to_add = """

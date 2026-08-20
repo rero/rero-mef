@@ -5,6 +5,8 @@
 
 from invenio_search.api import RecordsSearch
 
+from rero_mef.api import Association
+
 from ..api import ConceptIndexer, ConceptRecord
 from .fetchers import rero_id_fetcher
 from .minters import rero_id_minter
@@ -39,8 +41,12 @@ class ConceptReroRecord(ConceptRecord):
     search = ConceptReroSearch
 
     @property
-    def association_identifier(self):
-        """Get associated identifier from identifiedBy."""
+    def association(self):
+        """Get the association of a RERO concept: there is no other source to cluster it with.
+
+        :returns: An empty :class:`Association`.
+        """
+        return Association()
 
     @property
     def association_info(self):
@@ -48,7 +54,6 @@ class ConceptReroRecord(ConceptRecord):
         from rero_mef.concepts import ConceptMefRecord
 
         return {
-            "identifier": self.association_identifier,
             "record": None,
             "record_cls": None,
             "search_cls": None,

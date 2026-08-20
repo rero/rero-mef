@@ -8,7 +8,8 @@ from celery import shared_task
 from flask import current_app
 
 from .api import Action, EntityIndexer
-from .utils import get_entity_class
+from .stale import ASSOCIATION_PAIRS, audit, repair
+from .utils import get_entity_class, set_timestamp
 
 
 @shared_task(ignore_result=True)
@@ -89,3 +90,34 @@ def delete(idx, pid, entity, dbcommit=True, delindex=True, verbose=False):
         click.secho(msg, fg="yellow")
     current_app.logger.warning(msg)
     return f"DELETE NOT FOUND: {entity} {pid}"
+
+
+@shared_task(ignore_result=True)
+def repair_stale_associations(dry_run=False, verbose=False):
+    """Repair the MEF records whose association the rules no longer support.
+
+    A harvest reprocesses the record that changed, never the records that
+    depended on it, so a link stays stored after a second record starts
+    claiming its identifier. This finds those and rebuilds the MEF record of
+    the side that owns the decision. See :mod:`rero_mef.stale`.
+
+    :param dry_run: Only report what would be repaired.
+    :param verbose: Echo every record.
+    :returns: Dict entity type -> number of stale associations found.
+    """
+    found = {}
+    repaired = {}
+    for own_type, other_type, mef_type in ASSOCIATION_PAIRS:
+        divergent = audit(own_type, other_type, mef_type)
+        found[own_type] = len(divergent)
+        repaired[own_type] = 0
+        if not divergent:
+            continue
+        message = f"STALE ASSOCIATIONS: {own_type} {len(divergent)}"
+        if dry_run:
+            current_app.logger.info(f"{message} (dry run)")
+            continue
+        current_app.logger.info(message)
+        repaired[own_type] = repair(own_type, divergent, verbose=verbose)
+    set_timestamp("repair_stale_associations", found=found, repaired=repaired, dry_run=dry_run)
+    return found
