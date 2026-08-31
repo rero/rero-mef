@@ -74,6 +74,9 @@ add_exceptions "CVE-2026-44431"
 add_exceptions "CVE-2025-71176"
 # sqlitedict 2.1.0   PYSEC-2026-1939
 add_exceptions "PYSEC-2026-1939"
+# click will be updated when python-semantic-release is extracted from the dev dependencies
+# click 8.1.8   PYSEC-2026-2132 8.3.3
+add_exceptions "PYSEC-2026-2132"
 pip-audit "${pip_audit_exceptions[@]}"
 
 info_msg "Test formatting:"
