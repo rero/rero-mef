@@ -2,7 +2,45 @@
   "settings": {
     "number_of_shards": 8,
     "number_of_replicas": 2,
-    "max_result_window": 100000000
+    "max_result_window": 100000000,
+    "analysis": {
+      "filter": {
+        "french_elision": {
+          "type": "elision",
+          "articles_case": true,
+          "articles": [
+            "l",
+            "m",
+            "t",
+            "qu",
+            "n",
+            "s",
+            "j",
+            "d",
+            "c",
+            "jusqu",
+            "quoiqu",
+            "lorsqu",
+            "puisqu"
+          ]
+        },
+        "my_ascii_folding": {
+          "type": "asciifolding",
+          "preserve_original": true
+        }
+      },
+      "analyzer": {
+        "french_access_point": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "french_elision",
+            "lowercase",
+            "my_ascii_folding"
+          ]
+        }
+      }
+    }
   },
   "mappings": {
     "date_detection": false,
@@ -56,7 +94,13 @@
         "type": "text"
       },
       "authorized_access_point": {
-        "type": "text"
+        "type": "text",
+        "analyzer": "french_access_point",
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
       },
       "qualifier": {
         "type": "keyword"
@@ -65,7 +109,13 @@
         "type": "keyword"
       },
       "variant_name": {
-        "type": "text"
+        "type": "text",
+        "analyzer": "french_access_point",
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
       },
       "date_of_establishment": {
         "type": "text"
@@ -77,10 +127,22 @@
         "type": "keyword"
       },
       "variant_access_point": {
-        "type": "text"
+        "type": "text",
+        "analyzer": "french_access_point",
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
       },
       "parallel_access_point": {
-        "type": "text"
+        "type": "text",
+        "analyzer": "french_access_point",
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
       },
       "country_associated": {
         "type": "keyword"

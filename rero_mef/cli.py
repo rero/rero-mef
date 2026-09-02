@@ -32,6 +32,7 @@ from .agents import AgentMefRecord
 from .cli_logging import ensure_single_stream_handler
 from .concepts import ConceptMefRecord
 from .extensions import MD5Extension
+from .mapping_analysis import MAPPING_SPECS, check_all, write_all
 from .marctojson.records import RecordsCount
 from .monitoring.api import Monitoring
 from .places import PlaceMefRecord
@@ -1152,6 +1153,31 @@ def flush_cache():
     red = redis.StrictRedis.from_url(current_app.config["CACHE_REDIS_URL"])
     red.flushall()
     click.secho("Redis cache cleared!", fg="red")
+
+
+@utils.command("mapping-analysis")
+@click.argument("action", type=click.Choice(["check", "write"]))
+@click.option("-v", "--verbose", is_flag=True, help="Echo each file path as it's processed.")
+def mapping_analysis(action, verbose):
+    """Check or regenerate the shared search-analysis mapping settings.
+
+    No app context needed -- rero_mef.mapping_analysis only reads/writes the
+    mapping JSON files on disk. Also runnable standalone as
+    ``python -m rero_mef.mapping_analysis``, which is what scripts/bootstrap
+    and scripts/test use, since that path can't assume a working DB/ES
+    connection is configured yet.
+
+    :param action: ``check`` to verify, ``write`` to regenerate.
+    """
+    if action == "write":
+        write_all(verbose=verbose)
+        click.echo(f"Regenerated {len(MAPPING_SPECS)} mapping files.")
+    elif problems := check_all(verbose=verbose):
+        for path, _, _ in problems:
+            click.echo(f"OUT OF SYNC: {path}")
+        raise SystemExit(1)
+    else:
+        click.echo(f"All {len(MAPPING_SPECS)} mapping files match their spec.")
 
 
 @utils.command("all_mef_alias")

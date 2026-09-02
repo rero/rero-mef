@@ -5,23 +5,82 @@
     "max_result_window": 100000000,
     "analysis": {
       "filter": {
-        "autocomplete_filter": {
-          "type": "edge_ngram",
-          "min_gram": 1,
-          "max_gram": 20
+        "french_elision": {
+          "type": "elision",
+          "articles_case": true,
+          "articles": [
+            "l",
+            "m",
+            "t",
+            "qu",
+            "n",
+            "s",
+            "j",
+            "d",
+            "c",
+            "jusqu",
+            "quoiqu",
+            "lorsqu",
+            "puisqu"
+          ]
+        },
+        "german_decompounder": {
+          "type": "hyphenation_decompounder",
+          "word_list_path": "analysis/dictionary-de.txt",
+          "hyphenation_patterns_path": "analysis/de_DR.xml",
+          "only_longest_match": true,
+          "min_subword_size": 4
         },
         "my_ascii_folding": {
           "type": "asciifolding",
           "preserve_original": true
+        },
+        "autocomplete_filter": {
+          "type": "edge_ngram",
+          "min_gram": 1,
+          "max_gram": 20
         }
       },
       "analyzer": {
-        "autocomplete": {
+        "french_access_point": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "french_elision",
+            "lowercase",
+            "my_ascii_folding"
+          ]
+        },
+        "german_access_point": {
           "type": "custom",
           "tokenizer": "standard",
           "filter": [
             "lowercase",
+            "german_normalization",
+            "german_decompounder",
+            "my_ascii_folding"
+          ]
+        },
+        "autocomplete": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "french_elision",
+            "lowercase",
+            "german_normalization",
+            "german_decompounder",
             "autocomplete_filter",
+            "my_ascii_folding"
+          ]
+        },
+        "autocomplete_search": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "french_elision",
+            "lowercase",
+            "german_normalization",
+            "german_decompounder",
             "my_ascii_folding"
           ]
         }
@@ -76,10 +135,22 @@
           },
           "authorized_access_point": {
             "type": "text",
-            "copy_to": "autocomplete_name"
+            "analyzer": "french_access_point",
+            "copy_to": "autocomplete_name",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "variant_access_point": {
-            "type": "text"
+            "type": "text",
+            "analyzer": "french_access_point",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "deleted": {
             "type": "date"
@@ -203,10 +274,22 @@
           },
           "authorized_access_point": {
             "type": "text",
-            "copy_to": "autocomplete_name"
+            "analyzer": "german_access_point",
+            "copy_to": "autocomplete_name",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "variant_access_point": {
-            "type": "text"
+            "type": "text",
+            "analyzer": "german_access_point",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
           },
           "deleted": {
             "type": "date"
@@ -316,7 +399,7 @@
       "autocomplete_name": {
         "type": "text",
         "analyzer": "autocomplete",
-        "search_analyzer": "standard"
+        "search_analyzer": "autocomplete_search"
       },
       "_created": {
         "type": "date"

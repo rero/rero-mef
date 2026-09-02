@@ -2,7 +2,34 @@
   "settings": {
     "number_of_shards": 8,
     "number_of_replicas": 2,
-    "max_result_window": 100000000
+    "max_result_window": 100000000,
+    "analysis": {
+      "filter": {
+        "german_decompounder": {
+          "type": "hyphenation_decompounder",
+          "word_list_path": "analysis/dictionary-de.txt",
+          "hyphenation_patterns_path": "analysis/de_DR.xml",
+          "only_longest_match": true,
+          "min_subword_size": 4
+        },
+        "my_ascii_folding": {
+          "type": "asciifolding",
+          "preserve_original": true
+        }
+      },
+      "analyzer": {
+        "german_access_point": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "german_normalization",
+            "german_decompounder",
+            "my_ascii_folding"
+          ]
+        }
+      }
+    }
   },
   "mappings": {
     "date_detection": false,
@@ -44,10 +71,22 @@
         "type": "keyword"
       },
       "authorized_access_point": {
-        "type": "text"
+        "type": "text",
+        "analyzer": "german_access_point",
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
       },
       "variant_access_point": {
-        "type": "text"
+        "type": "text",
+        "analyzer": "german_access_point",
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
       },
       "broader": {
         "type": "object",
@@ -84,7 +123,8 @@
           },
           "name": {
             "type": "keyword"
-          }        }
+          }
+        }
       },
       "note": {
         "type": "object",
