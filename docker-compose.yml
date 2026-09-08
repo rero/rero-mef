@@ -2,19 +2,102 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 services:
+  # The four healthchecks below exist to order `gate`, which is what makes
+  # `docker compose up -d` wait for the whole stack.
   cache:
     extends:
       file: docker-services.yml
       service: cache
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
   db:
     extends:
       file: docker-services.yml
       service: db
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "rero-mef"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    # This stack serves the test suite and `scripts/setup`, whose data is always
+    # thrown away, so durability is traded for speed. `wal_level=minimal` requires
+    # `max_wal_senders=0`; `autovacuum` stays on, or there is no ANALYZE and the
+    # queries fall back to sequential scans. An unclean stop can corrupt the
+    # database, which then has to be recreated by a new setup.
+    #
+    # Deliberately not in docker-services.yml, the base of the
+    # docker-compose.full.yml production example.
+    command: >
+      postgres
+      -c fsync=off
+      -c synchronous_commit=off
+      -c full_page_writes=off
+      -c wal_level=minimal
+      -c max_wal_senders=0
   mq:
     extends:
       file: docker-services.yml
       service: mq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
   es:
     extends:
       file: docker-services.yml
       service: es
+    # The colour is not part of the test: `_cluster/health` answers 200 whatever
+    # the state, and one node cannot assign the replica the `record` template asks
+    # for, so this cluster is yellow by construction.
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:9200/_cluster/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+  # Brings the development indices down to one shard and no replica. The `record`
+  # template is sized for production, which here means 96 shards and as many
+  # unassignable replicas for a few thousand documents.
+  #
+  # Order 100 merges with `record` and overrides only these two settings, so the
+  # analyzers and `max_result_window` of the mappings survive. The test suite
+  # wipes all templates, so tests/conftest.py puts this one back itself.
+  init:
+    image: curlimages/curl
+    depends_on:
+      cache:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      mq:
+        condition: service_healthy
+      es:
+        condition: service_healthy
+    command:
+      - "-fsS"
+      - "-X"
+      - "PUT"
+      - "http://es:9200/_template/dev-single-shard"
+      - "-H"
+      - "Content-Type: application/json"
+      - "-d"
+      - '{"index_patterns":["*-*"],"order":100,"settings":{"number_of_shards":1,"number_of_replicas":0}}'
+  # `docker compose up -d` returns as soon as the containers are *started*, so a
+  # setup launched right after could hit a refused connection or miss the template.
+  # Depending on the healthchecks and on `init` makes `up -d` itself block, and
+  # return 1 rather than hang when something never comes up.
+  #
+  # Replaces docker/wait-for-services.sh, unreferenced since .travis.yml went.
+  # `docker compose wait init` cannot do this job -- it fails once `init` has
+  # exited -- and `up -d --wait` treats an exited one-shot as a failure.
+  gate:
+    image: curlimages/curl
+    entrypoint: ["true"]
+    depends_on:
+      init:
+        condition: service_completed_successfully

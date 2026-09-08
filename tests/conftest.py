@@ -15,6 +15,15 @@ pytest_plugins = (
     "tests.fixtures.places_records",
 )
 
+#: One shard and no replica for the test indices, overriding the production-sized
+#: `record` template by order. Keeps the cluster green and spares every search the
+#: fan-out over eight shards. Mirrors the `init` service of docker-compose.yml.
+DEV_SINGLE_SHARD_TEMPLATE = {
+    "index_patterns": ["*-*"],
+    "order": 100,
+    "settings": {"number_of_shards": 1, "number_of_replicas": 0},
+}
+
 
 @pytest.fixture(scope="module")
 def search(appctx):
@@ -32,6 +41,8 @@ def search(appctx):
 
     current_search_client.indices.delete_template("*")
     list(current_search.put_templates())
+    # After `put_templates`, which the `delete_template` above wipes.
+    current_search_client.indices.put_template("dev-single-shard", body=DEV_SINGLE_SHARD_TEMPLATE)
     list(current_search.delete(ignore=[404]))
     list(current_search.create())
     current_search_client.indices.refresh()
