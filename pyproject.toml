@@ -187,6 +187,11 @@ places_mef = "rero_mef.places.mef.mappings"
 places_idref = "rero_mef.places.idref.mappings"
 places_gnd = "rero_mef.places.gnd.mappings"
 
+# Shard and replica count of every entity index. Kept out of the mapping files so
+# a cluster can override it with a higher-order template.
+[project.entry-points."invenio_search.templates"]
+rero_mef = "rero_mef.es_templates:list_search_templates"
+
 [project.entry-points."invenio_records.jsonresolver"]
 mef = "rero_mef.agents.mef.jsonresolvers.mef_resolver"
 viaf = "rero_mef.agents.viaf.jsonresolvers.viaf_resolver"

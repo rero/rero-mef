@@ -1,0 +1,20 @@
+{
+  "index_patterns": [
+    "__SEARCH_INDEX_PREFIX__agents_gnd-*",
+    "__SEARCH_INDEX_PREFIX__agents_idref-*",
+    "__SEARCH_INDEX_PREFIX__agents_rero-*",
+    "__SEARCH_INDEX_PREFIX__concepts_gnd-*",
+    "__SEARCH_INDEX_PREFIX__concepts_idref-*",
+    "__SEARCH_INDEX_PREFIX__concepts_mef-*",
+    "__SEARCH_INDEX_PREFIX__concepts_rero-*",
+    "__SEARCH_INDEX_PREFIX__mef-*",
+    "__SEARCH_INDEX_PREFIX__places_gnd-*",
+    "__SEARCH_INDEX_PREFIX__places_idref-*",
+    "__SEARCH_INDEX_PREFIX__places_mef-*",
+    "__SEARCH_INDEX_PREFIX__viaf-*"
+  ],
+  "settings": {
+    "number_of_shards": 8,
+    "number_of_replicas": 1
+  }
+}
