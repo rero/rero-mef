@@ -2,42 +2,17 @@
 # SPDX-FileCopyrightText: Fondation RERO+
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-# COLORS for messages
-NC='\033[0m'                    # Default color
-INFO_COLOR='\033[1;97;44m'      # Bold + white + blue background
-SUCCESS_COLOR='\033[1;97;42m'   # Bold + white + green background
-ERROR_COLOR='\033[1;97;41m'     # Bold + white + red background
+PROGRAM=$(basename "$0")
 
-PROGRAM=`basename $0`
+# Colored message helpers: msg, info_msg, error_msg, error_msg+exit,
+# success_msg, colored_msg.
+. "$(dirname "${BASH_SOURCE[0]}")/messages"
 
-# MESSAGES
-msg() {
-  echo -e "${1}" 1>&2
-}
-# Display a colored message
-# More info: https://misc.flogisoft.com/bash/tip_colors_and_formatting
-# $1: choosen color
-# $2: title
-# $3: the message
-colored_msg() {
-  msg "${1}[${2}]: ${3}${NC}"
-}
+# The `batch_*` functions emitting the command lines of each batch.
+. "$(dirname "${BASH_SOURCE[0]}")/setup_batches"
 
-info_msg() {
-  colored_msg "${INFO_COLOR}" "INFO" "${1}"
-}
-
-error_msg() {
-  colored_msg "${ERROR_COLOR}" "ERROR" "${1}"
-}
-
-error_msg+exit() {
-    error_msg "${1}" && exit 1
-}
-
-success_msg() {
-  colored_msg "${SUCCESS_COLOR}" "SUCCESS" "${1}"
-}
+# Where the fixtures and the OAI sources are read from.
+DATA_PATH=./data
 
 set -e
 
@@ -46,6 +21,13 @@ if [[ -z "${VIRTUAL_ENV}" ]]; then
   error_msg+exit "Error - Launch this script via uv command:\n\tuv run ${PROGRAM}"
 fi
 
+# Reset the database and the search indices, then create the accounts.
+#
+# The three commands before the batch cannot join it: `celery purge` is not an
+# invenio command, and the other two have to be tolerated on a first run, when
+# there is nothing to flush and no database to destroy. `db destroy` also
+# issues a DROP DATABASE, which fails as soon as anything in the same process
+# has opened a connection to that database.
 function db_init () {
     info_msg "DB init"
     # Purge celery
@@ -55,94 +37,36 @@ function db_init () {
     invenio db destroy --yes-i-know || true
     invenio db init create
     invenio index destroy --force --yes-i-know || true
-    invenio index init --force
-    invenio index queue init purge
 
-    # Create roles to rectict access
-    invenio roles create admin
-    invenio access allow superuser-access role admin
-    # create new admin user
-    invenio users create -a admin@rero.ch --password administrator
-    invenio users confirm admin@rero.ch
-    invenio roles create -d 'Admins Group' admins
-    invenio roles add admin@rero.ch admins
-    # create new monitoring user
-    invenio roles create -d 'Monitoring Group' monitoring
-    invenio users create -a monitoring@rero.ch --password monitor
-    invenio roles add admin@rero.ch monitoring
-    info_msg ""
-    invenio roles add monitoring@rero.ch monitoring
-    if [ -z ${INVENIO_RERO_ACCESS_TOKEN_MONITORING} ]
-    then
-        invenio utils tokens_create -n monitoring -u monitoring@rero.ch
-    else
-        invenio utils tokens_create -n monitoring -u monitoring@rero.ch -t ${INVENIO_RERO_ACCESS_TOKEN_MONITORING}
-    fi
+    info_msg "Search indices, indexing queue, roles, users and token"
+    invenio rero batch <(batch_index_init; batch_accounts)
 }
 
 function oai_init () {
     info_msg "OAI init"
-    # init oaiharvester config from file
-    invenio oaiharvester initconfig ./data/oaisources.yml
-    # https://data.dnb.de/GND/
-    invenio oaiharvester set-last-run -n agents.gnd -d 2023-08-01
-    invenio oaiharvester set-last-run -n agents.idref -d 2023-08-01
-    invenio oaiharvester set-last-run -n concepts.idref -d 2023-08-01
-    invenio oaiharvester set-last-run -n concepts.gnd -d 2023-08-01
-    invenio oaiharvester set-last-run -n places.idref -d 2023-08-01
-    invenio oaiharvester set-last-run -n places.gnd -d 2023-08-01
+    invenio rero batch <(batch_oai)
 }
 
 function sample_load () {
-    SCHEMA="http://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json"
-    info_msg "Importing VIAF records:"
-    dojson -i ./data/viaf.json | invenio fixtures create-or-update viaf -v
-
-    for ENTITY in aggnd aidref agrero
-    do
-        info_msg "Importing ${ENTITY} records:"
-        dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY} -v
-    done
-
-    for ENTITY in corero cidref cognd
-    do
-        info_msg "Importing ${ENTITY} concept records:"
-        dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY} -v
-    done
-
-    for ENTITY in pidref plgnd
-    do
-        info_msg "Importing ${ENTITY} place records:"
-        dojson -i ./data/${ENTITY}.json | invenio fixtures create-or-update ${ENTITY} -v
-    done
-    invenio utils all_mef_alias
-    oai_init
+    info_msg "Importing VIAF, agent, concept and place records, then OAI init"
+    invenio rero batch <(batch_sample_load; batch_oai)
 }
 
 function deploy () {
     INPUT_DIR=$1
     info_msg "Start loading CSV records to database: ${INPUT_DIR}"
-    # Load CSV files to db
-    for ENTITY in aggnd aidref agrero viaf corero cidref cognd pidref plgnd
-    do
-        invenio fixtures load-csv ${ENTITY} ${INPUT_DIR}/${ENTITY}_pidstore.csv ${INPUT_DIR}/${ENTITY}_metadata.csv --verbose --reindex
-    done
-    invenio fixtures load-csv mef ${INPUT_DIR}/mef_pidstore.csv ${INPUT_DIR}/mef_metadata.csv --ids_file ${INPUT_DIR}/mef_id.csv --verbose --reindex
-    invenio fixtures load-csv comef ${INPUT_DIR}/comef_pidstore.csv ${INPUT_DIR}/comef_metadata.csv --ids_file ${INPUT_DIR}/comef_id.csv --verbose --reindex
-    invenio fixtures load-csv plmef ${INPUT_DIR}/plmef_pidstore.csv ${INPUT_DIR}/plmef_metadata.csv --ids_file ${INPUT_DIR}/plmef_id.csv --verbose --reindex
-    oai_init
-    invenio utils runindex --raise-on-error --concurrency 8 --delayed
-    invenio utils runindex --raise-on-error
-    invenio utils all_mef_alias
+    invenio rero batch <(batch_load_csv "${INPUT_DIR}"; batch_oai; batch_index_run)
     # invenio utils reindex-missing -v
 }
 
+# The only step that is deliberately not a batch: one process per entity, run
+# in parallel.
 function create_json () {
     INPUT_DIR=$1
     OUTPUT_DIR=$2
     info_msg "Start creating json: ${INPUT_DIR} ${OUTPUT_DIR}"
     # Transform MARC files to json
-    for ENTITY in aggnd aidref agrero corero cidref cognd pidref plgnd
+    for ENTITY in "${MARC_ENTITIES[@]}"
     do
         invenio fixtures marc-to-json ${ENTITY} ${INPUT_DIR}/${ENTITY}.mrc ${OUTPUT_DIR}/${ENTITY}.json --error_file ${OUTPUT_DIR}/${ENTITY}_error.mrc &
     done
@@ -152,21 +76,8 @@ function create_json () {
 
 function create_csv () {
     OUTPUT_DIR=$1
-    info_msg "Start creating csv: ${OUTPUT_DIR}"
-    # Create CSV files from json
-    for ENTITY in aggnd aidref agrero corero cidref cognd pidref plgnd
-    do
-        invenio fixtures create-csv ${ENTITY} ${OUTPUT_DIR}/${ENTITY}.json ${OUTPUT_DIR}
-    done
-    # trap 'jobs -p | xargs kill' EXIT
-    # wait
-    info_msg "Create VIAF CSV files from viaf.txt: ${OUTPUT_DIR}"
-    # Create VIAF CSV files from viaf.txt
-    invenio agents create-csv-viaf ${OUTPUT_DIR}/viaf.txt ${OUTPUT_DIR}
-
-    info_msg "Create MEF CSV files from viaf_pidstore.csv: ${OUTPUT_DIR}"
-    # Create MEF CSV files from viaf_metadata.csv
-    invenio agents create-csv-mef ${OUTPUT_DIR}/viaf_metadata.csv ${OUTPUT_DIR}
+    info_msg "Start creating csv, then the VIAF and MEF ones: ${OUTPUT_DIR}"
+    invenio rero batch <(batch_create_csv "${OUTPUT_DIR}")
 }
 
 function create_and_load () {
@@ -187,13 +98,7 @@ function viaf_init () {
     INPUT_DIR=$1
     info_msg "Start loading from VIAF file: ${INPUT_DIR}"
     db_init
-    oai_init
-    ENTITY=viaf
-    invenio fixtures load-csv viaf ${INPUT_DIR}/viaf_pidstore.csv ${INPUT_DIR}/viaf_metadata.csv --verbose --reindex
-    invenio utils runindex --raise-on-error --concurrency 8 --delayed
-    invenio utils runindex --raise-on-error
-    invenio utils all_mef_alias
-    invenio agents create-from-viaf --online aggnd --online aidref --online agrero --progress
+    invenio rero batch <(batch_oai; batch_viaf_init "${INPUT_DIR}")
 }
 
 function usage () {

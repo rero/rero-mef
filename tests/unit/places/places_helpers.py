@@ -28,7 +28,7 @@ def build_xml_record_file(xml_part_to_add):
     xml_record_as_text = (
         """
         <record>
-            <leader> cx c22 3 45 </leader> """
+            <leader>00589nx  a2200193   45  </leader> """
         + xml_part_to_add
         + "</record>"
     )
