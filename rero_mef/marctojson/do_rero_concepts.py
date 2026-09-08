@@ -175,16 +175,16 @@ class Transformation:
             if field.get("a"):
                 notes["dataNotFound"].append(field["a"].strip())
         for field in self.marc.get_fields("680"):
-            if field.get("a") and field.indicators == [" ", " "]:
+            if field.get("a") and field.indicators == (" ", " "):
                 notes["general"].append(field["a"].strip())
         for field in self.marc.get_fields("667"):
             if field.get("a"):
                 notes["nonPublic"].append(field["a"].strip())
         for field in self.marc.get_fields("260"):
-            if field.get("a") and field.indicators in [[" ", " "], [" ", "9"]]:
+            if field.get("a") and field.indicators in [(" ", " "), (" ", "9")]:
                 notes["seeReference"].append(field["a"].strip())
         for field in self.marc.get_fields("360"):
-            if field.get("a") and field.indicators == [" ", " "]:
+            if field.get("a") and field.indicators == (" ", " "):
                 notes["seeAlsoReference"].append(field["a"].strip())
         for field in self.marc.get_fields("016"):
             if field.get("9"):

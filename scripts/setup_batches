@@ -1,0 +1,155 @@
+# SPDX-FileCopyrightText: Fondation RERO+
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Command lines of the setup batches, sourced by scripts/setup.
+#
+# Each `batch_*` function writes the command lines of one batch to its standard
+# output, and is read by `invenio rero batch` through a process substitution.
+# Grouping commands this way is what makes the difference on a long sequence:
+# building the Flask application costs seconds, and the setup would otherwise
+# pay it once per command.
+#
+# Only standard output belongs to the batch. `info_msg` and `msg` write to
+# standard error, so they can be used inside these functions.
+#
+# These functions read, but never set, DATA_PATH and
+# INVENIO_RERO_ACCESS_TOKEN_MONITORING of scripts/setup.
+
+# All the entities loaded from CSV, in load order: the sources first, then the
+# three MEF resources that reference them.
+SOURCE_ENTITIES=(aggnd aidref agrero viaf corero cidref cognd pidref plgnd)
+MEF_ENTITIES=(mef comef plmef)
+# The entities harvested as MARC, hence converted to JSON and CSV, and the same
+# set the prepared JSON fixtures cover. VIAF is absent from both: it comes as a
+# text file, and has its own commands and its own fixture.
+MARC_ENTITIES=(aggnd aidref agrero corero cidref cognd pidref plgnd)
+# The OAI sources, named as in data/oaisources.yml.
+OAI_SOURCES=(agents.gnd agents.idref concepts.idref concepts.gnd places.idref places.gnd)
+
+# Emit the token creation command, the token value being optional.
+# $1: token name, $2: user, $3: token value.
+token_line() {
+  if [ -z "${3}" ]
+  then
+      echo "utils tokens_create -n ${1} -u ${2}"
+  else
+      echo "utils tokens_create -n ${1} -u ${2} -t ${3}"
+  fi
+}
+
+# Emit the two indexing runs and the alias, which every load path ends with.
+# The delayed run needs the workers, the second one drains what is left.
+index_run_lines() {
+  cat <<EOF
+utils runindex --raise-on-error --concurrency 8 --delayed
+utils runindex --raise-on-error
+utils all_mef_alias
+EOF
+}
+
+# Index templates, mappings and the indexing queue.
+#
+# The database lifecycle stays out: `db destroy` issues a DROP DATABASE, which
+# fails as soon as anything in the same process has opened a connection to that
+# database. `index destroy` stays out too: it has to be tolerated on a first
+# run, and a batch cannot tolerate one line only.
+batch_index_init() {
+  cat <<EOF
+index init --force
+index queue init purge
+EOF
+}
+
+# Roles, accesses, users and the monitoring token: eleven commands that only
+# touch the database, grouped into one process.
+batch_accounts() {
+  cat <<EOF
+# create roles to restrict access
+roles create admin
+access allow superuser-access role admin
+
+# create new admin user
+users create -a admin@rero.ch --password administrator
+users confirm admin@rero.ch
+roles create -d 'Admins Group' admins
+roles add admin@rero.ch admins
+
+# create new monitoring user
+roles create -d 'Monitoring Group' monitoring
+users create -a monitoring@rero.ch --password monitor
+roles add admin@rero.ch monitoring
+roles add monitoring@rero.ch monitoring
+
+# create token access for monitoring
+EOF
+  token_line monitoring monitoring@rero.ch ${INVENIO_RERO_ACCESS_TOKEN_MONITORING}
+}
+
+# The OAI harvester configuration and the last run of every source.
+# https://data.dnb.de/GND/
+batch_oai() {
+  echo "oaiharvester initconfig ${DATA_PATH}/oaisources.yml"
+  for NAME in "${OAI_SOURCES[@]}"
+  do
+    echo "oaiharvester set-last-run -n ${NAME} -d 2023-08-01"
+  done
+}
+
+# The prepared JSON fixtures of the data path, then the alias.
+#
+# `create-or-update` reads its source file directly. It used to be fed by
+# `dojson -i`, which passed the JSON through unchanged and cost one more
+# process per entity.
+batch_sample_load() {
+  echo "fixtures create-or-update viaf ${DATA_PATH}/viaf.json -v"
+  for ENTITY in "${MARC_ENTITIES[@]}"
+  do
+    echo "fixtures create-or-update ${ENTITY} ${DATA_PATH}/${ENTITY}.json -v"
+  done
+  echo "utils all_mef_alias"
+}
+
+# The CSV load of a deployment. The MEF resources carry an ids file, the
+# sources do not.
+# $1: directory holding the CSV files.
+batch_load_csv() {
+  local INPUT_DIR="${1}"
+  for ENTITY in "${SOURCE_ENTITIES[@]}"
+  do
+    echo "fixtures load-csv ${ENTITY} ${INPUT_DIR}/${ENTITY}_pidstore.csv ${INPUT_DIR}/${ENTITY}_metadata.csv --verbose --reindex"
+  done
+  for ENTITY in "${MEF_ENTITIES[@]}"
+  do
+    echo "fixtures load-csv ${ENTITY} ${INPUT_DIR}/${ENTITY}_pidstore.csv ${INPUT_DIR}/${ENTITY}_metadata.csv --ids_file ${INPUT_DIR}/${ENTITY}_id.csv --verbose --reindex"
+  done
+}
+
+# The two indexing runs and the alias.
+batch_index_run() {
+  index_run_lines
+}
+
+# The CSV files of every harvested entity, then the VIAF and MEF ones, which
+# are built from the VIAF text file and from the VIAF metadata.
+# $1: directory holding the JSON files and receiving the CSV files.
+batch_create_csv() {
+  local OUTPUT_DIR="${1}"
+  for ENTITY in "${MARC_ENTITIES[@]}"
+  do
+    echo "fixtures create-csv ${ENTITY} ${OUTPUT_DIR}/${ENTITY}.json ${OUTPUT_DIR}"
+  done
+  cat <<EOF
+agents create-csv-viaf ${OUTPUT_DIR}/viaf.txt ${OUTPUT_DIR}
+agents create-csv-mef ${OUTPUT_DIR}/viaf_metadata.csv ${OUTPUT_DIR}
+EOF
+}
+
+# A VIAF-only start: load VIAF, index it, then build MEF and the agents from
+# it, fetching the sources online.
+# $1: directory holding the VIAF CSV files.
+batch_viaf_init() {
+  local INPUT_DIR="${1}"
+  echo "fixtures load-csv viaf ${INPUT_DIR}/viaf_pidstore.csv ${INPUT_DIR}/viaf_metadata.csv --verbose --reindex"
+  index_run_lines
+  echo "agents create-from-viaf --online aggnd --online aidref --online agrero --progress"
+}
