@@ -222,6 +222,7 @@ monitoring = "rero_mef.monitoring.cli:monitoring"
 bootstrap = {cmd = "./scripts/bootstrap", help = "Runs bootstrap"}
 console = {cmd = "./scripts/console", help = "Opens invenio shell"}
 format =  {cmd = "ruff format .", help = "Formats all files"}
+gen-certs = {cmd = "./scripts/gen-certs", help = "Generates the development TLS pair"}
 lint = {cmd = "ruff check", help = "Checks linting"}
 server = {cmd = "./scripts/server", help = "Starts the server "}
 setup = {cmd = "./scripts/setup", help = "Runs setup"}
