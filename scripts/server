@@ -13,7 +13,7 @@ set -e
 # Displays program name
 msg "PROGRAM: ${PROGRAM}"
 
-PORT=5000
+PORT=5002
 HTTP=false
 
 if ! options=$(getopt -o np: -l non_secure,port: -- "$@")
@@ -33,6 +33,7 @@ do
   shift
 done
 
+set -e
 
 script_path=$(dirname "$0")
 # uv is a mandatory condition to launch this program!
@@ -43,6 +44,59 @@ fi
 export FLASK_DEBUG=True
 export FLASK_ENV=development
 
+# The certificates are checked, and the trap set, before anything is started:
+# both used to come after the celery worker, so a missing pair left it orphaned.
+CERT="$script_path"/../.certs/dev.crt
+KEY="$script_path"/../.certs/dev.key
+if ! ${HTTP} && [[ ! -f "${CERT}" || ! -f "${KEY}" ]]; then
+  error_msg+exit "Missing development certificates. Generate them with:\n\tuv run ./scripts/gen-certs"
+fi
+
+# Every descendant of a process, deepest first.
+#
+# Killing the two direct children is not enough: `invenio run` forks the
+# reloader child that holds the port, and celery forks its pool workers, so
+# signalling only the children leaves those behind as orphans.
+#
+# Job control (`set -m`) would be the obvious way to signal a whole subtree at
+# once, but it moves this script into a process group of its own, out of the
+# terminal's foreground group, and then Ctrl-C never reaches it at all.
+tree_of() {
+  local pid=$1 child
+  for child in $(pgrep -P "${pid}" 2>/dev/null); do
+    tree_of "${child}"
+  done
+  echo "${pid}"
+}
+
+cleanup() {
+  # No errexit here: probing a process that is already gone fails, and that
+  # must not abort the escalation below.
+  set +e
+  local pid tree waited
+
+  # Collected before signalling, because killing a parent orphans its children
+  # and they can no longer be found by walking down from it.
+  tree=$(for pid in ${pid_celery} ${pid_server}; do tree_of "${pid}"; done)
+
+  # SIGTERM goes to the two parents only, so that celery shuts its pool down
+  # in order and releases its semaphores, and werkzeug stops its reloader
+  # child itself. Signalling the pool workers directly aborts that shutdown
+  # and leaks a semaphore per worker.
+  kill -TERM ${pid_celery} ${pid_server} 2>/dev/null
+
+  # Celery's warm shutdown waits for a running task, which can hang the exit
+  # indefinitely; give the tree five seconds, then insist.
+  for waited in $(seq 20); do
+    if ! kill -0 ${tree} 2>/dev/null; then
+      return 0
+    fi
+    sleep 0.25
+  done
+  kill -KILL ${tree} 2>/dev/null
+}
+trap cleanup EXIT
+
 # Start Worker and Server
 celery --app=rero_mef.celery worker --autoscale=4,1 --beat -l INFO --without-heartbeat --purge & pid_celery=$!
 
@@ -52,12 +106,7 @@ then
   invenio run -p $PORT & pid_server=$!
 else
   info_msg "Server is running on https://localhost:${PORT}"
-  invenio run \
-     --cert "$script_path"/../docker/nginx/test.crt \
-     --key "$script_path"/../docker/nginx/test.key \
-     -p $PORT & pid_server=$!
+  invenio run --cert "${CERT}" --key "${KEY}" -p $PORT & pid_server=$!
 fi
-
-trap 'kill $pid_celery $pid_server &>/dev/null' EXIT
 
 wait $pid_celery $pid_server

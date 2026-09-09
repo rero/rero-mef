@@ -39,7 +39,7 @@ $ uv run poe bootstrap
 Next, create database tables, search indexes and message queues:
 
 ```console
-$ ./scripts/setup
+$ uv run poe setup
 ```
 
 ## Running
@@ -47,13 +47,26 @@ $ ./scripts/setup
 Start the webserver and the celery worker:
 
 ```console
-$ ./scripts/server
+$ uv run poe server
 ```
+
+The server runs over HTTPS and reads its certificate from `.certs/`, which the
+bootstrap generates. The pair is never versioned; regenerate it at any time
+with:
+
+```console
+$ uv run poe gen-certs
+```
+
+It is self-signed, so a browser warns about the unknown issuer. Install
+[mkcert](https://github.com/FiloSottile/mkcert) and run `mkcert -install` once
+before generating, and the certificate is trusted instead. To start without
+TLS altogether, use `uv run poe server --non_secure`.
 
 Start a Python shell:
 
 ```console
-$ ./scripts/console
+$ uv run poe console
 ```
 
 ## Upgrading

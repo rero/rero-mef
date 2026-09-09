@@ -13,7 +13,10 @@ set -e
 # Displays program name
 msg "PROGRAM: ${PROGRAM}"
 
-if ! options=$(getopt -o ds -l -t deploy,ci -- "$@")
+# The result is not consumed, but getopt rejects an unknown option for us. Its
+# lists have to name every option the loop below accepts, `force-certs`
+# included, or the call fails on the very options this script supports.
+if ! options=$(getopt -o dc -l deploy,ci,force-certs -- "$@")
 then
     # something went wrong, getopt will put out an error message for us
     exit 1
@@ -24,6 +27,7 @@ flags=()
 deploy=false
 cmd="uv sync --frozen"
 ci=false
+force_certs=false
 while test $# -gt 0
 do
     case "$1" in
@@ -33,6 +37,8 @@ do
       -c|--ci)
         # We are probably inside travis, check for env variables
         ci=true ;;
+      --force-certs)
+        force_certs=true ;;
       (--) shift; break;;
       (-*) flags+=("$1") ;;
       (*) break;;
@@ -67,6 +73,15 @@ invenio collect -v
 
 info_msg "Build web assets: using webpack for invenio-admin"
 invenio webpack buildall
+
+if ! $deploy ; then
+  # The development server needs a TLS pair; a deployment brings its own.
+  certs_flags=()
+  if $force_certs ; then
+    certs_flags+=("--force")
+  fi
+  "$(dirname "${BASH_SOURCE[0]}")"/gen-certs "${certs_flags[@]}"
+fi
 
 if $deploy ; then
   if ! $ci ; then
