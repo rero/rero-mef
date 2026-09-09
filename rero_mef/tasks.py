@@ -41,9 +41,15 @@ def create_or_update(idx, record, entity, dbcommit=True, reindex=True, test_md5=
     :returns: id type, pid or id, agent action, MEF action
     """
     entity_class = get_entity_class(entity)
+    pid = record.get("pid")
     record, agent_action = entity_class.create_or_update(
         data=record, dbcommit=dbcommit, reindex=reindex, test_md5=test_md5
     )
+    if record is None:
+        # Already deleted at the source and never held here, so nothing was written.
+        if verbose:
+            click.echo(f"{idx:<10} {entity:<6} {'pid:':<5} {pid!s:<25} {agent_action.name}")
+        return "pid:", str(pid), agent_action
     entities = current_app.config.get("RERO_ENTITIES", [])
     mef_record = None
     if entity in entities and agent_action in (

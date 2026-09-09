@@ -3,6 +3,9 @@
 
 """Test RERO auth contribution."""
 
+import pytest
+
+from rero_mef.marctojson import do_gnd_concepts
 from rero_mef.marctojson.do_gnd_concepts import Transformation
 
 from .concepts_helpers import trans_prep
@@ -71,6 +74,38 @@ def test_gnd_authorized_access_point():
     trans = trans_prep(Transformation, "concepts", xml_part_to_add)
     trans.trans_gnd_authorized_access_point()
     assert trans.json == {"authorized_access_point": "Magnet (Druckschrift, Offenbach, Main)"}
+
+
+def test_gnd_authorized_access_point_without_150():
+    """A record without its heading field states no access point.
+
+    GND ships such records for its deletions. Naming them `TAG: 150 NOT FOUND` got them past the schema, which
+    requires the field, and into the catalogue reading like a heading; stating nothing gets them refused.
+    """
+    trans = trans_prep(Transformation, "concepts", "")
+    trans.trans_gnd_authorized_access_point()
+    assert trans.json is None
+
+
+def test_gnd_authorized_access_point_propagates_a_real_failure(monkeypatch):
+    """Only a missing heading field is tolerated, never a transformation that broke.
+
+    A record that merely failed to transform would otherwise look like one the source stopped naming, which
+    `create_or_update` deletes.
+    """
+    xml_part_to_add = """
+    <datafield tag="150" ind1=" " ind2=" ">
+        <subfield code="a">Magnet</subfield>
+    </datafield>
+    """
+    trans = trans_prep(Transformation, "concepts", xml_part_to_add)
+
+    def boom(*args, **kwargs):
+        raise RuntimeError("malformed field")
+
+    monkeypatch.setattr(do_gnd_concepts, "build_string_from_field", boom)
+    with pytest.raises(RuntimeError):
+        trans.trans_gnd_authorized_access_point()
 
 
 def test_gnd_variant_access_point():

@@ -12,7 +12,7 @@ from invenio_db import db
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 from invenio_search import RecordsSearch
 
-from ..utils import get_entity_class, get_mefs_endpoints, progressbar
+from ..utils import get_entity_class, get_entity_search_class, get_mefs_endpoints, progressbar
 
 
 class Monitoring:
@@ -89,6 +89,47 @@ class Monitoring:
             .with_entities(PersistentIdentifier.pid_value)
         )
         return sorted(pid_value for (pid_value,) in query)
+
+    @classmethod
+    def get_dangling_redirects(cls, doc_type):
+        """Get the `redirect_to` records of a type whose target no record holds.
+
+        A GND record states in `relation_pid` where its pid went, and `EntityMefRecord.get_latest` reads that
+        value to send a request for the old pid on to the new record. When nothing holds the target, the forward
+        answers with nothing. The source normally delivers the target in the same harvest, so this is expected to
+        find nothing.
+
+        IdRef states the opposite relation, `redirect_from`, on the record that survived: there the value is the
+        old pid, which is superseded and not expected to be held. Those are not reported.
+
+        :param doc_type: Document type, the pid type of the entity.
+        :returns: Sorted list of (pid, target pid) whose target is missing.
+        """
+        entity_class = get_entity_class(doc_type)
+        search_class = get_entity_search_class(doc_type)
+        if not entity_class or not search_class:
+            return []
+        redirects = [
+            (hit.pid, hit.relation_pid.value)
+            for hit in search_class()
+            .filter("term", relation_pid__type="redirect_to")
+            .source(["pid", "relation_pid"])
+            .scan()
+            if getattr(hit.relation_pid, "value", None)
+        ]
+        # One query per distinct target, not per redirect: several records can point at the same one.
+        targets = {target for _, target in redirects}
+        held = (
+            {
+                pid_value
+                for (pid_value,) in PersistentIdentifier.query.filter(
+                    PersistentIdentifier.pid_type == doc_type, PersistentIdentifier.pid_value.in_(targets)
+                ).with_entities(PersistentIdentifier.pid_value)
+            }
+            if targets
+            else set()
+        )
+        return sorted(redirect for redirect in redirects if redirect[1] not in held)
 
     @classmethod
     def remove_dangling_pids(cls, doc_type):

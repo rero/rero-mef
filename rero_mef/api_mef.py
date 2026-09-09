@@ -249,8 +249,22 @@ class EntityMefRecord(EntityRecord):
             data.pop(field, None)
         return data
 
+    @property
+    def is_empty(self):
+        """Check whether the record links no entity and no VIAF record.
+
+        This is what :meth:`get_all_pids_without_entities_and_viaf` selects, so the orphan cleanup and the
+        deletion below agree on what counts as a record describing nothing.
+
+        :returns: True when no entity ref and no VIAF pid are left.
+        """
+        return not self.get("viaf_pid") and not any(self.get(entity) for entity in self.entities)
+
     def delete_ref(self, record, dbcommit=False, reindex=False):
         """Delete $ref from record.
+
+        A MEF record whose last entity goes describes nothing and is deleted with it. Keeping it would strand one
+        empty record per deleted entity, and only a separate orphan cleanup would ever get rid of them.
 
         :param record: Record to delete the $ref.
         :param dbcommit: Commit changes to DB.
@@ -260,9 +274,13 @@ class EntityMefRecord(EntityRecord):
         action = Action.DISCARD
         if self.pop(record.name, None):
             action = Action.DELETE
-            self.replace(data=self, dbcommit=dbcommit, reindex=reindex)
-            if reindex:
-                self.flush_indexes()
+            if self.is_empty:
+                # `delete` flushes the indexes itself when asked to drop the record from them.
+                self.delete(force=True, dbcommit=dbcommit, delindex=reindex)
+            else:
+                self.replace(data=self, dbcommit=dbcommit, reindex=reindex)
+                if reindex:
+                    self.flush_indexes()
         return self, action
 
     @property

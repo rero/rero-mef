@@ -85,6 +85,22 @@ def dangling_pids_cli(delete):
         click.secho(f"{doc_type:>6} {len(pid_values):>6} {action}: {', '.join(pid_values)}", fg="red")
 
 
+@monitoring.command("dangling_redirects")
+@with_appcontext
+def dangling_redirects_cli():
+    """Print the `redirect_to` records whose target no record holds.
+
+    Such a record forwards a request for its pid to a record nothing holds. IdRef's `redirect_from`, whose value
+    is the superseded pid, is not reported.
+    """
+    found = 0
+    for doc_type in sorted(current_app.config.get("RECORDS_REST_ENDPOINTS", {})):
+        for pid, target in Monitoring.get_dangling_redirects(doc_type):
+            click.secho(f"{doc_type:>6} {pid:>12} redirect_to {target}: target missing", fg="red")
+            found += 1
+    click.secho(f"dangling redirects: {found}", fg="red" if found else "green")
+
+
 @monitoring.command("mef_counts")
 @click.option(
     "-d",
