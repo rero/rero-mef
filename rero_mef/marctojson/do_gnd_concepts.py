@@ -96,6 +96,28 @@ class Transformation:
                         }
                     )
 
+    def trans_gnd_bnf_type(self):
+        """Transformation bnf_type from field 075.
+
+        GND states the entity subtype in ``075 $b`` under ``$2 gndspec``. ``saf``
+        marks a record usable as a form designation -- the RDA DACH
+        ``Formangabe``, which ``667`` spells out on those records -- and that is
+        what a RAMEAU ``genre/forme`` heading has to be matched against. Kept in
+        ``bnf_type``, "Genre or Form" in the common concept schema and the same
+        field IdRef fills with ``sujet Rameau`` or ``genre/forme Rameau``, so
+        both sources state their own type in their own vocabulary.
+        """
+        if self.logger and self.verbose:
+            self.logger.info("Call Function: %s", "trans_gnd_bnf_type")
+        codes = {
+            code
+            for field_075 in self.marc.get_fields("075")
+            if field_075.get("2") == "gndspec"
+            for code in field_075.get_subfields("b")
+        }
+        if codes:
+            self.json_dict["bnf_type"] = "Formangabe GND" if "saf" in codes else "Sachbegriff GND"
+
     def trans_gnd_authorized_access_point(self):
         """Transformation authorized_access_point 150."""
         if self.logger and self.verbose:
@@ -111,13 +133,17 @@ class Transformation:
                 "subdelimiter": ", ",
             }
         ]
-        try:
+        # A record without its heading field has nothing to name it. Leaving `authorized_access_point` unset makes
+        # the schema, which requires it, refuse the record, rather than storing a placeholder that reads like a
+        # heading: GND ships such records for its deletions.
+        # Only the missing field is tolerated. Any other failure has to surface: a record that merely
+        # failed to transform would otherwise look like one the source stopped naming, and
+        # `create_or_update` deletes those.
+        with contextlib.suppress(KeyError):
             if authorized_ap := build_string_from_field(
                 field=self.marc[tag], subfields=subfields, tag_grouping=tag_grouping
             ):
                 self.json_dict["authorized_access_point"] = authorized_ap
-        except Exception:
-            self.json_dict["authorized_access_point"] = f"TAG: {tag} NOT FOUND"
 
     def trans_gnd_variant_access_point(self):
         """Transformation variant_access_point 450."""

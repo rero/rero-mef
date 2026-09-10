@@ -1033,7 +1033,7 @@ class JsonWriter:
         :param indent: Indentation level.
         """
         self.indent = indent
-        self.file_handle = open(filename, "w")
+        self.file_handle = open(filename, "w", encoding="utf-8")
         self.file_handle.write("[")
 
     def __del__(self):
@@ -1065,12 +1065,14 @@ class JsonWriter:
         """
         if self.count > 0:
             self.file_handle.write(",")
+        # `ensure_ascii=False` keeps the accented headings readable: the files are UTF-8, escaping them to
+        # `acc\u00e8s` makes every diff of a French or German record unreadable.
         if self.indent:
-            for line in dumps(data, indent=self.indent).split("\n"):
+            for line in dumps(data, indent=self.indent, ensure_ascii=False).split("\n"):
                 self.file_handle.write(f"\n{' '.ljust(self.indent)}")
                 self.file_handle.write(line)
         else:
-            self.file_handle.write(dumps(data), separators=(",", ":"))
+            self.file_handle.write(dumps(data, separators=(",", ":"), ensure_ascii=False))
         self.count += 1
 
     def close(self):

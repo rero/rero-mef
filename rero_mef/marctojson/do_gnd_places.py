@@ -136,13 +136,17 @@ class Transformation:
                 "subdelimiter": ", ",
             }
         ]
-        try:
+        # A record without its heading field has nothing to name it. Leaving `authorized_access_point` unset makes
+        # the schema, which requires it, refuse the record, rather than storing a placeholder that reads like a
+        # heading: GND ships such records for its deletions.
+        # Only the missing field is tolerated. Any other failure has to surface: a record that merely
+        # failed to transform would otherwise look like one the source stopped naming, and
+        # `create_or_update` deletes those.
+        with contextlib.suppress(KeyError):
             if authorized_ap := build_string_from_field(
                 field=self.marc[tag], subfields=subfields, tag_grouping=tag_grouping
             ):
                 self.json_dict["authorized_access_point"] = authorized_ap
-        except Exception:
-            self.json_dict["authorized_access_point"] = f"TAG: {tag} NOT FOUND"
 
     def trans_gnd_variant_access_point(self):
         """Transformation variant_access_point 451."""

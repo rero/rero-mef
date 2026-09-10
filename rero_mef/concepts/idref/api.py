@@ -6,7 +6,10 @@
 from flask import current_app
 from invenio_search.api import RecordsSearch
 
+from rero_mef.api import Association
+
 from ..api import ConceptIndexer, ConceptRecord
+from ..utils import bnf_ark_disagreements, bnf_association_identifiers
 from .fetchers import idref_id_fetcher
 from .minters import idref_id_minter
 from .models import ConceptIdrefMetadata
@@ -51,61 +54,22 @@ class ConceptIdrefRecord(ConceptRecord):
 
         return idref_get_record(id_=id_, debug=debug)
 
-    def get_association_record(self, association_cls, association_search):
-        """Get associated record.
-
-        :params association_cls: Association class
-        :params association_search: Association search class.
-        :returns: Associated record.
-        """
-        if association_identifier := self.association_identifier:
-            # Test if my identifier is unique
-            count = self.search().filter("term", _association_identifier=association_identifier).count()
-            if count > 1:
-                current_app.logger.error(
-                    f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} | {association_identifier}"
-                )
-                return None
-            # Get associated record
-            query = association_search().filter("term", _association_identifier=association_identifier)
-            associated_count = query.count()
-            if associated_count > 1:
-                # GND sometimes has multiple records sharing the same BNF identifier.
-                # Disambiguate by requiring exactly one GND record with an exact BNF match.
-                exact_pids = list(
-                    dict.fromkeys(
-                        hit.pid
-                        for hit in query.source(["pid", "exactMatch"]).scan()
-                        for exact_match in hit.to_dict().get("exactMatch", [])
-                        for identified_by in exact_match.get("identifiedBy", [])
-                        if identified_by.get("source") == "BNF"
-                        and identified_by.get("type") == "bf:Nbn"
-                        and identified_by.get("value") == association_identifier
-                    )
-                )
-                if len(exact_pids) == 1:
-                    return association_cls.get_record_by_pid(exact_pids[0])
-                current_app.logger.error(
-                    f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} | {association_identifier}"
-                )
-            elif associated_count == 1:
-                hit = next(query.source("pid").scan())
-                return association_cls.get_record_by_pid(hit.pid)
-        return None
-
     @property
-    def association_identifier(self):
-        """Get associated identifier from identifiedBy."""
-        if pids := [
-            identified_by.get("value")
-            for identified_by in self.get("identifiedBy", [])
-            if identified_by.get("source") == "BNF" and identified_by.get("value", "").startswith("FRBNF")
-        ]:
-            if len(pids) > 1:
-                current_app.logger.error(f"MULTIPLE ASSOCIATIONS FOUND FOR: {self.name} {self.pid} | {', '.join(pids)}")
-            if pids:
-                return pids[-1]
-        return None
+    def association(self):
+        """Get the BNF association identifiers from identifiedBy.
+
+        A RAMEAU heading that absorbed several BNF records keeps every one of their numbers, so all of them are
+        stated: a GND record matches when its own number is among them. IdRef states no strength, so the level
+        stays None.
+
+        :returns: An :class:`Association` carrying every BNF number the record states.
+        """
+        identified_by_lists = [self.get("identifiedBy", [])]
+        if only_ark := bnf_ark_disagreements(identified_by_lists):
+            current_app.logger.warning(
+                f"BNF ARK DISAGREES WITH bf:Nbn: {self.name} {self.pid} | ark {', '.join(sorted(only_ark))}"
+            )
+        return Association(frozenset(bnf_association_identifiers(identified_by_lists)))
 
     @property
     def association_info(self):
@@ -118,7 +82,6 @@ class ConceptIdrefRecord(ConceptRecord):
 
         ConceptGndRecord.flush_indexes()
         return {
-            "identifier": self.association_identifier,
             "record": self.get_association_record(
                 association_cls=ConceptGndRecord, association_search=ConceptGndSearch
             ),

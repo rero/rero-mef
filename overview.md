@@ -125,9 +125,15 @@ classDiagram
 > **Linking mechanism:** Concept records are linked directly via cross-reference
 > identifiers embedded in each source record's `identifiedBy` field (e.g. a BNF code
 > such as `FRBNF12345678` stored by an IdRef record, or a GND code stored by a GND
-> record). The `association_identifier` property extracts this identifier and
-> `get_association_record()` uses it to locate the counterpart record in another source.
-> Both are then stored as `$ref` links inside a shared `ConceptMefRecord`.
+> record). For IdRef/GND linking, BNF numbers are normalized to the stable
+> eight-digit `FRBNF` number, ignoring a trailing check character and equivalent BNF
+> ark spellings. GND `exactMatch` takes precedence; when no exact match has a BNF
+> number, a single distinct BNF number from `closeMatch` may be used as a fallback.
+> Repeated spellings of the same number are treated as one identifier, but a GND
+> record with two distinct BNF numbers in the selected match type is ambiguous and
+> is not linked. This prevents one GND record from being linked to the wrong IdRef
+> when the other BNF number belongs to a different IdRef record. Both linked records
+> are stored as `$ref` links inside a shared `ConceptMefRecord`.
 
 ```mermaid
 classDiagram

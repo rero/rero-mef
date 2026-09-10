@@ -7,6 +7,7 @@ import pytest
 
 pytest_plugins = (
     "celery.contrib.pytest",
+    "tests.blocked_sources",
     "tests.fixtures.agents_data",
     "tests.fixtures.agents_records",
     "tests.fixtures.concepts_data",

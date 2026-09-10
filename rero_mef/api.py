@@ -5,6 +5,7 @@
 from copy import deepcopy
 from enum import Enum
 from time import sleep
+from typing import NamedTuple
 from uuid import uuid4
 
 from celery import current_app as current_celery_app
@@ -19,6 +20,7 @@ from invenio_records.api import Record
 from invenio_records_rest.utils import obj_or_import_string
 from invenio_search import current_search
 from invenio_search.engine import search
+from jsonschema.exceptions import ValidationError
 from kombu.compat import Consumer
 from sqlalchemy import func
 from sqlalchemy.exc import OperationalError
@@ -40,6 +42,21 @@ RERO_ILS_ENTITY_TYPES = {
     "bf:Temporal": "concepts",
     "bf:Place": "places",
 }
+
+
+def format_record_error(error):
+    """Reduce a record error to the part naming the problem.
+
+    A :class:`jsonschema.ValidationError` renders the whole schema and the whole instance, which buries the reason
+    under thousands of lines. Keep its message and the field it points at.
+
+    :param error: Exception raised while creating a record.
+    :returns: One line naming the error.
+    """
+    if isinstance(error, ValidationError):
+        field = "/".join(str(part) for part in error.absolute_path) or "/"
+        return f"ValidationError {field}: {error.message}"
+    return f"{type(error).__name__}: {error}"
 
 
 class Action(Enum):
@@ -158,8 +175,16 @@ class EntityRecord(Record):
             data.pop("pid", None)
         if not id_:
             id_ = uuid4()
-        cls.minter(id_, data)
-        record = super().create(data=data, id_=id_, **kwargs)
+        try:
+            # `Record.create` validates inside a savepoint of its own, so a rejected record used to roll back its
+            # own row and leave the PID the minter had already written: claimed, resolving to nothing, and blocking
+            # every later attempt to create the record. One savepoint over both makes the pair atomic.
+            with db.session.begin_nested():
+                cls.minter(id_, data)
+                record = super().create(data=data, id_=id_, **kwargs)
+        except Exception as err:
+            current_app.logger.error(f"CREATE {cls.name} {data.get('pid')}: {format_record_error(err)}")
+            raise
         if dbcommit:
             record.dbcommit(reindex)
         return record
@@ -192,6 +217,22 @@ class EntityRecord(Record):
 
         pid = data.get("pid")
         if agent_record := cls.get_record_by_pid(pid):
+            if (
+                agent_record.get("authorized_access_point")
+                and not data.get("authorized_access_point")
+                and not data.get("relation_pid")
+            ):
+                # The source stopped naming a record it used to name, so there is nothing left to show or to
+                # cluster. `copy_fields` below would otherwise put the old heading back and the record would keep
+                # serving a name the source has dropped, silently: the md5 matches, so it even reports `uptodate`.
+                # Deleting takes the record out of its MEF record too. VIAF records state no heading at all and
+                # never reach this.
+                #
+                # A record stating a `relation_pid` is kept, unnamed as it is: it is how the source says where the
+                # pid went, and `get_latest` reads it to send a request for the old pid on to the new record.
+                current_app.logger.warning(f"NO AUTHORIZED ACCESS POINT, DELETED: {agent_record.name} {pid}")
+                agent_record.delete(force=True, dbcommit=dbcommit, delindex=reindex)
+                return None, Action.DELETE
             # Preserve critical fields from the existing record if they're missing in new data
             # to prevent accidental data loss during updates
             copy_fields = [
@@ -205,6 +246,11 @@ class EntityRecord(Record):
             ]
             original_data = {k: v for k, v in agent_record.items() if k in copy_fields}
             data = original_data | data
+            # No source states when it deleted a record, so every transformation stamps `deleted` with the time it
+            # ran. Taking that stamp would give a tombstone a new md5 on every harvest that re-delivers it, and
+            # `test_md5` could never skip one; the stored stamp is when the deletion was first seen.
+            if (deleted := agent_record.get("deleted")) and data.get("deleted"):
+                data["deleted"] = deleted
             if test_md5:
                 incoming_md5 = _md5.create_md5({k: v for k, v in data.items() if k not in ("$schema", "md5")})
                 if incoming_md5 == agent_record.get("md5"):
@@ -217,6 +263,11 @@ class EntityRecord(Record):
             return_record = agent_record.replace(data=data, dbcommit=dbcommit, reindex=reindex)
             action = Action.REPLACE
         else:
+            if data.get("deleted"):
+                # The source deleted this record before we ever had it, so there is nothing to keep a tombstone of.
+                # Creating one, and a MEF record for it, would also make it impossible to clean up: the next
+                # harvest that reaches the same date range would simply create both again.
+                return None, Action.DISCARD
             try:
                 return_record = cls.create(
                     data=data,
@@ -226,8 +277,8 @@ class EntityRecord(Record):
                     reindex=reindex,
                 )
                 action = Action.CREATE
-            except Exception as err:
-                current_app.logger.error(f"ERROR create_or_update {cls.name} {data.get('pid')} {err}")
+            except Exception:
+                # `create` logged the reason and left neither a record nor a pid behind.
                 action = Action.ERROR
         if reindex:
             cls.flush_indexes()
@@ -538,6 +589,19 @@ class EntityRecord(Record):
         return self.get("deleted")
 
 
+class Association(NamedTuple):
+    """What a record states about the entity it should be clustered with.
+
+    :param identifiers: Identifiers shared with the associated record. A merged heading absorbs several source
+        records and keeps every one of their numbers, so a source may state more than one.
+    :param level: Strength of the statement they were read from, `exactMatch`, `closeMatch` or None for sources that
+        do not tell the two apart.
+    """
+
+    identifiers: frozenset = frozenset()
+    level: str | None = None
+
+
 class ConceptPlaceRecord(EntityRecord):
     """Base class for Concept and Place entity records.
 
@@ -545,43 +609,75 @@ class ConceptPlaceRecord(EntityRecord):
     records. Handles linking of related records through association identifiers.
     """
 
+    @staticmethod
+    def _association_candidates(association_search, association_identifiers):
+        """Get the records sharing any of these association identifiers, each with its match level.
+
+        The identifiers and the level both live in the index, so one scan brings back everything needed to pick a
+        winner without asking the search engine again.
+
+        :param association_search: Search class of the side to look in.
+        :param association_identifiers: Association identifiers to look for.
+        :returns: List of (pid, match level) tuples, the level being None when the source asserts none.
+        """
+        hits = (
+            association_search()
+            .filter("terms", _association_identifier=sorted(association_identifiers))
+            .source(["pid", "_association_level"])
+            .scan()
+        )
+        candidates = {hit.pid: hit.to_dict().get("_association_level") for hit in hits}
+        return list(candidates.items())
+
+    @staticmethod
+    def _single_association_pid(candidates):
+        """Get the pid of the single record an association identifier belongs to.
+
+        Several records can share an association identifier. GND asserts equivalence with `exactMatch` and mere
+        relatedness with `closeMatch`, so an exact match wins over the close matches of the same number. Without a
+        single winner there is no link.
+
+        :param candidates: List of (pid, match level) tuples.
+        :returns: The pid of the single matching record, or None.
+        """
+        if len(candidates) == 1:
+            return candidates[0][0]
+        exact = [pid for pid, level in candidates if level == "exactMatch"]
+        return exact[0] if len(exact) == 1 else None
+
     def get_association_record(self, association_cls, association_search):
         """Get the associated record linked via association identifier.
 
-        Searches for an associated record (concept or place) that shares the same association identifier. Validates
-        uniqueness and logs errors if multiple records are found.
+        Searches for an associated record (concept or place) that shares the same association identifier. Both sides
+        have to be unambiguous, and errors are logged when they are not.
 
         :param association_cls: The class of the associated record type.
         :param association_search: The search class for finding associated records.
-        :returns: The associated record if found and unique, None if not found or multiple found.
+        :returns: The associated record if found and unique, None if not found or ambiguous.
         """
-        if association_identifier := self.association_identifier:
-            # Test if my identifier is unique
-            count = self.search().filter("term", _association_identifier=association_identifier).count()
-            if count > 1:
-                current_app.logger.error(
-                    f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} | {association_identifier}"
-                )
+        if association_identifiers := self.association.identifiers:
+            listed = ", ".join(sorted(association_identifiers))
+            # Test if my identifiers are mine alone
+            own = self._association_candidates(self.search, association_identifiers)
+            if len(own) > 1 and self._single_association_pid(own) != self.pid:
+                current_app.logger.info(f"MULTIPLE IDENTIFIERS FOUND FOR: {self.name} {self.pid} | {listed}")
                 return None
             # Get associated record
-            query = association_search().filter("term", _association_identifier=association_identifier)
-            associated_count = query.count()
-            if associated_count > 1:
-                current_app.logger.error(
-                    f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} | {association_identifier}"
-                )
-            elif associated_count == 1:
-                hit = next(query.source("pid").scan())
-                return association_cls.get_record_by_pid(hit.pid)
+            if not (candidates := self._association_candidates(association_search, association_identifiers)):
+                return None
+            if pid := self._single_association_pid(candidates):
+                return association_cls.get_record_by_pid(pid)
+            current_app.logger.info(f"MULTIPLE ASSOCIATIONS IDENTIFIERS FOUND FOR: {self.name} {self.pid} | {listed}")
         return None
 
     @property
-    def association_identifier(self):
-        """Get the association identifier for this record.
+    def association(self):
+        """Get what this record states about the entity it should be clustered with.
 
         This property must be implemented by concept/place subclasses to define how they identify related records.
+        Deriving the identifier and its strength together keeps one pass over the statements they both come from.
 
-        :returns: The association identifier value.
+        :returns: An :class:`Association`.
         :raises NotImplementedError: Must be implemented by subclasses.
         """
         raise NotImplementedError()
@@ -601,7 +697,7 @@ class ConceptPlaceRecord(EntityRecord):
         MEF record instance and actions_dict maps MEF PIDs to Action enum values indicating what occurred.
         """
 
-        def mef_create(mef_cls, data, association_identifier, dbcommit, reindex):
+        def mef_create(mef_cls, data, association_info, dbcommit, reindex):
             """Create MEF record."""
             mef_data = {
                 data.name: {
@@ -615,7 +711,7 @@ class ConceptPlaceRecord(EntityRecord):
             }
             if deleted := data.get("deleted"):
                 mef_data["deleted"] = deleted
-            if association_record := association_identifier.get("record"):
+            if association_record := association_info.get("record"):
                 ref = build_ref_string(
                     entity_type=RERO_ILS_ENTITY_TYPES[association_record["type"]],
                     entity_name=association_record.name,
@@ -657,14 +753,15 @@ class ConceptPlaceRecord(EntityRecord):
             mef_record, actions = mef_create(
                 mef_cls=association_info["mef_cls"],
                 data=self,
-                association_identifier=association_info,
+                association_info=association_info,
                 dbcommit=dbcommit,
                 reindex=reindex,
             )
         else:
             mef_pids = mef_record.ref_pids if mef_record else {}
             mef_association_pids = mef_associated_record.ref_pids if mef_associated_record else {}
-            association_name = association_info["record_cls"].name
+            # Sources without association class (RERO concepts) have no other entity to move around.
+            association_name = record_cls.name if (record_cls := association_info["record_cls"]) else None
             mef_self_pid = mef_pids.get(self.name)
             mef_self_association_pid = mef_association_pids.get(self.name)
             mef_other_pid = mef_pids.get(association_name)
@@ -687,7 +784,7 @@ class ConceptPlaceRecord(EntityRecord):
                     _, action = mef_create(
                         mef_cls=association_info["mef_cls"],
                         data=association_record,
-                        association_identifier={},
+                        association_info={},
                         dbcommit=dbcommit,
                         reindex=reindex,
                     )
@@ -720,6 +817,17 @@ class ConceptPlaceRecord(EntityRecord):
                 actions[new_mef_record.pid] = Action.DELETE_ENTITY
                 mef_associated_record[self.name] = ref
                 new_mef_record = mef_associated_record
+
+            # A newly found association has to be added, whichever side is updated
+            if association_name and not new_mef_record.get(association_name):
+                if association_record := association_info["record"]:
+                    new_mef_record[association_name] = {
+                        "$ref": build_ref_string(
+                            entity_type=RERO_ILS_ENTITY_TYPES[association_record["type"]],
+                            entity_name=association_record.name,
+                            entity_pid=association_record.pid,
+                        )
+                    }
 
             mef_record = new_mef_record.replace(data=new_mef_record, dbcommit=dbcommit, reindex=reindex)
             actions[mef_record.pid] = Action.REPLACE

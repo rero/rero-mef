@@ -6,6 +6,7 @@
 from flask import current_app
 from invenio_search.api import RecordsSearch
 
+from rero_mef.api import Association
 from rero_mef.places.api import PlaceIndexer, PlaceRecord
 
 from .fetchers import idref_id_fetcher
@@ -53,8 +54,11 @@ class PlaceIdrefRecord(PlaceRecord):
         return idref_get_record(id_=id_, debug=debug)
 
     @property
-    def association_identifier(self):
-        """Get associated identifier from identifiedBy."""
+    def association(self):
+        """Get the GND pid this place states in identifiedBy.
+
+        :returns: An :class:`Association` carrying the GND pid.
+        """
         pids = list(
             dict.fromkeys(
                 pid
@@ -66,10 +70,8 @@ class PlaceIdrefRecord(PlaceRecord):
             )
         )
         if len(pids) > 1:
-            current_app.logger.error(f"MULTIPLE ASSOCIATIONS FOUND FOR: {self.name} {self.pid} | {', '.join(pids)}")
-        if len(pids) == 1:
-            return pids[0]
-        return None
+            current_app.logger.info(f"MULTIPLE ASSOCIATIONS FOUND FOR: {self.name} {self.pid} | {', '.join(pids)}")
+        return Association(frozenset({pids[0]})) if len(pids) == 1 else Association()
 
     @property
     def association_info(self):

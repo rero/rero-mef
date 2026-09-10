@@ -24,9 +24,20 @@ def _no_md5(record):
 
 def test_create_concept_record(app, concept_rero_data, concept_idref_data, tmpdir):
     """Test create concept record."""
-    idref_record, action = ConceptIdrefRecord.create_or_update(data=concept_idref_data, dbcommit=True, reindex=True)
+    # This fixture is a record IdRef has deleted. One we never held is not created at all.
+    discarded, action = ConceptIdrefRecord.create_or_update(data=concept_idref_data, dbcommit=True, reindex=True)
+    assert action == Action.DISCARD
+    assert discarded is None
+    assert ConceptIdrefRecord.get_record_by_pid("050548115") is None
+
+    # It only reaches the database the way it really does: named and live, deleted by a later harvest.
+    live_data = {k: v for k, v in concept_idref_data.items() if k != "deleted"}
+    idref_record, action = ConceptIdrefRecord.create_or_update(data=live_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert idref_record["pid"] == "050548115"
+
+    idref_record, action = ConceptIdrefRecord.create_or_update(data=concept_idref_data, dbcommit=True, reindex=True)
+    assert action == Action.REPLACE
 
     m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_actions == {m_record.pid: Action.CREATE}
@@ -155,8 +166,8 @@ def test_create_concept_frbnf_record(app, concept_idref_frbnf_data_close, concep
         "type": "bf:Topic",
     }
 
-    assert idref_record.association_identifier == "FRBNF12352687"
-    assert gnd_record.association_identifier == "FRBNF12352687"
+    assert idref_record.association.identifiers == {"FRBNF12352687"}
+    assert gnd_record.association.identifiers == {"FRBNF12352687"}
 
     # Delete identifiedBy `FRBNF12352687` from IDREF record
     idref_record["identifiedBy"] = [
@@ -329,11 +340,56 @@ def test_create_concept_frbnf_record_exact(app, concept_idref_frbnf_data_exact, 
     }
 
 
+def test_create_concept_live_frbnf_record(app, concept_idref_027269698_data, concept_gnd_040048454_data):
+    """Link the supplied live IdRef and GND concept records."""
+    idref_record, _ = ConceptIdrefRecord.create_or_update(
+        data=concept_idref_027269698_data, dbcommit=True, reindex=True
+    )
+    gnd_record, _ = ConceptGndRecord.create_or_update(data=concept_gnd_040048454_data, dbcommit=True, reindex=True)
+
+    ConceptIdrefRecord.flush_indexes()
+    ConceptGndRecord.flush_indexes()
+
+    mef_record, _ = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
+
+    assert mef_record["idref"]["$ref"].endswith("/idref/027269698")
+    assert mef_record["gnd"]["$ref"].endswith("/gnd/040048454")
+    assert gnd_record.association_info["record"].pid == idref_record.pid
+
+
+def test_create_concept_live_frbnf_record_multiple_close_matches(
+    app, concept_idref_027269698_data, concept_gnd_040048454_data
+):
+    """Do not link when a GND record has multiple BNF close-match FRBNFs."""
+    gnd_data = deepcopy(concept_gnd_040048454_data)
+    gnd_data["closeMatch"].append(
+        {
+            "authorized_access_point": "Arbres",
+            "identifiedBy": [{"source": "BNF", "type": "bf:Nbn", "value": "FRBNF11934787"}],
+            "source": "BNF",
+        }
+    )
+
+    idref_record, _ = ConceptIdrefRecord.create_or_update(
+        data=concept_idref_027269698_data, dbcommit=True, reindex=True
+    )
+    gnd_record, _ = ConceptGndRecord.create_or_update(data=gnd_data, dbcommit=True, reindex=True)
+
+    ConceptIdrefRecord.flush_indexes()
+    ConceptGndRecord.flush_indexes()
+
+    mef_record, _ = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
+
+    assert not gnd_record.association.identifiers
+    assert gnd_record.association_info["record"] is None
+    assert "gnd" not in mef_record
+
+
 def test_concept_record_delete(app, concept_idref_data):
     """ConceptRecord.delete removes the ref from linked MEF records."""
-    idref_record, _ = ConceptIdrefRecord.create_or_update(
-        data=deepcopy(concept_idref_data), dbcommit=True, reindex=True
-    )
+    # the fixture is a deleted record, which is never created; this test needs one that is stored
+    live_data = {k: v for k, v in concept_idref_data.items() if k != "deleted"}
+    idref_record, _ = ConceptIdrefRecord.create_or_update(data=deepcopy(live_data), dbcommit=True, reindex=True)
     m_record, _ = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_record.get("idref") is not None
 
