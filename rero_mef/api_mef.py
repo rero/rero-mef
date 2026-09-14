@@ -71,6 +71,33 @@ class EntityMefRecord(EntityRecord):
         return mef_records
 
     @classmethod
+    def resolve_multiple(cls, record, mef_records, dbcommit=False, reindex=False):
+        """Reduce the MEF records holding one entity to the single one that keeps it.
+
+        Only one MEF record is supposed to hold an entity, but the two sides of an association do not always agree
+        on it: a source that links to a partner the partner itself refuses builds a second record. Once two exist
+        nothing could get back to one, because a lookup that finds no single record falls through to creating yet
+        another, one more on every rebuild of that entity. The oldest record keeps the entity, which is the one
+        anything downstream has been reading it from; the others give up its reference and are deleted when it was
+        the last thing they held.
+
+        :param record: Entity record all of them hold.
+        :param mef_records: MEF records holding it.
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex records.
+        :returns: The MEF record keeping the entity and the actions taken on the others.
+        """
+        kept, *surplus = sorted(mef_records, key=lambda mef_record: (mef_record.created, mef_record.pid))
+        actions = {}
+        for mef_record in surplus:
+            _, actions[mef_record.pid] = mef_record.delete_ref(record, dbcommit=dbcommit, reindex=reindex)
+        resolved = ", ".join(f"{pid} {action.value}" for pid, action in actions.items())
+        current_app.logger.warning(
+            f"MULTIPLE MEF RESOLVED FOR: {record.name} {record.pid} | kept: {kept.pid} | {resolved}"
+        )
+        return kept, actions
+
+    @classmethod
     def get_all_pids_without_entities_and_viaf(cls):
         """Get all pids for records without entities and VIAF pids.
 
@@ -191,10 +218,13 @@ class EntityMefRecord(EntityRecord):
         deleted = []
         if from_date := data.get("from_date"):
             search = search.filter("range", _updated={"gte": from_date})
-        missing_pids = []
         if pids := data.get("pids"):
             search = search.filter("terms", pid=pids)
-            missing_pids.extend(pid for pid in pids if cls.search().filter("term", pid=pid).count() == 0)
+            # Resolve the posted pids with a single search: clients chunk by
+            # thousands, and a count per pid made that many round trips. The index states a pid as a string,
+            # whatever the client posted, so both sides are read as one.
+            found = {str(hit.pid) for hit in cls.search().filter("terms", pid=pids).source(["pid"]).scan()}
+            missing_pids = [pid for pid in pids if str(pid) not in found]
         else:
             # Get all deleted pids.
             missing_pids = cls.get_all_deleted_pids(from_date=data.get("from_date"))

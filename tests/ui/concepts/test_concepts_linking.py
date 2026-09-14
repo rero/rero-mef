@@ -9,6 +9,7 @@ They pin down which BNF numbers the three concept sources actually carry and
 what MEF does with them today.
 """
 
+import json
 from copy import deepcopy
 
 from rero_mef.api import Action
@@ -19,6 +20,7 @@ from rero_mef.concepts import (
     ConceptReroRecord,
 )
 from rero_mef.concepts.utils import bnf_ark_disagreements
+from rero_mef.utils import build_ref_string
 
 
 def _refs(mef_record):
@@ -300,3 +302,102 @@ def test_rero_and_idref_share_the_bnf_ark(app, concept_rero_ark_data, concept_id
     assert rero_mef_record.pid != idref_mef_record.pid
 
 
+def test_rero_concept_mef_is_updated_in_place(app, concept_rero_link_data):
+    """Update the MEF record of a source without association class.
+
+    RERO has no association class, so the second call goes through the update
+    branch of `create_or_update_mef` with no association name to look up.
+    """
+    rero_data = deepcopy(concept_rero_link_data)
+    rero_data["pid"] = "A021001021_2"
+    rero_record, _ = ConceptReroRecord.create_or_update(data=rero_data, dbcommit=True, reindex=True)
+    ConceptReroRecord.flush_indexes()
+
+    first_mef_record, actions = rero_record.create_or_update_mef(dbcommit=True, reindex=True)
+    assert actions == {first_mef_record.pid: Action.CREATE}
+
+    second_mef_record, actions = rero_record.create_or_update_mef(dbcommit=True, reindex=True)
+    assert actions == {first_mef_record.pid: Action.REPLACE}
+    assert second_mef_record.pid == first_mef_record.pid
+    assert _refs(second_mef_record) == {"rero"}
+
+
+def test_three_sources_end_in_two_mef_records(app, concept_rero_link_data, concept_gnd_rero_link_data):
+    """Split three concepts sharing one BNF number over two MEF records.
+
+    IdRef and GND are merged, RERO is left aside. A three-way link would need
+    the BNF number of all three sources to be normalised into one key.
+    """
+    idref_data = {
+        "$schema": "https://mef.rero.ch/schemas/concepts_idref/idref-concept-v0.0.1.json",
+        "authorized_access_point": "Agriculture biologique",
+        "identifiedBy": [
+            {"source": "IDREF", "type": "uri", "value": "http://www.idref.fr/027229080"},
+            {"source": "BNF", "type": "bf:Nbn", "value": "FRBNF11930852"},
+        ],
+        "pid": "027229080",
+        "type": "bf:Topic",
+    }
+    rero_record, _ = ConceptReroRecord.create_or_update(
+        data=deepcopy(concept_rero_link_data), dbcommit=True, reindex=True
+    )
+    gnd_record, _ = ConceptGndRecord.create_or_update(
+        data=deepcopy(concept_gnd_rero_link_data), dbcommit=True, reindex=True
+    )
+    idref_record, _ = ConceptIdrefRecord.create_or_update(data=idref_data, dbcommit=True, reindex=True)
+    ConceptReroRecord.flush_indexes()
+    ConceptGndRecord.flush_indexes()
+    ConceptIdrefRecord.flush_indexes()
+
+    rero_record.create_or_update_mef(dbcommit=True, reindex=True)
+    mef_record, _ = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
+    ConceptMefRecord.flush_indexes()
+
+    assert _refs(mef_record) == {"idref", "gnd"}
+    rero_mef_records = ConceptMefRecord.get_mef(entity_name="rero", entity_pid=rero_record.pid)
+    assert len(rero_mef_records) == 1
+    assert _refs(rero_mef_records[0]) == {"rero"}
+    assert rero_mef_records[0].pid != mef_record.pid
+    assert gnd_record.association.identifiers == idref_record.association.identifiers
+
+
+def _renumbered(data, pid_suffix, number="99999995"):
+    """Copy a fixture onto a BNF number and a pid of its own, so this test claims a cluster no other one does."""
+    renumbered = json.loads(json.dumps(data).replace("12468269", number))
+    renumbered["pid"] = f"{data['pid']}{pid_suffix}"
+    return renumbered
+
+
+def _mef_holding(entity_name, entity_pid):
+    """Create a concept MEF record holding one entity, as one stood before a link was made."""
+    ref = build_ref_string(entity_type="concepts", entity_name=entity_name, entity_pid=entity_pid)
+    return ConceptMefRecord.create(data={"type": "bf:Topic", entity_name: {"$ref": ref}}, dbcommit=True, reindex=True)
+
+
+def test_the_mef_record_a_concept_leaves_is_deleted(app, concept_idref_link_data, concept_gnd_link_data):
+    """Two concepts each holding a MEF record of their own end in one, the emptied record gone.
+
+    This is the shape a harvest reaches: both sides were stored before the rules linked them, so one of the two
+    records loses its only entity to the other.
+    """
+    idref_record, _ = ConceptIdrefRecord.create_or_update(
+        data=_renumbered(concept_idref_link_data, "555"), dbcommit=True, reindex=True
+    )
+    gnd_record, _ = ConceptGndRecord.create_or_update(
+        data=_renumbered(concept_gnd_link_data, "555"), dbcommit=True, reindex=True
+    )
+    ConceptIdrefRecord.flush_indexes()
+    ConceptGndRecord.flush_indexes()
+
+    mef_of_idref = _mef_holding("idref", idref_record.pid)
+    mef_of_gnd = _mef_holding("gnd", gnd_record.pid)
+    ConceptMefRecord.flush_indexes()
+
+    mef_record, _ = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
+    ConceptMefRecord.flush_indexes()
+
+    # the GND concept moved into the record of the IdRef one, and the record it left describes nothing
+    assert mef_record.pid == mef_of_idref.pid
+    assert _refs(mef_record) == {"idref", "gnd"}
+    assert ConceptMefRecord.get_record_by_pid(mef_of_gnd.pid) is None
+    assert len(ConceptMefRecord.get_mef(entity_name="gnd", entity_pid=gnd_record.pid)) == 1

@@ -13,7 +13,7 @@ from rero_mef.concepts import (
     ConceptMefRecord,
     ConceptReroRecord,
 )
-from rero_mef.utils import export_json_records, number_records_in_file
+from rero_mef.utils import build_ref_string, export_json_records, number_records_in_file
 
 SCHEMA_URL = "https://mef.rero.ch/schemas/concepts_mef"
 
@@ -298,8 +298,10 @@ def test_create_concept_frbnf_record(app, concept_idref_frbnf_data_close, concep
     gnd_record = ConceptGndRecord.create_or_update(data=gnd_record, dbcommit=True, reindex=True)
     ConceptGndRecord.flush_indexes()
     m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
-    mef_count = ConceptMefRecord.count()
-    assert m_actions == {m_record.pid: Action.REPLACE, str(mef_count): Action.CREATE}
+    # The GND concept it no longer links to was given a MEF record of its own.
+    gnd_mef_records = ConceptMefRecord.get_mef(entity_pid=concept_gnd_frbnf_data_close["pid"], entity_name="gnd")
+    assert len(gnd_mef_records) == 1
+    assert m_actions == {m_record.pid: Action.REPLACE, gnd_mef_records[0].pid: Action.CREATE}
     assert "md5" in m_record
     assert _no_md5(m_record) == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
@@ -311,7 +313,6 @@ def test_create_concept_frbnf_record(app, concept_idref_frbnf_data_close, concep
 
 def test_create_concept_frbnf_record_exact(app, concept_idref_frbnf_data_exact, concept_gnd_frbnf_data_exact, tmpdir):
     """Test create concept record with frbnf links."""
-    mef_count = ConceptMefRecord.count()
     # Create idref record with identifiedBy `FRBNF12352687`.
     idref_record, action = ConceptIdrefRecord.create_or_update(
         data=concept_idref_frbnf_data_exact, dbcommit=True, reindex=True
@@ -335,7 +336,7 @@ def test_create_concept_frbnf_record_exact(app, concept_idref_frbnf_data_exact, 
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
         "idref": {"$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_exact['pid']}"},
         "gnd": {"$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_exact['pid']}"},
-        "pid": f"{mef_count + 1}",
+        "pid": m_record.pid,
         "type": "bf:Topic",
     }
 
@@ -421,3 +422,48 @@ def test_concepts_utils_get_concept_classes(app):
     classes_with_mef = get_concept_classes(without_mef=False)
     assert isinstance(classes_with_mef, dict)
     assert len(classes_with_mef) >= len(classes)
+
+
+def _mef_with(idref_pid, gnd_pid):
+    """Create a concept MEF record holding these two entities."""
+    return ConceptMefRecord.create(
+        data={
+            "type": "bf:Topic",
+            "idref": {"$ref": build_ref_string(entity_type="concepts", entity_name="idref", entity_pid=idref_pid)},
+            "gnd": {"$ref": build_ref_string(entity_type="concepts", entity_name="gnd", entity_pid=gnd_pid)},
+        },
+        dbcommit=True,
+        reindex=True,
+    )
+
+
+def test_multiple_mef_records_are_reduced_to_one(app, concept_idref_link_data, concept_gnd_link_data):
+    """A concept held by several MEF records keeps the oldest one, and no new one is created."""
+    idref_record, _ = ConceptIdrefRecord.create_or_update(data=concept_idref_link_data, dbcommit=True, reindex=True)
+    gnd_record, _ = ConceptGndRecord.create_or_update(data=concept_gnd_link_data, dbcommit=True, reindex=True)
+    rival_data = deepcopy(concept_gnd_link_data)
+    rival_data["pid"] = f"{gnd_record.pid}999"
+    rival_data["authorized_access_point"] = "Rival claiming the same BNF number"
+    rival_record, _ = ConceptGndRecord.create_or_update(data=rival_data, dbcommit=True, reindex=True)
+    ConceptIdrefRecord.flush_indexes()
+    ConceptGndRecord.flush_indexes()
+
+    # Both GND concepts claim the number of the IdRef one, each in a MEF record of its own.
+    first = _mef_with(idref_record.pid, gnd_record.pid)
+    second = _mef_with(idref_record.pid, rival_record.pid)
+    ConceptMefRecord.flush_indexes()
+    assert len(ConceptMefRecord.get_mef(entity_pid=idref_record.pid, entity_name="idref")) == 2
+    stored = ConceptMefRecord.count()
+
+    idref_record.create_or_update_mef(dbcommit=True, reindex=True)
+    ConceptMefRecord.flush_indexes()
+
+    # The oldest keeps the IdRef concept, alone: the rules give it no partner while two GND records claim it.
+    mef_records = ConceptMefRecord.get_mef(entity_pid=idref_record.pid, entity_name="idref")
+    assert [mef_record.pid for mef_record in mef_records] == [first.pid]
+    assert ConceptMefRecord.get_record_by_pid(first.pid).ref_pids == {"idref": idref_record.pid}
+    # The other one gave up the IdRef reference and stays the MEF record of the GND concept it holds.
+    assert ConceptMefRecord.get_record_by_pid(second.pid).ref_pids == {"gnd": rival_record.pid}
+    # The GND concept the oldest record was paired with got its own, and that is the only record created.
+    assert len(ConceptMefRecord.get_mef(entity_pid=gnd_record.pid, entity_name="gnd")) == 1
+    assert ConceptMefRecord.count() == stored + 1
