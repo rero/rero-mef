@@ -299,12 +299,18 @@ RERO_MEF_AGENTS_GND_GET_RECORD = (
     "?version=1.1&operation=searchRetrieve&query=idn%3D{id}"
     "&recordSchema=MARC21-xml"
 )
-RERO_MEF_CONCEPTS_GND_MATCHES = {"exactMatch": sys.maxsize, "closeMatch": 1}
-
 SEARCH_CLIENT_CONFIG = dict(
     timeout=60,
     max_retries=5,
 )
+
+#: OAI harvest retries. Every harvest task reads `RERO_OAI_RETRIES`, which was never defined, so sickle got
+#: `max_retries=0` and retried nothing. IdRef and GND both answer 429 once a harvest runs long enough.
+RERO_OAI_RETRIES = 5
+#: 429 too many requests, 503 unavailable, 423 locked. Sickle only retries 503 unless told otherwise.
+RERO_OAI_RETRY_STATUS_CODES = [423, 429, 503]
+#: Seconds to wait when the response states no `Retry-After`.
+RERO_OAI_RETRY_AFTER = 60
 
 MAX_RESULT_WINDOW = 100000000
 # REST API Configuration

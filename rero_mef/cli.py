@@ -248,8 +248,14 @@ def marc_to_json(entity, marc_file, json_file, error_file, verbose):
     pids = {}
     count_errors = 0
     for record, count in records:
-        data = transformation[entity](marc=record, logger=current_app.logger, verbose=True)
-        if json_data := data.json:
+        json_data = None
+        try:
+            json_data = transformation[entity](marc=record, logger=current_app.logger, verbose=True).json
+        except Exception:
+            # One unreadable record must not abort the whole file: it is counted and written to the error file
+            # below like any other record the transformation could not turn into JSON.
+            current_app.logger.exception(f"Error transformation MARC {entity}: record {count}")
+        if json_data:
             if msg := json_data.get("NO TRANSFORMATION"):
                 if verbose:
                     pid = json_data.get("pid", "???")

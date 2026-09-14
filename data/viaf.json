@@ -135,7 +135,7 @@
       "https://fr.wikipedia.org/wiki/Guillaume_Caoursin",
       "https://hu.wikipedia.org/wiki/Guillaume_Caoursin",
       "https://nl.wikipedia.org/wiki/Guillaume_Caoursin",
-      "https://ru.wikipedia.org/wiki/\u041a\u0430\u0443\u0440\u0441\u0438\u043d,_\u0413\u0438\u0439\u043e\u043c"
+      "https://ru.wikipedia.org/wiki/Каурсин,_Гийом"
     ],
     "bnf_pid": "12176197",
     "gnd_pid": "100068944",
@@ -178,14 +178,14 @@
     "md5": "53e18dddce3bcf60c0aa19d8e6f6a122",
     "pid": "100208187",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0633\u064a\u0633\u0627\u0631_\u067e\u064a\u0631_\u0631\u064a\u062a\u0634\u064a\u0644\u064a\u062a",
-      "https://de.wikipedia.org/wiki/C\u00e9sar-Pierre_Richelet",
-      "https://en.wikipedia.org/wiki/C\u00e9sar-Pierre_Richelet",
-      "https://es.wikipedia.org/wiki/C\u00e9sar-Pierre_Richelet",
-      "https://fr.wikipedia.org/wiki/C\u00e9sar-Pierre_Richelet",
+      "https://arz.wikipedia.org/wiki/سيسار_پير_ريتشيليت",
+      "https://de.wikipedia.org/wiki/César-Pierre_Richelet",
+      "https://en.wikipedia.org/wiki/César-Pierre_Richelet",
+      "https://es.wikipedia.org/wiki/César-Pierre_Richelet",
+      "https://fr.wikipedia.org/wiki/César-Pierre_Richelet",
       "https://la.wikipedia.org/wiki/Caesar_Petrus_Richelet",
-      "https://ru.wikipedia.org/wiki/\u0420\u0438\u0448\u043b\u0435,_\u0421\u0435\u0437\u0430\u0440-\u041f\u044c\u0435\u0440",
-      "https://zh.wikipedia.org/wiki/\u585e\u8428\u5c14-\u76ae\u57c3\u5c14\u00b7\u91cc\u4ec0\u83b1"
+      "https://ru.wikipedia.org/wiki/Ришле,_Сезар-Пьер",
+      "https://zh.wikipedia.org/wiki/塞萨尔-皮埃尔·里什莱"
     ],
     "bne_pid": "XX1087959",
     "bnf_pid": "12170996",
@@ -221,11 +221,11 @@
     "md5": "52b5c8bcc6c0f2a937c9a8916bfc2b35",
     "pid": "100232568",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u067e\u0648\u0644_\u0628\u0649._\u0648\u064a\u0633\u0632",
+      "https://arz.wikipedia.org/wiki/پول_بى._ويسز",
       "https://de.wikipedia.org/wiki/Paul_B._Weisz",
       "https://en.wikipedia.org/wiki/Paul_B._Weisz",
       "https://es.wikipedia.org/wiki/Paul_B._Weisz",
-      "https://fa.wikipedia.org/wiki/\u067e\u0644_\u0628\u06cc._\u0648\u06cc\u0632"
+      "https://fa.wikipedia.org/wiki/پل_بی._ویز"
     ],
     "bne_pid": "XX1057621",
     "iccu_pid": "RAVV040528",
@@ -239,7 +239,7 @@
     "md5": "9885244aec03ade27f72d75e20fa5b13",
     "pid": "100232612",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u0628\u0648\u0644_\u0628\u064a._\u062a\u0648\u0645\u0633\u0648\u0646_(\u0631\u0648\u0627\u0626\u064a)",
+      "https://ar.wikipedia.org/wiki/بول_بي._تومسون_(روائي)",
       "https://en.wikipedia.org/wiki/Paul_B._Thompson_(novelist)"
     ],
     "bne_pid": "XX1058302",
@@ -330,7 +330,7 @@
     "md5": "56ca3ccb263d9c78c7c94ff2156ce14b",
     "pid": "100319661",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u062c\u0648\u0646_\u063a\u0648\u0633\u0644\u064a\u0646\u062c",
+      "https://ar.wikipedia.org/wiki/جون_غوسلينج",
       "https://en.wikipedia.org/wiki/John_Gosling_(Psychic_TV_musician)",
       "https://nn.wikipedia.org/wiki/John_Gosling"
     ],
@@ -373,7 +373,7 @@
     "md5": "44fcd666dcc883afa79486c06790502b",
     "pid": "100380122",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u062c\u0648\u0631\u062c_\u0628\u0631\u0627\u0648\u0646_(\u0644\u0627\u0639\u0628_\u0643\u0631\u0629_\u0642\u062f\u0645_\u0623\u0645\u0631\u064a\u0643\u064a\u0629)",
+      "https://ar.wikipedia.org/wiki/جورج_براون_(لاعب_كرة_قدم_أمريكية)",
       "https://en.wikipedia.org/wiki/George_Brown_(American_football)"
     ],
     "isni_pid": "0000000110793516",
@@ -423,8 +423,8 @@
     "pid": "100433538",
     "wiki": [
       "https://en.wikipedia.org/wiki/Tetsuo_Owada",
-      "https://fa.wikipedia.org/wiki/\u0627\u0648\u0648\u0627\u062f\u0627_\u062a\u062a\u0633\u0648\u0626\u0648",
-      "https://ja.wikipedia.org/wiki/\u5c0f\u548c\u7530\u54f2\u7537"
+      "https://fa.wikipedia.org/wiki/اووادا_تتسوئو",
+      "https://ja.wikipedia.org/wiki/小和田哲男"
     ],
     "bnf_pid": "16123307",
     "gnd_pid": "139128557",
@@ -538,7 +538,7 @@
     "pid": "10064822",
     "wiki": [
       "https://en.wikipedia.org/wiki/Sidney_Redner",
-      "https://fa.wikipedia.org/wiki/\u0633\u06cc\u062f\u0646\u06cc_\u0631\u062f\u0646\u0631",
+      "https://fa.wikipedia.org/wiki/سیدنی_ردنر",
       "https://ht.wikipedia.org/wiki/Sidney_Redner"
     ],
     "bnf_pid": "14420880",
@@ -643,7 +643,7 @@
     "md5": "7fa4c4e65805a6cf7e63494f0510c08c",
     "pid": "10084875",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u0647\u0644\u0627\u0644_\u0646\u0627\u062c\u064a"
+      "https://ar.wikipedia.org/wiki/هلال_ناجي"
     ],
     "bnf_pid": "14528041",
     "gnd_pid": "103624163",
@@ -716,7 +716,7 @@
     "md5": "308bc202bba8043b20eb3cf055269256",
     "pid": "100970019",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u0641\u0631\u064a\u062f\u0631\u064a\u0643_\u0643\u0627\u0628\u0644\u0627\u0646",
+      "https://ar.wikipedia.org/wiki/فريدريك_كابلان",
       "https://en.wikipedia.org/wiki/Frederick_Kaplan"
     ],
     "bnf_pid": "12363022",
@@ -988,8 +988,8 @@
     "md5": "b3c8ec8b6c83c5f98e232cfcf9204b7f",
     "pid": "10120900",
     "wiki": [
-      "https://en.wikipedia.org/wiki/Jean-\u00c9mile_Buland",
-      "https://fr.wikipedia.org/wiki/Jean-\u00c9mile_Buland"
+      "https://en.wikipedia.org/wiki/Jean-Émile_Buland",
+      "https://fr.wikipedia.org/wiki/Jean-Émile_Buland"
     ],
     "bnf_pid": "14970768",
     "isni_pid": "0000000001532843",
@@ -1096,8 +1096,8 @@
     "md5": "92023666d1354e580fb05e37938df9d0",
     "pid": "101346417",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u0623\u0631\u062a\u0648\u0631_\u063a\u0648\u062a\u0632",
-      "https://arz.wikipedia.org/wiki/\u0627\u0631\u062a\u0648\u0631_\u062c\u0648\u062a\u0632",
+      "https://ar.wikipedia.org/wiki/أرتور_غوتز",
+      "https://arz.wikipedia.org/wiki/ارتور_جوتز",
       "https://de.wikipedia.org/wiki/Arturo_Goetz",
       "https://en.wikipedia.org/wiki/Arturo_Goetz",
       "https://es.wikipedia.org/wiki/Arturo_Goetz",
@@ -1346,8 +1346,8 @@
     "md5": "3c9f50d6ea37401b266bd89bdfb0c125",
     "pid": "10163228",
     "wiki": [
-      "https://de.wikipedia.org/wiki/Jean-Fran\u00e7ois_Haas",
-      "https://fr.wikipedia.org/wiki/Jean-Fran\u00e7ois_Haas"
+      "https://de.wikipedia.org/wiki/Jean-François_Haas",
+      "https://fr.wikipedia.org/wiki/Jean-François_Haas"
     ],
     "sz_pid": "14275210X",
     "bnf_pid": "15565271",
@@ -1432,7 +1432,7 @@
     "md5": "fcac4f6f04350017aa7e378e7d30e45d",
     "pid": "101670840",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u062c\u0627\u0628\u0631\u064a\u0644_\u0643\u0632\u064a\u062a\u0634\u0648\u064a\u0643\u0632",
+      "https://arz.wikipedia.org/wiki/جابريل_كزيتشويكز",
       "https://en.wikipedia.org/wiki/Gabriel_Czechowicz",
       "https://pl.wikipedia.org/wiki/Gabriel_Czechowicz"
     ],
@@ -1448,8 +1448,8 @@
     "md5": "ea630028a36e20cd5c18132e802c0146",
     "pid": "101676637",
     "wiki": [
-      "https://bg.wikipedia.org/wiki/\u0410\u043d\u0434\u0436\u0435\u0439_\u041c\u0438\u0445\u0430\u043b\u0435\u043a",
-      "https://pl.wikipedia.org/wiki/Andrzej_Micha\u0142ek"
+      "https://bg.wikipedia.org/wiki/Анджей_Михалек",
+      "https://pl.wikipedia.org/wiki/Andrzej_Michałek"
     ],
     "isni_pid": "0000000117323306",
     "rero_pid": "A023668772",
@@ -1477,11 +1477,11 @@
     "md5": "2b2eb99f97f66bdae24089e8f18ec685",
     "pid": "101719477",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u062c\u0648\u0632\u064a\u0641_\u0628\u064a\u0644\u0627\u0641\u0633\u0643\u064a",
-      "https://en.wikipedia.org/wiki/J\u00f3zef_Bielawski",
-      "https://fr.wikipedia.org/wiki/J\u00f3zef_Bielawski",
-      "https://pl.wikipedia.org/wiki/J\u00f3zef_Bielawski_(arabista)",
-      "https://ru.wikipedia.org/wiki/\u0411\u0435\u043b\u044f\u0432\u0441\u043a\u0438\u0439,_\u042e\u0437\u0435\u0444_(\u0430\u0440\u0430\u0431\u0438\u0441\u0442)"
+      "https://ar.wikipedia.org/wiki/جوزيف_بيلافسكي",
+      "https://en.wikipedia.org/wiki/Józef_Bielawski",
+      "https://fr.wikipedia.org/wiki/Józef_Bielawski",
+      "https://pl.wikipedia.org/wiki/Józef_Bielawski_(arabista)",
+      "https://ru.wikipedia.org/wiki/Белявский,_Юзеф_(арабист)"
     ],
     "bnf_pid": "12881250",
     "gnd_pid": "1063814340",
@@ -1496,7 +1496,7 @@
     "md5": "1ddd50bfc0197155ff48bd63071cde4a",
     "pid": "101737341",
     "wiki": [
-      "https://be.wikipedia.org/wiki/\u041c\u0430\u0440\u044b\u044f\u043d_\u041c\u0430\u0440\u0430\u043b\u0451\u045e\u0441\u043a\u0456",
+      "https://be.wikipedia.org/wiki/Марыян_Маралёўскі",
       "https://pl.wikipedia.org/wiki/Marian_Morelowski"
     ],
     "bnf_pid": "11156905",
@@ -1541,7 +1541,7 @@
     "md5": "e19e6631925b653410db1b08369d6232",
     "pid": "10187835",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0644\u0648\u0631\u0627\u0646\u0633_\u0647\u0627\u0644\u064a\u062c\u0631",
+      "https://arz.wikipedia.org/wiki/لورانس_هاليجر",
       "https://en.wikipedia.org/wiki/Laurents_Hallager",
       "https://fr.wikipedia.org/wiki/Laurent_Hallager",
       "https://nn.wikipedia.org/wiki/Laurents_Hallager",
@@ -1557,7 +1557,7 @@
     "md5": "8dbeab4c7d349f1457301eb661b74beb",
     "pid": "101880225",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0627\u0646\u062f\u0631\u064a\u0647_\u0646\u0648\u0641\u064a\u0643\u0649",
+      "https://arz.wikipedia.org/wiki/اندريه_نوفيكى",
       "https://en.wikipedia.org/wiki/Andrzej_Nowicki_(writer)",
       "https://pl.wikipedia.org/wiki/Andrzej_Nowicki_(pisarz)"
     ],
@@ -1621,7 +1621,7 @@
     "md5": "a5b849156c3120617322e1e4741e05ac",
     "pid": "102047876",
     "wiki": [
-      "https://pl.wikipedia.org/wiki/Jerzy_Krupp\u00e9"
+      "https://pl.wikipedia.org/wiki/Jerzy_Kruppé"
     ],
     "bnf_pid": "12953134",
     "gnd_pid": "1153744600",
@@ -1754,7 +1754,7 @@
     "md5": "2fc30b0be228fe07feee76b3e2b735d5",
     "pid": "102218173",
     "wiki": [
-      "https://ru.wikipedia.org/wiki/\u0417\u0430\u0433\u043e\u0440\u0441\u043a\u0438\u0439,_\u0410\u043f\u043e\u043b\u0438\u043d\u0430\u0440\u0438\u0439"
+      "https://ru.wikipedia.org/wiki/Загорский,_Аполинарий"
     ],
     "isni_pid": "0000000071723661",
     "rero_pid": "A006389498",
@@ -1786,7 +1786,7 @@
     "md5": "2f18e5651267da847329fb9ecd9d0cea",
     "pid": "102295222",
     "wiki": [
-      "https://de.wikipedia.org/wiki/Josef_Sch\u00fc\u00dflburner"
+      "https://de.wikipedia.org/wiki/Josef_Schüßlburner"
     ],
     "gnd_pid": "12864852X",
     "isni_pid": "0000000078724069",
@@ -1855,7 +1855,7 @@
     "wiki": [
       "https://fr.wikipedia.org/wiki/Henri_Lavoix",
       "https://it.wikipedia.org/wiki/Henri_Michel_Lavoix",
-      "https://ru.wikipedia.org/wiki/\u041b\u0430\u0432\u0443\u0430,_\u0410\u043d\u0440\u0438_\u041c\u0438\u0448\u0435\u043b\u044c"
+      "https://ru.wikipedia.org/wiki/Лавуа,_Анри_Мишель"
     ],
     "bnf_pid": "12328287",
     "gnd_pid": "1055348328",
@@ -2043,12 +2043,12 @@
     "md5": "6f1a280a47d7e6a4440d9fb2253c072f",
     "pid": "102694940",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0686\u0648\u0644\u064a\u0648\u0633_\u067e\u0648\u067e",
-      "https://de.wikipedia.org/wiki/Julius_Popp_(K\u00fcnstler)",
+      "https://arz.wikipedia.org/wiki/چوليوس_پوپ",
+      "https://de.wikipedia.org/wiki/Julius_Popp_(Künstler)",
       "https://en.wikipedia.org/wiki/Julius_Popp",
       "https://mg.wikipedia.org/wiki/Julius_Popp",
-      "https://ru.wikipedia.org/wiki/\u041f\u043e\u043f\u043f,_\u042e\u043b\u0438\u0443\u0441",
-      "https://zh.wikipedia.org/wiki/\u6731\u5229\u8449\u65af\u00b7\u6ce2\u666e"
+      "https://ru.wikipedia.org/wiki/Попп,_Юлиус",
+      "https://zh.wikipedia.org/wiki/朱利葉斯·波普"
     ],
     "gnd_pid": "139856072",
     "isni_pid": "0000000081712624",
@@ -2529,8 +2529,8 @@
     "md5": "7d00d6825d2b3574159381e702cd0e6a",
     "pid": "103618808",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u062f\u064a\u0641\u064a\u062f_\u0647\u0648\u0644\u0645",
-      "https://arz.wikipedia.org/wiki/\u062f\u064a\u0641\u064a\u062f_\u0647\u0648\u0644\u0645",
+      "https://ar.wikipedia.org/wiki/ديفيد_هولم",
+      "https://arz.wikipedia.org/wiki/ديفيد_هولم",
       "https://en.wikipedia.org/wiki/David_Hulme_(geographer)"
     ],
     "bnf_pid": "12299205",
@@ -2817,7 +2817,7 @@
     "md5": "bd4c1d1bfc523f2d039e4b2fdb326035",
     "pid": "104151836548620401031",
     "wiki": [
-      "https://de.wikipedia.org/wiki/Heribert_Schw\u00f6rbel"
+      "https://de.wikipedia.org/wiki/Heribert_Schwörbel"
     ],
     "wiki_pid": "Q1609926",
     "idref_pid": "22344250X"
@@ -2916,7 +2916,7 @@
     "md5": "ed977fc2d471858c2a2e72fc8b4f9609",
     "pid": "1044150264367405860003",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0631\u064a\u062a\u0634\u0627\u0631\u062f_\u0628\u0648\u062a\u0631",
+      "https://arz.wikipedia.org/wiki/ريتشارد_بوتر",
       "https://en.wikipedia.org/wiki/Richard_Potter_(magician)"
     ],
     "gnd_pid": "1211775216",
@@ -3013,9 +3013,9 @@
     "md5": "0c9f255d44b9c59b67a853b73544b68c",
     "pid": "10466509",
     "wiki": [
-      "https://eo.wikipedia.org/wiki/\u00c1gnes_B\u00e1lint",
-      "https://fr.wikipedia.org/wiki/\u00c1gnes_B\u00e1lint",
-      "https://hu.wikipedia.org/wiki/B\u00e1lint_\u00c1gnes"
+      "https://eo.wikipedia.org/wiki/Ágnes_Bálint",
+      "https://fr.wikipedia.org/wiki/Ágnes_Bálint",
+      "https://hu.wikipedia.org/wiki/Bálint_Ágnes"
     ],
     "bnf_pid": "17031267",
     "gnd_pid": "111263638",
@@ -3072,7 +3072,7 @@
     "md5": "a8ef7d8eda7834e5edb5163a66872f22",
     "pid": "104963217",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0631\u0648\u0628\u0646_\u0647\u064a\u062c\u0627\u0645",
+      "https://arz.wikipedia.org/wiki/روبن_هيجام",
       "https://de.wikipedia.org/wiki/Robin_Higham",
       "https://en.wikipedia.org/wiki/Robin_D._S._Higham"
     ],
@@ -3113,9 +3113,9 @@
     "md5": "4d83109613a61283df9961cee6fe4400",
     "pid": "1051145424721186830523",
     "wiki": [
-      "https://bg.wikipedia.org/wiki/\u0421\u043e\u043b\u0443\u043d\u0441\u043a\u0438_\u043c\u0443\u0437\u0435\u0439_\u043d\u0430_\u0434\u0438\u0437\u0430\u0439\u043d\u0430",
+      "https://bg.wikipedia.org/wiki/Солунски_музей_на_дизайна",
       "https://en.wikipedia.org/wiki/Design_Museum_of_Thessaloniki",
-      "https://uk.wikipedia.org/wiki/\u0421\u0430\u043b\u043e\u043d\u0456\u043a\u0441\u044c\u043a\u0438\u0439_\u043c\u0443\u0437\u0435\u0439_\u0434\u0438\u0437\u0430\u0439\u043d\u0443"
+      "https://uk.wikipedia.org/wiki/Салонікський_музей_дизайну"
     ],
     "gnd_pid": "958779147",
     "isni_pid": "0000000121603351",
@@ -3366,7 +3366,7 @@
     "md5": "ee3eafe8dd6021cc85727c926024944e",
     "pid": "106003300",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u0645\u0627\u0643\u0633\u064a\u0645\u064a\u0644\u064a\u0627\u0646_\u0641\u064a\u0634\u0631",
+      "https://ar.wikipedia.org/wiki/ماكسيميليان_فيشر",
       "https://en.wikipedia.org/wiki/Maximilian_Fischer",
       "https://nl.wikipedia.org/wiki/Maximilian_Fischer",
       "https://pt.wikipedia.org/wiki/Maximilian_Fischer",
@@ -3414,7 +3414,7 @@
     "md5": "bf659cd094aa87daf4963a6259f4f9d0",
     "pid": "106045683",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0643\u0627\u0644\u0686\u0648_\u0631\u0627\u064a\u062f",
+      "https://arz.wikipedia.org/wiki/كالچو_رايد",
       "https://da.wikipedia.org/wiki/Kaljo_Raid",
       "https://de.wikipedia.org/wiki/Kaljo_Raid",
       "https://en.wikipedia.org/wiki/Kaljo_Raid",
@@ -3634,7 +3634,7 @@
     "md5": "aef1a81742e2b44e934a9f283a6e8969",
     "pid": "1063157100614072740000",
     "wiki": [
-      "https://fr.wikipedia.org/wiki/Jean-Fran\u00e7ois_de_La_Roque_de_Mons"
+      "https://fr.wikipedia.org/wiki/Jean-François_de_La_Roque_de_Mons"
     ],
     "bnf_pid": "10708840",
     "wiki_pid": "Q21334310",
@@ -3669,7 +3669,7 @@
     "md5": "8ee8d516bffedf2476e96bb39a0dd19b",
     "pid": "106391319",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0648\u064a\u0644\u064a\u0627\u0645_\u0628\u0631\u064a\u062f\u062c\u0632_\u0622\u062f\u0627\u0645\u0632",
+      "https://arz.wikipedia.org/wiki/ويليام_بريدجز_آدامز",
       "https://de.wikipedia.org/wiki/William_Bridges_Adams",
       "https://en.wikipedia.org/wiki/William_Bridges_Adams",
       "https://es.wikipedia.org/wiki/William_Bridges_Adams",
@@ -3694,8 +3694,8 @@
     "md5": "a6a0dda38f3c165d0f43a4d88934fffc",
     "pid": "10643494",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u0647\u0631\u0645\u0627\u0646_\u0644\u064a\u0641\u064a",
-      "https://arz.wikipedia.org/wiki/\u0647\u0631\u0645\u0627\u0646_\u0644\u064a\u0641\u0649",
+      "https://ar.wikipedia.org/wiki/هرمان_ليفي",
+      "https://arz.wikipedia.org/wiki/هرمان_ليفى",
       "https://ca.wikipedia.org/wiki/Hermann_Levi",
       "https://cs.wikipedia.org/wiki/Hermann_Levi",
       "https://de.wikipedia.org/wiki/Hermann_Levi",
@@ -3703,16 +3703,16 @@
       "https://eo.wikipedia.org/wiki/Hermann_Levi",
       "https://es.wikipedia.org/wiki/Hermann_Levi",
       "https://fr.wikipedia.org/wiki/Hermann_Levi",
-      "https://he.wikipedia.org/wiki/\u05d4\u05e8\u05de\u05df_\u05dc\u05d5\u05d9",
+      "https://he.wikipedia.org/wiki/הרמן_לוי",
       "https://it.wikipedia.org/wiki/Hermann_Levi",
-      "https://ja.wikipedia.org/wiki/\u30d8\u30eb\u30de\u30f3\u30fb\u30ec\u30fc\u30f4\u30a3",
+      "https://ja.wikipedia.org/wiki/ヘルマン・レーヴィ",
       "https://no.wikipedia.org/wiki/Hermann_Levi",
       "https://pl.wikipedia.org/wiki/Hermann_Levi",
       "https://pt.wikipedia.org/wiki/Hermann_Levi",
-      "https://ru.wikipedia.org/wiki/\u041b\u0435\u0432\u0438,_\u0413\u0435\u0440\u043c\u0430\u043d",
+      "https://ru.wikipedia.org/wiki/Леви,_Герман",
       "https://simple.wikipedia.org/wiki/Hermann_Levi",
       "https://sv.wikipedia.org/wiki/Hermann_Levi",
-      "https://zh.wikipedia.org/wiki/\u8d6b\u723e\u66fc\u00b7\u5217\u7dad"
+      "https://zh.wikipedia.org/wiki/赫爾曼·列維"
     ],
     "sz_pid": "118865900",
     "bnf_pid": "12479320",
@@ -3865,8 +3865,8 @@
     "pid": "106842336",
     "wiki": [
       "https://af.wikipedia.org/wiki/Sheila_Kuehl",
-      "https://arz.wikipedia.org/wiki/\u0634\u064a\u0644\u0627_\u0643\u0648\u064a\u0647\u0644",
-      "https://azb.wikipedia.org/wiki/\u0634\u0626\u06cc\u0644\u0627_\u06a9\u0648\u0647\u0644",
+      "https://arz.wikipedia.org/wiki/شيلا_كويهل",
+      "https://azb.wikipedia.org/wiki/شئیلا_کوهل",
       "https://de.wikipedia.org/wiki/Sheila_Kuehl",
       "https://en.wikipedia.org/wiki/Sheila_Kuehl",
       "https://it.wikipedia.org/wiki/Sheila_James_Kuehl",
@@ -3894,7 +3894,7 @@
       "https://en.wikipedia.org/wiki/Charles_Lamberton",
       "https://fr.wikipedia.org/wiki/Charles_Lamberton",
       "https://pt.wikipedia.org/wiki/Charles_Lamberton",
-      "https://ru.wikipedia.org/wiki/\u041b\u0430\u043c\u0431\u0435\u0440\u0442\u043e\u043d,_\u0428\u0430\u0440\u043b\u044c",
+      "https://ru.wikipedia.org/wiki/Ламбертон,_Шарль",
       "https://species.wikipedia.org/wiki/Charles_Lamberton"
     ],
     "gnd_pid": "1054143951",
@@ -4035,7 +4035,7 @@
     "pid": "107125861",
     "wiki": [
       "https://en.wikipedia.org/wiki/Giuseppe_Stampone",
-      "https://ml.wikipedia.org/wiki/\u0d1c\u0d3f\u0d2f\u0d41\u0d38\u0d2a\u0d4d\u0d2a\u0d46_\u0d38\u0d4d\u0d31\u0d4d\u0d31\u0d3e\u0d02\u0d2a\u0d4a\u0d23\u0d46"
+      "https://ml.wikipedia.org/wiki/ജിയുസപ്പെ_സ്റ്റാംപൊണെ"
     ],
     "gnd_pid": "140424873",
     "isni_pid": "0000000107876775",
@@ -4304,18 +4304,18 @@
     "md5": "b373bd5a23b663f06664cee067f5bf8e",
     "pid": "107403358",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u0623\u064a\u0648\u0645\u064a_\u0625\u064a\u062a\u0648",
-      "https://arz.wikipedia.org/wiki/\u0627\u064a\u0648\u0645\u0649_\u0627\u064a\u062a\u0648",
+      "https://ar.wikipedia.org/wiki/أيومي_إيتو",
+      "https://arz.wikipedia.org/wiki/ايومى_ايتو",
       "https://en.wikipedia.org/wiki/Ayumi_Ito",
-      "https://fa.wikipedia.org/wiki/\u0622\u06cc\u0648\u0645\u06cc_\u0627\u06cc\u062a\u0648",
-      "https://fr.wikipedia.org/wiki/Ayumi_It\u014d",
+      "https://fa.wikipedia.org/wiki/آیومی_ایتو",
+      "https://fr.wikipedia.org/wiki/Ayumi_Itō",
       "https://id.wikipedia.org/wiki/Ayumi_Ito",
-      "https://it.wikipedia.org/wiki/Ayumi_It\u014d",
-      "https://ja.wikipedia.org/wiki/\u4f0a\u85e4\u6b69",
-      "https://ko.wikipedia.org/wiki/\uc774\ud1a0_\uc544\uc720\ubbf8",
-      "https://th.wikipedia.org/wiki/\u0e2d\u0e30\u0e22\u0e38\u0e21\u0e34_\u0e2d\u0e34\u0e42\u0e15",
-      "https://zh.wikipedia.org/wiki/\u4f0a\u85e4\u6b65",
-      "https://zh_yue.wikipedia.org/wiki/\u4f0a\u85e4\u6b65"
+      "https://it.wikipedia.org/wiki/Ayumi_Itō",
+      "https://ja.wikipedia.org/wiki/伊藤歩",
+      "https://ko.wikipedia.org/wiki/이토_아유미",
+      "https://th.wikipedia.org/wiki/อะยุมิ_อิโต",
+      "https://zh.wikipedia.org/wiki/伊藤步",
+      "https://zh_yue.wikipedia.org/wiki/伊藤步"
     ],
     "bnf_pid": "14189333",
     "gnd_pid": "124566025X",
@@ -4457,7 +4457,7 @@
     "md5": "7729233cb71a89ad79688782e366fce3",
     "pid": "10767442",
     "wiki": [
-      "https://cs.wikipedia.org/wiki/Petr_R\u00e1kos"
+      "https://cs.wikipedia.org/wiki/Petr_Rákos"
     ],
     "gnd_pid": "123954940",
     "isni_pid": "0000000055405700",
@@ -4521,9 +4521,9 @@
     "md5": "6b9572282c44ba3d13e8ff7f52978dfa",
     "pid": "10775010",
     "wiki": [
-      "https://es.wikipedia.org/wiki/Fernando_Echevarr\u00eda",
-      "https://gl.wikipedia.org/wiki/Fernando_Echevarr\u00eda",
-      "https://pt.wikipedia.org/wiki/Fernando_Echevarr\u00eda"
+      "https://es.wikipedia.org/wiki/Fernando_Echevarría",
+      "https://gl.wikipedia.org/wiki/Fernando_Echevarría",
+      "https://pt.wikipedia.org/wiki/Fernando_Echevarría"
     ],
     "bne_pid": "XX1632582",
     "bnf_pid": "14889843",
@@ -4556,14 +4556,14 @@
     "md5": "ff9542790cf90cf04e2b23484e823b6f",
     "pid": "107792483",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u0645\u0627_\u0633\u0648",
-      "https://arz.wikipedia.org/wiki/\u0645\u0627_\u0633\u0648",
+      "https://ar.wikipedia.org/wiki/ما_سو",
+      "https://arz.wikipedia.org/wiki/ما_سو",
       "https://en.wikipedia.org/wiki/Ma_Su_(actress)",
-      "https://ko.wikipedia.org/wiki/\ub9c8\uc464",
-      "https://th.wikipedia.org/wiki/\u0e2b\u0e21\u0e48\u0e32_\u0e0b\u0e39",
-      "https://vi.wikipedia.org/wiki/M\u00e3_T\u00f4",
-      "https://zh.wikipedia.org/wiki/\u99ac\u8607",
-      "https://zh_yue.wikipedia.org/wiki/\u99ac\u8607_(\u6f14\u54e1)"
+      "https://ko.wikipedia.org/wiki/마쑤",
+      "https://th.wikipedia.org/wiki/หม่า_ซู",
+      "https://vi.wikipedia.org/wiki/Mã_Tô",
+      "https://zh.wikipedia.org/wiki/馬蘇",
+      "https://zh_yue.wikipedia.org/wiki/馬蘇_(演員)"
     ],
     "gnd_pid": "140808337",
     "isni_pid": "0000000355677070",
@@ -4579,8 +4579,8 @@
     "md5": "b2eeea23cee46deda4e3442dbcd1227b",
     "pid": "107816161",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u0623\u0644\u064a\u0643\u0633\u064a\u0627_\u0633\u0646\u0643\u0644\u064a\u0631",
-      "https://arz.wikipedia.org/wiki/\u0627\u0644\u064a\u0643\u0633\u064a\u0627_\u0633\u0646\u0643\u0644\u064a\u0631",
+      "https://ar.wikipedia.org/wiki/أليكسيا_سنكلير",
+      "https://arz.wikipedia.org/wiki/اليكسيا_سنكلير",
       "https://en.wikipedia.org/wiki/Alexia_Sinclair"
     ],
     "gnd_pid": "140835822",
@@ -4630,8 +4630,8 @@
     "md5": "7010b223f30fd59d81e79e8f25272871",
     "pid": "107864203",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u062a\u0648\u0645_\u0633\u062a\u064a\u0641\u0627\u0646",
-      "https://arz.wikipedia.org/wiki/\u062a\u0648\u0645_\u0633\u062a\u064a\u0641\u0627\u0646",
+      "https://ar.wikipedia.org/wiki/توم_ستيفان",
+      "https://arz.wikipedia.org/wiki/توم_ستيفان",
       "https://en.wikipedia.org/wiki/Tom_Stephan"
     ],
     "gnd_pid": "140891420",
@@ -4846,8 +4846,8 @@
     "md5": "a2c439b6ae6c7f9d46cfef5fe0eff2f3",
     "pid": "108148812855545212571",
     "wiki": [
-      "https://de.wikipedia.org/wiki/R\u00e9mi_Grellety",
-      "https://pt.wikipedia.org/wiki/R\u00e9mi_Grellety"
+      "https://de.wikipedia.org/wiki/Rémi_Grellety",
+      "https://pt.wikipedia.org/wiki/Rémi_Grellety"
     ],
     "gnd_pid": "1120533260",
     "isni_pid": "0000000498079051",
@@ -4902,7 +4902,7 @@
     "md5": "b2b9ce293f7031433a4388c10dba6788",
     "pid": "108229414",
     "wiki": [
-      "https://ja.wikipedia.org/wiki/\u6a4b\u672c\u7fa9\u5f66"
+      "https://ja.wikipedia.org/wiki/橋本義彦"
     ],
     "gnd_pid": "173120016",
     "isni_pid": "0000000084598724",
@@ -4913,7 +4913,7 @@
     "md5": "17d3c6e28e4c5f255e79982385aa9d71",
     "pid": "108244066",
     "wiki": [
-      "https://ja.wikipedia.org/wiki/\u5927\u5cf6\u6e05\u6b21"
+      "https://ja.wikipedia.org/wiki/大島清次"
     ],
     "isni_pid": "0000000084599460",
     "wiki_pid": "Q55177959",
@@ -4924,16 +4924,16 @@
     "md5": "b466401a3ad38638aefc8543b55a738d",
     "pid": "108259312",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u0647\u0627\u0631\u064a\u0633\u0648\u0646_\u0633\u0627\u0644\u0632\u0628\u0648\u0631\u064a",
-      "https://arz.wikipedia.org/wiki/\u0647\u0627\u0631\u064a\u0633\u0648\u0646_\u0633\u0627\u0644\u0632\u0628\u0648\u0631\u0649",
+      "https://ar.wikipedia.org/wiki/هاريسون_سالزبوري",
+      "https://arz.wikipedia.org/wiki/هاريسون_سالزبورى",
       "https://de.wikipedia.org/wiki/Harrison_E._Salisbury",
       "https://en.wikipedia.org/wiki/Harrison_Salisbury",
       "https://et.wikipedia.org/wiki/Harrison_Salisbury",
       "https://fr.wikipedia.org/wiki/Harrison_Salisbury",
       "https://no.wikipedia.org/wiki/Harrison_Salisbury",
-      "https://ru.wikipedia.org/wiki/\u0421\u043e\u043b\u0441\u0431\u0435\u0440\u0438,_\u0413\u0430\u0440\u0440\u0438\u0441\u043e\u043d",
+      "https://ru.wikipedia.org/wiki/Солсбери,_Гаррисон",
       "https://sv.wikipedia.org/wiki/Harrison_Salisbury",
-      "https://zh.wikipedia.org/wiki/\u54c8\u91cc\u68ee\u00b7\u7d22\u5c14\u5179\u4f2f\u91cc"
+      "https://zh.wikipedia.org/wiki/哈里森·索尔兹伯里"
     ],
     "bne_pid": "XX873407",
     "bnf_pid": "12375997",
@@ -4949,7 +4949,7 @@
     "md5": "a5f4c056dfd1896eff21b2f3c10cb65c",
     "pid": "108286493",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u062c\u0648\u0631\u062f\u0648\u0646_\u0643\u0648\u0644\u064a\u0646",
+      "https://arz.wikipedia.org/wiki/جوردون_كولين",
       "https://en.wikipedia.org/wiki/Gordon_Cullen",
       "https://it.wikipedia.org/wiki/Gordon_Cullen",
       "https://sv.wikipedia.org/wiki/Gordon_Cullen"
@@ -4988,16 +4988,16 @@
     "md5": "021775dc1aa2241caf0a8bcdee7a35af",
     "pid": "108342120",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u0623\u0631\u0646\u0648_\u062c\u0627\u064a_\u0645\u0627\u064a\u0631",
-      "https://arz.wikipedia.org/wiki/\u0627\u0631\u0646\u0648_\u062c\u0627\u0649_\u0645\u0627\u064a\u0631",
-      "https://azb.wikipedia.org/wiki/\u0622\u0631\u0646\u0648_\u062c\u06cc_\u0645\u0627\u06cc\u0631",
+      "https://ar.wikipedia.org/wiki/أرنو_جاي_ماير",
+      "https://arz.wikipedia.org/wiki/ارنو_جاى_ماير",
+      "https://azb.wikipedia.org/wiki/آرنو_جی_مایر",
       "https://de.wikipedia.org/wiki/Arno_J._Mayer",
       "https://en.wikipedia.org/wiki/Arno_J._Mayer",
       "https://es.wikipedia.org/wiki/Arno_Mayer",
       "https://fr.wikipedia.org/wiki/Arno_Mayer",
       "https://id.wikipedia.org/wiki/Arno_Mayer",
       "https://it.wikipedia.org/wiki/Arno_J._Mayer",
-      "https://ja.wikipedia.org/wiki/\u30a2\u30fc\u30ce\u30fb\u30de\u30a4\u30e4\u30fc",
+      "https://ja.wikipedia.org/wiki/アーノ・マイヤー",
       "https://lb.wikipedia.org/wiki/Arno_J._Mayer",
       "https://pt.wikipedia.org/wiki/Arno_Mayer"
     ],
@@ -5036,7 +5036,7 @@
     "md5": "55f9c71b918c2fe15a03dfc72c15b317",
     "pid": "108398363",
     "wiki": [
-      "https://ja.wikipedia.org/wiki/\u4e95\u5800\u5229\u5b8f"
+      "https://ja.wikipedia.org/wiki/井堀利宏"
     ],
     "bnf_pid": "12418093",
     "gnd_pid": "130124648",
@@ -5051,7 +5051,7 @@
     "md5": "856320c61a09bc2be72bcc6ecda5d08c",
     "pid": "108414698",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u067e\u064a\u0631_\u067e\u064a\u0633\u062a\u064a\u0627\u0648",
+      "https://arz.wikipedia.org/wiki/پير_پيستياو",
       "https://en.wikipedia.org/wiki/Pierre_Pestieau",
       "https://fr.wikipedia.org/wiki/Pierre_Pestieau"
     ],
@@ -5119,8 +5119,8 @@
     "md5": "655ba287276f878b2ce9c8b15cca0930",
     "pid": "108566267",
     "wiki": [
-      "https://ja.wikipedia.org/wiki/\u6238\u5ddd\u82b3\u90ce",
-      "https://zh.wikipedia.org/wiki/\u6237\u5ddd\u82b3\u90ce"
+      "https://ja.wikipedia.org/wiki/戸川芳郎",
+      "https://zh.wikipedia.org/wiki/户川芳郎"
     ],
     "gnd_pid": "178767875",
     "isni_pid": "0000000082912150",
@@ -5159,8 +5159,8 @@
     "md5": "8f67a976b34fd7effa4c589689cabbaf",
     "pid": "108685760",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u0642\u0627\u064a_\u0633\u062a\u064a\u0631\u0646",
-      "https://arz.wikipedia.org/wiki/\u062c\u0627\u0649_\u0633\u062a\u064a\u0631\u0646",
+      "https://ar.wikipedia.org/wiki/قاي_ستيرن",
+      "https://arz.wikipedia.org/wiki/جاى_ستيرن",
       "https://de.wikipedia.org/wiki/Guy_Stern",
       "https://en.wikipedia.org/wiki/Guy_Stern",
       "https://simple.wikipedia.org/wiki/Guy_Stern"
@@ -5192,10 +5192,10 @@
     "md5": "45a3ae6fc4a417e6da1a4ef59e058d97",
     "pid": "108720355",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0645\u0627\u0631\u0643_\u0627\u0631\u0648\u0646\u0648\u0641",
+      "https://arz.wikipedia.org/wiki/مارك_ارونوف",
       "https://de.wikipedia.org/wiki/Mark_Aronoff",
       "https://en.wikipedia.org/wiki/Mark_Aronoff",
-      "https://fa.wikipedia.org/wiki/\u0645\u0627\u0631\u06a9_\u0622\u0631\u0646\u0648\u0641",
+      "https://fa.wikipedia.org/wiki/مارک_آرنوف",
       "https://pl.wikipedia.org/wiki/Mark_Aronoff",
       "https://pt.wikipedia.org/wiki/Mark_Aronoff",
       "https://sq.wikipedia.org/wiki/Mark_Aronoff"
@@ -5213,12 +5213,12 @@
     "md5": "6d0cfe80e8c20d2bce7e842d307c40d3",
     "pid": "108744962",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u062c\u0648\u0646\u0627\u062b\u0627\u0646_\u0628\u0631\u0627\u0648\u0646_(\u0623\u0633\u062a\u0627\u0630_\u062c\u0627\u0645\u0639\u064a)",
+      "https://ar.wikipedia.org/wiki/جوناثان_براون_(أستاذ_جامعي)",
       "https://ca.wikipedia.org/wiki/Jonathan_Brown",
       "https://en.wikipedia.org/wiki/Jonathan_Brown_(art_historian)",
       "https://es.wikipedia.org/wiki/Jonathan_Brown",
       "https://fr.wikipedia.org/wiki/Jonathan_Brown_(historien_de_l'art)",
-      "https://ru.wikipedia.org/wiki/\u0411\u0440\u0430\u0443\u043d,_\u0414\u0436\u043e\u043d\u0430\u0442\u0430\u043d_(\u0438\u0441\u043a\u0443\u0441\u0441\u0442\u0432\u043e\u0432\u0435\u0434)"
+      "https://ru.wikipedia.org/wiki/Браун,_Джонатан_(искусствовед)"
     ],
     "bne_pid": "XX1153656",
     "bnf_pid": "12013237",
@@ -5288,7 +5288,7 @@
     "md5": "fc11e7bf0a09affa2af54553099fcc98",
     "pid": "108874652",
     "wiki": [
-      "https://ja.wikipedia.org/wiki/\u6e05\u6c34\u662d\u4fca"
+      "https://ja.wikipedia.org/wiki/清水昭俊"
     ],
     "bnf_pid": "13529714",
     "gnd_pid": "17326851X",
@@ -5337,14 +5337,14 @@
     "md5": "b7d8155f41be36c6906fc84cba3ed036",
     "pid": "108896487",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u062f\u0627\u0646\u064a\u0627\u0644_\u0634\u0627\u0646\u0643\u0633",
-      "https://azb.wikipedia.org/wiki/\u062f\u0627\u0646\u06cc\u0644_\u0634\u0627\u0646\u06a9\u0633",
+      "https://arz.wikipedia.org/wiki/دانيال_شانكس",
+      "https://azb.wikipedia.org/wiki/دانیل_شانکس",
       "https://de.wikipedia.org/wiki/Daniel_Shanks",
       "https://en.wikipedia.org/wiki/Daniel_Shanks",
       "https://es.wikipedia.org/wiki/Daniel_Shanks",
       "https://fr.wikipedia.org/wiki/Daniel_Shanks",
       "https://pt.wikipedia.org/wiki/Daniel_Shanks",
-      "https://ru.wikipedia.org/wiki/\u0428\u0435\u043d\u043a\u0441,_\u0414\u044d\u043d\u0438\u0435\u043b",
+      "https://ru.wikipedia.org/wiki/Шенкс,_Дэниел",
       "https://sv.wikipedia.org/wiki/Daniel_Shanks"
     ],
     "gnd_pid": "117725293",
@@ -5489,7 +5489,7 @@
     "wiki": [
       "https://de.wikipedia.org/wiki/Robert_Frager",
       "https://en.wikipedia.org/wiki/Robert_Frager",
-      "https://ja.wikipedia.org/wiki/\u30ed\u30d0\u30fc\u30c8\u30fb\u30d5\u30ec\u30a4\u30ac\u30fc",
+      "https://ja.wikipedia.org/wiki/ロバート・フレイガー",
       "https://tr.wikipedia.org/wiki/Robert_Frager"
     ],
     "gnd_pid": "12465164X",
@@ -5541,7 +5541,7 @@
     "md5": "6c3a461ca7cb542c98f9d7a514e152a4",
     "pid": "109155729",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0631\u0648\u0628\u064a\u0631\u062a_\u0634\u0627\u0643\u0644\u064a\u062a\u0648\u0646",
+      "https://arz.wikipedia.org/wiki/روبيرت_شاكليتون",
       "https://de.wikipedia.org/wiki/Robert_Shackleton",
       "https://en.wikipedia.org/wiki/Robert_Shackleton"
     ],
@@ -5588,8 +5588,8 @@
     "md5": "3c599e6d6a8455ddfde71d28d8ba9adf",
     "pid": "109204355",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u062c\u0648\u0631\u062c_\u062a\u064a_\u0633\u064a\u0645\u0648\u0646",
-      "https://arz.wikipedia.org/wiki/\u062c\u0648\u0631\u062c_\u062a\u0649_\u0633\u064a\u0645\u0648\u0646",
+      "https://ar.wikipedia.org/wiki/جورج_تي_سيمون",
+      "https://arz.wikipedia.org/wiki/جورج_تى_سيمون",
       "https://de.wikipedia.org/wiki/George_T._Simon",
       "https://en.wikipedia.org/wiki/George_T._Simon",
       "https://es.wikipedia.org/wiki/George_T._Simon"
@@ -5615,12 +5615,12 @@
     "md5": "d9a158e24955633772383b1d91c5056b",
     "pid": "10926931",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u062c\u0627\u0631\u0628\u064a\u0633_\u0627\u067e\u0631\u064a\u0643\u064a\u0627\u0646",
+      "https://arz.wikipedia.org/wiki/جاربيس_اپريكيان",
       "https://en.wikipedia.org/wiki/Garbis_Aprikian",
-      "https://fa.wikipedia.org/wiki/\u06af\u0627\u0631\u0628\u06cc\u0633_\u0622\u067e\u06cc\u0631\u06cc\u06a9\u06cc\u0627\u0646",
+      "https://fa.wikipedia.org/wiki/گاربیس_آپیریکیان",
       "https://fr.wikipedia.org/wiki/Garbis_Aprikian",
-      "https://hy.wikipedia.org/wiki/\u053f\u0561\u0580\u057a\u056b\u057d_\u0531\u0583\u0580\u056b\u056f\u0575\u0561\u0576",
-      "https://hyw.wikipedia.org/wiki/\u053f\u0561\u0580\u057a\u056b\u057d_\u0531\u0583\u0580\u056b\u056f\u0565\u0561\u0576"
+      "https://hy.wikipedia.org/wiki/Կարպիս_Ափրիկյան",
+      "https://hyw.wikipedia.org/wiki/Կարպիս_Ափրիկեան"
     ],
     "bnf_pid": "13992641",
     "gnd_pid": "129520896",
@@ -5677,13 +5677,13 @@
     "md5": "56e033c0f0f01d1ed328b9d9c47be632",
     "pid": "109426764",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u062c\u0648\u0646_\u0647\u0648\u0644\u0627\u0646\u062f\u0631",
-      "https://arz.wikipedia.org/wiki/\u062c\u0648\u0646_\u0647\u0648\u0644\u0627\u0646\u062f\u0631",
-      "https://azb.wikipedia.org/wiki/\u062c\u0627\u0646_\u0647\u0627\u0644\u0646\u062f\u0631",
+      "https://ar.wikipedia.org/wiki/جون_هولاندر",
+      "https://arz.wikipedia.org/wiki/جون_هولاندر",
+      "https://azb.wikipedia.org/wiki/جان_هالندر",
       "https://de.wikipedia.org/wiki/John_Hollander",
       "https://en.wikipedia.org/wiki/John_Hollander",
       "https://es.wikipedia.org/wiki/John_Hollander",
-      "https://fa.wikipedia.org/wiki/\u062c\u0627\u0646_\u0647\u0627\u0644\u0646\u062f\u0631",
+      "https://fa.wikipedia.org/wiki/جان_هالندر",
       "https://fi.wikipedia.org/wiki/John_Hollander",
       "https://fr.wikipedia.org/wiki/John_Hollander",
       "https://it.wikipedia.org/wiki/John_Hollander"
@@ -5730,10 +5730,10 @@
     "md5": "f87ef452d1094a11b2fcadcef6562ecc",
     "pid": "109453818",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u064a\u0648\u0643\u064a\u0648_\u062a\u0633\u0648\u062f\u0627_(\u0627\u0643\u0627\u062f\u064a\u0645\u0649)",
+      "https://arz.wikipedia.org/wiki/يوكيو_تسودا_(اكاديمى)",
       "https://en.wikipedia.org/wiki/Yukio_Tsuda_(professor)",
       "https://eo.wikipedia.org/wiki/Yukio_Tsuda_(lingvisto)",
-      "https://ja.wikipedia.org/wiki/\u6d25\u7530\u5e78\u7537_(\u8a00\u8a9e\u5b66\u8005)"
+      "https://ja.wikipedia.org/wiki/津田幸男_(言語学者)"
     ],
     "gnd_pid": "135961602",
     "isni_pid": "000000009518990X",
@@ -5756,7 +5756,7 @@
     "pid": "109481934",
     "wiki": [
       "https://en.wikipedia.org/wiki/Henry_Gleitman",
-      "https://fa.wikipedia.org/wiki/\u0647\u0646\u0631\u06cc_\u06af\u0644\u0627\u06cc\u062a\u0645\u0646"
+      "https://fa.wikipedia.org/wiki/هنری_گلایتمن"
     ],
     "bnf_pid": "16609550",
     "gnd_pid": "172099331",
@@ -6135,19 +6135,19 @@
     "md5": "0ad70165b0b9066e40497ee248ad73e5",
     "pid": "1101976",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u0648\u0644\u064a\u0627\u0645_\u0641\u0631\u064a\u062f\u0645\u0627\u0646",
-      "https://bg.wikipedia.org/wiki/\u0423\u0438\u043b\u044f\u043c_\u0424\u0440\u0438\u0434\u043c\u0430\u043d",
+      "https://ar.wikipedia.org/wiki/وليام_فريدمان",
+      "https://bg.wikipedia.org/wiki/Уилям_Фридман",
       "https://cs.wikipedia.org/wiki/William_Friedman",
       "https://de.wikipedia.org/wiki/William_Friedman",
       "https://en.wikipedia.org/wiki/William_F._Friedman",
       "https://es.wikipedia.org/wiki/William_F._Friedman",
       "https://fr.wikipedia.org/wiki/William_F._Friedman",
       "https://it.wikipedia.org/wiki/William_Friedman",
-      "https://ko.wikipedia.org/wiki/\uc70c\ub9ac\uc5c4_F._\ud504\ub9ac\ub4dc\uba3c",
+      "https://ko.wikipedia.org/wiki/윌리엄_F._프리드먼",
       "https://pt.wikipedia.org/wiki/William_F._Friedman",
-      "https://ru.wikipedia.org/wiki/\u0424\u0440\u0438\u0434\u043c\u0430\u043d,_\u0423\u0438\u043b\u044c\u044f\u043c_\u0424\u0440\u0435\u0434\u0435\u0440\u0438\u043a",
-      "https://uk.wikipedia.org/wiki/\u0412\u0456\u043b\u044c\u044f\u043c_\u0424\u0440\u0435\u0434\u0435\u0440\u0456\u043a_\u0424\u0440\u0456\u0434\u043c\u0430\u043d",
-      "https://zh.wikipedia.org/wiki/\u5a01\u5ec9\u59c6\u00b7\u5f17\u91cc\u5fb7\u66fc"
+      "https://ru.wikipedia.org/wiki/Фридман,_Уильям_Фредерик",
+      "https://uk.wikipedia.org/wiki/Вільям_Фредерік_Фрідман",
+      "https://zh.wikipedia.org/wiki/威廉姆·弗里德曼"
     ],
     "gnd_pid": "129828866",
     "isni_pid": "0000000115852677",
@@ -6178,7 +6178,7 @@
     "md5": "fc40143b16638c6a15d373a8d6e13c3c",
     "pid": "110239285",
     "wiki": [
-      "https://ja.wikipedia.org/wiki/\u795e\u7530\u5178\u57ce"
+      "https://ja.wikipedia.org/wiki/神田典城"
     ],
     "isni_pid": "0000000082985966",
     "wiki_pid": "Q11590557",
@@ -6263,32 +6263,32 @@
     "md5": "84938ebb63b890daf8439aa46abffaf6",
     "pid": "11039818",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u062a\u0648\u0646\u064a_\u0628\u0627\u0646\u0643\u0633",
-      "https://arz.wikipedia.org/wiki/\u062a\u0648\u0646\u0649_\u0628\u0627\u0646\u0643\u0633_(\u0645\u0644\u062d\u0646)",
-      "https://azb.wikipedia.org/wiki/\u062a\u0648\u0646\u06cc_\u0628\u0646\u06a9\u0633",
+      "https://ar.wikipedia.org/wiki/توني_بانكس",
+      "https://arz.wikipedia.org/wiki/تونى_بانكس_(ملحن)",
+      "https://azb.wikipedia.org/wiki/تونی_بنکس",
       "https://cs.wikipedia.org/wiki/Tony_Banks",
       "https://da.wikipedia.org/wiki/Tony_Banks",
       "https://de.wikipedia.org/wiki/Tony_Banks_(Musiker)",
       "https://en.wikipedia.org/wiki/Tony_Banks_(musician)",
       "https://eo.wikipedia.org/wiki/Tony_Banks",
       "https://es.wikipedia.org/wiki/Tony_Banks",
-      "https://fa.wikipedia.org/wiki/\u062a\u0648\u0646\u06cc_\u0628\u0646\u06a9\u0633",
+      "https://fa.wikipedia.org/wiki/تونی_بنکس",
       "https://fi.wikipedia.org/wiki/Tony_Banks",
       "https://fr.wikipedia.org/wiki/Tony_Banks_(musicien)",
-      "https://he.wikipedia.org/wiki/\u05d8\u05d5\u05e0\u05d9_\u05d1\u05e0\u05e7\u05e1",
+      "https://he.wikipedia.org/wiki/טוני_בנקס",
       "https://hr.wikipedia.org/wiki/Tony_Banks",
       "https://hu.wikipedia.org/wiki/Tony_Banks",
       "https://id.wikipedia.org/wiki/Tony_Banks",
       "https://it.wikipedia.org/wiki/Tony_Banks",
-      "https://ja.wikipedia.org/wiki/\u30c8\u30cb\u30fc\u30fb\u30d0\u30f3\u30af\u30b9_(\u30df\u30e5\u30fc\u30b8\u30b7\u30e3\u30f3)",
-      "https://ka.wikipedia.org/wiki/\u10e2\u10dd\u10dc\u10d8_\u10d1\u10d4\u10dc\u10e5\u10e1\u10d8",
+      "https://ja.wikipedia.org/wiki/トニー・バンクス_(ミュージシャン)",
+      "https://ka.wikipedia.org/wiki/ტონი_ბენქსი",
       "https://nl.wikipedia.org/wiki/Tony_Banks",
       "https://nn.wikipedia.org/wiki/Tony_Banks",
       "https://no.wikipedia.org/wiki/Tony_Banks",
       "https://pl.wikipedia.org/wiki/Tony_Banks",
-      "https://pt.wikipedia.org/wiki/Tony_Banks_(m\u00fasico)",
+      "https://pt.wikipedia.org/wiki/Tony_Banks_(músico)",
       "https://ro.wikipedia.org/wiki/Tony_Banks",
-      "https://ru.wikipedia.org/wiki/\u0411\u044d\u043d\u043a\u0441,_\u0422\u043e\u043d\u0438",
+      "https://ru.wikipedia.org/wiki/Бэнкс,_Тони",
       "https://sv.wikipedia.org/wiki/Tony_Banks_(musiker)"
     ],
     "bne_pid": "XX892830",
@@ -6386,8 +6386,8 @@
     "md5": "95b17023b198f2ca0d70bbe42d707663",
     "pid": "110724484",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u062f\u064a\u0641\u064a\u062f_\u0628\u0648\u064a\u0633",
-      "https://arz.wikipedia.org/wiki/\u062f\u064a\u0641\u064a\u062f_\u0628\u0648\u064a\u0633",
+      "https://ar.wikipedia.org/wiki/ديفيد_بويس",
+      "https://arz.wikipedia.org/wiki/ديفيد_بويس",
       "https://en.wikipedia.org/wiki/David_Bowes"
     ],
     "gnd_pid": "119219816",
@@ -6422,7 +6422,7 @@
     "md5": "dda936459b18fdd8ced68ded3d1a51f1",
     "pid": "110816301",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u062b\u0648\u0631\u0643\u064a\u0644\u062f_\u0686\u0627\u0643\u0648\u0628\u0633\u064a\u0646",
+      "https://arz.wikipedia.org/wiki/ثوركيلد_چاكوبسين",
       "https://de.wikipedia.org/wiki/Thorkild_Jacobsen",
       "https://en.wikipedia.org/wiki/Thorkild_Jacobsen",
       "https://es.wikipedia.org/wiki/Thorkild_Jacobsen",
@@ -6430,7 +6430,7 @@
       "https://it.wikipedia.org/wiki/Thorkild_Jacobsen",
       "https://pl.wikipedia.org/wiki/Thorkild_Jacobsen",
       "https://pt.wikipedia.org/wiki/Thorkild_Jacobsen",
-      "https://ru.wikipedia.org/wiki/\u042f\u043a\u043e\u0431\u0441\u0435\u043d,_\u0422\u043e\u0440\u043a\u0438\u043b\u044c\u0434",
+      "https://ru.wikipedia.org/wiki/Якобсен,_Торкильд",
       "https://sv.wikipedia.org/wiki/Thorkild_Jacobsen"
     ],
     "bnf_pid": "12183342",
@@ -6486,7 +6486,7 @@
     "md5": "cf4bf10c55636524a3f45f9dfd0518f4",
     "pid": "110928127",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0686\u064a\u0627\u0646_\u0647\u0627\u0648\u062f\u0631\u0649",
+      "https://arz.wikipedia.org/wiki/چيان_هاودرى",
       "https://en.wikipedia.org/wiki/Jean_Haudry",
       "https://fr.wikipedia.org/wiki/Jean_Haudry",
       "https://sv.wikipedia.org/wiki/Jean_Haudry"
@@ -6516,7 +6516,7 @@
     "md5": "3645b2005b4aa41e97fb5d2078145973",
     "pid": "110994935",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u062c\u064a\u0633\u0648\u0627\u0644\u062f\u0648_\u0628\u0648\u0641\u0627\u0644\u064a\u0646\u0648",
+      "https://arz.wikipedia.org/wiki/جيسوالدو_بوفالينو",
       "https://avk.wikipedia.org/wiki/Gesualdo_Bufalino",
       "https://ca.wikipedia.org/wiki/Gesualdo_Bufalino",
       "https://de.wikipedia.org/wiki/Gesualdo_Bufalino",
@@ -6524,11 +6524,11 @@
       "https://eo.wikipedia.org/wiki/Gesualdo_Bufalino",
       "https://es.wikipedia.org/wiki/Gesualdo_Bufalino",
       "https://eu.wikipedia.org/wiki/Gesualdo_Bufalino",
-      "https://fa.wikipedia.org/wiki/\u062c\u0632\u0648\u0622\u0644\u062f\u0648_\u0628\u0648\u0641\u0627\u0644\u06cc\u0646\u0648",
+      "https://fa.wikipedia.org/wiki/جزوآلدو_بوفالینو",
       "https://fr.wikipedia.org/wiki/Gesualdo_Bufalino",
       "https://it.wikipedia.org/wiki/Gesualdo_Bufalino",
       "https://pt.wikipedia.org/wiki/Gesualdo_Bufalino",
-      "https://ru.wikipedia.org/wiki/\u0411\u0443\u0444\u0430\u043b\u0438\u043d\u043e,_\u0414\u0436\u0435\u0437\u0443\u0430\u043b\u044c\u0434\u043e",
+      "https://ru.wikipedia.org/wiki/Буфалино,_Джезуальдо",
       "https://scn.wikipedia.org/wiki/Gesualdu_Bufalinu",
       "https://sv.wikipedia.org/wiki/Gesualdo_Bufalino"
     ],
@@ -6547,8 +6547,8 @@
     "md5": "bfad1e2c70b7ec033263244a33ed794a",
     "pid": "111005319",
     "wiki": [
-      "https://cs.wikipedia.org/wiki/Renate_Kr\u00fcgerov\u00e1",
-      "https://de.wikipedia.org/wiki/Renate_Kr\u00fcger_(Schriftstellerin)"
+      "https://cs.wikipedia.org/wiki/Renate_Krügerová",
+      "https://de.wikipedia.org/wiki/Renate_Krüger_(Schriftstellerin)"
     ],
     "bne_pid": "XX1720847",
     "bnf_pid": "12817537",
@@ -6741,7 +6741,7 @@
     "pid": "111270045",
     "wiki": [
       "https://fr.wikipedia.org/wiki/Pierre_Laffont",
-      "https://uk.wikipedia.org/wiki/\u041f'\u0454\u0440_\u041b\u0430\u0444\u0444\u043e\u043d"
+      "https://uk.wikipedia.org/wiki/П'єр_Лаффон"
     ],
     "bnf_pid": "11910597",
     "gnd_pid": "1060270773",
@@ -6825,7 +6825,7 @@
     "md5": "5ea52558ae6322a33c011e12122329ca",
     "pid": "11150698",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0647\u0627\u0646\u0633_\u062f_\u0648\u064a\u062b",
+      "https://arz.wikipedia.org/wiki/هانس_د_ويث",
       "https://de.wikipedia.org/wiki/Hans_de_With"
     ],
     "gnd_pid": "108451836",
@@ -6917,7 +6917,7 @@
     "md5": "debabe21399de547ef936b812c0c3ac4",
     "pid": "11154327972026851951",
     "wiki": [
-      "https://hu.wikipedia.org/wiki/Bihari_M\u00f3r_(pedag\u00f3gus)"
+      "https://hu.wikipedia.org/wiki/Bihari_Mór_(pedagógus)"
     ],
     "wiki_pid": "Q25467918",
     "idref_pid": "260328065"
@@ -6955,7 +6955,7 @@
     "md5": "bf9cdf2331dbd2f3f5dfe151183de9ea",
     "pid": "111556606",
     "wiki": [
-      "https://en.wikipedia.org/wiki/Mich\u00e8le_Cloonan"
+      "https://en.wikipedia.org/wiki/Michèle_Cloonan"
     ],
     "bnf_pid": "12064218",
     "gnd_pid": "13355757X",
@@ -7165,8 +7165,8 @@
     "md5": "0cdeaffe19c598ccfaea791e06ca5ede",
     "pid": "111847199",
     "wiki": [
-      "https://ar.wikipedia.org/wiki/\u062f\u064a\u0641\u064a\u062f_\u0646\u0648\u0641\u0627\u0643",
-      "https://arz.wikipedia.org/wiki/\u062f\u064a\u0641\u064a\u062f_\u0646\u0648\u0641\u0627\u0643",
+      "https://ar.wikipedia.org/wiki/ديفيد_نوفاك",
+      "https://arz.wikipedia.org/wiki/ديفيد_نوفاك",
       "https://en.wikipedia.org/wiki/David_Novak"
     ],
     "sz_pid": "133767183",
@@ -7183,21 +7183,21 @@
     "md5": "0919cf72c68f598dfcb921d1ef3613e9",
     "pid": "111889670",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0641\u0627\u0646\u062c_\u0634\u0648\u0627\u0646\u0644\u064a\u0646\u062c",
+      "https://arz.wikipedia.org/wiki/فانج_شوانلينج",
       "https://de.wikipedia.org/wiki/Fang_Xuanling",
       "https://en.wikipedia.org/wiki/Fang_Xuanling",
       "https://fr.wikipedia.org/wiki/Fang_Xuanling",
       "https://id.wikipedia.org/wiki/Fang_Xuanling",
-      "https://ja.wikipedia.org/wiki/\u623f\u7384\u9f62",
-      "https://km.wikipedia.org/wiki/\u1795\u17d2\u179c\u17b6\u1784\u179f\u17d2\u1788\u17c2\u1793\u179b\u17b7\u1784",
-      "https://ko.wikipedia.org/wiki/\ubc29\ud604\ub839",
+      "https://ja.wikipedia.org/wiki/房玄齢",
+      "https://km.wikipedia.org/wiki/ផ្វាងស្ឈែនលិង",
+      "https://ko.wikipedia.org/wiki/방현령",
       "https://no.wikipedia.org/wiki/Fang_Xuanling",
       "https://sh.wikipedia.org/wiki/Fang_Xuanling",
-      "https://vi.wikipedia.org/wiki/Ph\u00f2ng_Huy\u1ec1n_Linh",
-      "https://wuu.wikipedia.org/wiki/\u623f\u7384\u9f84",
-      "https://zh.wikipedia.org/wiki/\u623f\u7384\u9f84",
-      "https://zh_classical.wikipedia.org/wiki/\u623f\u7384\u9f61",
-      "https://zh_yue.wikipedia.org/wiki/\u623f\u7384\u9f61"
+      "https://vi.wikipedia.org/wiki/Phòng_Huyền_Linh",
+      "https://wuu.wikipedia.org/wiki/房玄龄",
+      "https://zh.wikipedia.org/wiki/房玄龄",
+      "https://zh_classical.wikipedia.org/wiki/房玄齡",
+      "https://zh_yue.wikipedia.org/wiki/房玄齡"
     ],
     "bnf_pid": "17029405",
     "gnd_pid": "119007460",
@@ -7266,7 +7266,7 @@
     "wiki": [
       "https://en.wikipedia.org/wiki/Itoko_Koyama",
       "https://id.wikipedia.org/wiki/Itoko_Koyama",
-      "https://ja.wikipedia.org/wiki/\u5c0f\u5c71\u3044\u3068\u5b50"
+      "https://ja.wikipedia.org/wiki/小山いと子"
     ],
     "gnd_pid": "1228546541",
     "isni_pid": "0000000083074275",
@@ -7508,7 +7508,7 @@
     "md5": "0ea8d0bc451eab546a087893aef99f65",
     "pid": "112422845",
     "wiki": [
-      "https://de.wikipedia.org/wiki/Lieselotte_Steinbr\u00fcgge"
+      "https://de.wikipedia.org/wiki/Lieselotte_Steinbrügge"
     ],
     "sz_pid": "143371193",
     "bnf_pid": "12144673",
@@ -7622,7 +7622,7 @@
     "md5": "8564b3ca11f865053d515feddc09bbad",
     "pid": "11276879",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0628\u064a\u0631\u064a\u0646\u062c\u0648\u064a\u0631_\u062f\u0627\u0646\u0648\u064a\u0627",
+      "https://arz.wikipedia.org/wiki/بيرينجوير_دانويا",
       "https://ca.wikipedia.org/wiki/Berenguer_d'Anoia",
       "https://en.wikipedia.org/wiki/Berenguer_d'Anoia",
       "https://es.wikipedia.org/wiki/Berenguer_de_Noya",
@@ -7644,7 +7644,7 @@
     "md5": "3a19087c4e53d77dcf746cd6d9ce1c65",
     "pid": "112779075",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0627\u0644\u0648\u0646_\u0645\u0648\u0646\u0633\u0644\u0648",
+      "https://arz.wikipedia.org/wiki/الون_مونسلو",
       "https://en.wikipedia.org/wiki/Alun_Munslow"
     ],
     "bnf_pid": "13525720",
@@ -7687,7 +7687,7 @@
     "md5": "6eb049d1fb6e524df78ed6e52666e2b4",
     "pid": "112941957",
     "wiki": [
-      "https://de.wikipedia.org/wiki/Karen_Sch\u00f6nw\u00e4lder"
+      "https://de.wikipedia.org/wiki/Karen_Schönwälder"
     ],
     "bnf_pid": "12951277",
     "gnd_pid": "12031603X",
@@ -7722,9 +7722,9 @@
     "md5": "18ba18679cd7b0382a300c1093109b44",
     "pid": "113062088",
     "wiki": [
-      "https://arz.wikipedia.org/wiki/\u0628\u0627\u0643\u0648\u0644_\u0647\u0627\u0631\u0634\u0627\u062f\u0631\u0627\u0649_\u062f\u0647\u0648\u0644\u0627\u0643\u064a\u0627",
+      "https://arz.wikipedia.org/wiki/باكول_هارشادراى_دهولاكيا",
       "https://en.wikipedia.org/wiki/Bakul_Harshadrai_Dholakia",
-      "https://mr.wikipedia.org/wiki/\u092c\u0915\u0941\u0933_\u0922\u094b\u0932\u0915\u093f\u092f\u093e"
+      "https://mr.wikipedia.org/wiki/बकुळ_ढोलकिया"
     ],
     "gnd_pid": "171052412",
     "isni_pid": "0000000083126717",

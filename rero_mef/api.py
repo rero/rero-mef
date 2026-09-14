@@ -20,6 +20,7 @@ from invenio_records.api import Record
 from invenio_records_rest.utils import obj_or_import_string
 from invenio_search import current_search
 from invenio_search.engine import search
+from jsonschema.exceptions import ValidationError
 from kombu.compat import Consumer
 from sqlalchemy import func
 from sqlalchemy.exc import OperationalError
@@ -41,6 +42,21 @@ RERO_ILS_ENTITY_TYPES = {
     "bf:Temporal": "concepts",
     "bf:Place": "places",
 }
+
+
+def format_record_error(error):
+    """Reduce a record error to the part naming the problem.
+
+    A :class:`jsonschema.ValidationError` renders the whole schema and the whole instance, which buries the reason
+    under thousands of lines. Keep its message and the field it points at.
+
+    :param error: Exception raised while creating a record.
+    :returns: One line naming the error.
+    """
+    if isinstance(error, ValidationError):
+        field = "/".join(str(part) for part in error.absolute_path) or "/"
+        return f"ValidationError {field}: {error.message}"
+    return f"{type(error).__name__}: {error}"
 
 
 class Action(Enum):
@@ -159,8 +175,16 @@ class EntityRecord(Record):
             data.pop("pid", None)
         if not id_:
             id_ = uuid4()
-        cls.minter(id_, data)
-        record = super().create(data=data, id_=id_, **kwargs)
+        try:
+            # `Record.create` validates inside a savepoint of its own, so a rejected record used to roll back its
+            # own row and leave the PID the minter had already written: claimed, resolving to nothing, and blocking
+            # every later attempt to create the record. One savepoint over both makes the pair atomic.
+            with db.session.begin_nested():
+                cls.minter(id_, data)
+                record = super().create(data=data, id_=id_, **kwargs)
+        except Exception as err:
+            current_app.logger.error(f"CREATE {cls.name} {data.get('pid')}: {format_record_error(err)}")
+            raise
         if dbcommit:
             record.dbcommit(reindex)
         return record
@@ -193,6 +217,22 @@ class EntityRecord(Record):
 
         pid = data.get("pid")
         if agent_record := cls.get_record_by_pid(pid):
+            if (
+                agent_record.get("authorized_access_point")
+                and not data.get("authorized_access_point")
+                and not data.get("relation_pid")
+            ):
+                # The source stopped naming a record it used to name, so there is nothing left to show or to
+                # cluster. `copy_fields` below would otherwise put the old heading back and the record would keep
+                # serving a name the source has dropped, silently: the md5 matches, so it even reports `uptodate`.
+                # Deleting takes the record out of its MEF record too. VIAF records state no heading at all and
+                # never reach this.
+                #
+                # A record stating a `relation_pid` is kept, unnamed as it is: it is how the source says where the
+                # pid went, and `get_latest` reads it to send a request for the old pid on to the new record.
+                current_app.logger.warning(f"NO AUTHORIZED ACCESS POINT, DELETED: {agent_record.name} {pid}")
+                agent_record.delete(force=True, dbcommit=dbcommit, delindex=reindex)
+                return None, Action.DELETE
             # Preserve critical fields from the existing record if they're missing in new data
             # to prevent accidental data loss during updates
             copy_fields = [
@@ -206,6 +246,11 @@ class EntityRecord(Record):
             ]
             original_data = {k: v for k, v in agent_record.items() if k in copy_fields}
             data = original_data | data
+            # No source states when it deleted a record, so every transformation stamps `deleted` with the time it
+            # ran. Taking that stamp would give a tombstone a new md5 on every harvest that re-delivers it, and
+            # `test_md5` could never skip one; the stored stamp is when the deletion was first seen.
+            if (deleted := agent_record.get("deleted")) and data.get("deleted"):
+                data["deleted"] = deleted
             if test_md5:
                 incoming_md5 = _md5.create_md5({k: v for k, v in data.items() if k not in ("$schema", "md5")})
                 if incoming_md5 == agent_record.get("md5"):
@@ -218,6 +263,11 @@ class EntityRecord(Record):
             return_record = agent_record.replace(data=data, dbcommit=dbcommit, reindex=reindex)
             action = Action.REPLACE
         else:
+            if data.get("deleted"):
+                # The source deleted this record before we ever had it, so there is nothing to keep a tombstone of.
+                # Creating one, and a MEF record for it, would also make it impossible to clean up: the next
+                # harvest that reaches the same date range would simply create both again.
+                return None, Action.DISCARD
             try:
                 return_record = cls.create(
                     data=data,
@@ -227,8 +277,8 @@ class EntityRecord(Record):
                     reindex=reindex,
                 )
                 action = Action.CREATE
-            except Exception as err:
-                current_app.logger.error(f"ERROR create_or_update {cls.name} {data.get('pid')} {err}")
+            except Exception:
+                # `create` logged the reason and left neither a record nor a pid behind.
                 action = Action.ERROR
         if reindex:
             cls.flush_indexes()

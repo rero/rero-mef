@@ -24,9 +24,20 @@ def _no_md5(record):
 
 def test_create_concept_record(app, concept_rero_data, concept_idref_data, tmpdir):
     """Test create concept record."""
-    idref_record, action = ConceptIdrefRecord.create_or_update(data=concept_idref_data, dbcommit=True, reindex=True)
+    # This fixture is a record IdRef has deleted. One we never held is not created at all.
+    discarded, action = ConceptIdrefRecord.create_or_update(data=concept_idref_data, dbcommit=True, reindex=True)
+    assert action == Action.DISCARD
+    assert discarded is None
+    assert ConceptIdrefRecord.get_record_by_pid("050548115") is None
+
+    # It only reaches the database the way it really does: named and live, deleted by a later harvest.
+    live_data = {k: v for k, v in concept_idref_data.items() if k != "deleted"}
+    idref_record, action = ConceptIdrefRecord.create_or_update(data=live_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert idref_record["pid"] == "050548115"
+
+    idref_record, action = ConceptIdrefRecord.create_or_update(data=concept_idref_data, dbcommit=True, reindex=True)
+    assert action == Action.REPLACE
 
     m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_actions == {m_record.pid: Action.CREATE}

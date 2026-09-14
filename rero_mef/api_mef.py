@@ -249,6 +249,37 @@ class EntityMefRecord(EntityRecord):
             data.pop(field, None)
         return data
 
+    @property
+    def is_empty(self):
+        """Check whether the record links no entity and no VIAF record.
+
+        This is what :meth:`get_all_pids_without_entities_and_viaf` selects, so the orphan cleanup and the
+        deletion below agree on what counts as a record describing nothing.
+
+        :returns: True when no entity ref and no VIAF pid are left.
+        """
+        return not self.get("viaf_pid") and not any(self.get(entity) for entity in self.entities)
+
+    def replace_or_delete(self, dbcommit=False, reindex=False):
+        """Store the record, or delete it when nothing is left in it.
+
+        A MEF record whose last entity has gone, deleted or moved to the record of the entity it was linked to,
+        describes nothing. Keeping it would strand one empty record per entity that goes, and only a separate
+        orphan cleanup would ever get rid of them.
+
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex record.
+        :returns: The stored record, or None when it was deleted.
+        """
+        if self.is_empty:
+            # `delete` flushes the indexes itself when asked to drop the record from them.
+            self.delete(force=True, dbcommit=dbcommit, delindex=reindex)
+            return None
+        replaced = self.replace(data=self, dbcommit=dbcommit, reindex=reindex)
+        if reindex:
+            self.flush_indexes()
+        return replaced
+
     def delete_ref(self, record, dbcommit=False, reindex=False):
         """Delete $ref from record.
 
@@ -260,9 +291,7 @@ class EntityMefRecord(EntityRecord):
         action = Action.DISCARD
         if self.pop(record.name, None):
             action = Action.DELETE
-            self.replace(data=self, dbcommit=dbcommit, reindex=reindex)
-            if reindex:
-                self.flush_indexes()
+            self.replace_or_delete(dbcommit=dbcommit, reindex=reindex)
         return self, action
 
     @property

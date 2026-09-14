@@ -263,7 +263,13 @@ def oai_process_records_from_dates(
     url, metadata_prefix, last_run, setspecs = get_info_by_oai_name(name)
     last_run = _apply_oai_overlap(last_run, from_date)
 
-    request = sickle(url, iterator=oai_item_iterator, max_retries=max_retries)
+    request = sickle(
+        url,
+        iterator=oai_item_iterator,
+        max_retries=max_retries,
+        retry_status_codes=current_app.config.get("RERO_OAI_RETRY_STATUS_CODES"),
+        default_retry_after=current_app.config.get("RERO_OAI_RETRY_AFTER", 60),
+    )
 
     update_last_run = from_date is None and until_date is None
     dates_initial = {
@@ -318,11 +324,27 @@ def oai_process_records_from_dates(
                             updated = "????"
                         if rec := transformation(records[0], logger=current_app.logger).json:
                             if msg := rec.get("NO TRANSFORMATION"):
+                                # The source restated the record as a type this transformation does not handle,
+                                # an IdRef `Tu` uniform title in the concept set say. Nothing will ever transform
+                                # it again, so a stored record would serve for ever what it said while it still
+                                # was a supported type. Only a stated type counts: a record that merely could not
+                                # be read states nothing and is left alone.
+                                deleted_pid = None
+                                if rec.get("UNSUPPORTED TYPE") and (no_type_pid := rec.get("pid")):
+                                    if stored := record_class.get_record_by_pid(no_type_pid):
+                                        stored.delete(force=True, dbcommit=dbcommit, delindex=reindex)
+                                        deleted_pid = no_type_pid
+                                        action_count.setdefault(Action.DELETE, 0)
+                                        action_count[Action.DELETE] += 1
+                                        current_app.logger.warning(
+                                            f"UNSUPPORTED TYPE, DELETED: {record_class.name} {no_type_pid} | {msg}"
+                                        )
                                 if verbose:
                                     click.secho(
                                         f"OAI {name} spec({spec}): "
                                         f"{idx} {rec.get('pid', '???')}"
-                                        f"NO TRANSFORMATION: {msg}",
+                                        f"NO TRANSFORMATION: {msg}"
+                                        f"{' | deleted' if deleted_pid else ''}",
                                         fg="yellow",
                                     )
                             else:
@@ -414,7 +436,13 @@ def oai_save_records_from_dates(
     url, metadata_prefix, last_run, setspecs = get_info_by_oai_name(name)
     last_run = _apply_oai_overlap(last_run, from_date)
 
-    request = sickle(url, iterator=oai_item_iterator, max_retries=max_retries)
+    request = sickle(
+        url,
+        iterator=oai_item_iterator,
+        max_retries=max_retries,
+        retry_status_codes=current_app.config.get("RERO_OAI_RETRY_STATUS_CODES"),
+        default_retry_after=current_app.config.get("RERO_OAI_RETRY_AFTER", 60),
+    )
 
     dates_initial = {
         "from": from_date or last_run,
@@ -485,9 +513,9 @@ def oai_get_record(id_, name, transformation, access_token=None, identifier=None
 
     request = Sickle(
         endpoint=url,
-        max_retries=5,
-        default_retry_after=10,
-        retry_status_codes=[423, 503],
+        max_retries=current_app.config.get("RERO_OAI_RETRIES", 5),
+        default_retry_after=current_app.config.get("RERO_OAI_RETRY_AFTER", 10),
+        retry_status_codes=current_app.config.get("RERO_OAI_RETRY_STATUS_CODES", [423, 503]),
     )
 
     params = {"metadataPrefix": metadata_prefix, "identifier": f"{identifier}{id_}"}
@@ -1033,7 +1061,7 @@ class JsonWriter:
         :param indent: Indentation level.
         """
         self.indent = indent
-        self.file_handle = open(filename, "w")
+        self.file_handle = open(filename, "w", encoding="utf-8")
         self.file_handle.write("[")
 
     def __del__(self):
@@ -1065,12 +1093,14 @@ class JsonWriter:
         """
         if self.count > 0:
             self.file_handle.write(",")
+        # `ensure_ascii=False` keeps the accented headings readable: the files are UTF-8, escaping them to
+        # `acc\u00e8s` makes every diff of a French or German record unreadable.
         if self.indent:
-            for line in dumps(data, indent=self.indent).split("\n"):
+            for line in dumps(data, indent=self.indent, ensure_ascii=False).split("\n"):
                 self.file_handle.write(f"\n{' '.ljust(self.indent)}")
                 self.file_handle.write(line)
         else:
-            self.file_handle.write(dumps(data), separators=(",", ":"))
+            self.file_handle.write(dumps(data, separators=(",", ":"), ensure_ascii=False))
         self.count += 1
 
     def close(self):
@@ -1150,12 +1180,13 @@ def generate(search, deleted, exclude_fields=None):
     yield "]"
 
 
-def requests_retry_session(retries=5, backoff_factor=0.5, status_forcelist=(500, 502, 504), session=None):
+def requests_retry_session(retries=5, backoff_factor=0.5, status_forcelist=(429, 500, 502, 504), session=None):
     """Request retry session.
 
     :params retries: The total number of retry attempts to make.
     :params backoff_factor: Sleep between failed requests. {backoff factor} * (2 ** ({number of total retries} - 1))
-    :params status_forcelist: The HTTP response codes to retry on..
+    :params status_forcelist: The HTTP response codes to retry on. 429 is included: `Retry` honours the
+        `Retry-After` header the source sends with it.
     :params session: Session to use.
     :returns: http request session.
 
