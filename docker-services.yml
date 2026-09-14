@@ -70,7 +70,10 @@ services:
       memlock:
         soft: -1
         hard: -1
-    mem_limit: 1g
+    # The heap is only half of what the JVM asks the container for: metaspace, thread stacks, direct buffers and
+    # Lucene's own memory come on top of it. With 1g the node was killed and restarted in the middle of a test
+    # run, every test of the module erroring on a reset connection.
+    mem_limit: 2g
     ports:
       - "9200:9200"
       - "9300:9300"
