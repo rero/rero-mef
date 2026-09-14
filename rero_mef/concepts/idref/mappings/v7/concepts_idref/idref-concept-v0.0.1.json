@@ -41,6 +41,9 @@
       "_association_identifier": {
         "type": "keyword"
       },
+      "_association_level": {
+        "type": "keyword"
+      },
       "authorized_access_point": {
         "type": "text"
       },

@@ -38,6 +38,9 @@
       "_association_identifier": {
         "type": "keyword"
       },
+      "_association_level": {
+        "type": "keyword"
+      },
       "bnf_type": {
         "type": "keyword"
       },
