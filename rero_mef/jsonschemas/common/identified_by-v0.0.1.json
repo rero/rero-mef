@@ -19,11 +19,11 @@
         },
         "source": {
           "type": "string",
-          "minLength": 2
+          "minLength": 1
         },
         "value": {
           "type": "string",
-          "minLength": 2
+          "minLength": 1
         }
       }
     }
