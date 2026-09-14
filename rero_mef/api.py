@@ -726,41 +726,42 @@ class ConceptPlaceRecord(EntityRecord):
             )
             return mef_record, {mef_record.pid: Action.CREATE}
 
-        def get_mef_record(mef_cls, name, pid):
-            """Get MEF record."""
-            mef_records = mef_cls.get_mef(entity_name=name, entity_pid=pid)
+        def get_mef_record(mef_cls, record):
+            """Get the one MEF record holding an entity, reducing them to one when several do."""
+            mef_records = mef_cls.get_mef(entity_name=record.name, entity_pid=record.pid)
             if len(mef_records) > 1:
-                mef_pids = [mef_record.pid for mef_record in mef_records]
-                current_app.logger.error(f"MULTIPLE MEF FOUND FOR: {name} {pid} | mef: {', '.join(mef_pids)}")
-            return mef_records[0] if len(mef_records) == 1 else None
+                mef_record, resolve_actions = mef_cls.resolve_multiple(
+                    record, mef_records, dbcommit=dbcommit, reindex=reindex
+                )
+                actions.update(resolve_actions)
+                return mef_record
+            return mef_records[0] if mef_records else None
 
+        actions = {}
         association_info = self.association_info
         # Get direct MEF record
-        mef_record = get_mef_record(mef_cls=association_info["mef_cls"], name=self.name, pid=self.pid)
+        mef_record = get_mef_record(mef_cls=association_info["mef_cls"], record=self)
         # Get associated MEF record
         mef_associated_record = None
         if associated_record := association_info["record"]:
             # Get MEF record for the associated record.
-            mef_associated_record = get_mef_record(
-                mef_cls=association_info["mef_cls"],
-                name=associated_record.name,
-                pid=associated_record.pid,
-            )
+            mef_associated_record = get_mef_record(mef_cls=association_info["mef_cls"], record=associated_record)
         new_mef_record = mef_record or mef_associated_record
 
-        actions = {}
         if not mef_record and not mef_associated_record:
-            mef_record, actions = mef_create(
+            mef_record, create_actions = mef_create(
                 mef_cls=association_info["mef_cls"],
                 data=self,
                 association_info=association_info,
                 dbcommit=dbcommit,
                 reindex=reindex,
             )
+            actions |= create_actions
         else:
             mef_pids = mef_record.ref_pids if mef_record else {}
             mef_association_pids = mef_associated_record.ref_pids if mef_associated_record else {}
-            association_name = association_info["record_cls"].name
+            # Sources without association class (RERO concepts) have no other entity to move around.
+            association_name = record_cls.name if (record_cls := association_info["record_cls"]) else None
             mef_self_pid = mef_pids.get(self.name)
             mef_self_association_pid = mef_association_pids.get(self.name)
             mef_other_pid = mef_pids.get(association_name)
@@ -798,11 +799,11 @@ class ConceptPlaceRecord(EntityRecord):
                 # but its association is in a different MEF record, we need to:
                 # 1. Remove the association from its current MEF record
                 # 2. Add it to the MEF record containing the current entity
+                # 3. Delete the record it left, when the association was the last thing it held
+                associated_mef_pid = mef_associated_record.pid
                 ref = mef_associated_record.pop(association_name)
-                associated_mef_record = mef_associated_record.replace(
-                    data=mef_associated_record, dbcommit=dbcommit, reindex=reindex
-                )
-                actions[associated_mef_record.pid] = Action.DELETE_ENTITY
+                mef_associated_record.replace_or_delete(dbcommit=dbcommit, reindex=reindex)
+                actions[associated_mef_pid] = Action.DELETE_ENTITY
                 new_mef_record[association_name] = ref
             if (
                 bool(mef_self_pid)
@@ -810,10 +811,11 @@ class ConceptPlaceRecord(EntityRecord):
                 and bool(mef_other_pid)
                 and bool(mef_other_association_pid)
             ):
-                # Delete entity from new MEF and add it to old MEF
+                # Delete entity from new MEF and add it to old MEF, the emptied one going with it
+                emptied_mef_pid = new_mef_record.pid
                 ref = new_mef_record.pop(self.name)
-                new_mef_record.replace(data=new_mef_record, dbcommit=dbcommit, reindex=reindex)
-                actions[new_mef_record.pid] = Action.DELETE_ENTITY
+                new_mef_record.replace_or_delete(dbcommit=dbcommit, reindex=reindex)
+                actions[emptied_mef_pid] = Action.DELETE_ENTITY
                 mef_associated_record[self.name] = ref
                 new_mef_record = mef_associated_record
 

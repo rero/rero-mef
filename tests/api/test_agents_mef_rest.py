@@ -216,6 +216,15 @@ def test_agents_mef_get_updated(
     assert res.status_code == 200
     assert data == [hit(agent_mef_gnd_redirect_record), {"pid": "4"}]
 
+    # A client posting numbers gets the same answer: the index states a pid as a string.
+    res, data = postdata(
+        client,
+        "api_blueprint.agent_mef_get_updated",
+        {"pids": [int(agent_mef_gnd_redirect_record.pid), 4]},
+    )
+    assert res.status_code == 200
+    assert data == [hit(agent_mef_gnd_redirect_record), {"pid": 4}]
+
     # Unknown pids are reported after the hits, in the order they were posted.
     res, data = postdata(
         client, "api_blueprint.agent_mef_get_updated", {"pids": ["5", agent_mef_idref_redirect_record.pid, "4"]}
