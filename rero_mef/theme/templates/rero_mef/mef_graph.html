@@ -144,12 +144,18 @@
           There is no external hub &mdash; the link key is embedded directly in the source records.
         </p>
         <p>
-          IDREF concept records carry a <code>FRBNF*</code> number in their <code>identifiedBy</code>
-          list (source <code>BNF</code>). GND concept records carry the same <code>FRBNF*</code>
-          number inside their <code>exactMatch</code> entries. If no <code>exactMatch</code> entry
-          contains a BNF identifier, MEF falls back to <code>closeMatch</code> &mdash; but only
-          when exactly one match is found, to avoid ambiguous links.
-          MEF compares these codes across both sources to find and merge matching records.
+          IDREF concept records carry the BNF number in their <code>identifiedBy</code> list,
+          GND concept records carry it inside their <code>exactMatch</code> or
+          <code>closeMatch</code> entries. Both sources spell it differently &mdash; with or
+          without the trailing check character, or as a BNF ark uri &mdash; so the link key is
+          the eight digits of the number, written <code>FRBNF*</code>.
+        </p>
+        <p>
+          A link is made when exactly one record on each side carries the key. When several GND
+          records share it, the one asserting an <code>exactMatch</code> wins over the others.
+          When they all merely <code>closeMatch</code> it, no link is made: a shared close match
+          means related, not equivalent &mdash; sixteen GND camera models close-match the single
+          IDREF concept <em>Canon (appareils-photo)</em>.
         </p>
         <p>
           <strong>RERO</strong> concept records are also included in MEF but do not carry
@@ -172,17 +178,20 @@
             </tr>
             <tr>
               <th>Link key</th>
-              <td><code>FRBNF*</code> number</td>
+              <td>
+                the eight digits of the BNF number, as <code>FRBNF*</code><br>
+                <span class="text-muted" style="font-size:12px">check character and ark uri spelling normalised</span>
+              </td>
             </tr>
             <tr>
               <th>IDREF field</th>
-              <td><code>identifiedBy[source="BNF"].value</code></td>
+              <td><code>identifiedBy[].value</code></td>
             </tr>
             <tr>
               <th>GND field</th>
               <td>
-                <code>exactMatch[].identifiedBy[source="BNF"].value</code><br>
-                <span class="text-muted" style="font-size:12px">fallback: <code>closeMatch[]</code> when exactly one match</span>
+                <code>exactMatch[].identifiedBy[].value</code><br>
+                <span class="text-muted" style="font-size:12px">or <code>closeMatch[]</code>, when no other GND record shares the number</span>
               </td>
             </tr>
           </tbody>
@@ -207,8 +216,8 @@
             <line x1="92" y1="125" x2="375" y2="88"  stroke="#1a7a5e" stroke-width="1.5" marker-end="url(#co-arr)"/>
 
             <!-- Key labels on arrows -->
-            <text x="234" y="43"  text-anchor="middle" fill="#1a7a5e" font-size="9" font-weight="bold">FRBNF* in identifiedBy[BNF]</text>
-            <text x="234" y="124" text-anchor="middle" fill="#1a7a5e" font-size="9" font-weight="bold">FRBNF* in exactMatch / closeMatch[BNF]</text>
+            <text x="234" y="43"  text-anchor="middle" fill="#1a7a5e" font-size="9" font-weight="bold">BNF number in identifiedBy</text>
+            <text x="234" y="124" text-anchor="middle" fill="#1a7a5e" font-size="9" font-weight="bold">same number in exactMatch / closeMatch</text>
 
             <!-- IDREF node -->
             <rect x="18" y="19" width="74" height="32" rx="5" fill="#5b7bab"/>
