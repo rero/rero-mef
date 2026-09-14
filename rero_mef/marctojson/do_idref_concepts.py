@@ -23,6 +23,9 @@ class Transformation:
         if transform:
             self._transform()
 
+    #: `008` position 2, the entity types this transformation models: Rameau subject, form/genre, period.
+    CONCEPT_TYPES = ("d", "f", "z")
+
     def _transform(self):
         """Call the transformation functions."""
         if fields_008 := self.marc.get_fields("008"):
@@ -38,6 +41,12 @@ class Transformation:
             else:
                 msg = f"008 not in [Td5, Td8, Tf8, Tz5, Tz8]: {fields_008_data}"
                 self.json_dict = {"NO TRANSFORMATION": msg}
+                # `008` is `T`, the entity type, then the record status. Only a type we do not model says the
+                # record stopped being a concept: `Tu` is a uniform title, `Tg` a place. A `Td3` or `Td9` is
+                # still a Rameau subject, refused for its status alone, and must not be taken for one, and a
+                # value stating no readable type says nothing at all.
+                if (type_code := self.get_type_code()) and type_code not in self.CONCEPT_TYPES:
+                    self.json_dict["UNSUPPORTED TYPE"] = True
                 self.trans_idref_pid()
                 if self.logger and self.verbose:
                     field_001 = self.marc.get_fields("001")
@@ -49,6 +58,17 @@ class Transformation:
                 self.logger.warning(f"NO TRANSFORMATION: {msg}")
             self.json_dict = {"NO TRANSFORMATION": msg}
             self.trans_idref_pid()
+
+    def get_type_code(self):
+        """Get the entity type character `008` states: `T`, the type, then the record status.
+
+        :returns: The character IdRef states, or None when no `008` states a readable one.
+        """
+        for field_008 in self.marc.get_fields("008"):
+            data = field_008.data or ""
+            if data.startswith("T") and data[1:2].isalpha():
+                return data[1]
+        return None
 
     @property
     def json(self):
@@ -79,14 +99,13 @@ class Transformation:
         if field_003 := self.marc.get_fields("003"):
             uri = field_003[0].data.strip()
             identifiers.append({"type": "uri", "value": uri, "source": "IDREF"})
-        uris = {}
+        # A merged heading keeps one 033 per BNF record it absorbed, so all of them are kept: picking the latest
+        # dropped every other ark, and two arks sharing one $d silently overwrote each other.
         for field_033 in self.marc.get_fields("033"):
             if field_033.get("2") == "BNF" and field_033.get("a"):
-                date = int(date) if (date := field_033.get("d")) else 0
-                uris[date] = field_033["a"].strip()
-        if uris:
-            latest = max(uris)
-            identifiers.append({"type": "uri", "value": uris[latest], "source": "BNF"})
+                uri = field_033["a"].strip()
+                if uri not in {identifier["value"] for identifier in identifiers}:
+                    identifiers.append({"type": "uri", "value": uri, "source": "BNF"})
         if identifiers:
             self.json_dict["identifiedBy"] = identifiers
 
@@ -94,7 +113,7 @@ class Transformation:
         """Transformation old pids 035 $a $9 = sudoc."""
         if self.logger and self.verbose:
             self.logger.info("Call Function: %s", "trans_idref_relation_pid")
-        bnf_ids = {}
+        bnf_ids = []
         for field_035 in self.marc.get_fields("035"):
             subfield_a = field_035.get("a")
             subfield_2 = field_035.get("2")
@@ -114,15 +133,15 @@ class Transformation:
                     }
                 )
             elif subfield_z:
-                date = int(date) if (date := field_035.get("d")) else 0
-                bnf_ids[date] = subfield_z.strip()
-        if bnf_ids:
-            latest = max(bnf_ids)
+                bnf_ids.append(subfield_z.strip())
+        # Same as the 033 arks: every absorbed BNF record states its number here, and these fields carry no $d, so
+        # keeping only the "latest" kept whichever happened to come last.
+        for bnf_id in dict.fromkeys(bnf_ids):
             self.json_dict.setdefault("identifiedBy", []).append(
                 {
                     "source": "BNF",
                     "type": "bf:Nbn",
-                    "value": bnf_ids[latest],
+                    "value": bnf_id,
                 }
             )
 
@@ -139,11 +158,15 @@ class Transformation:
             self.logger.info("Call Function: %s", "trans_idref_authorized_access_point")
         tag = "280" if self.marc.get_fields("280") else "250"
         subfields = {"a": ", ", "x": " - ", "y": " - ", "z": " - "}
-        try:
+        # A record without its heading field has nothing to name it. Leaving `authorized_access_point` unset makes
+        # the schema, which requires it, refuse the record, rather than storing a placeholder that reads like a
+        # heading.
+        # Only the missing field is tolerated. Any other failure has to surface: a record that merely
+        # failed to transform would otherwise look like one the source stopped naming, and
+        # `create_or_update` deletes those.
+        with contextlib.suppress(KeyError):
             if authorized_ap := build_string_from_field(self.marc[tag], subfields):
                 self.json_dict["authorized_access_point"] = authorized_ap
-        except Exception:
-            self.json_dict["authorized_access_point"] = f"TAG: {tag} NOT FOUND"
 
     def trans_idref_variant_access_point(self):
         """Transformation variant_access_point from field 450 480."""
