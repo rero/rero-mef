@@ -3,10 +3,42 @@
 
 """Common pytest fixtures and plugins."""
 
+import os
+import shutil
+import tempfile
+from urllib.parse import urlsplit, urlunsplit
+
 import pytest
+
+#: Instance folder of a test run. A development instance states the ports of the stack it serves in its
+#: `invenio.cfg`, and `rero_mef.celery` builds an application from that folder the moment it is imported, `.env`
+#: naming it through `INVENIO_INSTANCE_PATH`. The variable is pointed at an empty folder of our own before that
+#: import can happen, so every application a run builds reads the endpoints stated below. `TEST_INSTANCE_PATH`
+#: overrides it, for a run against a real instance folder. Each run gets a folder of its own: what a run leaves
+#: there, the webpack manifest stub among it, is written once and would otherwise outlive the code that wrote it.
+INSTANCE_PATH = os.environ.get("TEST_INSTANCE_PATH") or tempfile.mkdtemp(prefix="rero-mef-tests-")
+os.makedirs(INSTANCE_PATH, exist_ok=True)
+os.environ["INVENIO_INSTANCE_PATH"] = INSTANCE_PATH
+
+#: Search hosts of a test run. pytest-invenio reads `SEARCH_HOSTS` for the test application; the application
+#: `rero_mef.celery` builds on import gets none of that, so the same value is stated for it as well. Both then
+#: drive one cluster, whichever `SEARCH_HOSTS` names.
+SEARCH_HOSTS = os.environ.get("SEARCH_HOSTS") or '[{"host": "localhost", "port": 9200}]'
+os.environ["SEARCH_HOSTS"] = SEARCH_HOSTS
+os.environ["INVENIO_SEARCH_HOSTS"] = SEARCH_HOSTS
+
+
+@pytest.fixture(scope="session", autouse=True)
+def remove_instance_path():
+    """Take the instance folder of this run away with it, leaving a stated one alone."""
+    yield
+    if not os.environ.get("TEST_INSTANCE_PATH"):
+        shutil.rmtree(INSTANCE_PATH, ignore_errors=True)
+
 
 pytest_plugins = (
     "celery.contrib.pytest",
+    "tests.blocked_sources",
     "tests.fixtures.agents_data",
     "tests.fixtures.agents_records",
     "tests.fixtures.concepts_data",
@@ -60,13 +92,28 @@ def es(search):
     yield search
 
 
+#: Redis the tests use, the one `docker-compose.yml` serves. Overridable like the `SEARCH_HOSTS` and
+#: `SQLALCHEMY_DATABASE_URI` variables pytest-invenio reads, for a run against another stack:
+#: `REDIS_URL=redis://localhost:26379 uv run poe tests`.
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379")
+
+
 @pytest.fixture(scope="module")
-def app_config(app_config):
-    """Create temporary instance dir for each test."""
+def app_config(app_config, search_hosts):
+    """Point the test application at the services of the test stack.
+
+    A development instance reaches the tests as well: `rero_mef.celery` loads `.env` when it is imported, which
+    states `INVENIO_INSTANCE_PATH`, and that folder's `invenio.cfg` is read before these values. Every endpoint is
+    therefore stated here, where the instance cannot send a test run at the stack it serves itself.
+    """
     app_config["CELERY_BROKER_URL"] = "memory://"
     app_config["RATELIMIT_STORAGE_URI"] = "memory://"
     app_config["CACHE_TYPE"] = "SimpleCache"
-    app_config["ACCOUNTS_SESSION_REDIS_URL"] = "redis://localhost:6379/1"
+    # The session gets database 1 of whichever server `REDIS_URL` names, whether or not it states one itself.
+    app_config["ACCOUNTS_SESSION_REDIS_URL"] = urlunsplit(urlsplit(REDIS_URL)._replace(path="/1"))
+    app_config["SEARCH_HOSTS"] = search_hosts
+    # `invenio-search` reads this deprecated alias only while `SEARCH_HOSTS` is unset. Nulled so an instance
+    # stating the old name cannot reach a cluster of its own.
     app_config["SEARCH_ELASTIC_HOSTS"] = None
     app_config["CELERY_CACHE_BACKEND"] = "memory"
     app_config["CELERY_RESULT_BACKEND"] = "cache"

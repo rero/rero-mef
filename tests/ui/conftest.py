@@ -12,6 +12,11 @@ import yaml
 
 from rero_mef.utils import add_oai_source
 
+#: Instance folder the applications are built with, read while this module is imported: pytest-invenio points
+#: `INVENIO_INSTANCE_PATH` at a temporary folder of its own once a module starts, and the applications keep the
+#: folder they were built with.
+INSTANCE_PATH = os.environ["INVENIO_INSTANCE_PATH"]
+
 # Webpack asset keys referenced by invenio_theme and rero_mef templates.
 _WEBPACK_MANIFEST_STUBS = {
     "theme.css": "/static/dist/theme.css",
@@ -28,12 +33,12 @@ _WEBPACK_MANIFEST_STUBS = {
 
 @pytest.fixture(scope="session", autouse=True)
 def webpack_manifest():
-    """Create a stub webpack manifest so UI templates render without assets."""
-    dist_dir = os.path.join(
-        os.environ.get("INVENIO_INSTANCE_PATH", os.path.join(os.getcwd(), ".venv/var/instance")),
-        "static",
-        "dist",
-    )
+    """Create a stub webpack manifest so UI templates render without assets.
+
+    It has to land in the instance folder the applications are built with, which `INVENIO_INSTANCE_PATH` names only
+    until pytest-invenio points that variable at a temporary folder of its own for the duration of a module.
+    """
+    dist_dir = os.path.join(INSTANCE_PATH, "static", "dist")
     os.makedirs(dist_dir, exist_ok=True)
     manifest_path = os.path.join(dist_dir, "manifest.json")
     if not os.path.exists(manifest_path):
