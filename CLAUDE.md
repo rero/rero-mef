@@ -47,7 +47,7 @@ uv run poe format   # ruff format
 - The rule sets use `extend-select`, which extends ruff's *default* selection: upgrading ruff can enable new rules without any config change.
 - Imports: standard library → third-party → local, sorted within groups. Always place imports at the top of the file. Deferred (inside-function) imports are only acceptable when they genuinely break a circular dependency — document why with a comment in that case.
 - Since Python 3.14 (PEP 758), parentheses around multiple exception types are optional when the `except`/`except*` clause has no `as` target: `except ValueError, AttributeError:` is valid and equivalent to `except (ValueError, AttributeError):` — not the old Python 2 comma syntax. `ruff format` removes the parentheses in that case; this is expected, not a bug. Parentheses are still required when binding the exception: `except (ValueError, AttributeError) as error:`.
-- Commit messages: [Conventional Commits](https://www.conventionalcommits.org).
+- Commit messages follow Conventional Commits; the `commit-message` skill holds the conventions and the workflow, so invoke it instead of writing one by hand. In every case, whatever the default of the harness, never sign a commit as an LLM: no Claude or Anthropic trailer.
 
 ### Sourcery
 
