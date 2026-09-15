@@ -13,7 +13,7 @@ from rero_mef.concepts import (
     ConceptMefRecord,
     ConceptReroRecord,
 )
-from rero_mef.utils import export_json_records, number_records_in_file
+from rero_mef.utils import build_ref_string, export_json_records, number_records_in_file
 
 SCHEMA_URL = "https://mef.rero.ch/schemas/concepts_mef"
 
@@ -24,9 +24,20 @@ def _no_md5(record):
 
 def test_create_concept_record(app, concept_rero_data, concept_idref_data, tmpdir):
     """Test create concept record."""
-    idref_record, action = ConceptIdrefRecord.create_or_update(data=concept_idref_data, dbcommit=True, reindex=True)
+    # This fixture is a record IdRef has deleted. One we never held is not created at all.
+    discarded, action = ConceptIdrefRecord.create_or_update(data=concept_idref_data, dbcommit=True, reindex=True)
+    assert action == Action.DISCARD
+    assert discarded is None
+    assert ConceptIdrefRecord.get_record_by_pid("050548115") is None
+
+    # It only reaches the database the way it really does: named and live, deleted by a later harvest.
+    live_data = {k: v for k, v in concept_idref_data.items() if k != "deleted"}
+    idref_record, action = ConceptIdrefRecord.create_or_update(data=live_data, dbcommit=True, reindex=True)
     assert action == Action.CREATE
     assert idref_record["pid"] == "050548115"
+
+    idref_record, action = ConceptIdrefRecord.create_or_update(data=concept_idref_data, dbcommit=True, reindex=True)
+    assert action == Action.REPLACE
 
     m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_actions == {m_record.pid: Action.CREATE}
@@ -155,8 +166,8 @@ def test_create_concept_frbnf_record(app, concept_idref_frbnf_data_close, concep
         "type": "bf:Topic",
     }
 
-    assert idref_record.association_identifier == "FRBNF12352687"
-    assert gnd_record.association_identifier == "FRBNF12352687"
+    assert idref_record.association.identifiers == {"FRBNF12352687"}
+    assert gnd_record.association.identifiers == {"FRBNF12352687"}
 
     # Delete identifiedBy `FRBNF12352687` from IDREF record
     idref_record["identifiedBy"] = [
@@ -287,8 +298,10 @@ def test_create_concept_frbnf_record(app, concept_idref_frbnf_data_close, concep
     gnd_record = ConceptGndRecord.create_or_update(data=gnd_record, dbcommit=True, reindex=True)
     ConceptGndRecord.flush_indexes()
     m_record, m_actions = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
-    mef_count = ConceptMefRecord.count()
-    assert m_actions == {m_record.pid: Action.REPLACE, str(mef_count): Action.CREATE}
+    # The GND concept it no longer links to was given a MEF record of its own.
+    gnd_mef_records = ConceptMefRecord.get_mef(entity_pid=concept_gnd_frbnf_data_close["pid"], entity_name="gnd")
+    assert len(gnd_mef_records) == 1
+    assert m_actions == {m_record.pid: Action.REPLACE, gnd_mef_records[0].pid: Action.CREATE}
     assert "md5" in m_record
     assert _no_md5(m_record) == {
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
@@ -300,7 +313,6 @@ def test_create_concept_frbnf_record(app, concept_idref_frbnf_data_close, concep
 
 def test_create_concept_frbnf_record_exact(app, concept_idref_frbnf_data_exact, concept_gnd_frbnf_data_exact, tmpdir):
     """Test create concept record with frbnf links."""
-    mef_count = ConceptMefRecord.count()
     # Create idref record with identifiedBy `FRBNF12352687`.
     idref_record, action = ConceptIdrefRecord.create_or_update(
         data=concept_idref_frbnf_data_exact, dbcommit=True, reindex=True
@@ -324,16 +336,61 @@ def test_create_concept_frbnf_record_exact(app, concept_idref_frbnf_data_exact, 
         "$schema": f"{SCHEMA_URL}/mef-concept-v0.0.1.json",
         "idref": {"$ref": f"https://mef.rero.ch/api/concepts/idref/{concept_idref_frbnf_data_exact['pid']}"},
         "gnd": {"$ref": f"https://mef.rero.ch/api/concepts/gnd/{concept_gnd_frbnf_data_exact['pid']}"},
-        "pid": f"{mef_count + 1}",
+        "pid": m_record.pid,
         "type": "bf:Topic",
     }
 
 
+def test_create_concept_live_frbnf_record(app, concept_idref_027269698_data, concept_gnd_040048454_data):
+    """Link the supplied live IdRef and GND concept records."""
+    idref_record, _ = ConceptIdrefRecord.create_or_update(
+        data=concept_idref_027269698_data, dbcommit=True, reindex=True
+    )
+    gnd_record, _ = ConceptGndRecord.create_or_update(data=concept_gnd_040048454_data, dbcommit=True, reindex=True)
+
+    ConceptIdrefRecord.flush_indexes()
+    ConceptGndRecord.flush_indexes()
+
+    mef_record, _ = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
+
+    assert mef_record["idref"]["$ref"].endswith("/idref/027269698")
+    assert mef_record["gnd"]["$ref"].endswith("/gnd/040048454")
+    assert gnd_record.association_info["record"].pid == idref_record.pid
+
+
+def test_create_concept_live_frbnf_record_multiple_close_matches(
+    app, concept_idref_027269698_data, concept_gnd_040048454_data
+):
+    """Do not link when a GND record has multiple BNF close-match FRBNFs."""
+    gnd_data = deepcopy(concept_gnd_040048454_data)
+    gnd_data["closeMatch"].append(
+        {
+            "authorized_access_point": "Arbres",
+            "identifiedBy": [{"source": "BNF", "type": "bf:Nbn", "value": "FRBNF11934787"}],
+            "source": "BNF",
+        }
+    )
+
+    idref_record, _ = ConceptIdrefRecord.create_or_update(
+        data=concept_idref_027269698_data, dbcommit=True, reindex=True
+    )
+    gnd_record, _ = ConceptGndRecord.create_or_update(data=gnd_data, dbcommit=True, reindex=True)
+
+    ConceptIdrefRecord.flush_indexes()
+    ConceptGndRecord.flush_indexes()
+
+    mef_record, _ = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
+
+    assert not gnd_record.association.identifiers
+    assert gnd_record.association_info["record"] is None
+    assert "gnd" not in mef_record
+
+
 def test_concept_record_delete(app, concept_idref_data):
     """ConceptRecord.delete removes the ref from linked MEF records."""
-    idref_record, _ = ConceptIdrefRecord.create_or_update(
-        data=deepcopy(concept_idref_data), dbcommit=True, reindex=True
-    )
+    # the fixture is a deleted record, which is never created; this test needs one that is stored
+    live_data = {k: v for k, v in concept_idref_data.items() if k != "deleted"}
+    idref_record, _ = ConceptIdrefRecord.create_or_update(data=deepcopy(live_data), dbcommit=True, reindex=True)
     m_record, _ = idref_record.create_or_update_mef(dbcommit=True, reindex=True)
     assert m_record.get("idref") is not None
 
@@ -365,3 +422,48 @@ def test_concepts_utils_get_concept_classes(app):
     classes_with_mef = get_concept_classes(without_mef=False)
     assert isinstance(classes_with_mef, dict)
     assert len(classes_with_mef) >= len(classes)
+
+
+def _mef_with(idref_pid, gnd_pid):
+    """Create a concept MEF record holding these two entities."""
+    return ConceptMefRecord.create(
+        data={
+            "type": "bf:Topic",
+            "idref": {"$ref": build_ref_string(entity_type="concepts", entity_name="idref", entity_pid=idref_pid)},
+            "gnd": {"$ref": build_ref_string(entity_type="concepts", entity_name="gnd", entity_pid=gnd_pid)},
+        },
+        dbcommit=True,
+        reindex=True,
+    )
+
+
+def test_multiple_mef_records_are_reduced_to_one(app, concept_idref_link_data, concept_gnd_link_data):
+    """A concept held by several MEF records keeps the oldest one, and no new one is created."""
+    idref_record, _ = ConceptIdrefRecord.create_or_update(data=concept_idref_link_data, dbcommit=True, reindex=True)
+    gnd_record, _ = ConceptGndRecord.create_or_update(data=concept_gnd_link_data, dbcommit=True, reindex=True)
+    rival_data = deepcopy(concept_gnd_link_data)
+    rival_data["pid"] = f"{gnd_record.pid}999"
+    rival_data["authorized_access_point"] = "Rival claiming the same BNF number"
+    rival_record, _ = ConceptGndRecord.create_or_update(data=rival_data, dbcommit=True, reindex=True)
+    ConceptIdrefRecord.flush_indexes()
+    ConceptGndRecord.flush_indexes()
+
+    # Both GND concepts claim the number of the IdRef one, each in a MEF record of its own.
+    first = _mef_with(idref_record.pid, gnd_record.pid)
+    second = _mef_with(idref_record.pid, rival_record.pid)
+    ConceptMefRecord.flush_indexes()
+    assert len(ConceptMefRecord.get_mef(entity_pid=idref_record.pid, entity_name="idref")) == 2
+    stored = ConceptMefRecord.count()
+
+    idref_record.create_or_update_mef(dbcommit=True, reindex=True)
+    ConceptMefRecord.flush_indexes()
+
+    # The oldest keeps the IdRef concept, alone: the rules give it no partner while two GND records claim it.
+    mef_records = ConceptMefRecord.get_mef(entity_pid=idref_record.pid, entity_name="idref")
+    assert [mef_record.pid for mef_record in mef_records] == [first.pid]
+    assert ConceptMefRecord.get_record_by_pid(first.pid).ref_pids == {"idref": idref_record.pid}
+    # The other one gave up the IdRef reference and stays the MEF record of the GND concept it holds.
+    assert ConceptMefRecord.get_record_by_pid(second.pid).ref_pids == {"gnd": rival_record.pid}
+    # The GND concept the oldest record was paired with got its own, and that is the only record created.
+    assert len(ConceptMefRecord.get_mef(entity_pid=gnd_record.pid, entity_name="gnd")) == 1
+    assert ConceptMefRecord.count() == stored + 1

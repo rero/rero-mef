@@ -47,10 +47,22 @@ class Transformation:
         - s Sachbegriff
         - u Werk
         """
-        for field_075 in self.marc.get_fields("075") or []:
-            if field_075.get("2") == "gndgen":
-                return RECORD_TYPES.get(field_075["b"])
-        return None
+        return RECORD_TYPES.get(self.get_type_code())
+
+    def get_type_code(self):
+        """Get the entity type code `075 $b` states under `$2 gndgen`.
+
+        :returns: The code GND states, or None when no field states one.
+        """
+        return next(
+            (
+                code
+                for field_075 in self.marc.get_fields("075") or []
+                if field_075.get("2") == "gndgen"
+                if (code := field_075.get("b"))
+            ),
+            None,
+        )
 
     def _transform(self):
         """Call the transformation functions."""
@@ -65,6 +77,10 @@ class Transformation:
             if self.logger and self.verbose:
                 self.logger.warning(f"NO TRANSFORMATION: {msg}")
             self.json_dict = {"NO TRANSFORMATION": msg}
+            # Only a type GND states says the record stopped being a place. A record stating none, because no
+            # `075` carries `$2 gndgen`, states nothing and is left alone: it merely could not be read.
+            if self.get_type_code():
+                self.json_dict["UNSUPPORTED TYPE"] = True
             self.trans_gnd_pid()
 
     @property
@@ -136,13 +152,17 @@ class Transformation:
                 "subdelimiter": ", ",
             }
         ]
-        try:
+        # A record without its heading field has nothing to name it. Leaving `authorized_access_point` unset makes
+        # the schema, which requires it, refuse the record, rather than storing a placeholder that reads like a
+        # heading: GND ships such records for its deletions.
+        # Only the missing field is tolerated. Any other failure has to surface: a record that merely
+        # failed to transform would otherwise look like one the source stopped naming, and
+        # `create_or_update` deletes those.
+        with contextlib.suppress(KeyError):
             if authorized_ap := build_string_from_field(
                 field=self.marc[tag], subfields=subfields, tag_grouping=tag_grouping
             ):
                 self.json_dict["authorized_access_point"] = authorized_ap
-        except Exception:
-            self.json_dict["authorized_access_point"] = f"TAG: {tag} NOT FOUND"
 
     def trans_gnd_variant_access_point(self):
         """Transformation variant_access_point 451."""

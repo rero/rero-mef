@@ -16010,18 +16010,7 @@
     "authorized_access_point": "Endokrine Regulation"
   },
   {
-    "md5": "db3323bd073fdcc930244146e056842b",
-    "pid": "041142403",
-    "note": [
-      {
-        "label": [
-          "Sammlung von Rezepten aller Art (RDA AH-007).",
-          "Vorzugsweise mit dem Endprodukt (z. B. Kartoffelgericht, Gebäck) zu kombinieren, im Einzelnen siehe auch die Hinweise bei den jeweiligen Schlagwörtern (z.B. Wildbret u. ä.)."
-        ],
-        "noteType": "general"
-      }
-    ],
-    "type": "bf:Topic",
+    "authorized_access_point": "Kochbuch",
     "broader": [
       {
         "authorized_access_point": "Anleitung"
@@ -16029,103 +16018,118 @@
     ],
     "closeMatch": [
       {
-        "source": "GND",
+        "authorized_access_point": "Food writing",
         "identifiedBy": [
           {
-            "type": "bf:Nbn",
-            "value": "(DE-101)1133792855",
-            "source": "GND"
-          },
-          {
-            "type": "bf:Nbn",
-            "value": "sh96003769",
-            "source": "DLC"
-          },
-          {
+            "source": "DLC",
             "type": "uri",
             "value": "http://id.loc.gov/authorities/subjects/sh96003769"
+          },
+          {
+            "source": "DLC",
+            "type": "bf:Nbn",
+            "value": "sh96003769"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1133792855"
           }
         ],
-        "authorized_access_point": "Food writing"
+        "source": "DLC"
       },
       {
-        "source": "GND",
+        "authorized_access_point": "Livres de cuisine",
         "identifiedBy": [
           {
-            "type": "bf:Nbn",
-            "value": "(DE-101)1133792855",
-            "source": "GND"
-          },
-          {
-            "type": "bf:Nbn",
-            "value": "FRBNF12425736",
-            "source": "BNF"
-          },
-          {
+            "source": "BNF",
             "type": "uri",
             "value": "https://data.bnf.fr/ark:/12148/cb12425736p"
+          },
+          {
+            "source": "BNF",
+            "type": "bf:Nbn",
+            "value": "FRBNF12425736"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1133792855"
           }
         ],
-        "authorized_access_point": "Livres de cuisine"
+        "source": "BNF"
       },
       {
-        "source": "GND",
+        "authorized_access_point": "Livres de cuisine",
         "identifiedBy": [
           {
-            "type": "bf:Nbn",
-            "value": "(DE-101)1134838743",
-            "source": "GND"
-          },
-          {
-            "type": "bf:Nbn",
-            "value": "FRBNF12425736",
-            "source": "BNF"
-          },
-          {
+            "source": "BNF",
             "type": "uri",
             "value": "https://data.bnf.fr/ark:/12148/cb12425736p"
+          },
+          {
+            "source": "BNF",
+            "type": "bf:Nbn",
+            "value": "FRBNF12425736"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1134838743"
           }
         ],
-        "authorized_access_point": "Livres de cuisine"
+        "source": "BNF"
       },
       {
-        "source": "GND",
+        "authorized_access_point": "Libros de cocina",
         "identifiedBy": [
           {
-            "type": "bf:Nbn",
-            "value": "(DE-101)1254449876",
-            "source": "GND"
-          },
-          {
-            "type": "bf:Nbn",
-            "value": "XX556809",
-            "source": "SPMABN"
-          },
-          {
+            "source": "SPMABN",
             "type": "uri",
             "value": "https://datos.bne.es/resource/XX556809"
+          },
+          {
+            "source": "SPMABN",
+            "type": "bf:Nbn",
+            "value": "XX556809"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1254449876"
           }
         ],
-        "authorized_access_point": "Libros de cocina"
+        "source": "SPMABN"
       }
     ],
     "identifiedBy": [
       {
+        "source": "GND",
         "type": "uri",
-        "value": "http://d-nb.info/gnd/4114240-8",
-        "source": "GND"
+        "value": "http://d-nb.info/gnd/4114240-8"
       },
       {
+        "source": "GND",
         "type": "bf:Nbn",
-        "value": "(DE-101)041142403",
-        "source": "GND"
+        "value": "(DE-101)041142403"
       },
       {
+        "source": "GND",
         "type": "bf:Nbn",
-        "value": "(DE-588)4114240-8",
-        "source": "GND"
+        "value": "(DE-588)4114240-8"
       }
     ],
+    "note": [
+      {
+        "label": [
+          "Sammlung von Rezepten aller Art.",
+          "Vorzugsweise mit dem Endprodukt (z. B. Kartoffelgericht, Gebäck) zu kombinieren, im Einzelnen siehe auch die Hinweise bei den jeweiligen Schlagwörtern (z.B. Wildbret u. ä.)."
+        ],
+        "noteType": "general"
+      }
+    ],
+    "pid": "041142403",
+    "type": "bf:Topic",
     "variant_access_point": [
       "Kochen",
       "Kochrezept",
@@ -16133,7 +16137,7 @@
       "Rezeptsammlung",
       "Rezept"
     ],
-    "authorized_access_point": "Kochbuch"
+    "md5": "3e64f203fd9413d3b0a1b0c3e8b01cd6"
   },
   {
     "md5": "82600987bac318189f140f3e7069f0f5",
@@ -56739,8 +56743,110 @@
     "authorized_access_point": "Rutheniumkomplexe"
   },
   {
-    "md5": "31b32b499594874bf5339777d4bc5819",
-    "pid": "042667208",
+    "authorized_access_point": "Verlegerin",
+    "closeMatch": [
+      {
+        "authorized_access_point": "Women editors",
+        "identifiedBy": [
+          {
+            "source": "DLC",
+            "type": "uri",
+            "value": "http://id.loc.gov/authorities/subjects/sh92005004"
+          },
+          {
+            "source": "DLC",
+            "type": "bf:Nbn",
+            "value": "sh92005004"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1134507925"
+          }
+        ],
+        "source": "DLC"
+      },
+      {
+        "authorized_access_point": "Women publishers",
+        "identifiedBy": [
+          {
+            "source": "DLC",
+            "type": "uri",
+            "value": "http://id.loc.gov/authorities/subjects/sh85147695"
+          },
+          {
+            "source": "DLC",
+            "type": "bf:Nbn",
+            "value": "sh85147695"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1331604567"
+          }
+        ],
+        "source": "DLC"
+      },
+      {
+        "authorized_access_point": "Éditrices",
+        "identifiedBy": [
+          {
+            "source": "BNF",
+            "type": "uri",
+            "value": "https://data.bnf.fr/ark:/12148/cb13505351c"
+          },
+          {
+            "source": "BNF",
+            "type": "bf:Nbn",
+            "value": "FRBNF13505351"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1134507925"
+          }
+        ],
+        "source": "BNF"
+      },
+      {
+        "authorized_access_point": "Éditrices",
+        "identifiedBy": [
+          {
+            "source": "BNF",
+            "type": "uri",
+            "value": "https://data.bnf.fr/ark:/12148/cb13505351c"
+          },
+          {
+            "source": "BNF",
+            "type": "bf:Nbn",
+            "value": "FRBNF13505351"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1331604567"
+          }
+        ],
+        "source": "BNF"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "source": "GND",
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/4266720-3"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-101)042667208"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-588)4266720-3"
+      }
+    ],
     "note": [
       {
         "label": [
@@ -56749,7 +56855,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Topic",
+    "pid": "042667208",
     "related": [
       {
         "authorized_access_point": "Verlag"
@@ -56758,109 +56864,12 @@
         "authorized_access_point": "Verleger"
       }
     ],
-    "closeMatch": [
-      {
-        "source": "GND",
-        "identifiedBy": [
-          {
-            "type": "bf:Nbn",
-            "value": "(DE-101)1134507925",
-            "source": "GND"
-          },
-          {
-            "type": "bf:Nbn",
-            "value": "sh92005004",
-            "source": "DLC"
-          },
-          {
-            "type": "uri",
-            "value": "http://id.loc.gov/authorities/subjects/sh92005004"
-          }
-        ],
-        "authorized_access_point": "Women editors"
-      },
-      {
-        "source": "GND",
-        "identifiedBy": [
-          {
-            "type": "bf:Nbn",
-            "value": "(DE-101)1331604567",
-            "source": "GND"
-          },
-          {
-            "type": "bf:Nbn",
-            "value": "sh85147695",
-            "source": "DLC"
-          },
-          {
-            "type": "uri",
-            "value": "http://id.loc.gov/authorities/subjects/sh85147695"
-          }
-        ],
-        "authorized_access_point": "Women publishers"
-      },
-      {
-        "source": "GND",
-        "identifiedBy": [
-          {
-            "type": "bf:Nbn",
-            "value": "(DE-101)1134507925",
-            "source": "GND"
-          },
-          {
-            "type": "bf:Nbn",
-            "value": "FRBNF13505351",
-            "source": "BNF"
-          },
-          {
-            "type": "uri",
-            "value": "https://data.bnf.fr/ark:/12148/cb13505351c"
-          }
-        ],
-        "authorized_access_point": "Éditrices"
-      },
-      {
-        "source": "GND",
-        "identifiedBy": [
-          {
-            "type": "bf:Nbn",
-            "value": "(DE-101)1331604567",
-            "source": "GND"
-          },
-          {
-            "type": "bf:Nbn",
-            "value": "FRBNF13505351",
-            "source": "BNF"
-          },
-          {
-            "type": "uri",
-            "value": "https://data.bnf.fr/ark:/12148/cb13505351c"
-          }
-        ],
-        "authorized_access_point": "Éditrices"
-      }
-    ],
-    "identifiedBy": [
-      {
-        "type": "uri",
-        "value": "http://d-nb.info/gnd/4266720-3",
-        "source": "GND"
-      },
-      {
-        "type": "bf:Nbn",
-        "value": "(DE-101)042667208",
-        "source": "GND"
-      },
-      {
-        "type": "bf:Nbn",
-        "value": "(DE-588)4266720-3",
-        "source": "GND"
-      }
-    ],
+    "type": "bf:Topic",
     "variant_access_point": [
-      "Verlagsleiterin"
+      "Verlagsleiterin",
+      "Verlagsbuchhändlerin"
     ],
-    "authorized_access_point": "Verlegerin"
+    "md5": "a959542a22e3614139f222741d24e3e5"
   },
   {
     "md5": "ed5237924acf8ef954567434c96afa08",
@@ -59552,8 +59561,47 @@
     "authorized_access_point": "Durchgang (Astronomie)"
   },
   {
-    "md5": "9c8159c517102c68f21ce78911ea53ce",
-    "pid": "04291373X",
+    "authorized_access_point": "Sieg",
+    "closeMatch": [
+      {
+        "authorized_access_point": "Victoire",
+        "identifiedBy": [
+          {
+            "source": "BNF",
+            "type": "uri",
+            "value": "https://data.bnf.fr/ark:/12148/cb151000210"
+          },
+          {
+            "source": "BNF",
+            "type": "bf:Nbn",
+            "value": "FRBNF12308292"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1334552770"
+          }
+        ],
+        "source": "BNF"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "source": "GND",
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/4291373-1"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-101)04291373X"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-588)4291373-1"
+      }
+    ],
     "note": [
       {
         "label": [
@@ -59562,52 +59610,14 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Topic",
+    "pid": "04291373X",
     "related": [
       {
         "authorized_access_point": "Niederlage"
       }
     ],
-    "closeMatch": [
-      {
-        "source": "GND",
-        "identifiedBy": [
-          {
-            "type": "bf:Nbn",
-            "value": "(DE-101)1334552770",
-            "source": "GND"
-          },
-          {
-            "type": "bf:Nbn",
-            "value": "FRBNF12308292",
-            "source": "BNF"
-          },
-          {
-            "type": "uri",
-            "value": "https://data.bnf.fr/ark:/12148/cb151000210"
-          }
-        ],
-        "authorized_access_point": "Victoire"
-      }
-    ],
-    "identifiedBy": [
-      {
-        "type": "uri",
-        "value": "http://d-nb.info/gnd/4291373-1",
-        "source": "GND"
-      },
-      {
-        "type": "bf:Nbn",
-        "value": "(DE-101)04291373X",
-        "source": "GND"
-      },
-      {
-        "type": "bf:Nbn",
-        "value": "(DE-588)4291373-1",
-        "source": "GND"
-      }
-    ],
-    "authorized_access_point": "Sieg"
+    "type": "bf:Topic",
+    "md5": "8df5375a5cf0aad685de1f8df8e128e0"
   },
   {
     "md5": "4fce8fff35f2fe7b977b76134ee617dd",
@@ -72669,8 +72679,96 @@
     "authorized_access_point": "Double-Chooz-Experiment"
   },
   {
-    "md5": "b01fac1f4240de45d0635205639e6b53",
-    "pid": "107366371X",
+    "authorized_access_point": "Hybridkrieg",
+    "broader": [
+      {
+        "authorized_access_point": "Kriegführung"
+      }
+    ],
+    "closeMatch": [
+      {
+        "authorized_access_point": "Guerra ibrida",
+        "identifiedBy": [
+          {
+            "source": "IT",
+            "type": "uri",
+            "value": "http://purl.org/bncf/tid/76567"
+          },
+          {
+            "source": "IT",
+            "type": "bf:Nbn",
+            "value": "76567"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1383959269"
+          }
+        ],
+        "source": "IT"
+      }
+    ],
+    "exactMatch": [
+      {
+        "authorized_access_point": "Hybrid warfare",
+        "identifiedBy": [
+          {
+            "source": "DLC",
+            "type": "uri",
+            "value": "http://id.loc.gov/authorities/subjects/sh2016001601"
+          },
+          {
+            "source": "DLC",
+            "type": "bf:Nbn",
+            "value": "sh2016001601"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1217682147"
+          }
+        ],
+        "source": "DLC"
+      },
+      {
+        "authorized_access_point": "Guerre hybride",
+        "identifiedBy": [
+          {
+            "source": "BNF",
+            "type": "uri",
+            "value": "https://data.bnf.fr/ark:/12148/cb18146328x"
+          },
+          {
+            "source": "BNF",
+            "type": "bf:Nbn",
+            "value": "FRBNF18146328"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1217682147"
+          }
+        ],
+        "source": "BNF"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "source": "GND",
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/107366371X"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-101)107366371X"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-588)107366371X"
+      }
+    ],
     "note": [
       {
         "label": [
@@ -72685,71 +72783,13 @@
         "noteType": "general"
       }
     ],
+    "pid": "107366371X",
     "type": "bf:Topic",
-    "broader": [
-      {
-        "authorized_access_point": "Kriegführung"
-      }
-    ],
-    "exactMatch": [
-      {
-        "source": "GND",
-        "identifiedBy": [
-          {
-            "type": "bf:Nbn",
-            "value": "(DE-101)1217682147",
-            "source": "GND"
-          },
-          {
-            "type": "bf:Nbn",
-            "value": "sh2016001601",
-            "source": "DLC"
-          },
-          {
-            "type": "uri",
-            "value": "http://id.loc.gov/authorities/subjects/sh2016001601"
-          }
-        ],
-        "authorized_access_point": "Hybrid warfare"
-      },
-      {
-        "source": "GND",
-        "identifiedBy": [
-          {
-            "type": "bf:Nbn",
-            "value": "(DE-101)1217682147",
-            "source": "GND"
-          },
-          {
-            "type": "uri",
-            "value": "https://data.bnf.fr/ark:/12148/cb18146328x"
-          }
-        ],
-        "authorized_access_point": "Guerre hybride"
-      }
-    ],
-    "identifiedBy": [
-      {
-        "type": "uri",
-        "value": "http://d-nb.info/gnd/107366371X",
-        "source": "GND"
-      },
-      {
-        "type": "bf:Nbn",
-        "value": "(DE-101)107366371X",
-        "source": "GND"
-      },
-      {
-        "type": "bf:Nbn",
-        "value": "(DE-588)107366371X",
-        "source": "GND"
-      }
-    ],
     "variant_access_point": [
       "Hybrider Krieg",
       "Hybride Kriegführung"
     ],
-    "authorized_access_point": "Hybridkrieg"
+    "md5": "4942ecac613eae1a7f0f3bfef75ac4f4"
   },
   {
     "md5": "c43f84aaabbb093972d481613267c7a4",
@@ -95366,8 +95406,55 @@
     "authorized_access_point": "775 Jahre Stadt Borken"
   },
   {
-    "md5": "6c09dc95ccf9f61c25ee916387b59c16",
-    "pid": "1335228187",
+    "authorized_access_point": "Extraktivismus",
+    "broader": [
+      {
+        "authorized_access_point": "Rohstoffwirtschaft"
+      },
+      {
+        "authorized_access_point": "Entwicklungsmodell"
+      }
+    ],
+    "exactMatch": [
+      {
+        "authorized_access_point": "Extractivisme",
+        "identifiedBy": [
+          {
+            "source": "BNF",
+            "type": "uri",
+            "value": "https://data.bnf.fr/ark:/12148/cb17034367t"
+          },
+          {
+            "source": "BNF",
+            "type": "bf:Nbn",
+            "value": "FRBNF17034367"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1348416270"
+          }
+        ],
+        "source": "BNF"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "source": "GND",
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/1335228187"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-101)1335228187"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-588)1335228187"
+      }
+    ],
     "note": [
       {
         "label": [
@@ -95383,15 +95470,7 @@
         "noteType": "general"
       }
     ],
-    "type": "bf:Topic",
-    "broader": [
-      {
-        "authorized_access_point": "Rohstoffwirtschaft"
-      },
-      {
-        "authorized_access_point": "Entwicklungsmodell"
-      }
-    ],
+    "pid": "1335228187",
     "related": [
       {
         "authorized_access_point": "Ausbeutung"
@@ -95403,40 +95482,12 @@
         "authorized_access_point": "Rohstoffexport"
       }
     ],
-    "exactMatch": [
-      {
-        "source": "GND",
-        "identifiedBy": [
-          {
-            "type": "uri",
-            "value": "https://data.bnf.fr/ark:/12148/cb17034367t"
-          }
-        ],
-        "authorized_access_point": "Extractivisme"
-      }
-    ],
-    "identifiedBy": [
-      {
-        "type": "uri",
-        "value": "http://d-nb.info/gnd/1335228187",
-        "source": "GND"
-      },
-      {
-        "type": "bf:Nbn",
-        "value": "(DE-101)1335228187",
-        "source": "GND"
-      },
-      {
-        "type": "bf:Nbn",
-        "value": "(DE-588)1335228187",
-        "source": "GND"
-      }
-    ],
+    "type": "bf:Topic",
     "variant_access_point": [
       "Neo-Extraktivismus",
       "Neuextraktivismus"
     ],
-    "authorized_access_point": "Extraktivismus"
+    "md5": "6143ce1e301f3d18e8442137910fb1ba"
   },
   {
     "md5": "b428829ee70be6834b14e2622becc748",
@@ -109247,9 +109298,7 @@
     "authorized_access_point": "guot"
   },
   {
-    "md5": "7df6852beaee5f7b12dc9e9585e088a5",
-    "pid": "95439836X",
-    "type": "bf:Topic",
+    "authorized_access_point": "Materialität",
     "broader": [
       {
         "authorized_access_point": "Materie"
@@ -109257,47 +109306,50 @@
     ],
     "closeMatch": [
       {
-        "source": "GND",
+        "authorized_access_point": "Matérialité",
         "identifiedBy": [
           {
-            "type": "bf:Nbn",
-            "value": "(DE-101)1332896871",
-            "source": "GND"
-          },
-          {
-            "type": "bf:Nbn",
-            "value": "FRBNF177105",
-            "source": "BNF"
-          },
-          {
+            "source": "BNF",
             "type": "uri",
             "value": "https://data.bnf.fr/ark:/12148/cb17710562g"
+          },
+          {
+            "source": "BNF",
+            "type": "bf:Nbn",
+            "value": "FRBNF17710562"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1332896871"
           }
         ],
-        "authorized_access_point": "Matérialité"
+        "source": "BNF"
       }
     ],
     "identifiedBy": [
       {
+        "source": "GND",
         "type": "uri",
-        "value": "http://d-nb.info/gnd/4512697-5",
-        "source": "GND"
+        "value": "http://d-nb.info/gnd/4512697-5"
       },
       {
+        "source": "GND",
         "type": "bf:Nbn",
-        "value": "(DE-101)95439836X",
-        "source": "GND"
+        "value": "(DE-101)95439836X"
       },
       {
+        "source": "GND",
         "type": "bf:Nbn",
-        "value": "(DE-588)4512697-5",
-        "source": "GND"
+        "value": "(DE-588)4512697-5"
       }
     ],
+    "pid": "95439836X",
+    "type": "bf:Topic",
     "variant_access_point": [
       "Stofflichkeit"
     ],
-    "authorized_access_point": "Materialität"
+    "md5": "ce584e739545cb4c91ed174d94022c22"
   },
   {
     "md5": "3a6fadcd5e1f6599cb9bc46810b1d862",
@@ -125106,5 +125158,363 @@
       "type": "redirect_to",
       "value": "948059028"
     }
+  },
+  {
+    "authorized_access_point": "Canon EOS 500D",
+    "broader": [
+      {
+        "authorized_access_point": "Spiegelreflexkamera"
+      },
+      {
+        "authorized_access_point": "Digitalkamera"
+      }
+    ],
+    "closeMatch": [
+      {
+        "authorized_access_point": "Canon (appareils-photo)",
+        "identifiedBy": [
+          {
+            "source": "BNF",
+            "type": "uri",
+            "value": "https://data.bnf.fr/ark:/12148/cb11931111n"
+          },
+          {
+            "source": "BNF",
+            "type": "bf:Nbn",
+            "value": "FRBNF11931111"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1134821891"
+          }
+        ],
+        "source": "BNF"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "source": "GND",
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/7663415-2"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-101)994914148"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-588)7663415-2"
+      }
+    ],
+    "pid": "994914148",
+    "type": "bf:Topic",
+    "md5": "ffa284beb68e1e5488524350485b117f"
+  },
+  {
+    "authorized_access_point": "Canon EOS 30",
+    "broader": [
+      {
+        "authorized_access_point": "Spiegelreflexkamera"
+      }
+    ],
+    "closeMatch": [
+      {
+        "authorized_access_point": "Canon (appareils-photo)",
+        "identifiedBy": [
+          {
+            "source": "BNF",
+            "type": "uri",
+            "value": "https://data.bnf.fr/ark:/12148/cb11931111n"
+          },
+          {
+            "source": "BNF",
+            "type": "bf:Nbn",
+            "value": "FRBNF11931111"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1134821921"
+          }
+        ],
+        "source": "BNF"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "source": "GND",
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/4617684-6"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-101)960401776"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-588)4617684-6"
+      }
+    ],
+    "pid": "960401776",
+    "type": "bf:Topic",
+    "md5": "9114491e0694dc5f9b2afa4f6534d78e"
+  },
+  {
+    "authorized_access_point": "Canon (Marke)",
+    "closeMatch": [
+      {
+        "authorized_access_point": "Canon camera",
+        "identifiedBy": [
+          {
+            "source": "DLC",
+            "type": "uri",
+            "value": "http://id.loc.gov/authorities/subjects/sh85019645"
+          },
+          {
+            "source": "DLC",
+            "type": "bf:Nbn",
+            "value": "sh85019645"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1133921744"
+          }
+        ],
+        "source": "DLC"
+      },
+      {
+        "authorized_access_point": "Canon (appareils-photo)",
+        "identifiedBy": [
+          {
+            "source": "BNF",
+            "type": "uri",
+            "value": "https://data.bnf.fr/ark:/12148/cb11931111n"
+          },
+          {
+            "source": "BNF",
+            "type": "bf:Nbn",
+            "value": "FRBNF11931111"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1133921744"
+          }
+        ],
+        "source": "BNF"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "source": "GND",
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/4127005-8"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-101)041270053"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-588)4127005-8"
+      }
+    ],
+    "note": [
+      {
+        "label": [
+          "Markenname",
+          "Verknüpfe mit einer Produktgruppe z.B. Spiegelreflexkamera"
+        ],
+        "noteType": "general"
+      }
+    ],
+    "pid": "041270053",
+    "type": "bf:Topic",
+    "md5": "6f0cdbb0ab1cb20bd1b73ae15694583a"
+  },
+  {
+    "authorized_access_point": "Baum",
+    "broader": [
+      {
+        "authorized_access_point": "Gehölze"
+      }
+    ],
+    "closeMatch": [
+      {
+        "authorized_access_point": "Trees",
+        "identifiedBy": [
+          {
+            "source": "DLC",
+            "type": "uri",
+            "value": "http://id.loc.gov/authorities/subjects/sh85137241"
+          },
+          {
+            "source": "DLC",
+            "type": "bf:Nbn",
+            "value": "sh85137241"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1133622844"
+          }
+        ],
+        "source": "DLC"
+      },
+      {
+        "authorized_access_point": "Arbres",
+        "identifiedBy": [
+          {
+            "source": "BNF",
+            "type": "uri",
+            "value": "https://data.bnf.fr/ark:/12148/cb11934786x"
+          },
+          {
+            "source": "BNF",
+            "type": "bf:Nbn",
+            "value": "FRBNF11934786"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1133622844"
+          }
+        ],
+        "source": "BNF"
+      },
+      {
+        "authorized_access_point": "Alberi",
+        "identifiedBy": [
+          {
+            "source": "IT",
+            "type": "uri",
+            "value": "http://purl.org/bncf/tid/11392"
+          },
+          {
+            "source": "IT",
+            "type": "bf:Nbn",
+            "value": "11392"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1383953619"
+          }
+        ],
+        "source": "IT"
+      },
+      {
+        "authorized_access_point": "Árboles",
+        "identifiedBy": [
+          {
+            "source": "SPMABN",
+            "type": "uri",
+            "value": "https://datos.bne.es/resource/XX4576358"
+          },
+          {
+            "source": "SPMABN",
+            "type": "bf:Nbn",
+            "value": "XX4576358"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1299896561"
+          }
+        ],
+        "source": "SPMABN"
+      }
+    ],
+    "exactMatch": [
+      {
+        "authorized_access_point": "trees",
+        "identifiedBy": [
+          {
+            "source": "ITRFAO",
+            "type": "uri",
+            "value": "http://aims.fao.org/aos/agrovoc/c_7887"
+          },
+          {
+            "source": "ITRFAO",
+            "type": "bf:Nbn",
+            "value": "7887"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1256195146"
+          }
+        ],
+        "source": "ITRFAO"
+      },
+      {
+        "authorized_access_point": "Baum",
+        "identifiedBy": [
+          {
+            "source": "ZBW",
+            "type": "uri",
+            "value": "http://zbw.eu/stw/descriptor/14101-3"
+          },
+          {
+            "source": "ZBW",
+            "type": "bf:Nbn",
+            "value": "14101-3"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1240705395"
+          }
+        ],
+        "source": "ZBW"
+      },
+      {
+        "authorized_access_point": "Bäume",
+        "identifiedBy": [
+          {
+            "type": "uri",
+            "value": "http://uri.gbv.de/terminology/etiras/800053001"
+          },
+          {
+            "source": "GND",
+            "type": "bf:Nbn",
+            "value": "(DE-101)1346642443"
+          }
+        ],
+        "source": "GND"
+      }
+    ],
+    "identifiedBy": [
+      {
+        "source": "GND",
+        "type": "uri",
+        "value": "http://d-nb.info/gnd/4004845-7"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-101)040048454"
+      },
+      {
+        "source": "GND",
+        "type": "bf:Nbn",
+        "value": "(DE-588)4004845-7"
+      }
+    ],
+    "pid": "040048454",
+    "type": "bf:Topic",
+    "variant_access_point": [
+      "Bäume",
+      "Einzelbaum"
+    ],
+    "md5": "b2ac0df39956004ce2e6240ee20cc4f0"
   }
 ]

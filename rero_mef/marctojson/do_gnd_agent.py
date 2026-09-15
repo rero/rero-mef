@@ -56,11 +56,22 @@ class Transformation:
         - s Sachbegriff
         - u Werk
         """
-        for field_075 in self.marc.get_fields("075") or []:
-            if field_075.get("2") == "gndgen":
-                if b := field_075.get("b"):
-                    return RECORD_TYPES.get(b)
-        return None
+        return RECORD_TYPES.get(self.get_type_code())
+
+    def get_type_code(self):
+        """Get the entity type code `075 $b` states under `$2 gndgen`.
+
+        :returns: The code GND states, or None when no field states one.
+        """
+        return next(
+            (
+                code
+                for field_075 in self.marc.get_fields("075") or []
+                if field_075.get("2") == "gndgen"
+                if (code := field_075.get("b"))
+            ),
+            None,
+        )
 
     def _transform(self):
         """Call the transformation functions."""
@@ -81,6 +92,10 @@ class Transformation:
             if self.logger and self.verbose:
                 self.logger.warning(f"NO TRANSFORMATION: {msg}")
             self.json_dict = {"NO TRANSFORMATION": msg}
+            # Only a type GND states says the record stopped being an agent. A record stating none, because no
+            # `075` carries `$2 gndgen`, states nothing and is left alone: it merely could not be read.
+            if self.get_type_code():
+                self.json_dict["UNSUPPORTED TYPE"] = True
             self.trans_gnd_pid()
 
     @property

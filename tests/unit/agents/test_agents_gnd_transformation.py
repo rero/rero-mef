@@ -25,7 +25,11 @@ def test_no_person_or_organisation():
     file_name = os.path.join(current_dir, "examples/xml_minimal_record.xml")
     records = marcxml.parse_xml_to_array(file_name, strict=False, normalize_form=None)
     data = Transformation(marc=records[0], logger=None, verbose=False, transform=True)
-    assert data.json_dict == {"NO TRANSFORMATION": "Not a person or organisation: bf:Topic"}
+    # GND states the entity type, so this record really did stop being an agent: the harvest deletes a stored one
+    assert data.json_dict == {
+        "NO TRANSFORMATION": "Not a person or organisation: bf:Topic",
+        "UNSUPPORTED TYPE": True,
+    }
 
 
 def test_no_100_110_111():

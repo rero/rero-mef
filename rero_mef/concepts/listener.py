@@ -32,5 +32,9 @@ def enrich_concept_data(
                 for identified_by in match.get("identifiedBy", []):
                     identified_by["_identifier"] = make_identifier(identified_by)
 
-        if not json.get("deleted") and (association_identifier := record.association_identifier):
-            json["_association_identifier"] = association_identifier
+        if not json.get("deleted"):
+            association_identifiers, association_level = record.association
+            if association_identifiers:
+                json["_association_identifier"] = sorted(association_identifiers)
+                if association_level:
+                    json["_association_level"] = association_level

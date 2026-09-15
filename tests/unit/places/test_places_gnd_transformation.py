@@ -72,6 +72,17 @@ def test_gnd_authorized_access_point():
     assert trans.json == {"authorized_access_point": "Maria Königin (Grünwald, München)"}
 
 
+def test_gnd_authorized_access_point_without_151():
+    """A record without its heading field states no access point.
+
+    GND ships such records for its deletions. Naming them `TAG: 151 NOT FOUND` got them past the schema, which
+    requires the field, and into the catalogue reading like a heading; stating nothing gets them refused.
+    """
+    trans = trans_prep(Transformation, "places", "")
+    trans.trans_gnd_authorized_access_point()
+    assert trans.json is None
+
+
 def test_gnd_variant_access_point():
     """Test variant_access_point from field 451."""
     xml_part_to_add = """

@@ -123,6 +123,10 @@ class Transformation:
         if transform:
             self._transform()
 
+    #: `008` position 2, the entity types this transformation models: person, corporate body. IdRef delivers no
+    #: other type in the sets this harvest asks for, and states the heading of each in `200` and `210`.
+    AGENT_TYPES = ("p", "b")
+
     def _transform(self):
         """Call the transformation functions."""
         if self.marc.get_fields("200") or self.marc.get_fields("210"):
@@ -135,7 +139,24 @@ class Transformation:
             if self.logger and self.verbose:
                 self.logger.warning(f"NO TRANSFORMATION: {msg}")
             self.json_dict = {"NO TRANSFORMATION": msg}
+            # The heading fields of an agent are gone. `008` is `T`, the entity type, then the record status, so a
+            # type we do not model says the record stopped being an agent: `Tg` is a place, `Td` a Rameau subject.
+            # A record stating no readable type, or still stating an agent one, is left alone: it only failed to
+            # be read.
+            if (type_code := self.get_type_code()) and type_code not in self.AGENT_TYPES:
+                self.json_dict["UNSUPPORTED TYPE"] = True
             self.trans_idref_pid()
+
+    def get_type_code(self):
+        """Get the entity type character `008` states: `T`, the type, then the record status.
+
+        :returns: The character IdRef states, or None when no `008` states a readable one.
+        """
+        for field_008 in self.marc.get_fields("008"):
+            data = field_008.data or ""
+            if data.startswith("T") and data[1:2].isalpha():
+                return data[1]
+        return None
 
     @property
     def json(self):

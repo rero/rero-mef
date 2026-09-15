@@ -31,6 +31,15 @@ from werkzeug.security import gen_salt
 from .agents import AgentMefRecord
 from .cli_logging import ensure_single_stream_handler
 from .concepts import ConceptMefRecord
+from .concepts.rebuild import (
+    RECORD_TYPES as CONCEPT_RECORD_TYPES,
+)
+from .concepts.rebuild import (
+    assert_association_mappings,
+    prune_orphan_mef,
+    rebuild_concept_mef,
+    reindex_concepts,
+)
 from .extensions import MD5Extension
 from .marctojson.records import RecordsCount
 from .monitoring.api import Monitoring
@@ -239,8 +248,14 @@ def marc_to_json(entity, marc_file, json_file, error_file, verbose):
     pids = {}
     count_errors = 0
     for record, count in records:
-        data = transformation[entity](marc=record, logger=current_app.logger, verbose=True)
-        if json_data := data.json:
+        json_data = None
+        try:
+            json_data = transformation[entity](marc=record, logger=current_app.logger, verbose=True).json
+        except Exception:
+            # One unreadable record must not abort the whole file: it is counted and written to the error file
+            # below like any other record the transformation could not turn into JSON.
+            current_app.logger.exception(f"Error transformation MARC {entity}: record {count}")
+        if json_data:
             if msg := json_data.get("NO TRANSFORMATION"):
                 if verbose:
                     pid = json_data.get("pid", "???")
@@ -1373,6 +1388,49 @@ def clean_multiple_mef(record_types, dry_run, verbose):
             f"deleted orphaned mef records: {deleted_orphan_count}",
             fg="green",
         )
+
+
+@utils.command("rebuild-concept-association")
+@click.option(
+    "-t",
+    "--record-type",
+    "record_types",
+    multiple=True,
+    type=click.Choice(CONCEPT_RECORD_TYPES),
+    default=CONCEPT_RECORD_TYPES,
+    help="Concept sources to rebuild, in this order.",
+)
+@click.option(
+    "--reindex/--no-reindex",
+    default=True,
+    help="Reindex the concepts first. Only that writes the association fields, so skip it just when resuming a run "
+    "that already got past it.",
+)
+@click.option("--from-pid", "from_pid", help="Resume the first source at this pid, skipping the ones before it.")
+@click.option("--prune/--no-prune", default=True, help="Delete the MEF records the rebuild leaves without any entity.")
+@with_appcontext
+def rebuild_concept_association(record_types, reindex, from_pid, prune):
+    """Rebuild the concept MEF records on the normalised BNF association identifier.
+
+    Reindexes the concepts, which is what fills the association fields, then rebuilds every concept MEF record on
+    them. This runs for hours over hundreds of thousands of records and commits each one on its own, so an interrupted
+    run keeps what it did and reports the pid to resume at.
+
+    :param record_types: Concept sources to rebuild.
+    :param reindex: Reindex the concepts before rebuilding.
+    :param from_pid: Pid to resume the first source at.
+    :param prune: Delete the MEF records left without any entity.
+    """
+    assert_association_mappings(record_types)
+    if reindex:
+        click.secho("Reindex the concepts", fg="green")
+        reindex_concepts(record_types)
+    click.secho("Rebuild the concept MEF records", fg="green")
+    rebuild_concept_mef(record_types, from_pid=from_pid)
+    if prune:
+        click.secho("Delete the MEF records without any entity", fg="green")
+        prune_orphan_mef()
+    click.secho("Concept associations rebuilt.", fg="green")
 
 
 def create_personal(name, user_id, scopes=None, is_internal=False, access_token=None):
