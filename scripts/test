@@ -25,9 +25,9 @@ add_exceptions() {
 set -e
 
 # Add exceptions below when a known vulnerability cannot yet be fixed.
-# Format: add_exception "VULN-ID"  # reason and upstream issue link
+# Format: add_exceptions "VULN-ID"  # reason and upstream issue link
 info_msg "Check vulnerabilities:"
-# urrlib3 is pinned because of ES compatibility until migration to OpenSearch
+# urllib3 is pinned because of ES compatibility until migration to OpenSearch
 # urllib3 1.26.20 GHSA-pq67-6m6q-mj2v 2.5.0
 add_exceptions "GHSA-pq67-6m6q-mj2v"
 # urllib3 1.26.20 CVE-2025-66418 2.6.0
@@ -43,9 +43,6 @@ add_exceptions "CVE-2026-44431"
 add_exceptions "CVE-2025-71176"
 # sqlitedict 2.1.0   PYSEC-2026-1939
 add_exceptions "PYSEC-2026-1939"
-# click will be updated when python-semantic-release is extracted from the dev dependencies
-# click 8.1.8   PYSEC-2026-2132 8.3.3
-add_exceptions "PYSEC-2026-2132"
 pip-audit "${pip_audit_exceptions[@]}"
 
 info_msg "Test formatting:"
