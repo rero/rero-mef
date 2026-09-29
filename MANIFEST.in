@@ -7,7 +7,6 @@ include .editorconfig
 include .tx/config
 include docker/haproxy/Dockerfile
 include docker/nginx/Dockerfile
-include docker/postgres/Dockerfile
 include Dockerfile
 include scripts/bootstrap
 include scripts/console
