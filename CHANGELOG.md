@@ -2,6 +2,90 @@
 
 <!-- version list -->
 
+## v1.1.0 (2026-10-06)
+
+### Bug Fixes
+
+- Update invenio-cache and adapt variables
+  ([`4087551`](https://github.com/rero/rero-mef/commit/4087551896a800e8048a4e543e837c8c8656edbd))
+
+- **certificates**: Generate instead of versioning
+  ([`c80be9c`](https://github.com/rero/rero-mef/commit/c80be9cadbdea776cf13e2490954694d59b31587))
+
+- **harvest**: Delete what the source no longer names
+  ([`1544b2b`](https://github.com/rero/rero-mef/commit/1544b2ba32bf9152e24f840a6d8e4726f2ba1027))
+
+- **mef**: Keep one MEF record per entity
+  ([`16c432e`](https://github.com/rero/rero-mef/commit/16c432eb8232d716ec6a4da25b8bdfc3d9014713))
+
+- **tests**: Keep a run on the stack the tests serve
+  ([`b1d4349`](https://github.com/rero/rero-mef/commit/b1d4349c619f9c1d8e1f6d5ee8fa5236a30f0e00))
+
+### Build System
+
+- **deps**: Run python-semantic-release through uvx
+  ([`c2046f7`](https://github.com/rero/rero-mef/commit/c2046f71d32119931f06b6114a20eec6155e979f))
+
+- **docker**: Set LANG to C.UTF-8
+  ([`2310461`](https://github.com/rero/rero-mef/commit/23104616cc75dcb1162855b1a0bf4beed6c670e7))
+
+### Chores
+
+- **deps**: Upgrade locked dependencies
+  ([`60b4b0a`](https://github.com/rero/rero-mef/commit/60b4b0a242526065ee0ed3940280840c5f2c2e4d))
+
+- **deps**: Upgrade locked dependencies
+  ([`c8546a4`](https://github.com/rero/rero-mef/commit/c8546a4023eeb09bb955df8885e727ded2d57127))
+
+- **docker**: Remove the unused postgres image
+  ([`108fe18`](https://github.com/rero/rero-mef/commit/108fe18732abdffd73ea0c88616875d44e27e525))
+
+### Code Style
+
+- **ruff**: Set line-length to 120 and reformat
+  ([`7a54ff3`](https://github.com/rero/rero-mef/commit/7a54ff3420bd17c7c9850e63a79b6bfb96b08640))
+
+### Continuous Integration
+
+- Bump astral-sh/setup-uv from 10.0.0 to 10.0.1
+  ([`896f42d`](https://github.com/rero/rero-mef/commit/896f42d05925d0af537c1295ef30b0fda3418ced))
+
+- Bump pinned action digests
+  ([`c7b50de`](https://github.com/rero/rero-mef/commit/c7b50de755b9f08aea302e05038f996d49bc6a09))
+
+### Documentation
+
+- Add Claude commit and review capabilities
+  ([`c523c95`](https://github.com/rero/rero-mef/commit/c523c9568b225b1db3fb3da0a280a415f5ca4e91))
+
+- Keep only non-derivable rules in CLAUDE.md
+  ([`ecee438`](https://github.com/rero/rero-mef/commit/ecee43891d9f086e5754b8ef1a4634dc741f6b43))
+
+### Features
+
+- **concepts**: Link on the normalised BNF number
+  ([`eb699ff`](https://github.com/rero/rero-mef/commit/eb699ff526e30f93696e10a0994ecfa8c98a7be6))
+
+- **concepts**: Rebuild the concept MEF records
+  ([`7220b5d`](https://github.com/rero/rero-mef/commit/7220b5d16e9fde5cab6d1f07d2f02cacee98341d))
+
+### Performance Improvements
+
+- **docker**: Speed up the dev and test stack
+  ([`2d91fe3`](https://github.com/rero/rero-mef/commit/2d91fe30fe03b8aeb4b78c2a461e9586489a9686))
+
+- **setup**: Group the commands into batches
+  ([`b7d8382`](https://github.com/rero/rero-mef/commit/b7d83823b48c5ba42aae3f18567ca583ec8b67d5))
+
+### Refactoring
+
+- **lint**: Clear new ruff 0.16 findings
+  ([`f935559`](https://github.com/rero/rero-mef/commit/f9355590fffe2e32a242c5cb2308e52f2a97372d))
+
+- **scripts**: Source the shared message helpers
+  ([`9a31de6`](https://github.com/rero/rero-mef/commit/9a31de6ad12c253e86b169687c80cfa8e6b248bb))
+
+
 ## v1.0.5 (2026-07-14)
 
 ### Bug Fixes
