@@ -38,18 +38,6 @@ class AgentReroRecord(AgentRecord):
     model_cls = AgentReroMetadata
     search = AgentReroSearch
 
-    @classmethod
-    def get_online_record(cls, id_, debug=False):
-        """Get online record.
-
-        :param id_: Id of online record.
-        :param debug: Debug print.
-        :returns: record or None
-        """
-        from .tasks import rero_get_record
-
-        return rero_get_record(id_=id_, debug=debug)
-
 
 class AgentReroIndexer(AgentIndexer):
     """Agent RERO indexer."""

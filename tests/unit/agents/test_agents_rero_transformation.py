@@ -15,16 +15,7 @@ def test_rero_identifier():
     """
     trans = trans_prep("rero", xml_part_to_add)
     trans.trans_rero_identifier()
-    assert trans.json == {
-        "pid": "A000070488",
-        "identifiedBy": [
-            {
-                "source": "RERO",
-                "type": "uri",
-                "value": "http://data.rero.ch/02-A000070488",
-            }
-        ],
-    }
+    assert trans.json == {"pid": "A000070488"}
 
 
 def test_rero_birth_and_death_dates():

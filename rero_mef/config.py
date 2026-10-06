@@ -303,7 +303,6 @@ RERO_MEF_VIAF_REQUEST_DELAY = 5
 RERO_MEF_VIAF_REQUEST_JITTER = 2
 RERO_MEF_VIAF_RETRY_AFTER_DEFAULT = 5
 RERO_MEF_VIAF_RETRY_AFTER_MAX = 3600
-RERO_MEF_AGENTS_RERO_GET_RECORD = "http://data.rero.ch/02-{id}/marcxml"
 RERO_MEF_AGENTS_GND_GET_RECORD = (
     "https://services.dnb.de/sru/authorities"
     "?version=1.1&operation=searchRetrieve&query=idn%3D{id}"

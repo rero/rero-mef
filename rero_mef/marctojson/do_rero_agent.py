@@ -45,12 +45,7 @@ class Transformation:
             self.logger.info("Call Function: %s", "trans_rero_identifier")
         if fields_035 := self.marc.get_fields("035"):
             if fields_035[0].get("a"):
-                pid = fields_035[0]["a"]
-                identifier = f"http://data.rero.ch/02-{pid}"
-                self.json_dict["pid"] = pid
-                identified_by = self.json_dict.get("identifiedBy", [])
-                identified_by.append({"source": "RERO", "type": "uri", "value": identifier})
-                self.json_dict["identifiedBy"] = identified_by
+                self.json_dict["pid"] = fields_035[0]["a"]
 
     def trans_rero_birth_and_death_dates(self):
         """Transformation birth_date and death_date.
