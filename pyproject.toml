@@ -210,6 +210,9 @@ api_rero_mef = "rero_mef.theme.views:api_blueprint"
 api_monitoring = "rero_mef.monitoring.views:api_blueprint"
 api_blueprint = "rero_mef.views:api_blueprint"
 
+[project.entry-points."invenio_base.api_finalize_app"]
+rero_mef = "rero_mef.rest:finalize_app"
+
 [project.entry-points."flask.commands"]
 fixtures = "rero_mef.cli:fixtures"
 utils = "rero_mef.cli:utils"
