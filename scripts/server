@@ -77,13 +77,13 @@ cleanup() {
 
   # Collected before signalling, because killing a parent orphans its children
   # and they can no longer be found by walking down from it.
-  tree=$(for pid in ${pid_celery} ${pid_server}; do tree_of "${pid}"; done)
+  tree=$(for pid in ${pid_celery} ${pid_beat} ${pid_server}; do tree_of "${pid}"; done)
 
-  # SIGTERM goes to the two parents only, so that celery shuts its pool down
+  # SIGTERM goes to the parents only, so that celery shuts its pool down
   # in order and releases its semaphores, and werkzeug stops its reloader
   # child itself. Signalling the pool workers directly aborts that shutdown
   # and leaks a semaphore per worker.
-  kill -TERM ${pid_celery} ${pid_server} 2>/dev/null
+  kill -TERM ${pid_celery} ${pid_beat} ${pid_server} 2>/dev/null
 
   # Celery's warm shutdown waits for a running task, which can hang the exit
   # indefinitely; give the tree five seconds, then insist.
@@ -97,8 +97,14 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# Start Worker and Server
-celery --app=rero_mef.celery worker --autoscale=4,1 --beat -l INFO --without-heartbeat --purge & pid_celery=$!
+# Start Worker, Beat and Server
+# billiard spawns its processes on macOS since 4.3, which pickles the app
+# config and fails on its closures: the pool runs threads there, and beat
+# runs as its own command since the worker's --beat always spawns it.
+POOL=(--autoscale=4,1)
+[[ "$(uname)" == "Darwin" ]] && POOL=(--pool threads --concurrency 4)
+celery --app=rero_mef.celery worker "${POOL[@]}" -l INFO --without-heartbeat --purge & pid_celery=$!
+celery --app=rero_mef.celery beat -l INFO & pid_beat=$!
 
 if ${HTTP}
 then
@@ -109,4 +115,4 @@ else
   invenio run --cert "${CERT}" --key "${KEY}" -p $PORT & pid_server=$!
 fi
 
-wait $pid_celery $pid_server
+wait $pid_celery $pid_beat $pid_server
