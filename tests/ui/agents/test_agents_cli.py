@@ -175,6 +175,14 @@ def test_create_from_viaf_with_enqueue(script_info, agent_viaf_record):
         assert mock_delay.call_count >= 1
 
 
+def test_create_from_viaf_rejects_rero_online(script_info):
+    """Test create_from_viaf rejects RERO, which has no online source."""
+    runner = CliRunner()
+    res = runner.invoke(create_from_viaf, ["--online", "agrero"], obj=script_info)
+    assert res.exit_code != 0
+    assert "'agrero' is not one of 'aggnd', 'aidref'" in res.output
+
+
 def test_create_from_viaf_with_viaf_file(app, script_info, tmpdir):
     """Test create_from_viaf with VIAF file input."""
     # Create a temporary VIAF JSON file

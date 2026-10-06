@@ -151,5 +151,5 @@ batch_viaf_init() {
   local INPUT_DIR="${1}"
   echo "fixtures load-csv viaf ${INPUT_DIR}/viaf_pidstore.csv ${INPUT_DIR}/viaf_metadata.csv --verbose --reindex"
   index_run_lines
-  echo "agents create-from-viaf --online aggnd --online aidref --online agrero --progress"
+  echo "agents create-from-viaf --online aggnd --online aidref --progress"
 }

@@ -76,7 +76,15 @@ def agents():
     default=False,
     help="Enqueue record creation.",
 )
-@click.option("-o", "--online", "online", multiple=True, default=[])
+@click.option(
+    "-o",
+    "--online",
+    "online",
+    multiple=True,
+    default=[],
+    type=click.Choice(["aggnd", "aidref"]),
+    help="Fetch missing agents of this type online.",
+)
 @click.option("-v", "--verbose", "verbose", is_flag=True, default=False)
 @click.option("-V", "--online_verbose", "online_verbose", is_flag=True, default=False)
 @click.option("-p", "--progress", "progress", is_flag=True, default=False)
