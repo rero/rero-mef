@@ -9,17 +9,17 @@ LABEL description="MEF (Multilingual Entity File) server with records for person
 
 # require debian packages
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install --no-install-recommends -y git vim-tiny curl gcc gnupg libc6-dev procps && rm -rf /var/lib/apt/lists/*
-RUN pip install --upgrade setuptools wheel pip uv
+RUN apt-get install --no-install-recommends -y git vim-tiny curl gcc gnupg libc6-dev procps ca-certificates && \
+    pip install --upgrade setuptools wheel pip uv
 
 # # uwsgi uwsgitop uwsgi-tools
 
 # Install Node
-RUN apt-get update && apt-get install -y ca-certificates curl gnupg
-RUN mkdir -p /etc/apt/keyrings
-RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
-RUN apt-get update && apt-get install nodejs -y
+RUN mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
+    apt-get update && apt-get install --no-install-recommends -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install Invenio
 ENV WORKING_DIR=/invenio

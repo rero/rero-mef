@@ -3,6 +3,8 @@
 
 """Test DeletedStateExtension."""
 
+import logging
+
 from rero_mef.extensions.deleted import DeletedStateExtension
 
 
@@ -22,6 +24,23 @@ def test_propagate_deleted_skips_dangling_ref():
 
     assert DeletedStateExtension()._propagate_deleted(record) is True
     assert record["deleted"] == "2025-02-03T10:36:42+00:00"
+
+
+def test_propagate_deleted_logs_dangling_ref_warning(caplog):
+    """A dangling $ref logs a warning naming the entity, record type, and PID.
+
+    Regression test for the warning emitted by _propagate_deleted's except
+    branch: it must identify enough to find the offending record, while the
+    existing fallback behavior (a later valid ref still wins) keeps working.
+    """
+    record = FakeMefRecord(pid="1", viaf={"$ref": "..."}, idref={"$ref": "..."})
+
+    with caplog.at_level(logging.WARNING):
+        result = DeletedStateExtension()._propagate_deleted(record)
+
+    assert result is True
+    assert record["deleted"] == "2025-02-03T10:36:42+00:00"
+    assert "Dangling $ref for viaf on FakeMefRecord 1" in caplog.text
 
 
 def test_propagate_deleted_all_refs_dangling():

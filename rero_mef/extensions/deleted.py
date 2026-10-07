@@ -3,9 +3,12 @@
 
 """Deleted state propagation extension for MEF records."""
 
+import logging
 from copy import deepcopy
 
 from invenio_records.extensions import RecordExtension
+
+logger = logging.getLogger(__name__)
 
 
 class DeletedStateExtension(RecordExtension):
@@ -36,6 +39,10 @@ class DeletedStateExtension(RecordExtension):
                 try:
                     deleted = source_data.get(entity_name, {}).get("deleted")
                 except AttributeError:
+                    logger.warning(
+                        f"Dangling $ref for {entity_name} on "
+                        f"{type(record).__name__} {record.get('pid')}"
+                    )
                     deleted = None
                 if deleted:
                     record["deleted"] = deleted
