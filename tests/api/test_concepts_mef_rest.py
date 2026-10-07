@@ -8,7 +8,8 @@ from datetime import UTC, datetime, timedelta
 
 from flask import url_for
 
-from rero_mef.concepts import ConceptMefRecord
+from rero_mef.concepts import ConceptMefRecord, ConceptReroRecord
+from rero_mef.rest import MefRecordResource
 
 from ..utils import postdata, strip_index_fields
 
@@ -148,3 +149,24 @@ def test_concepts_mef_get_updated(
     assert res.status_code == 200
     pids = sorted([rec.get("pid") for rec in data])
     assert pids == []
+
+
+def test_concepts_mef_etag_covers_sources(app, client, concept_rero_record, concept_mef_rero_record):
+    """Test the MEF ETag changes with a linked source record."""
+    assert app.view_functions["invenio_records_rest.comef_item"].view_class is MefRecordResource
+    url = url_for("invenio_records_rest.comef_item", pid_value=concept_mef_rero_record.pid)
+    res = client.get(url)
+    assert res.status_code == 200
+    etag = res.headers["ETag"]
+    assert etag.strip('"') != str(concept_mef_rero_record.revision_id)
+    assert client.get(url, headers={"If-None-Match": etag}).status_code == 304
+
+    # A new source revision leaves the MEF record untouched but changes the ETag.
+    mef_revision = concept_mef_rero_record.revision_id
+    source = ConceptReroRecord.get_record_by_pid(concept_rero_record.pid)
+    source.replace(data=source, dbcommit=True, reindex=True)
+    assert ConceptMefRecord.get_record_by_pid(concept_mef_rero_record.pid).revision_id == mef_revision
+    res = client.get(url, headers={"If-None-Match": etag})
+    assert res.status_code == 200
+    assert res.headers["ETag"] != etag
+    assert res.last_modified == source.updated.replace(microsecond=0, tzinfo=UTC)
