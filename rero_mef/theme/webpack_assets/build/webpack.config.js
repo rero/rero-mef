@@ -46,6 +46,10 @@ var webpackConfig = {
   mode: process.env.NODE_ENV,
   entry: config.entry,
   context: config.build.context,
+  // Suppress the Dart Sass "legacy JS API" module warning — it fires for
+  // every SCSS file and is not actionable until upstream (bootstrap-sass,
+  // invenio-theme) migrates to the modern API.
+  ignoreWarnings: [/legacy JS API/],
   stats: {
     warnings: true,
     errors: true,
@@ -153,7 +157,22 @@ var webpackConfig = {
       },
       {
         test: /\.(scss|css)$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              sassOptions: {
+                // Suppress all Sass deprecation warnings from upstream
+                // packages (bootstrap-sass, invenio-theme) — both entry-point
+                // files and their transitive imports. None of this is our code.
+                quietDeps: true,
+                silenceDeprecations: ["import", "global-builtin", "color-functions", "slash-div"],
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.(less)$/,
