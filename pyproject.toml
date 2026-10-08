@@ -106,6 +106,9 @@ rero_mef_css = "rero_mef.theme.webpack:theme"
 [project.entry-points."invenio_base.apps"]
 rero-mef = "rero_mef.ext:REROMEFAPP"
 
+[project.entry-points."invenio_base.api_apps"]
+rero-mef = "rero_mef.ext:REROMEFAPP"
+
 [project.entry-points."invenio_base.blueprints"]
 rero_mef = "rero_mef.theme.views:blueprint"
 
