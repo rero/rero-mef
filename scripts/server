@@ -15,8 +15,9 @@ msg "PROGRAM: ${PROGRAM}"
 
 PORT=5002
 HTTP=false
+UI=true
 
-if ! options=$(getopt -o np: -l non_secure,port: -- "$@")
+if ! options=$(getopt -o np:u -l non_secure,port:,no_ui -- "$@")
 then
   # something went wrong, getopt will put out an error message for us
   exit 1
@@ -27,6 +28,7 @@ do
   case $1 in
     -n|--non_secure) HTTP=true;;
     -p|--port) PORT=$2; shift;;
+    -u|--no_ui) UI=false;;
     (--) shift; break;;
     (-*) error_msg+exit "$0: Unrecognized option $1";;
   esac
@@ -77,13 +79,14 @@ cleanup() {
 
   # Collected before signalling, because killing a parent orphans its children
   # and they can no longer be found by walking down from it.
-  tree=$(for pid in ${pid_celery} ${pid_beat} ${pid_server}; do tree_of "${pid}"; done)
+  tree=$(for pid in ${pid_celery} ${pid_beat} ${pid_server} ${pid_ui}; do tree_of "${pid}"; done)
 
   # SIGTERM goes to the parents only, so that celery shuts its pool down
   # in order and releases its semaphores, and werkzeug stops its reloader
   # child itself. Signalling the pool workers directly aborts that shutdown
   # and leaks a semaphore per worker.
-  kill -TERM ${pid_celery} ${pid_beat} ${pid_server} 2>/dev/null
+  kill -TERM ${pid_celery} ${pid_beat} ${pid_server} ${pid_ui} 2>/dev/null
+  [[ -n "${UI_PROXY}" ]] && rm -rf "$(dirname "${UI_PROXY}")"
 
   # Celery's warm shutdown waits for a running task, which can hang the exit
   # indefinitely; give the tree five seconds, then insist.
@@ -106,13 +109,47 @@ POOL=(--autoscale=4,1)
 celery --app=rero_mef.celery worker "${POOL[@]}" -l INFO --without-heartbeat --purge & pid_celery=$!
 celery --app=rero_mef.celery beat -l INFO & pid_beat=$!
 
+# The user interface is the development server of rero-mef-ui. Where it runs,
+# it takes the port of the command line and proxies `/api` and `/schemas` to
+# the API on the next port: the pages and the API share one origin, as in
+# production, whose API sends no CORS headers.
+UI_PATH="${MEF_UI_PATH:-${script_path}/../../rero-mef-ui}"
+if ${UI} && [[ ! -d "${UI_PATH}" ]]; then
+  info_msg "No rero-mef-ui at ${UI_PATH}: the API runs without user interface (set MEF_UI_PATH)"
+  UI=false
+fi
+API_PORT=${PORT}
+${UI} && API_PORT=$((PORT + 1))
+
 if ${HTTP}
 then
-  info_msg "Server is running on http://localhost:${PORT}"
-  invenio run -p $PORT & pid_server=$!
+  SCHEME=http
+  invenio run -p ${API_PORT} & pid_server=$!
 else
-  info_msg "Server is running on https://localhost:${PORT}"
-  invenio run --cert "${CERT}" --key "${KEY}" -p $PORT & pid_server=$!
+  SCHEME=https
+  invenio run --cert "${CERT}" --key "${KEY}" -p ${API_PORT} & pid_server=$!
 fi
 
-wait $pid_celery $pid_beat $pid_server
+if ${UI}; then
+  UI_PROXY="$(mktemp -d -t rero-mef-ui)/proxy.json"
+  cat > "${UI_PROXY}" <<EOF
+{
+  "/api": {"target": "${SCHEME}://localhost:${API_PORT}", "secure": false, "changeOrigin": true},
+  "/schemas": {"target": "${SCHEME}://localhost:${API_PORT}", "secure": false, "changeOrigin": true}
+}
+EOF
+  UI_SSL=()
+  ${HTTP} || UI_SSL=(--ssl --ssl-cert "$(cd "$(dirname "${CERT}")" && pwd)/dev.crt" --ssl-key "$(cd "$(dirname "${KEY}")" && pwd)/dev.key")
+  [[ -d "${UI_PATH}/node_modules" ]] || (cd "${UI_PATH}" && pnpm install --frozen-lockfile)
+  # `ng` itself rather than `pnpm start`: pnpm exits at once on Ctrl-C and leaves
+  # its dev server running, out of reach of the cleanup. No terminal input, so
+  # a busy port fails instead of asking for another one. IPv4, as `invenio run`
+  # listened on: Node binds `localhost` to ::1 only, and 127.0.0.1 is refused.
+  (cd "${UI_PATH}" && exec ./node_modules/.bin/ng serve --host 127.0.0.1 --allowed-hosts --port ${PORT} \
+    --proxy-config "${UI_PROXY}" "${UI_SSL[@]}" < /dev/null) & pid_ui=$!
+  info_msg "User interface is running on ${SCHEME}://localhost:${PORT}, the API on ${SCHEME}://localhost:${PORT}/api"
+else
+  info_msg "Server is running on ${SCHEME}://localhost:${PORT}"
+fi
+
+wait $pid_celery $pid_beat $pid_server ${pid_ui}
