@@ -48,7 +48,6 @@ coverage.xml
 *,cover
 
 # end-to-end testing
-.e2e_screenshots
 
 # Translations
 *.mo

@@ -36,6 +36,3 @@ recursive-include tests *.py
 recursive-include tests *.xml
 
 # MEF
-recursive-include rero_mef *.html
-recursive-include rero_mef *.png
-recursive-include rero_mef *.scss

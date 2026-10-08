@@ -1440,21 +1440,6 @@ wheels = [
 ]
 
 [[package]]
-name = "invenio-records-ui"
-version = "5.0.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "invenio-base" },
-    { name = "invenio-i18n" },
-    { name = "invenio-pidstore" },
-    { name = "invenio-records" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c2/36/8693eb541917393d0985d1f7916c41c2e81d9f4552cac565b160c2e0943a/invenio_records_ui-5.0.2.tar.gz", hash = "sha256:faab7d6829a79e89eaa55d81d31de81c74593ba543ade92108d0a43623a00549", size = 16632, upload-time = "2026-08-04T08:01:28.43Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/13/c8/405e3cdb3684867bfe8f52bbd99b7b2266e91a7e34e88119ed58f1a970a2/invenio_records_ui-5.0.2-py3-none-any.whl", hash = "sha256:b84135562a82fd43d9374157630eb4028de7b40989c41df16944aa61cd9bc2f4", size = 63905, upload-time = "2026-08-04T08:01:27.494Z" },
-]
-
-[[package]]
 name = "invenio-rest"
 version = "4.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1489,21 +1474,6 @@ wheels = [
 elasticsearch7 = [
     { name = "elasticsearch" },
     { name = "elasticsearch-dsl" },
-]
-
-[[package]]
-name = "invenio-search-ui"
-version = "5.0.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "babel" },
-    { name = "invenio-assets" },
-    { name = "invenio-base" },
-    { name = "invenio-i18n" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/af/9a/7df7f1e27fb99fc17c3dcf9bfcab4bbe2bb11d760c7caed4a31156099ac3/invenio_search_ui-5.0.3.tar.gz", hash = "sha256:2f25cd72388c4640aa0c6b67accc85a8ecf19632ebe413f2953eee64dc3171c0", size = 41295, upload-time = "2026-08-04T07:59:02.637Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/4d/fa/ce3ad4359e6c7e37e0d5a7ef7a0b635a503a0ec6c237419d0986aee75c54/invenio_search_ui-5.0.3-py3-none-any.whl", hash = "sha256:aeba1d8ad2904910fb47bcbdac1ab518b5d7f8e5b36fdc3c94d357ea8851d6eb", size = 137326, upload-time = "2026-08-04T07:59:01.526Z" },
 ]
 
 [[package]]
@@ -2673,7 +2643,6 @@ dependencies = [
     { name = "invenio-access" },
     { name = "invenio-accounts" },
     { name = "invenio-app" },
-    { name = "invenio-assets" },
     { name = "invenio-base" },
     { name = "invenio-celery" },
     { name = "invenio-config" },
@@ -2687,11 +2656,8 @@ dependencies = [
     { name = "invenio-pidstore" },
     { name = "invenio-records" },
     { name = "invenio-records-rest" },
-    { name = "invenio-records-ui" },
     { name = "invenio-rest" },
     { name = "invenio-search", extra = ["elasticsearch7"] },
-    { name = "invenio-search-ui" },
-    { name = "invenio-theme" },
     { name = "poethepoet" },
     { name = "pymarc" },
     { name = "python-dotenv" },
@@ -2722,7 +2688,6 @@ requires-dist = [
     { name = "invenio-access", specifier = ">=4.0.0" },
     { name = "invenio-accounts", specifier = ">=6.0.0" },
     { name = "invenio-app", specifier = ">=3.0.0" },
-    { name = "invenio-assets", specifier = ">=4.0.0" },
     { name = "invenio-base", specifier = ">=2.0.0" },
     { name = "invenio-celery", specifier = ">=2.0.0" },
     { name = "invenio-config", specifier = ">=1.0.3" },
@@ -2736,11 +2701,8 @@ requires-dist = [
     { name = "invenio-pidstore", specifier = ">=3.0.0" },
     { name = "invenio-records", specifier = ">=4.0.0" },
     { name = "invenio-records-rest", specifier = ">=3.0.0" },
-    { name = "invenio-records-ui", specifier = ">=2.0.0" },
     { name = "invenio-rest", specifier = ">=3.0.0" },
     { name = "invenio-search", extras = ["elasticsearch7"], specifier = ">=3.0.0" },
-    { name = "invenio-search-ui", specifier = ">=4.0.0" },
-    { name = "invenio-theme", specifier = ">=4.0.0" },
     { name = "poethepoet" },
     { name = "pymarc", specifier = ">=5.2.0" },
     { name = "python-dotenv", specifier = ">=0.13.0" },
