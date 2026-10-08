@@ -1,49 +1,14 @@
 # SPDX-FileCopyrightText: Fondation RERO+
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-"""Pytest fixtures and plugins for the UI application."""
+"""Pytest fixtures for the application the CLI and Celery build (`create_ui`), which serves no page."""
 
-import json
-import os
 from os.path import dirname, join
 
 import pytest
 import yaml
 
 from rero_mef.utils import add_oai_source
-
-#: Instance folder the applications are built with, read while this module is imported: pytest-invenio points
-#: `INVENIO_INSTANCE_PATH` at a temporary folder of its own once a module starts, and the applications keep the
-#: folder they were built with.
-INSTANCE_PATH = os.environ["INVENIO_INSTANCE_PATH"]
-
-# Webpack asset keys referenced by invenio_theme and rero_mef templates.
-_WEBPACK_MANIFEST_STUBS = {
-    "theme.css": "/static/dist/theme.css",
-    "theme.js": "/static/dist/theme.js",
-    "theme-admin.css": "/static/dist/theme-admin.css",
-    "global.css": "/static/dist/global.css",
-    "adminlte.js": "/static/dist/adminlte.js",
-    "base.js": "/static/dist/base.js",
-    "i18n_app.js": "/static/dist/i18n_app.js",
-    "search_ui_app.js": "/static/dist/search_ui_app.js",
-    "search_ui_theme.css": "/static/dist/search_ui_theme.css",
-}
-
-
-@pytest.fixture(scope="session", autouse=True)
-def webpack_manifest():
-    """Create a stub webpack manifest so UI templates render without assets.
-
-    It has to land in the instance folder the applications are built with, which `INVENIO_INSTANCE_PATH` names only
-    until pytest-invenio points that variable at a temporary folder of its own for the duration of a module.
-    """
-    dist_dir = os.path.join(INSTANCE_PATH, "static", "dist")
-    os.makedirs(dist_dir, exist_ok=True)
-    manifest_path = os.path.join(dist_dir, "manifest.json")
-    if not os.path.exists(manifest_path):
-        with open(manifest_path, "w", encoding="utf-8") as f:
-            json.dump(_WEBPACK_MANIFEST_STUBS, f)
 
 
 @pytest.fixture(scope="module")
