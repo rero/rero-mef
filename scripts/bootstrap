@@ -67,13 +67,6 @@ flag="${flags[@]}"
 info_msg "Install with command: ${cmd} ${flag}"
 ${cmd} ${flags[@]}
 
-# build the web assets
-info_msg "Build web assets: collect"
-invenio collect -v
-
-info_msg "Build web assets: using webpack for invenio-admin"
-invenio webpack buildall
-
 if ! $deploy ; then
   # The development server needs a TLS pair; a deployment brings its own.
   certs_flags=()
@@ -85,12 +78,6 @@ fi
 
 if $deploy ; then
   if ! $ci ; then
-    info_msg "Clean web assets"
-    invenio webpack clean
-
-    info_msg "Clean npm cache"
-    npm cache clean --force
-
     info_msg "Clean pip cache"
     pip cache purge
   fi
