@@ -43,12 +43,6 @@ from .models import MefIdentifier
 from .places.gnd.models import PlaceGndIdentifier
 from .places.idref.models import PlaceIdrefIdentifier
 
-APP_THEME = ["bootstrap3"]
-
-# RERO Services
-RERO_SERVICE_ILS = "https://bib.rero.ch"
-RERO_SERVICE_SONAR = "https://sonar.rero.ch"
-
 # Rate limiting
 # =============
 #: Storage for ratelimiter.
@@ -66,52 +60,6 @@ BABEL_DEFAULT_TIMEZONE = "Europe/Zurich"
 I18N_LANGUAGES = [
     # ('fr', _('French'))
 ]
-
-# Base templates
-# ==============
-#: Global base template.
-BASE_TEMPLATE = "rero_mef/page.html"
-#: Cover page base template (used for e.g. login/sign-up).
-COVER_TEMPLATE = "invenio_theme/page_cover.html"
-#: Footer base template.
-FOOTER_TEMPLATE = "rero_mef/footer.html"
-#: Header base template.
-HEADER_TEMPLATE = "rero_mef/header.html"
-#: Settings base template.
-SETTINGS_TEMPLATE = "invenio_theme/page_settings.html"
-
-# Theme configuration
-# ===================
-#: Site name
-THEME_SITENAME = "RERO MEF"
-#: Use default frontpage.
-THEME_FRONTPAGE = False
-#: Frontpage title.
-THEME_FRONTPAGE_TITLE = "RERO MEF"
-#: Frontpage template.
-THEME_FRONTPAGE_TEMPLATE = "rero_mef/frontpage.html"
-#: Template for error pages.
-THEME_ERROR_TEMPLATE = "rero_mef/page_error.html"
-
-# Search UI defaults
-# ==================
-SEARCH_UI_BASE_TEMPLATE = BASE_TEMPLATE
-SEARCH_UI_HEADER_TEMPLATE = HEADER_TEMPLATE
-SEARCH_UI_SEARCH_TEMPLATE = "rero_mef/mef_search.html"
-SEARCH_UI_JSTEMPLATE_COUNT = "templates/invenio_search_ui/count.html"
-SEARCH_UI_JSTEMPLATE_ERROR = "templates/invenio_search_ui/error.html"
-SEARCH_UI_JSTEMPLATE_FACETS = "templates/rero_mef/facets.html"
-SEARCH_UI_JSTEMPLATE_LOADING = "templates/invenio_search_ui/loading.html"
-SEARCH_UI_JSTEMPLATE_PAGINATION = "templates/invenio_search_ui/pagination.html"
-SEARCH_UI_JSTEMPLATE_RANGE = "templates/invenio_search_ui/range.html"
-SEARCH_UI_JSTEMPLATE_RANGE_OPTIONS = {
-    "histogramId": "#year_hist",
-    "selectionId": "#year_select",
-    "name": "years",
-    "width": 180,
-}
-SEARCH_UI_JSTEMPLATE_SELECT_BOX = "templates/invenio_search_ui/selectbox.html"
-SEARCH_UI_JSTEMPLATE_SORT_ORDER = "templates/invenio_search_ui/togglebutton.html"
 
 _MEF_SORT_OPTIONS = {
     "relevance": {"title": "Relevance", "fields": ["_score"]},
@@ -156,19 +104,12 @@ RECORDS_REST_DEFAULT_SORT = {
     },
 }
 
-WEBPACKEXT_PROJECT = "rero_mef.theme.webpack:project"
-
 # Email configuration
 # ===================
 #: Email address for support.
 SUPPORT_EMAIL = "software@rero.ch"
 #: Disable email sending by default.
 MAIL_SUPPRESS_SEND = True
-
-# Assets
-# ======
-#: Static files collection method (defaults to copying files).
-# COLLECT_STORAGE = 'flask_collect.storage.file'
 
 # Accounts
 # ========

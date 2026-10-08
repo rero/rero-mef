@@ -4,7 +4,7 @@
 #
 # This file is an example of what an Invenio production environment would look like.
 # Here you can find a HAProxy load balancer which redirects the traffic to the web frontend, based on nginx.
-# UI application and REST API are separate.
+# The user interface is the separate rero-mef-ui application, the REST API is served by rero-mef.
 # There are also a celery worker backend, which can be monitored using Flower, and basics services such as
 # a Redis cache, a database, a message broker (RabbitMQ) and ElasticSearch.
 #
@@ -21,27 +21,22 @@ services:
     extends:
       file: docker-services.yml
       service: frontend
-    volumes:
-      - static_data:/invenio/var/instance/static
     links:
-      - web-ui
+      - mef-ui
       - web-api
-  # UI Application
-  web-ui:
-    extends:
-      file: docker-services.yml
-      service: app
-    command: uv run uwsgi /invenio/var/instance/uwsgi_ui.ini
-    image: rero-mef-web-ui
+  # User interface (https://github.com/rero/rero-mef-ui)
+  mef-ui:
+    build:
+      context: ../rero-mef-ui
+      dockerfile: docker/Dockerfile
+    image: rero-mef-ui
+    restart: "unless-stopped"
+    environment:
+      # Public URL of the site: the browser calls the API there, on the same origin as the pages.
+      - "API_URL=https://localhost"
+      - "NG_ALLOWED_HOSTS=localhost"
     ports:
-      - "5000"
-    volumes:
-      - static_data:/invenio/var/instance/static
-    links:
-      - cache
-      - es
-      - mq
-      - db
+      - "4000"
   # API Rest Application
   web-api:
     extends:
@@ -51,8 +46,6 @@ services:
     image: rero-mef-web-api
     ports:
       - "5001"
-    volumes:
-      - static_data:/invenio/var/instance/static
     links:
       - cache
       - es
@@ -108,5 +101,3 @@ services:
     extends:
       file: docker-services.yml
       service: es
-volumes:
-  static_data:
