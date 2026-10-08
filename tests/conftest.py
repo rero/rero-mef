@@ -15,7 +15,7 @@ import pytest
 #: naming it through `INVENIO_INSTANCE_PATH`. The variable is pointed at an empty folder of our own before that
 #: import can happen, so every application a run builds reads the endpoints stated below. `TEST_INSTANCE_PATH`
 #: overrides it, for a run against a real instance folder. Each run gets a folder of its own: what a run leaves
-#: there, the webpack manifest stub among it, is written once and would otherwise outlive the code that wrote it.
+#: there is written once and would otherwise outlive the code that wrote it.
 INSTANCE_PATH = os.environ.get("TEST_INSTANCE_PATH") or tempfile.mkdtemp(prefix="rero-mef-tests-")
 os.makedirs(INSTANCE_PATH, exist_ok=True)
 os.environ["INVENIO_INSTANCE_PATH"] = INSTANCE_PATH
