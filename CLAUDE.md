@@ -9,6 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 rero-mef is the Python/Flask backend for the RERO Multilingual Entity File (MEF). It provides OAI harvesting, record processing, and metadata enrichment for library data pipelines.
 
+It serves no pages: only the REST API (`/api/...`) and the JSON schemas (`/schemas/...`). The user interface is the separate Angular application [rero-mef-ui](https://github.com/rero/rero-mef-ui) (`../rero-mef-ui`), which only reads the REST API.
+
 ## Development Workflow
 
 All commands must be run through the project's virtual environment using `uv run`. Never use `pip`, `python -m pytest`, or bare `pytest`.

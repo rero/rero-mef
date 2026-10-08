@@ -30,7 +30,7 @@ $ docker compose up -d
 > ```
 
 Next, bootstrap the instance (this will install all Python dependencies and
-build all static assets):
+generate the development certificate):
 
 ```console
 $ uv run poe bootstrap
@@ -44,11 +44,18 @@ $ uv run poe setup
 
 ## Running
 
-Start the webserver and the celery worker:
+Start the REST API server and the celery worker:
 
 ```console
 $ uv run poe server
 ```
+
+rero-mef only serves the REST API (`/api/...`) and the JSON schemas
+(`/schemas/...`). The user interface is the separate
+[rero-mef-ui](https://github.com/rero/rero-mef-ui) application: to run it
+against this server, set the `target` of its `proxy.conf.json` to
+`https://localhost:5002` (with `"secure": false` for the self-signed
+certificate) and start it with `pnpm start`.
 
 The server runs over HTTPS and reads its certificate from `.certs/`, which the
 bootstrap generates. The pair is never versioned; regenerate it at any time
@@ -85,15 +92,6 @@ Run the test suite via the provided script:
 $ uv run poe run_tests
 ```
 
-By default, end-to-end tests are skipped. You can include the E2E tests like
-this:
-
-```console
-$ env E2E=yes uv run poe run_tests
-```
-
-For more information about end-to-end testing see [pytest-invenio](https://pytest-invenio.readthedocs.io/en/latest/usage.html#running-e2e-tests).
-
 ## Production environment
 
 You can use simulate a full production environment using the
@@ -108,6 +106,7 @@ In addition to the normal `docker-compose.yml`, this one will start:
 
 - HAProxy (load balancer)
 - Nginx (web frontend)
-- UWSGI (application container)
+- rero-mef-ui (user interface, built from `../rero-mef-ui`)
+- UWSGI (REST API container)
 - Celery (background task worker)
 - Flower (Celery monitoring)
