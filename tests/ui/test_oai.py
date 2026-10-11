@@ -3,9 +3,11 @@
 
 """Views tests."""
 
+import itertools
 import os
 from unittest import mock
 
+import requests
 from sickle.response import OAIResponse
 
 from rero_mef.agents import Action, AgentGndRecord
@@ -148,3 +150,32 @@ def test_oai_process_records_from_dates(
     assert action_count == {Action.UPTODATE: 1}
     assert mef_action_count == {Action.UPTODATE: 1}
     assert last_run != oai_get_last_run("agents.gnd")
+
+
+@mock.patch("rero_mef.utils.sleep")
+@mock.patch("sickle.app.Sickle.harvest")
+def test_oai_process_records_from_dates_failure_keeps_last_run(mock_sickle, mock_sleep, app, init_oai):
+    """A failed harvest must not advance lastrun, or the failed range is never harvested again."""
+    last_run = oai_set_last_run("agents.gnd", "2026-10-01")
+    mock_sickle.side_effect = requests.HTTPError("502 Server Error: Bad Gateway")
+    count, _, _ = process_records_from_dates(dbcommit=True, reindex=True)
+    assert count == -1
+    assert last_run == oai_get_last_run("agents.gnd")
+
+
+@mock.patch("rero_mef.utils.sleep")
+@mock.patch("sickle.app.Sickle.harvest")
+def test_oai_process_records_from_dates_failure_not_hidden(
+    mock_sickle, mock_sleep, app, init_oai, aggnd_oai_list_records_empty, aggnd_oai_list_records
+):
+    """A failed range stays a failure when a later range of the same run succeeds."""
+    # agents.gnd harvests 4 days per range: the first range fails its 5 attempts, the second one succeeds.
+    mock_sickle.side_effect = itertools.chain(
+        [requests.HTTPError("502 Server Error: Bad Gateway")] * 5,
+        MultipleResponses(empty=aggnd_oai_list_records_empty, response=aggnd_oai_list_records),
+    )
+    count, action_count, _ = process_records_from_dates(
+        from_date="2022-01-01", until_date="2022-01-08", dbcommit=True, reindex=True
+    )
+    assert count == -1
+    assert sum(action_count.values()) == 1
