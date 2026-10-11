@@ -23,6 +23,7 @@ import click
 import ijson
 import psycopg2
 import requests
+import sentry_sdk
 import sqlalchemy
 from dateutil import parser
 from flask import current_app
@@ -64,6 +65,23 @@ def _apply_oai_overlap(last_run, from_date):
         overlap_days = current_app.config.get("RERO_MEF_OAI_LASTRUN_OVERLAP", 1)
         return (parser.isoparse(last_run) - timedelta(days=overlap_days)).strftime(TIME_FORMAT)
     return last_run
+
+
+def _log_oai_failure(name, spec, dates, err):
+    # One Sentry issue per source and error type, tagged so outages can be filtered and alerted on.
+    status_code = getattr(getattr(err, "response", None), "status_code", None)
+    with sentry_sdk.new_scope() as scope:
+        scope.set_tag("oai.name", name)
+        scope.set_tag("oai.set", spec or "")
+        scope.set_tag("oai.from", dates["from"])
+        scope.set_tag("oai.until", dates["until"])
+        if status_code:
+            scope.set_tag("http.status_code", status_code)
+        scope.fingerprint = ["oai-harvest", name, type(err).__name__]
+        current_app.logger.error(
+            f"OAI harvest failed: {name} spec({spec}): {dates['from']} .. {dates['until']}: {err}",
+            exc_info=err,
+        )
 
 
 # Hours can not be retrieved by get_info_by_oai_name
@@ -197,7 +215,8 @@ class MyOAIItemIterator(OAIItemIterator):
                 XMLSyntaxError,
             ) as err:
                 last_error = err
-                current_app.logger.exception(f"Sickle harvest attempt {count + 1}/5")
+                # Transient failures are breadcrumbs only; the caller reports the final one.
+                current_app.logger.warning(f"Sickle harvest attempt {count + 1}/5 failed: {err}")
                 # Wait 60 seconds before retrying to avoid overwhelming the server
                 if count < 4:
                     sleep(60)
@@ -287,6 +306,7 @@ def oai_process_records_from_dates(
     count = 0
     action_count = {}
     mef_action_count = {}
+    harvest_failed = False
     for spec in setspecs:
         dates = dates_initial
         params = {"metadataPrefix": metadata_prefix, "ignore_deleted": ignore_deleted}
@@ -398,17 +418,19 @@ def oai_process_records_from_dates(
                 # get the next from to until dates
                 from_date = until_date
                 continue
-            except Exception:
-                current_app.logger.exception(
-                    f"OAI {name} spec({spec}): {dates['from']} .. {dates['until']}",
-                    stack_info=True,
-                )
-                count = -1
+            except Exception as err:
+                _log_oai_failure(name, spec, dates, err)
+                harvest_failed = True
             # get the next from to until dates
             from_date = until_date
     if update_last_run:
-        oai_set_last_run(name=name, date=dates_initial["until"], verbose=verbose)
-    return count, action_count, mef_action_count
+        if harvest_failed:
+            # Keep lastrun so the next run harvests the failed ranges again.
+            current_app.logger.warning(f"OAI {name}: lastrun not updated, harvest failed")
+        else:
+            oai_set_last_run(name=name, date=dates_initial["until"], verbose=verbose)
+    # A later successful range must not hide an earlier failure.
+    return -1 if harvest_failed else count, action_count, mef_action_count
 
 
 def oai_save_records_from_dates(
@@ -497,7 +519,7 @@ def oai_save_records_from_dates(
                     from_date = until_date
                     continue
                 except Exception as err:
-                    current_app.logger.error(err)
+                    _log_oai_failure(name, spec, dates, err)
                 from_date = until_date
     if verbose:
         click.echo(f"OAI {name}: {count}")
