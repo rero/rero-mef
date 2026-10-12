@@ -2,6 +2,22 @@
 
 <!-- version list -->
 
+## v1.1.1 (2026-10-12)
+
+### Bug Fixes
+
+- **agents**: Drop the dead data.rero.ch links
+  ([`92b72aa`](https://github.com/rero/rero-mef/commit/92b72aa6967156f9a5053f514a6186d4810e21cd))
+
+- **harvest**: Keep lastrun when a harvest fails
+  ([`7fe6d8f`](https://github.com/rero/rero-mef/commit/7fe6d8fec4e180bed57d096ebeb71037be2df7f2))
+
+### Chores
+
+- **deps**: Upgrade locked dependencies
+  ([`70d0a21`](https://github.com/rero/rero-mef/commit/70d0a21e16b4f0797af699c5345a3a4ef397753f))
+
+
 ## v1.1.0 (2026-10-06)
 
 ### Bug Fixes
