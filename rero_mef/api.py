@@ -651,10 +651,15 @@ class ConceptPlaceRecord(EntityRecord):
         Searches for an associated record (concept or place) that shares the same association identifier. Both sides
         have to be unambiguous, and errors are logged when they are not.
 
+        A deleted record links to nothing. Its identifiers are left out of the index, so the check that they are
+        its own would only see the live record sharing them, and the deleted one would take its partner away.
+
         :param association_cls: The class of the associated record type.
         :param association_search: The search class for finding associated records.
-        :returns: The associated record if found and unique, None if not found or ambiguous.
+        :returns: The associated record if found and unique, None if not found, ambiguous or deleted.
         """
+        if self.get("deleted"):
+            return None
         if association_identifiers := self.association.identifiers:
             listed = ", ".join(sorted(association_identifiers))
             # Test if my identifiers are mine alone
