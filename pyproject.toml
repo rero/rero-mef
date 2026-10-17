@@ -40,11 +40,9 @@ dependencies = [
     "invenio-config>=1.0.3",
     "invenio-db [postgresql]>=2.0.0",
     # Invenio base bundle
-    "invenio-assets>=4.0.0",
     "invenio-formatter>=3.0.0",
     "invenio-logging[sentry]>=4.0.0",
     "invenio-rest>=3.0.0",
-    "invenio-theme>=4.0.0",
     # Invenio auth bundle
     "invenio-access>=4.0.0",
     "invenio-accounts>=6.0.0",
@@ -54,9 +52,7 @@ dependencies = [
     "invenio-jsonschemas>=2.0.0",
     "invenio-pidstore>=3.0.0",
     "invenio-records-rest>=3.0.0",
-    "invenio-records-ui>=2.0.0",
     "invenio-records>=4.0.0",
-    "invenio-search-ui>=4.0.0",
     "python-dotenv >=0.13.0",
     ## MEF specific python modules
     "PyYAML>=5.3.1",
@@ -100,14 +96,11 @@ concepts = "rero_mef.concepts.tasks"
 places = "rero_mef.places.tasks"
 
 
-[project.entry-points."invenio_assets.webpack"]
-rero_mef_css = "rero_mef.theme.webpack:theme"
-
 [project.entry-points."invenio_base.apps"]
 rero-mef = "rero_mef.ext:REROMEFAPP"
 
-[project.entry-points."invenio_base.blueprints"]
-rero_mef = "rero_mef.theme.views:blueprint"
+[project.entry-points."invenio_base.api_apps"]
+rero-mef = "rero_mef.ext:REROMEFAPP"
 
 [project.entry-points."invenio_config.module"]
 rero_mef = "rero_mef.config"
@@ -206,7 +199,6 @@ places_idref = "rero_mef.places.idref.jsonresolvers.idref_resolver"
 places_gnd = "rero_mef.places.gnd.jsonresolvers.gnd_resolver"
 
 [project.entry-points."invenio_base.api_blueprints"]
-api_rero_mef = "rero_mef.theme.views:api_blueprint"
 api_monitoring = "rero_mef.monitoring.views:api_blueprint"
 api_blueprint = "rero_mef.views:api_blueprint"
 
@@ -276,7 +268,6 @@ match = "staging"
 prerelease = false
 
 [tool.pytest.ini_options]
-live_server_scope = "module"
 addopts = "--color=yes --doctest-modules --exclude-warning-annotations --ignore=setup.py"
 testpaths = "tests rero_mef"
 # not displaying all the PendingDeprecationWarnings from invenio
