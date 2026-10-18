@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.1.2 (2026-10-18)
+
+### Bug Fixes
+
+- **mef**: Stop deleted records from linking
+  ([`5c531c2`](https://github.com/rero/rero-mef/commit/5c531c2d0521620a0b9513f81cc53841714bc4d3))
+
+
 ## v1.1.1 (2026-10-12)
 
 ### Bug Fixes
