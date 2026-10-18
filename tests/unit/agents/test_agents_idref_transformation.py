@@ -152,6 +152,73 @@ def test_idref_identifier_missing():
     assert not trans.json
 
 
+def test_idref_isni():
+    """Keep the ISNI of 010, written without spaces like the one GND states, and no other scheme."""
+    xml_part_to_add = """
+        <datafield tag="010" ind1=" " ind2=" ">
+            <subfield code="a">0000000040099966</subfield>
+            <subfield code="2">ISNI</subfield>
+            <subfield code="C">VIAF</subfield>
+            <subfield code="d">20200302</subfield>
+        </datafield>
+        <datafield tag="010" ind1=" " ind2=" ">
+            <subfield code="a">0000 0001 2099 9104</subfield>
+        </datafield>
+        <datafield tag="010" ind1=" " ind2=" ">
+            <subfield code="a">0000-0002-1825-0097</subfield>
+            <subfield code="2">ORCID</subfield>
+        </datafield>
+     """
+    trans = trans_prep("idref", xml_part_to_add)
+    trans.trans_idref_isni()
+    assert trans.json == {
+        "identifiedBy": [
+            {"source": "ISNI", "type": "bf:Nbn", "value": "0000000040099966"},
+            {"source": "ISNI", "type": "bf:Nbn", "value": "0000000120999104"},
+        ],
+    }
+
+
+def test_idref_isni_missing():
+    """A record without 010 states no ISNI."""
+    trans = trans_prep("idref", "")
+    trans.trans_idref_isni()
+    assert not trans.json
+
+
+def test_idref_isni_blank():
+    """A blank 010 $a is no ISNI."""
+    xml_part_to_add = """
+        <datafield tag="010" ind1=" " ind2=" ">
+            <subfield code="a">   </subfield>
+            <subfield code="2">ISNI</subfield>
+        </datafield>
+     """
+    trans = trans_prep("idref", xml_part_to_add)
+    trans.trans_idref_isni()
+    assert not trans.json
+
+
+def test_idref_wikidata_once():
+    """The full transformation of an agent keeps the Wikidata id of 035 $2 WIKIDATA once."""
+    xml_part_to_add = """
+        <datafield tag="035" ind1=" " ind2=" ">
+            <subfield code="a">Q5673244</subfield>
+            <subfield code="2">WIKIDATA</subfield>
+            <subfield code="d">20180928</subfield>
+        </datafield>
+        <datafield tag="200" ind1=" " ind2="1">
+            <subfield code="a">Müller</subfield>
+            <subfield code="b">Hans</subfield>
+        </datafield>
+     """
+    trans = trans_prep("idref", xml_part_to_add)
+    trans._transform()
+    assert [identifier for identifier in trans.json["identifiedBy"] if identifier["source"] == "WIKIDATA"] == [
+        {"source": "WIKIDATA", "type": "bf:Nbn", "value": "Q5673244"}
+    ]
+
+
 def test_idref_pid():
     """Test pid for person."""
     xml_part_to_add = """

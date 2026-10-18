@@ -3,12 +3,16 @@
 """Marctojsons transformer for IdRef records."""
 
 import contextlib
+import re
 from datetime import UTC, datetime
 
 from rero_mef.marctojson.helper import (
     build_string_from_field,
     build_string_list_from_fields,
 )
+
+#: The GeoNames id in a GeoNames url, as IdRef cites it in its source notes.
+GEONAMES_URL = re.compile(r"geonames\.org/(\d+)")
 
 
 class Transformation:
@@ -77,6 +81,20 @@ class Transformation:
                 )
         if identifiers:
             self.json_dict["identifiedBy"] = identifiers
+
+    def trans_idref_geonames(self):
+        """Transformation GeoNames id from the url of a source note 810 $a."""
+        if self.logger and self.verbose:
+            self.logger.info("Call Function: %s", "trans_idref_geonames")
+        geonames = {
+            match[1]: None
+            for field_810 in self.marc.get_fields("810")
+            if (match := GEONAMES_URL.search(field_810.get("a") or ""))
+        }
+        for geoname in geonames:
+            self.json_dict.setdefault("identifiedBy", []).append(
+                {"type": "bf:Nbn", "source": "GEONAMES", "value": geoname}
+            )
 
     def trans_idref_relation_pid(self):
         """Transformation old pids 035 $a $9 = sudoc."""

@@ -236,6 +236,18 @@ class Transformation:
             identified_by.append({"source": "IDREF", "type": "uri", "value": fields_003[0].data})
             self.json_dict["identifiedBy"] = identified_by
 
+    def trans_idref_isni(self):
+        """Transformation ISNI 010 $a."""
+        if self.logger and self.verbose:
+            self.logger.info("Call Function: %s", "trans_idref_isni")
+        for field_010 in self.marc.get_fields("010"):
+            if (field_010.get("2") or "ISNI").upper() == "ISNI" and (
+                isni := "".join((field_010.get("a") or "").split())
+            ):
+                self.json_dict.setdefault("identifiedBy", []).append(
+                    {"source": "ISNI", "type": "bf:Nbn", "value": isni}
+                )
+
     def trans_idref_birth_and_death_dates(self):
         """Transformation birth_date and death_date."""
 

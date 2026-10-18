@@ -48,6 +48,36 @@ def test_idref_identifier():
     }
 
 
+def test_idref_geonames():
+    """Keep the GeoNames id of a source note url, once, and not a bare GeoNames citation."""
+    xml_part_to_add = """
+        <controlfield tag="008">Tg5</controlfield>
+        <datafield tag="810" ind1=" " ind2=" ">
+            <subfield code="a">http://www.geonames.org/658288, 2024-07-16</subfield>
+            <subfield code="b">Paijat-Hame</subfield>
+        </datafield>
+        <datafield tag="810" ind1=" " ind2=" ">
+            <subfield code="a">https://www.geonames.org/658288/hollola.html</subfield>
+        </datafield>
+        <datafield tag="810" ind1=" " ind2=" ">
+            <subfield code="a">http://www.geonames.org, 2016-05-04</subfield>
+            <subfield code="b">Coordonnées géographiques</subfield>
+        </datafield>
+    """
+    trans = trans_prep(Transformation, "places", xml_part_to_add)
+    trans.trans_idref_geonames()
+    assert trans.json == {
+        "identifiedBy": [{"type": "bf:Nbn", "source": "GEONAMES", "value": "658288"}],
+    }
+
+
+def test_idref_geonames_missing():
+    """A record citing no GeoNames url states no GeoNames id."""
+    trans = trans_prep(Transformation, "places", '<controlfield tag="008">Tg5</controlfield>')
+    trans.trans_idref_geonames()
+    assert not trans.json
+
+
 def test_idref_authorized_access_point():
     """Test authorized_access_point from field 215."""
     xml_part_to_add = """
