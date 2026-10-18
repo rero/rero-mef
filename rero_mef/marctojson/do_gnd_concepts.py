@@ -69,32 +69,21 @@ class Transformation:
             self.json_dict["type"] = "bf:Topic"
 
     def trans_gnd_identifier(self):
-        """Transformation identifier from field 024, 035."""
+        """Transformation identifier from field 024 $0 and $a."""
         if self.logger and self.verbose:
             self.logger.info("Call Function: %s", "trans_gnd_identifier")
-        fields_024 = self.marc.get_fields("024")
-        for field_024 in fields_024:
-            subfield_0 = field_024.get("0")
-            subfield_2 = field_024.get("2")
-            if subfield_0 and subfield_2:
+        for field_024 in self.marc.get_fields("024"):
+            if not (subfield_2 := field_024.get("2")):
+                continue
+            source = subfield_2.upper()
+            if subfield_0 := field_024.get("0"):
                 self.json_dict.setdefault("identifiedBy", []).append(
-                    {
-                        "source": subfield_2.upper(),
-                        "type": "uri",
-                        "value": subfield_0,
-                    }
+                    {"source": source, "type": "uri", "value": subfield_0}
                 )
-        for field_035 in self.marc.get_fields("035"):
-            if field_035.get("a"):
-                subfield_a = field_035["a"]
-                if subfield_a.startswith(("(DE-101)", "(DE-588)")):
-                    self.json_dict.setdefault("identifiedBy", []).append(
-                        {
-                            "source": "GND",
-                            "type": "bf:Nbn",
-                            "value": subfield_a,
-                        }
-                    )
+            if subfield_a := (field_024.get("a") or "").strip():
+                self.json_dict.setdefault("identifiedBy", []).append(
+                    {"source": source, "type": "bf:Nbn", "value": subfield_a}
+                )
 
     def trans_gnd_bnf_type(self):
         """Transformation bnf_type from field 075.

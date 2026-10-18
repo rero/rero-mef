@@ -19,12 +19,20 @@ def test_gnd_pid():
 
 
 def test_gnd_identifier():
-    """Test identifier for person 024, 035."""
+    """Test identifiers of 024, and none of 035."""
     xml_part_to_add = """
         <datafield tag="024" ind1=" " ind2=" ">
             <subfield code="a">7655914-2</subfield>
             <subfield code="0">http://d-nb.info/gnd/7655914-2</subfield>
             <subfield code="2">gnd</subfield>
+        </datafield>
+        <datafield tag="024" ind1="7" ind2=" ">
+            <subfield code="a">Q2578642</subfield>
+            <subfield code="2">wikidata</subfield>
+        </datafield>
+        <datafield tag="024" ind1="7" ind2=" ">
+            <subfield code="a">3093685</subfield>
+            <subfield code="2">geonames</subfield>
         </datafield>
         <datafield tag="035" ind1=" " ind2=" ">
             <subfield code="a">(DE-101)993772048d</subfield>
@@ -45,16 +53,9 @@ def test_gnd_identifier():
                 "source": "GND",
                 "value": "http://d-nb.info/gnd/7655914-2",
             },
-            {
-                "type": "bf:Nbn",
-                "source": "GND",
-                "value": "(DE-101)993772048d",
-            },
-            {
-                "type": "bf:Nbn",
-                "source": "GND",
-                "value": "(DE-588)7655914-2",
-            },
+            {"type": "bf:Nbn", "source": "GND", "value": "7655914-2"},
+            {"type": "bf:Nbn", "source": "WIKIDATA", "value": "Q2578642"},
+            {"type": "bf:Nbn", "source": "GEONAMES", "value": "3093685"},
         ],
     }
 

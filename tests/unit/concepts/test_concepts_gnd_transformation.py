@@ -22,12 +22,16 @@ def test_gnd_pid():
 
 
 def test_gnd_identifier():
-    """Test identifier for person 024, 035."""
+    """Test identifiers of 024, and none of 035."""
     xml_part_to_add = """
         <datafield tag="024" ind1=" " ind2=" ">
             <subfield code="a">4844250-1</subfield>
             <subfield code="0">http://d-nb.info/gnd/4844250-1</subfield>
             <subfield code="2">gnd</subfield>
+        </datafield>
+        <datafield tag="024" ind1="7" ind2=" ">
+            <subfield code="a">Q7357651</subfield>
+            <subfield code="2">wikidata</subfield>
         </datafield>
         <datafield tag="035" ind1=" " ind2=" ">
             <subfield code="a">(DE-101)976573474</subfield>
@@ -49,16 +53,8 @@ def test_gnd_identifier():
                 "source": "GND",
                 "value": "http://d-nb.info/gnd/4844250-1",
             },
-            {
-                "type": "bf:Nbn",
-                "source": "GND",
-                "value": "(DE-101)976573474",
-            },
-            {
-                "type": "bf:Nbn",
-                "source": "GND",
-                "value": "(DE-588)4844250-1",
-            },
+            {"type": "bf:Nbn", "source": "GND", "value": "4844250-1"},
+            {"type": "bf:Nbn", "source": "WIKIDATA", "value": "Q7357651"},
         ],
     }
 
