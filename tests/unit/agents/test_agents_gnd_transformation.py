@@ -168,18 +168,56 @@ def test_gnd_language_missing():
 
 
 def test_gnd_identifier():
-    """Test identifier for person 001."""
+    """Keep the GND uri, the ISNI and the Wikidata id of 024, and nothing else of it."""
     xml_part_to_add = """
-        <datafield ind1=" " ind2=" " tag="024">
-            <subfield code="0">http://d-nb.info/gnd/100000193</subfield>
+        <datafield ind1="7" ind2=" " tag="024">
+            <subfield code="a">118540238</subfield>
+            <subfield code="0">http://d-nb.info/gnd/118540238</subfield>
             <subfield code="2">gnd</subfield>
+        </datafield>
+        <datafield ind1="7" ind2=" " tag="024">
+            <subfield code="a">0000 0001 2099 9104</subfield>
+            <subfield code="2">isni</subfield>
+        </datafield>
+        <datafield ind1="7" ind2=" " tag="024">
+            <subfield code="a">Q5879</subfield>
+            <subfield code="2">wikidata</subfield>
+        </datafield>
+        <datafield ind1="7" ind2=" " tag="024">
+            <subfield code="a">n79003362</subfield>
+            <subfield code="2">lccn</subfield>
         </datafield>
      """
     trans = trans_prep("gnd", xml_part_to_add)
     trans.trans_gnd_identifier()
     assert trans.json == {
-        "identifiedBy": [{"source": "GND", "type": "uri", "value": "http://d-nb.info/gnd/100000193"}],
+        "identifiedBy": [
+            {"source": "GND", "type": "uri", "value": "http://d-nb.info/gnd/118540238"},
+            {"source": "ISNI", "type": "bf:Nbn", "value": "0000000120999104"},
+            {"source": "WIKIDATA", "type": "bf:Nbn", "value": "Q5879"},
+        ],
     }
+
+
+def test_gnd_identifier_blank_values():
+    """A blank ISNI or Wikidata id is no identifier, and a padded one is trimmed."""
+    xml_part_to_add = """
+        <datafield ind1="7" ind2=" " tag="024">
+            <subfield code="a">   </subfield>
+            <subfield code="2">isni</subfield>
+        </datafield>
+        <datafield ind1="7" ind2=" " tag="024">
+            <subfield code="a"> </subfield>
+            <subfield code="2">wikidata</subfield>
+        </datafield>
+        <datafield ind1="7" ind2=" " tag="024">
+            <subfield code="a"> Q5879 </subfield>
+            <subfield code="2">wikidata</subfield>
+        </datafield>
+     """
+    trans = trans_prep("gnd", xml_part_to_add)
+    trans.trans_gnd_identifier()
+    assert trans.json == {"identifiedBy": [{"source": "WIKIDATA", "type": "bf:Nbn", "value": "Q5879"}]}
 
 
 def test_gnd_identifier_missing():
