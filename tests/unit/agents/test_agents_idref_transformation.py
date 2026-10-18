@@ -152,6 +152,53 @@ def test_idref_identifier_missing():
     assert not trans.json
 
 
+def test_idref_isni():
+    """Keep the ISNI of 010, written without spaces like the one GND states, and no other scheme."""
+    xml_part_to_add = """
+        <datafield tag="010" ind1=" " ind2=" ">
+            <subfield code="a">0000000040099966</subfield>
+            <subfield code="2">ISNI</subfield>
+            <subfield code="C">VIAF</subfield>
+            <subfield code="d">20200302</subfield>
+        </datafield>
+        <datafield tag="010" ind1=" " ind2=" ">
+            <subfield code="a">0000 0001 2099 9104</subfield>
+        </datafield>
+        <datafield tag="010" ind1=" " ind2=" ">
+            <subfield code="a">0000-0002-1825-0097</subfield>
+            <subfield code="2">ORCID</subfield>
+        </datafield>
+     """
+    trans = trans_prep("idref", xml_part_to_add)
+    trans.trans_idref_isni()
+    assert trans.json == {
+        "identifiedBy": [
+            {"source": "ISNI", "type": "bf:Nbn", "value": "0000000040099966"},
+            {"source": "ISNI", "type": "bf:Nbn", "value": "0000000120999104"},
+        ],
+    }
+
+
+def test_idref_isni_missing():
+    """A record without 010 states no ISNI."""
+    trans = trans_prep("idref", "")
+    trans.trans_idref_isni()
+    assert not trans.json
+
+
+def test_idref_isni_blank():
+    """A blank 010 $a is no ISNI."""
+    xml_part_to_add = """
+        <datafield tag="010" ind1=" " ind2=" ">
+            <subfield code="a">   </subfield>
+            <subfield code="2">ISNI</subfield>
+        </datafield>
+     """
+    trans = trans_prep("idref", xml_part_to_add)
+    trans.trans_idref_isni()
+    assert not trans.json
+
+
 def test_idref_pid():
     """Test pid for person."""
     xml_part_to_add = """

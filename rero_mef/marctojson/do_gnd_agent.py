@@ -167,17 +167,23 @@ class Transformation:
             self.json_dict["pid"] = field_001[0].data
 
     def trans_gnd_identifier(self):
-        """Transformation identifier from field 001."""
+        """Transformation identifiers 024: the GND uri, the ISNI and the Wikidata id.
+
+        ISNI and Wikidata are the identifiers GND and IdRef share, so they are kept to link the two.
+        """
         if self.logger and self.verbose:
             self.logger.info("Call Function: %s", "trans_gnd_identifier")
-        fields_024 = self.marc.get_fields("024")
-        for field_024 in fields_024:
-            subfields_0 = field_024.get("0")
-            subfields_2 = field_024.get("2")
-            if subfields_0 and subfields_2 == "gnd":
-                self.json_dict.setdefault("identifiedBy", []).append(
-                    {"type": "uri", "value": subfields_0, "source": "GND"}
-                )
+        for field_024 in self.marc.get_fields("024"):
+            source = field_024.get("2")
+            if source == "gnd" and (uri := field_024.get("0")):
+                identifier = {"type": "uri", "value": uri, "source": "GND"}
+            elif source == "isni" and (isni := "".join((field_024.get("a") or "").split())):
+                identifier = {"type": "bf:Nbn", "value": isni, "source": "ISNI"}
+            elif source == "wikidata" and (wikidata := (field_024.get("a") or "").strip()):
+                identifier = {"type": "bf:Nbn", "value": wikidata, "source": "WIKIDATA"}
+            else:
+                continue
+            self.json_dict.setdefault("identifiedBy", []).append(identifier)
 
     def trans_gnd_birth_and_death_dates(self):
         """Transformation birth_date and death_date."""
