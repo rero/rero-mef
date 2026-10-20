@@ -588,6 +588,47 @@ class EntityRecord(Record):
         """
         return self.get("deleted")
 
+    @property
+    def redirect_to(self):
+        """Get the pid this record states it was redirected to.
+
+        :returns: The pid of the `redirect_to` relation, or None.
+        """
+        relation = self.get("relation_pid") or {}
+        return relation.get("value") if relation.get("type") == "redirect_to" else None
+
+    def park_in_own_mef(self, mef_cls, entity_type, extra=None, dbcommit=False, reindex=False):
+        """Move a deleted, redirected record to a MEF record of its own.
+
+        The other sources stay live in their MEF record; the old pid still resolves through `latest`.
+
+        :param mef_cls: MEF record class of this record's family.
+        :param entity_type: Entity type of the `$ref`, e.g. `agents`.
+        :param extra: Further fields of a new MEF record, e.g. its `type`.
+        :param dbcommit: Commit changes to DB.
+        :param reindex: Reindex records.
+        :returns: Tuple (own MEF record, actions dict).
+        """
+        actions = {}
+        own = None
+        for mef_record in mef_cls.get_mef(self.pid, self.name):
+            others = [name for name in mef_record.entities if name != self.name and mef_record.get(name)]
+            if own is None and not others and not mef_record.get("viaf_pid"):
+                own = mef_record
+                continue
+            mef_record.pop(self.name)
+            mef_record.replace_or_delete(dbcommit=dbcommit, reindex=reindex)
+            actions[mef_record.pid] = Action.DELETE_ENTITY
+        if own:
+            own = own.replace(data=own, dbcommit=dbcommit, reindex=reindex)
+            actions[own.pid] = Action.REPLACE
+        else:
+            ref = build_ref_string(entity_type=entity_type, entity_name=self.name, entity_pid=self.pid)
+            own = mef_cls.create(data={self.name: {"$ref": ref}, **(extra or {})}, dbcommit=dbcommit, reindex=reindex)
+            actions[own.pid] = Action.CREATE
+        mef_cls.flush_indexes()
+        return own, actions
+
 
 class Association(NamedTuple):
     """What a record states about the entity it should be clustered with.
@@ -744,6 +785,14 @@ class ConceptPlaceRecord(EntityRecord):
 
         actions = {}
         association_info = self.association_info
+        if self.deleted and self.redirect_to:
+            return self.park_in_own_mef(
+                mef_cls=association_info["mef_cls"],
+                entity_type=RERO_ILS_ENTITY_TYPES[self["type"]],
+                extra={"type": self["type"]},
+                dbcommit=dbcommit,
+                reindex=reindex,
+            )
         # Get direct MEF record
         mef_record = get_mef_record(mef_cls=association_info["mef_cls"], record=self)
         # Get associated MEF record
@@ -783,9 +832,16 @@ class ConceptPlaceRecord(EntityRecord):
                     )
                 }
             if not bool(mef_self_association_pid) and not bool(mef_other_association_pid) and bool(mef_other_pid):
-                # Delete associated ref from MEF and create a new one
+                # Move the associated ref to a new MEF record, unless another one already holds it
                 new_mef_record.pop(association_name)
-                if association_record := association_info["record_cls"].get_record_by_pid(mef_other_pid):
+                held_elsewhere = [
+                    pid
+                    for pid in association_info["mef_cls"].get_mef(mef_other_pid, association_name, pid_only=True)
+                    if pid != new_mef_record.pid
+                ]
+                if not held_elsewhere and (
+                    association_record := association_info["record_cls"].get_record_by_pid(mef_other_pid)
+                ):
                     _, action = mef_create(
                         mef_cls=association_info["mef_cls"],
                         data=association_record,

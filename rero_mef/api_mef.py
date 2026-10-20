@@ -238,11 +238,14 @@ class EntityMefRecord(EntityRecord):
     def get_latest(cls, pid_type, pid, _visited=None):
         """Get latest Mef record for pid_type and pid.
 
+        A redirect to a pid this type does not hold (another entity type, an unharvested work) returns the last
+        record found, so a pid MEF holds always resolves.
+
         :param pid_type: pid type to use.
         :param pid: pid to use.
         :param _visited: set of already-seen (pid_type, pid) pairs used to
             break redirect cycles.
-        :returns: latest record.
+        :returns: latest record, or an empty dict when no MEF record holds the pid.
         """
         visited = _visited or set()
         key = (pid_type, pid)
@@ -274,7 +277,12 @@ class EntityMefRecord(EntityRecord):
                     new_pid = candidate
                     break
         if new_pid:
-            return cls.get_latest(pid_type=pid_type, pid=new_pid, _visited=visited)
+            if latest := cls.get_latest(pid_type=pid_type, pid=new_pid, _visited=visited):
+                return latest
+            # RERO ILS cannot change an entity's type: fix it there
+            current_app.logger.warning(
+                f"REDIRECT OUT OF TYPE: {cls.__name__} {pid_type} {pid} -> {new_pid} | mef: {data.get('pid')}"
+            )
         for field in _INDEX_ONLY_FIELDS:
             data.pop(field, None)
         return data

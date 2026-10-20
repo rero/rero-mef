@@ -130,6 +130,13 @@ _MEF_SORT_OPTIONS = {
     "type": {"title": "Type", "fields": ["type"]},
 }
 
+#: Search engine errors answered with 400; `parse_exception` is how a broken `query_string` comes back with several
+#: shards.
+RECORDS_REST_SEARCH_ERROR_HANDLERS = {
+    cause: "invenio_records_rest.views:search_query_parsing_exception_handler"
+    for cause in ("query_parsing_exception", "query_shard_exception", "parse_exception")
+}
+
 RECORDS_REST_SORT_OPTIONS = {
     "all_mef": _MEF_SORT_OPTIONS,
     "mef": _MEF_SORT_OPTIONS,
