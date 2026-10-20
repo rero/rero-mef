@@ -3,10 +3,10 @@
 
 """Test the answer to a search query the search engine cannot parse."""
 
+from unittest import mock
+
 import pytest
 from elasticsearch.exceptions import RequestError
-
-from rero_mef.views import invalid_query
 
 
 def editor_query(term):
@@ -35,13 +35,22 @@ def test_parsable_query_still_answers(client):
     assert res.status_code == 200
 
 
-def test_wrapped_parse_error_is_a_bad_request(app):
-    """A parse error wrapped by the search engine answers 400."""
+def test_parse_exception_is_a_bad_request(client):
+    """A `parse_exception` from the search engine answers 400."""
     error = RequestError(
         400, "search_phase_execution_exception", {"error": {"root_cause": [{"type": "parse_exception"}]}}
     )
-    assert app._find_error_handler(error, []) is invalid_query
-    with app.test_request_context():
-        response = invalid_query(error).get_response()
-    assert response.status_code == 400
-    assert response.get_json()["status"] == 400
+    with mock.patch("rero_mef.agents.mef.api.AgentMefSearch.execute", side_effect=error):
+        res = client.get("/api/agents/mef/", query_string={"q": "Mozart!", "size": 10})
+    assert res.status_code == 400
+    assert res.get_json()["status"] == 400
+
+
+def test_other_search_errors_stay_server_errors(client):
+    """A search engine error that is no parse error is not reported as an invalid query."""
+    error = RequestError(
+        400, "illegal_argument_exception", {"error": {"root_cause": [{"type": "illegal_argument_exception"}]}}
+    )
+    with mock.patch("rero_mef.agents.mef.api.AgentMefSearch.execute", side_effect=error):
+        res = client.get("/api/agents/mef/", query_string={"q": "Mozart", "size": 10})
+    assert res.status_code == 500

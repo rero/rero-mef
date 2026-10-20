@@ -6,7 +6,7 @@
 import hashlib
 import json as _json
 
-from elasticsearch.exceptions import NotFoundError, RequestError
+from elasticsearch.exceptions import NotFoundError
 from flask import (
     Blueprint,
     Response,
@@ -28,16 +28,6 @@ from .places import PlaceMefRecord
 from .query import and_search_factory, mef_ui_query_parser
 
 api_blueprint = Blueprint("api_blueprint", __name__, url_prefix="/")
-
-
-@api_blueprint.app_errorhandler(RequestError)
-def invalid_query(error):
-    """Answer a query the search engine cannot parse with 400 instead of 500.
-
-    :param error: The search engine's error.
-    :returns: The REST error for an invalid query.
-    """
-    return InvalidQueryRESTError()
 
 
 def _endpoint_for_all_mef_pid(pid_value):
