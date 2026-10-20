@@ -55,6 +55,10 @@ class AgentRecord(EntityRecord):
         """
         from rero_mef.agents import AgentMefRecord, AgentViafRecord
 
+        if self.deleted and self.redirect_to:
+            return self.park_in_own_mef(
+                mef_cls=AgentMefRecord, entity_type="agents", dbcommit=dbcommit, reindex=reindex
+            )
         mef_records = []
         mef_pids = set()
         mef_actions = {}

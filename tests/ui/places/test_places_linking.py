@@ -4,7 +4,9 @@
 """Test places linking through the GND number."""
 
 from copy import deepcopy
+from unittest import mock
 
+from rero_mef.api import Action
 from rero_mef.places import PlaceGndRecord, PlaceIdrefRecord, PlaceMefRecord
 from rero_mef.utils import build_ref_string
 
@@ -56,13 +58,9 @@ def test_deleted_idref_place_does_not_take_the_gnd_place(app, place_idref_data, 
     assert [mef.pid for mef in PlaceMefRecord.get_mef(gnd_record.pid, "gnd")] == [live_mef.pid]
 
 
-def test_latest_keeps_a_redirect_to_a_pid_no_place_holds(app, place_gnd_redirect_data, caplog):
-    """A GND place redirected to a pid no place record holds still resolves, to its own MEF record.
-
-    GND redirects across types (an organisation that became a place) and to works MEF does not harvest. RERO ILS
-    keeps the old pid in its entity and reports an empty `latest` as a sync error.
-    """
-    # it only reaches the database the way it really does: live first, deleted and redirected by a later harvest
+def test_latest_keeps_a_redirect_to_a_pid_no_place_holds(app, place_gnd_redirect_data):
+    """A redirect to a pid no place record holds resolves to the record's own MEF record."""
+    # live first, then deleted and redirected
     live_data = {k: v for k, v in deepcopy(place_gnd_redirect_data).items() if k not in ("deleted", "relation_pid")}
     PlaceGndRecord.create_or_update(data=live_data, dbcommit=True, reindex=True)
     gnd_record, _ = PlaceGndRecord.create_or_update(data=deepcopy(place_gnd_redirect_data), dbcommit=True, reindex=True)
@@ -72,17 +70,15 @@ def test_latest_keeps_a_redirect_to_a_pid_no_place_holds(app, place_gnd_redirect
 
     # the redirect target is held by no place record
     assert not PlaceMefRecord.get_mef(gnd_record["relation_pid"]["value"], "gnd")
-    assert PlaceMefRecord.get_latest(pid_type="gnd", pid=gnd_record.pid)["pid"] == mef.pid
-    # logged, so that the RERO ILS entities keeping the old pid can be found and fixed
-    assert f"REDIRECT OUT OF TYPE: PlaceMefRecord gnd {gnd_record.pid} -> 1332364101 | mef: {mef.pid}" in caplog.text
+    with mock.patch.object(app.logger, "warning") as warning:
+        assert PlaceMefRecord.get_latest(pid_type="gnd", pid=gnd_record.pid)["pid"] == mef.pid
+    warning.assert_called_once_with(
+        f"REDIRECT OUT OF TYPE: PlaceMefRecord gnd {gnd_record.pid} -> 1332364101 | mef: {mef.pid}"
+    )
 
 
 def test_a_partner_held_elsewhere_gets_no_new_mef_record(app, place_idref_data, place_gnd_data):
-    """A deleted IdRef place leaves its GND partner where another MEF record already holds it.
-
-    Without the check the GND place went into yet another record, so it ended in two: the duplicate the nightly
-    stale association repair left for GND 040657418.
-    """
+    """A partner another MEF record already holds gets no new MEF record."""
     gnd_data = deepcopy(place_gnd_data)
     gnd_data["pid"] = "040657418"
     gnd_record, _ = PlaceGndRecord.create_or_update(data=gnd_data, dbcommit=True, reindex=True)
@@ -96,7 +92,7 @@ def test_a_partner_held_elsewhere_gets_no_new_mef_record(app, place_idref_data, 
     PlaceGndRecord.flush_indexes()
     PlaceIdrefRecord.flush_indexes()
 
-    # the state the repair met: the GND place in the record of the deleted IdRef place and in that of the live one
+    # the GND place in the MEF record of the deleted IdRef place and in that of the live one
     def ref(name, pid):
         return {"$ref": build_ref_string(entity_type="places", entity_name=name, entity_pid=pid)}
 
@@ -119,3 +115,43 @@ def test_a_partner_held_elsewhere_gets_no_new_mef_record(app, place_idref_data, 
     assert PlaceMefRecord.count() == mef_count
     assert [mef.pid for mef in PlaceMefRecord.get_mef(gnd_record.pid, "gnd")] == [live_mef.pid]
     assert PlaceMefRecord.get_record_by_pid(stale_mef.pid).ref_pids == {"idref": deleted_record.pid}
+
+
+def test_deleted_redirected_gnd_place_gets_its_own_mef_record(app, place_idref_data, place_gnd_data):
+    """A GND place deleted with a redirect moves to its own MEF record; its partner's record stays live."""
+    target, _ = PlaceGndRecord.create_or_update(
+        data=deepcopy(place_gnd_data) | {"pid": "7000002"}, dbcommit=True, reindex=True
+    )
+    old_data = deepcopy(place_gnd_data) | {"pid": "7000001"}
+    old, _ = PlaceGndRecord.create_or_update(data=old_data, dbcommit=True, reindex=True)
+    idref, _ = PlaceIdrefRecord.create_or_update(
+        data=_idref_place(place_idref_data, "7000003", old.pid), dbcommit=True, reindex=True
+    )
+    PlaceGndRecord.flush_indexes()
+    PlaceIdrefRecord.flush_indexes()
+    target_mef, _ = target.create_or_update_mef(dbcommit=True, reindex=True)
+    shared_mef, _ = idref.create_or_update_mef(dbcommit=True, reindex=True)
+    assert shared_mef.ref_pids == {"idref": idref.pid, "gnd": old.pid}
+
+    # deleted and redirected
+    old, _ = PlaceGndRecord.create_or_update(
+        data=old_data
+        | {"deleted": "2026-10-20T00:00:00+00:00", "relation_pid": {"type": "redirect_to", "value": target.pid}},
+        dbcommit=True,
+        reindex=True,
+    )
+    own_mef, actions = old.create_or_update_mef(dbcommit=True, reindex=True)
+    PlaceMefRecord.flush_indexes()
+
+    shared_mef = PlaceMefRecord.get_record_by_pid(shared_mef.pid)
+    assert shared_mef.ref_pids == {"idref": idref.pid}
+    assert not shared_mef.get("deleted")
+    assert own_mef.pid != shared_mef.pid
+    assert own_mef.ref_pids == {"gnd": old.pid}
+    assert own_mef.get("deleted")
+    assert [mef.pid for mef in PlaceMefRecord.get_mef(old.pid, "gnd")] == [own_mef.pid]
+    assert PlaceMefRecord.get_latest(pid_type="gnd", pid=old.pid)["pid"] == target_mef.pid
+
+    again, actions = old.create_or_update_mef(dbcommit=True, reindex=True)
+    assert again.pid == own_mef.pid
+    assert actions == {own_mef.pid: Action.REPLACE}

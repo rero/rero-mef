@@ -36,11 +36,7 @@ def test_parsable_query_still_answers(client):
 
 
 def test_wrapped_parse_error_is_a_bad_request(app):
-    """The search engine's rejection of a query answers 400 however it is wrapped.
-
-    With several shards the engine reports a broken `query_string` as a `search_phase_execution_exception`, which
-    invenio-records-rest does not recognise as a syntax error and lets through as a 500.
-    """
+    """A parse error wrapped by the search engine answers 400."""
     error = RequestError(
         400, "search_phase_execution_exception", {"error": {"root_cause": [{"type": "parse_exception"}]}}
     )

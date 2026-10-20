@@ -32,12 +32,7 @@ api_blueprint = Blueprint("api_blueprint", __name__, url_prefix="/")
 
 @api_blueprint.app_errorhandler(RequestError)
 def invalid_query(error):
-    """Answer a query the search engine rejects with a 400 rather than a 500.
-
-    The RERO ILS editor puts what its user types into a `query_string` query, so `Bern : Kanton` or `Mozart!` reach
-    the search engine as broken syntax. invenio-records-rest turns that into a 400 only when the engine names the
-    parse error directly; with several shards it comes wrapped in a `search_phase_execution_exception` and fell
-    through as a 500.
+    """Answer a query the search engine cannot parse with 400 instead of 500.
 
     :param error: The search engine's error.
     :returns: The REST error for an invalid query.
