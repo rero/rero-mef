@@ -238,11 +238,16 @@ class EntityMefRecord(EntityRecord):
     def get_latest(cls, pid_type, pid, _visited=None):
         """Get latest Mef record for pid_type and pid.
 
+        A redirect is only followed to a record of this type that a MEF record holds. GND redirects across types (an
+        organisation that became a place) and to works MEF does not harvest, and RERO ILS changes no entity's type:
+        the record found last is returned then, as it is for a redirect cycle. A pid a MEF record holds must keep
+        resolving, as RERO ILS keeps it in its entity and reports an empty answer as a sync error.
+
         :param pid_type: pid type to use.
         :param pid: pid to use.
         :param _visited: set of already-seen (pid_type, pid) pairs used to
             break redirect cycles.
-        :returns: latest record.
+        :returns: latest record, or an empty dict when no MEF record holds the pid.
         """
         visited = _visited or set()
         key = (pid_type, pid)
@@ -274,7 +279,12 @@ class EntityMefRecord(EntityRecord):
                     new_pid = candidate
                     break
         if new_pid:
-            return cls.get_latest(pid_type=pid_type, pid=new_pid, _visited=visited)
+            if latest := cls.get_latest(pid_type=pid_type, pid=new_pid, _visited=visited):
+                return latest
+            # RERO ILS cannot follow a redirect out of the type: its entity keeping the old pid has to be fixed there
+            current_app.logger.warning(
+                f"REDIRECT OUT OF TYPE: {cls.__name__} {pid_type} {pid} -> {new_pid} | mef: {data.get('pid')}"
+            )
         for field in _INDEX_ONLY_FIELDS:
             data.pop(field, None)
         return data

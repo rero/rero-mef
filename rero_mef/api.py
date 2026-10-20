@@ -783,9 +783,16 @@ class ConceptPlaceRecord(EntityRecord):
                     )
                 }
             if not bool(mef_self_association_pid) and not bool(mef_other_association_pid) and bool(mef_other_pid):
-                # Delete associated ref from MEF and create a new one
+                # Delete associated ref from MEF and create a new one, unless another MEF record already holds it
                 new_mef_record.pop(association_name)
-                if association_record := association_info["record_cls"].get_record_by_pid(mef_other_pid):
+                held_elsewhere = [
+                    pid
+                    for pid in association_info["mef_cls"].get_mef(mef_other_pid, association_name, pid_only=True)
+                    if pid != new_mef_record.pid
+                ]
+                if not held_elsewhere and (
+                    association_record := association_info["record_cls"].get_record_by_pid(mef_other_pid)
+                ):
                     _, action = mef_create(
                         mef_cls=association_info["mef_cls"],
                         data=association_record,
