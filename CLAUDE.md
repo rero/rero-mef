@@ -24,7 +24,7 @@ uv run poe format   # ruff format
 
 ### Running the tests (done by humans)
 
-`tests/unit/` runs without any backing service. The other suites need PostgreSQL, Elasticsearch and Redis, and human developers run those containers and the full suite on their own terms.
+`tests/unit/` runs without any backing service. The other suites need PostgreSQL, OpenSearch and Redis, and human developers run those containers and the full suite on their own terms.
 
 ## Architecture
 
