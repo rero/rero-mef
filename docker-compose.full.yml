@@ -42,7 +42,6 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    command: uv run uwsgi /invenio/var/instance/uwsgi_rest.ini
     image: rero-mef-web-api
     ports:
       - "5001"

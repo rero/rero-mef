@@ -188,6 +188,10 @@ SESSION_COOKIE_SECURE = True
 #: should be set to the correct host and it is strongly recommended to only
 #: route correct hosts to the application.
 TRUSTED_HOSTS = ["localhost", "127.0.0.1"]
+#: Headers set by the proxies in front of the application server: the client
+#: address (load balancer and nginx), the scheme and the `/api` prefix that
+#: nginx strips.
+PROXYFIX_CONFIG = {"x_for": 2, "x_proto": 1, "x_prefix": 1}
 
 # OAI-PMH
 # =======

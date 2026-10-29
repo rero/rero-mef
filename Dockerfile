@@ -11,7 +11,6 @@ USER 0
 
 COPY ./ ${WORKING_DIR}/src
 WORKDIR ${WORKING_DIR}/src
-COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
 
 RUN chown -R invenio:invenio ${WORKING_DIR}
 
@@ -19,3 +18,16 @@ USER 1000
 
 ENV LANG=C.UTF-8
 RUN uv run --no-sync ./scripts/bootstrap --deploy
+
+# The REST API server, behind nginx. A deployment sizes it with the same variables.
+# The access log leaves out the query string: the monitoring passes its token in it.
+ENV GRANIAN_INTERFACE=wsgi \
+    GRANIAN_HOST=0.0.0.0 \
+    GRANIAN_PORT=5001 \
+    GRANIAN_WORKERS=4 \
+    GRANIAN_BLOCKING_THREADS=4 \
+    GRANIAN_WORKERS_MAX_RSS=666 \
+    GRANIAN_RESPAWN_FAILED_WORKERS=true \
+    GRANIAN_LOG_ACCESS_ENABLED=true \
+    GRANIAN_LOG_ACCESS_FMT='%(header{x-forwarded-for})s [%(time)s] "%(method)s %(path)s %(protocol)s" %(status)d %(dt_ms).0fms "%(header{user-agent})s"'
+CMD ["uv", "run", "--no-sync", "granian", "invenio_app.wsgi_rest:application"]

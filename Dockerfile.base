@@ -2,8 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 FROM python:3.14-slim-bookworm
 
-# # uwsgi uwsgitop uwsgi-tools
-
 LABEL maintainer="software@rero.ch"
 LABEL description="MEF (Multilingual Entity File) server with records for persons, works, etc. for reuse in integrated library systems (ILS)."
 
@@ -11,8 +9,6 @@ LABEL description="MEF (Multilingual Entity File) server with records for person
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install --no-install-recommends -y git vim-tiny curl gcc gnupg libc6-dev procps && rm -rf /var/lib/apt/lists/*
 RUN pip install --upgrade setuptools wheel pip uv
-
-# # uwsgi uwsgitop uwsgi-tools
 
 # Install Invenio
 ENV WORKING_DIR=/invenio
@@ -23,9 +19,6 @@ RUN mkdir -p ${INVENIO_INSTANCE_PATH}
 RUN mkdir -p ${WORKING_DIR}/src
 COPY ./ ${WORKING_DIR}/src
 WORKDIR ${WORKING_DIR}/src
-
-# copy uwsgi config files
-COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
 
 # create user
 RUN useradd invenio --uid 1000  --home ${WORKING_DIR} && \
