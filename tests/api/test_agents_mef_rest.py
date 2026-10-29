@@ -6,6 +6,7 @@
 import json
 from datetime import UTC, datetime, timedelta
 
+import pytest
 from flask import url_for
 
 from rero_mef.agents import AgentMefRecord
@@ -21,6 +22,9 @@ def test_view_agents_mef(client, agent_mef_record, agent_gnd_record, agent_rero_
     assert res.status_code == 200
     json_data = json.loads(res.get_data(as_text=True))
     assert json_data["hits"]["total"] == 1
+    res = client.get(url_for("invenio_records_rest.mef_list", size=1001))
+    assert res.status_code == 400
+    assert res.json["errors"] == [{"field": "size", "message": "Must be less than or equal to 1000."}]
     aggs = json_data["aggregations"]
     aggs.pop("creation_date", None)
     aggs.pop("update_date", None)
@@ -231,6 +235,14 @@ def test_agents_mef_get_updated(
     )
     assert res.status_code == 200
     assert data == [hit(agent_mef_idref_redirect_record), {"pid": "5"}, {"pid": "4"}]
+
+
+@pytest.mark.parametrize("body", ["x", {"pids": "4"}, {"from_date": "garbage"}])
+def test_agents_mef_get_updated_invalid_body(client, body):
+    """Refused before the response streams: a failing search would leave it truncated."""
+    res, data = postdata(client, "api_blueprint.agent_mef_get_updated", body)
+    assert res.status_code == 400
+    assert data["status"] == 400
 
 
 def test_agents_mef_get_idref_latest_chain(

@@ -5,6 +5,7 @@
 
 import hashlib
 import json as _json
+from datetime import datetime
 
 from elasticsearch.exceptions import NotFoundError
 from flask import (
@@ -83,6 +84,39 @@ def _ensure_all_mef_alias():
     return False
 
 
+def updated_data_error(data):
+    """Check the body posted to the `updated` routes.
+
+    The response is streamed: a search failing on a malformed body would end it after its status line was sent.
+
+    :param data: the decoded JSON body.
+    :returns: why the body is invalid, or None.
+    """
+    if not isinstance(data, dict):
+        return "The body must be a JSON object."
+    pids = data.get("pids")
+    if pids is not None and (
+        not isinstance(pids, list) or not all(isinstance(pid, str | int) and not isinstance(pid, bool) for pid in pids)
+    ):
+        return "pids must be a list of identifiers."
+    from_date = data.get("from_date")
+    if from_date is not None:
+        try:
+            datetime.fromisoformat(from_date)
+        except TypeError, ValueError:
+            return "from_date must be an ISO 8601 date."
+    return None
+
+
+def _updated_response(record_class):
+    """Stream the records of ``record_class`` the posted body asks for."""
+    data = request.get_json(silent=True)
+    if error := updated_data_error(data):
+        return jsonify({"status": 400, "message": error}), 400
+    generate = record_class.get_updated(data)
+    return Response(stream_with_context(generate), content_type="application/json")
+
+
 @api_blueprint.route("/agents/mef/latest/<pid_type>:<pid>")
 def agent_mef_get_latest(pid_type, pid):
     """Get the latest MEF agent record for a given PID and type.
@@ -102,9 +136,7 @@ def agent_mef_get_updated():
 
     :returns: Streaming JSON response with updated MEF agent records.
     """
-    data = request.get_json()
-    generate = AgentMefRecord.get_updated(data)
-    return Response(stream_with_context(generate), content_type="application/json")
+    return _updated_response(AgentMefRecord)
 
 
 @api_blueprint.route("/concepts/mef/latest/<pid_type>:<pid>")
@@ -126,9 +158,7 @@ def concept_mef_get_updated():
 
     :returns: Streaming JSON response with updated MEF concept records.
     """
-    data = request.get_json()
-    generate = ConceptMefRecord.get_updated(data)
-    return Response(stream_with_context(generate), content_type="application/json")
+    return _updated_response(ConceptMefRecord)
 
 
 @api_blueprint.route("/places/mef/latest/<pid_type>:<pid>")
@@ -150,9 +180,7 @@ def place_mef_get_updated():
 
     :returns: Streaming JSON response with updated MEF place records.
     """
-    data = request.get_json()
-    generate = PlaceMefRecord.get_updated(data)
-    return Response(stream_with_context(generate), content_type="application/json")
+    return _updated_response(PlaceMefRecord)
 
 
 _ENTITY_ENDPOINT = {

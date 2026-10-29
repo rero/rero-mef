@@ -5,9 +5,29 @@
 
 from elasticsearch_dsl.query import Q
 from flask import current_app, request
-from invenio_records_rest.errors import InvalidQueryRESTError
+from invenio_records_rest.errors import InvalidQueryRESTError, SearchPaginationRESTError
 from invenio_records_rest.facets import default_facets_factory
 from invenio_records_rest.sorter import default_sorter_factory
+
+
+def rest_search_factory(self, search, query_parser=None):
+    """Search factory of the REST endpoints: :func:`and_search_factory` with a page size limit.
+
+    Invenio only bounds ``page * size``, kept high for deep paging: one request could ask for every record.
+
+    :param self: REST view.
+    :param search: Elastic search DSL search instance.
+    :param query_parser: query parser, see :func:`and_search_factory`.
+    :returns: Tuple with search instance and URL arguments.
+    :raises SearchPaginationRESTError: When ``size`` exceeds ``RERO_MEF_REST_MAX_SIZE``.
+    """
+    max_size = current_app.config["RERO_MEF_REST_MAX_SIZE"]
+    if request.values.get("size", default=0, type=int) > max_size:
+        raise SearchPaginationRESTError(
+            description="Invalid pagination parameters.",
+            errors={"querystring": {"size": [f"Must be less than or equal to {max_size}."]}},
+        )
+    return and_search_factory(self, search, query_parser)
 
 
 def and_search_factory(self, search, query_parser=None):
