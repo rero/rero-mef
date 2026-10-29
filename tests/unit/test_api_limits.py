@@ -22,7 +22,7 @@ from rero_mef.views import updated_data_error
         {"from_date": "2026-10-29T12:00:00+00:00", "pids": ["1"]},
     ],
 )
-def test_updated_data_accepted(data):
+def test_valid_updated_body_is_accepted(data):
     """What rero-ils posts passes."""
     assert updated_data_error(data) is None
 
@@ -40,13 +40,13 @@ def test_updated_data_accepted(data):
         ({"from_date": 20220202}, "from_date"),
     ],
 )
-def test_updated_data_rejected(data, error):
+def test_invalid_updated_body_is_rejected(data, error):
     """A body the search would fail on, once the response is streaming, is refused."""
     assert error in updated_data_error(data)
 
 
 @pytest.mark.parametrize(("size", "refused"), [("10", False), ("1000", False), ("1001", True), ("x", False)])
-def test_rest_search_factory_size(monkeypatch, size, refused):
+def test_rest_search_factory_enforces_size_limit(monkeypatch, size, refused):
     """A page larger than RERO_MEF_REST_MAX_SIZE is refused before any search."""
     app = Flask(__name__)
     app.config["RERO_MEF_REST_MAX_SIZE"] = 1000

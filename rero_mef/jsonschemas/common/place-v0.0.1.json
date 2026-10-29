@@ -62,21 +62,21 @@
         "type": "object",
         "properties": {
           "oneOf": [
-          {
-            "$ref": {
-              "type": "string",
-              "pattern": "^https://mef.rero.ch/api/.*/.*?$"
+            {
+              "$ref": {
+                "type": "string",
+                "pattern": "^https://mef.rero.ch/api/.*/.*?$"
+              }
+            },
+            {
+              "authorized_access_point": {
+                "title": "Authorized access point",
+                "type": "string",
+                "minLength": 1
+              }
             }
-          },
-          {
-            "authorized_access_point": {
-              "title": "Authorized access point",
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        ]
-      }
+          ]
+        }
       }
     },
     "related": {
@@ -86,22 +86,22 @@
       "items": {
         "type": "object",
         "properties": {
-         "oneOf": [
-          {
-            "$ref": {
-              "type": "string",
-              "pattern": "^https://mef.rero.ch/api/.*/.*?$"
+          "oneOf": [
+            {
+              "$ref": {
+                "type": "string",
+                "pattern": "^https://mef.rero.ch/api/.*/.*?$"
+              }
+            },
+            {
+              "authorized_access_point": {
+                "title": "Authorized access point",
+                "type": "string",
+                "minLength": 1
+              }
             }
-          },
-          {
-            "authorized_access_point": {
-              "title": "Authorized access point",
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        ]
-      }
+          ]
+        }
       }
     },
     "narrower": {
@@ -112,20 +112,20 @@
         "type": "object",
         "properties": {
           "oneOf": [
-          {
-            "$ref": {
-              "type": "string",
-              "pattern": "^https://mef.rero.ch/api/.*/.*?$"
+            {
+              "$ref": {
+                "type": "string",
+                "pattern": "^https://mef.rero.ch/api/.*/.*?$"
+              }
+            },
+            {
+              "authorized_access_point": {
+                "title": "Authorized access point",
+                "type": "string",
+                "minLength": 1
+              }
             }
-          },
-          {
-            "authorized_access_point": {
-              "title": "Authorized access point",
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        ]
+          ]
         }
       }
     },
@@ -141,8 +141,8 @@
             "const": "bf:ClassificiationDdc"
           },
           "classificationPortion": {
-              "type": "string",
-              "minLength": 1
+            "type": "string",
+            "minLength": 1
           },
           "name": {
             "type": "string",
@@ -150,7 +150,6 @@
           }
         }
       }
-
     },
     "note": {
       "title": "Note",

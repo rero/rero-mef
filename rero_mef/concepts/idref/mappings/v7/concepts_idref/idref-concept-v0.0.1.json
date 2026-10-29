@@ -85,7 +85,8 @@
           },
           "name": {
             "type": "keyword"
-          }        }
+          }
+        }
       },
       "note": {
         "type": "object",
