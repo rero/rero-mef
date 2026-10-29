@@ -18,7 +18,6 @@ services:
       - "INVENIO_SEARCH_ELASTIC_HOSTS=['es:9200']"
       - "INVENIO_SECRET_KEY=CHANGE_ME"
       - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://rero-mef:rero-mef@db/rero-mef"
-      - "INVENIO_WSGI_PROXIES=2"
       - "INVENIO_RATELIMIT_STORAGE_URI=redis://cache:6379/3"
   lb:
     build: ./docker/haproxy/

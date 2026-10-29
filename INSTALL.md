@@ -107,6 +107,6 @@ In addition to the normal `docker-compose.yml`, this one will start:
 - HAProxy (load balancer)
 - Nginx (web frontend)
 - rero-mef-ui (user interface, built from `../rero-mef-ui`)
-- UWSGI (REST API container)
+- Granian (REST API container)
 - Celery (background task worker)
 - Flower (Celery monitoring)
