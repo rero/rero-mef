@@ -47,6 +47,7 @@ from .places import PlaceMefRecord
 from .tasks import create_or_update as task_create_or_update
 from .tasks import delete as task_delete
 from .tasks import process_bulk_queue as task_process_bulk_queue
+from .tasks import repair_stale_associations as task_repair_stale_associations
 from .utils import (
     JsonWriter,
     add_oai_source,
@@ -1219,6 +1220,21 @@ def all_mef_alias():
         f"Alias {alias_name} is now pointing to: {', '.join(sorted(alias_mapping.keys()))}",
         fg="green",
     )
+
+
+@utils.command("repair_stale_associations")
+@click.option("-n", "--dry-run", "dry_run", is_flag=True, default=False, help="Only report what would be repaired.")
+@click.option("-v", "--verbose", "verbose", is_flag=True, default=False)
+@with_appcontext
+def repair_stale_associations(dry_run, verbose):
+    """Repair the concept and place links the rules no longer support.
+
+    A load, like a harvest, links a record when it arrives and never revisits the link once a later record claims
+    the same identifier.
+    """
+    found = task_repair_stale_associations(dry_run=dry_run, verbose=verbose)
+    for record_type, count in found.items():
+        click.secho(f"{record_type}: {count} stale{' (dry run)' if dry_run else ''}", fg="yellow" if count else "green")
 
 
 @users.command("confirm")

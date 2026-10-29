@@ -95,7 +95,8 @@ batch_oai() {
   done
 }
 
-# The prepared JSON fixtures of the data path, then the alias.
+# The prepared JSON fixtures of the data path, the links a later record made
+# stale, then the alias.
 #
 # `create-or-update` reads its source file directly. It used to be fed by
 # `dojson -i`, which passed the JSON through unchanged and cost one more
@@ -106,6 +107,7 @@ batch_sample_load() {
   do
     echo "fixtures create-or-update ${ENTITY} ${DATA_PATH}/${ENTITY}.json -v"
   done
+  echo "utils repair_stale_associations"
   echo "utils all_mef_alias"
 }
 
