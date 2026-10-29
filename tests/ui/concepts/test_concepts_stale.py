@@ -12,6 +12,9 @@ pair is never looked at again, and the link survives a rule that refuses it.
 import json
 from copy import deepcopy
 
+from click.testing import CliRunner
+
+from rero_mef.cli import repair_stale_associations as cli_repair_stale_associations
 from rero_mef.concepts import ConceptGndRecord, ConceptIdrefRecord, ConceptMefRecord
 from rero_mef.stale import _expected_partner, audit, repair
 from rero_mef.tasks import repair_stale_associations
@@ -166,6 +169,42 @@ def test_a_link_the_rules_now_give_is_repaired(app, concept_idref_link_data, con
     mef_records = ConceptMefRecord.get_mef(entity_pid=idref_record.pid, entity_name="idref")
     assert len(mef_records) == 1
     assert mef_records[0].ref_pids.get("gnd") == gnd_record.pid
+    assert audit("cidref", "cognd", "comef") == []
+
+
+def test_the_cli_repairs_after_a_load(app, script_info, concept_idref_link_data, concept_gnd_link_data):
+    """The setup runs the repair once its fixtures are loaded: a later record can make a link stale."""
+    idref_record, _ = ConceptIdrefRecord.create_or_update(
+        data=_renumbered(concept_idref_link_data, "444", "99999997"), dbcommit=True, reindex=True
+    )
+    ConceptGndRecord.create_or_update(
+        data=_renumbered(concept_gnd_link_data, "444", "99999997"), dbcommit=True, reindex=True
+    )
+    ConceptIdrefRecord.flush_indexes()
+    ConceptGndRecord.flush_indexes()
+    # the MEF record as the load left it, before the GND concept stated that number
+    mef_record = ConceptMefRecord.create(
+        data={
+            "type": "bf:Topic",
+            "idref": {
+                "$ref": build_ref_string(entity_type="concepts", entity_name="idref", entity_pid=idref_record.pid)
+            },
+        },
+        dbcommit=True,
+        reindex=True,
+    )
+    ConceptMefRecord.flush_indexes()
+    stored = dict(ConceptMefRecord.get_record_by_pid(mef_record.pid))
+
+    runner = CliRunner()
+    res = runner.invoke(cli_repair_stale_associations, ["--dry-run"], obj=script_info)
+    assert res.output.splitlines() == ["cidref: 1 stale (dry run)", "pidref: 0 stale (dry run)"]
+    # a dry run only reports
+    assert dict(ConceptMefRecord.get_record_by_pid(mef_record.pid)) == stored
+
+    res = runner.invoke(cli_repair_stale_associations, [], obj=script_info)
+    assert res.output.splitlines() == ["cidref: 1 stale", "pidref: 0 stale"]
+    ConceptMefRecord.flush_indexes()
     assert audit("cidref", "cognd", "comef") == []
 
 

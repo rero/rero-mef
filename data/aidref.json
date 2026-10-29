@@ -57821,7 +57821,10 @@
     "authorized_access_point": "Open Library Project (Geneva)",
     "preferred_name": "Open Library Project",
     "country_associated": "sz",
-    "language": ["fre", "eng"],
+    "language": [
+      "fre",
+      "eng"
+    ],
     "identifiedBy": [
       {
         "type": "uri",
@@ -57844,7 +57847,9 @@
     "preferred_name": "Müller, Hans",
     "date_of_birth": "1965",
     "country_associated": "gw",
-    "language": ["ger"],
+    "language": [
+      "ger"
+    ],
     "identifiedBy": [
       {
         "type": "uri",

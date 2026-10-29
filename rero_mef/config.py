@@ -322,6 +322,8 @@ RERO_OAI_RETRY_STATUS_CODES = [423, 429, 503]
 RERO_OAI_RETRY_AFTER = 60
 
 MAX_RESULT_WINDOW = 100000000
+#: Largest page of the REST search endpoints. Whole exports go through `/updated` or deep paging.
+RERO_MEF_REST_MAX_SIZE = 1000
 # REST API Configuration
 # ======================
 RECORDS_REST_ENDPOINTS = dict(
@@ -339,7 +341,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_serializers={
             "application/json": "rero_mef.agents.mef.serializers:json_agent_mef_search",
         },
-        search_factory_imp="rero_mef.query:and_search_factory",
+        search_factory_imp="rero_mef.query:rest_search_factory",
         list_route="/agents/mef/",
         item_route="agents/mef/<pid(mef, record_class='rero_mef.agents.mef.api:AgentMefRecord'):pid_value>",
         default_media_type="application/json",
@@ -362,7 +364,7 @@ RECORDS_REST_ENDPOINTS = dict(
             "application/json": "rero_mef.agents.viaf.serializers"
             ":json_agent_viaf_search",
         },
-        search_factory_imp="rero_mef.query:and_search_factory",
+        search_factory_imp="rero_mef.query:rest_search_factory",
         list_route="/agents/viaf/",
         item_route="/agents/viaf/<pid(viaf, record_class='rero_mef.agents.viaf.api:AgentViafRecord'):pid_value>",
         default_media_type="application/json",
@@ -383,7 +385,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_serializers={
             "application/json": "rero_mef.agents.serializers:json_agent_search",
         },
-        search_factory_imp="rero_mef.query:and_search_factory",
+        search_factory_imp="rero_mef.query:rest_search_factory",
         list_route="/agents/gnd/",
         item_route="/agents/gnd/<pid(aggnd, record_class='rero_mef.agents.gnd.api:AgentGndRecord'):pid_value>",
         default_media_type="application/json",
@@ -404,7 +406,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_serializers={
             "application/json": "rero_mef.agents.serializers:json_agent_search",
         },
-        search_factory_imp="rero_mef.query:and_search_factory",
+        search_factory_imp="rero_mef.query:rest_search_factory",
         list_route="/agents/idref/",
         item_route="/agents/idref/<pid(aidref, record_class='rero_mef.agents.idref.api:AgentIdrefRecord'):pid_value>",
         default_media_type="application/json",
@@ -425,7 +427,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_serializers={
             "application/json": "rero_mef.agents.serializers:json_agent_search",
         },
-        search_factory_imp="rero_mef.query:and_search_factory",
+        search_factory_imp="rero_mef.query:rest_search_factory",
         list_route="/agents/rero/",
         item_route="/agents/rero/<pid(agrero, record_class='rero_mef.agents.rero.api:AgentReroRecord'):pid_value>",
         default_media_type="application/json",
@@ -446,7 +448,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_serializers={
             "application/json": "rero_mef.concepts.mef.serializers:json_concept_mef_search",
         },
-        search_factory_imp="rero_mef.query:and_search_factory",
+        search_factory_imp="rero_mef.query:rest_search_factory",
         list_route="/concepts/mef/",
         item_route="/concepts/mef/<pid(comef, record_class='rero_mef.concepts.mef.api:ConceptMefRecord'):pid_value>",
         default_media_type="application/json",
@@ -467,7 +469,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_serializers={
             "application/json": "rero_mef.concepts.serializers:json_concept_search",
         },
-        search_factory_imp="rero_mef.query:and_search_factory",
+        search_factory_imp="rero_mef.query:rest_search_factory",
         list_route="/concepts/rero/",
         item_route=(
             "/concepts/rero/<pid(corero, record_class='rero_mef.concepts.rero.api:ConceptReroRecord'):pid_value>"
@@ -491,7 +493,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_serializers={
             "application/json": "rero_mef.concepts.serializers:json_concept_search",
         },
-        search_factory_imp="rero_mef.query:and_search_factory",
+        search_factory_imp="rero_mef.query:rest_search_factory",
         list_route="/concepts/idref/",
         item_route=(
             "/concepts/idref/<pid(cidref, record_class='rero_mef.concepts.idref.api:ConceptIdrefRecord'):pid_value>"
@@ -514,7 +516,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_serializers={
             "application/json": "rero_mef.concepts.serializers:json_concept_search",
         },
-        search_factory_imp="rero_mef.query:and_search_factory",
+        search_factory_imp="rero_mef.query:rest_search_factory",
         list_route="/concepts/gnd/",
         item_route="/concepts/gnd/<pid(cognd, record_class='rero_mef.concepts.gnd.api:ConceptGndRecord'):pid_value>",
         default_media_type="application/json",
@@ -535,7 +537,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_serializers={
             "application/json": "rero_mef.places.mef.serializers:json_place_mef_search",
         },
-        search_factory_imp="rero_mef.query:and_search_factory",
+        search_factory_imp="rero_mef.query:rest_search_factory",
         list_route="/places/mef/",
         item_route="/places/mef/<pid(plmef, record_class='rero_mef.places.mef.api:PlaceMefRecord'):pid_value>",
         default_media_type="application/json",
@@ -556,7 +558,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_serializers={
             "application/json": "rero_mef.places.serializers:json_place_search",
         },
-        search_factory_imp="rero_mef.query:and_search_factory",
+        search_factory_imp="rero_mef.query:rest_search_factory",
         list_route="/places/idref/",
         item_route="/places/idref/<pid(pidref, record_class='rero_mef.places.idref.api:PlaceIdrefRecord'):pid_value>",
         default_media_type="application/json",
@@ -577,7 +579,7 @@ RECORDS_REST_ENDPOINTS = dict(
         search_serializers={
             "application/json": "rero_mef.places.serializers:json_place_search",
         },
-        search_factory_imp="rero_mef.query:and_search_factory",
+        search_factory_imp="rero_mef.query:rest_search_factory",
         list_route="/places/gnd/",
         item_route="/places/gnd/<pid(plgnd, record_class='rero_mef.places.gnd.api:PlaceGndRecord'):pid_value>",
         default_media_type="application/json",
