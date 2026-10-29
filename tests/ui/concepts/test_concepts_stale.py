@@ -183,7 +183,7 @@ def test_the_cli_repairs_after_a_load(app, script_info, concept_idref_link_data,
     ConceptIdrefRecord.flush_indexes()
     ConceptGndRecord.flush_indexes()
     # the MEF record as the load left it, before the GND concept stated that number
-    ConceptMefRecord.create(
+    mef_record = ConceptMefRecord.create(
         data={
             "type": "bf:Topic",
             "idref": {
@@ -194,10 +194,13 @@ def test_the_cli_repairs_after_a_load(app, script_info, concept_idref_link_data,
         reindex=True,
     )
     ConceptMefRecord.flush_indexes()
+    stored = dict(ConceptMefRecord.get_record_by_pid(mef_record.pid))
 
     runner = CliRunner()
     res = runner.invoke(cli_repair_stale_associations, ["--dry-run"], obj=script_info)
     assert res.output.splitlines() == ["cidref: 1 stale (dry run)", "pidref: 0 stale (dry run)"]
+    # a dry run only reports
+    assert dict(ConceptMefRecord.get_record_by_pid(mef_record.pid)) == stored
 
     res = runner.invoke(cli_repair_stale_associations, [], obj=script_info)
     assert res.output.splitlines() == ["cidref: 1 stale", "pidref: 0 stale"]
