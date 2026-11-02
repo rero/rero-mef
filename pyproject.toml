@@ -31,7 +31,7 @@ requires-python = ">= 3.14,<3.15"
 
 dependencies = [
     ## Third party invenio modules used by RERO ILS
-    "invenio-oaiharvester @ git+https://github.com/inveniosoftware/invenio-oaiharvester.git@v1.0.0a4",
+    "invenio-oaiharvester==1.0.0a4",
     "invenio-search[elasticsearch7]>=3.0.0",
     # Invenio core modules
     "invenio-app>=3.0.0",
