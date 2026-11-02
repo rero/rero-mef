@@ -49,9 +49,10 @@ def test_oai_date(app, init_oai, capsys):
     captured = capsys.readouterr()
     assert captured.out == "ERROR OAI config not found: wrong_name\n"
 
-    oai_set_last_run("agents.gnd", "wrong_date", verbose=True)
+    # The reason is the wording of dateutil, which changes between its versions.
+    assert oai_set_last_run("agents.gnd", "wrong_date", verbose=True) is None
     captured = capsys.readouterr()
-    assert captured.out == ("OAI set lastrun agents.gnd: invalid literal for int() with base 10: b'wron'\n")
+    assert captured.out.startswith("OAI set lastrun agents.gnd: ")
 
     date = oai_set_last_run("agents.gnd", "2023-01-01")
     assert date == oai_get_last_run("agents.gnd", verbose=True)
