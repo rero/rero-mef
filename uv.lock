@@ -1357,12 +1357,16 @@ wheels = [
 [[package]]
 name = "invenio-oaiharvester"
 version = "1.0.0a4"
-source = { git = "https://github.com/inveniosoftware/invenio-oaiharvester.git?rev=v1.0.0a4#fe55e095a8e78b36cfad875f752f2facc2908bae" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "blinker" },
     { name = "flask" },
     { name = "flask-celeryext" },
     { name = "sickle" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b2/5c/dd0108ae91f0db4b81d143b5714ae24274685f80662669f23a574fe1bd01/invenio-oaiharvester-1.0.0a4.tar.gz", hash = "sha256:9be11255e52c8b932135e38060533409db9e5a7812f40ccac6ec04122770bdef", size = 145028, upload-time = "2017-12-05T15:07:12.347Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b9/32/28275fbc1f6bddcfaaf84d6e4b660599f4276e4de968a3848bdd355f5676/invenio_oaiharvester-1.0.0a4-py2.py3-none-any.whl", hash = "sha256:7dc2d2d9572807120599a798779424df1261fa8bea77c0fbb4e81a41ff1291dc", size = 21353, upload-time = "2017-12-05T15:07:09.17Z" },
 ]
 
 [[package]]
@@ -2690,7 +2694,7 @@ requires-dist = [
     { name = "invenio-indexer", specifier = ">=4.0.0" },
     { name = "invenio-jsonschemas", specifier = ">=2.0.0" },
     { name = "invenio-logging", extras = ["sentry"], specifier = ">=4.0.0" },
-    { name = "invenio-oaiharvester", git = "https://github.com/inveniosoftware/invenio-oaiharvester.git?rev=v1.0.0a4" },
+    { name = "invenio-oaiharvester", specifier = "==1.0.0a4" },
     { name = "invenio-oauth2server", specifier = ">=3.0.0" },
     { name = "invenio-pidstore", specifier = ">=3.0.0" },
     { name = "invenio-records", specifier = ">=4.0.0" },
