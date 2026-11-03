@@ -2,6 +2,66 @@
 
 <!-- version list -->
 
+## v2.0.0 (2026-11-03)
+
+### Bug Fixes
+
+- **docker**: Drop the forwarding headers to the UI
+  ([`6b45a43`](https://github.com/rero/rero-mef/commit/6b45a437604598f8f8ab01b65903c6fe75857bcd))
+
+- **docker**: Right-size uWSGI and nginx upstream
+  ([`e119057`](https://github.com/rero/rero-mef/commit/e1190578f5ba6d9af8f1b00c0c95a16433785bfd))
+
+- **mef**: Load the extension in the REST API
+  ([`5ab56b4`](https://github.com/rero/rero-mef/commit/5ab56b494b8619d8c32a9c6cb289a3b15d0b1b77))
+
+- **mef**: Refuse requests the API cannot answer
+  ([`2229927`](https://github.com/rero/rero-mef/commit/2229927769d8667e0fda5584847722b33abd4987))
+
+- **scripts**: Repair stale links after sample load
+  ([`022a756`](https://github.com/rero/rero-mef/commit/022a75623a0464a9ec0e14a65c496393588f872e))
+
+### Build System
+
+- **deps**: Take invenio-oaiharvester from PyPI
+  ([`8366445`](https://github.com/rero/rero-mef/commit/8366445eba3baab74d77f0fe09d68b63e5488dd4))
+
+- **docker**: Keep local dumps out of the image
+  ([`5567318`](https://github.com/rero/rero-mef/commit/5567318de5f5b0e935cdc052e6376d83cd85dd6f))
+
+- **docker**: Serve the REST API with Granian
+  ([`a57a006`](https://github.com/rero/rero-mef/commit/a57a0065635647d61ffc143a3bb995a768bbf45a))
+
+### Chores
+
+- **deps**: Match pip-audit exceptions to report
+  ([`a78258f`](https://github.com/rero/rero-mef/commit/a78258f2eeface815d69ca38858219408c80068c))
+
+- **deps**: Upgrade locked dependencies
+  ([`903e465`](https://github.com/rero/rero-mef/commit/903e46530a26f5638e60f6628f16ef13835b9d3e))
+
+### Code Style
+
+- Indent the JSON files as check_json expects
+  ([`e41f43e`](https://github.com/rero/rero-mef/commit/e41f43e6005a712fa3fbf997981277a9baa93c45))
+
+### Features
+
+- **marctojson**: Keep concept and place ids
+  ([`5dcb378`](https://github.com/rero/rero-mef/commit/5dcb378309a5039b657f1cd8bb343bb47e4db1a0))
+
+- **mef**: Expose the version in the REST API
+  ([`9a78b5d`](https://github.com/rero/rero-mef/commit/9a78b5deb0fb77cdcce29b48f97553473af83950))
+
+- **scripts**: Serve the user interface locally
+  ([`2abbd1d`](https://github.com/rero/rero-mef/commit/2abbd1d4dfb9d92a558d8d0a6a02aeb1ae8b7d54))
+
+### Refactoring
+
+- Hand the user interface to rero-mef-ui
+  ([`2ed71d7`](https://github.com/rero/rero-mef/commit/2ed71d787f7fda74b68b2f62f40c8bde9115a6d9))
+
+
 ## v1.1.2 (2026-10-18)
 
 ### Bug Fixes
