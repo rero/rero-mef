@@ -5,12 +5,33 @@
 
 from elasticsearch.exceptions import ConnectionError as ESConnectionError
 from elasticsearch.exceptions import NotFoundError
+from flask.json.provider import DefaultJSONProvider
 from invenio_indexer.signals import before_record_index
 from invenio_search import current_search_client
+from jsonref import JsonRef
 
 from rero_mef.concepts.listener import enrich_concept_data
 from rero_mef.listener import enrich_mef_data
 from rero_mef.places.listener import enrich_place_data
+
+
+class MEFJSONProvider(DefaultJSONProvider):
+    """JSON provider that serializes the references jsonref inlines.
+
+    With ``JSONSCHEMAS_REPLACE_REFS``, ``/schemas`` inlines the ``$ref`` of a schema as lazy ``JsonRef`` proxies,
+    which the default provider cannot serialize below the top level.
+    """
+
+    @staticmethod
+    def default(o):
+        """Serialize a ``JsonRef`` as the object it points to.
+
+        :param o: Object the JSON encoder cannot serialize.
+        :returns: A serializable object.
+        """
+        if isinstance(o, JsonRef):
+            return o.__subject__
+        return DefaultJSONProvider.default(o)
 
 
 class REROMEFAPP:
@@ -36,6 +57,7 @@ class REROMEFAPP:
         :param app: Flask application instance.
         """
         app.extensions["rero-mef"] = self
+        app.json = MEFJSONProvider(app)
         self.register_signals(app)
         self.ensure_all_mef_alias(app)
 
