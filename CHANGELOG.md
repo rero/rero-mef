@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v2.0.1 (2026-11-03)
+
+### Bug Fixes
+
+- **mef**: Serve the schemas with their references
+  ([`e2cd1b1`](https://github.com/rero/rero-mef/commit/e2cd1b173a6dc9894247a6e566aa586d0ab923cf))
+
+
 ## v2.0.0 (2026-11-03)
 
 ### Bug Fixes
