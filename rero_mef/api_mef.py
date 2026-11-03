@@ -3,8 +3,10 @@
 
 """API for manipulating MEF records."""
 
+import hashlib
 from copy import deepcopy
 from datetime import UTC, datetime
+from functools import cached_property
 
 from dateutil import parser
 from elasticsearch_dsl import Q
@@ -358,6 +360,19 @@ class EntityMefRecord(EntityRecord):
             if entity_record := record_class.get_record_by_pid(entity["pid"]):
                 entities_records.append(entity_record)
         return entities_records
+
+    @cached_property
+    def http_validators(self):
+        """ETag and last-modified date covering this record and its sources.
+
+        The MEF record only holds ``$ref`` links, so its own revision does not change when a linked source does.
+
+        :returns: Tuple (etag, updated).
+        """
+        sources = self.get_entities_records()
+        parts = [str(self.revision_id), *sorted(f"{rec.name}:{rec.pid}:{rec.revision_id}" for rec in sources)]
+        etag = hashlib.sha1("|".join(parts).encode()).hexdigest()
+        return etag, max([self.updated, *(rec.updated for rec in sources)])
 
     def replace_refs(self):
         """Replace $ref with real data."""
