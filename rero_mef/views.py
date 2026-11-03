@@ -27,6 +27,7 @@ from .all_mef import AllMefSearch
 from .concepts import ConceptMefRecord
 from .places import PlaceMefRecord
 from .query import and_search_factory, mef_ui_query_parser
+from .version import __version__
 
 api_blueprint = Blueprint("api_blueprint", __name__, url_prefix="/")
 
@@ -115,6 +116,12 @@ def _updated_response(record_class):
         return jsonify({"status": 400, "message": error}), 400
     generate = record_class.get_updated(data)
     return Response(stream_with_context(generate), content_type="application/json")
+
+
+@api_blueprint.route("/version")
+def version():
+    """Get the version of RERO MEF, for the user interface to display."""
+    return jsonify({"version": __version__})
 
 
 @api_blueprint.route("/agents/mef/latest/<pid_type>:<pid>")
