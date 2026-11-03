@@ -10,15 +10,15 @@ in order to sandbox the Python environment, as well as manage the dependency ins
 among other things.
 
 Start all dependent services using docker compose (this will start PostgreSQL,
-Elasticsearch 6, RabbitMQ and Redis):
+OpenSearch 2, RabbitMQ and Redis):
 
 ```console
 $ docker compose up -d
 ```
 
 > **Note**
-> Make sure you have [enough virtual memory](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-cli-run-prod-mode)
-> for Elasticsearch in Docker:
+> Make sure you have [enough virtual memory](https://opensearch.org/docs/latest/opensearch/install/docker/)
+> for OpenSearch in Docker:
 >
 > ```shell
 > # Linux
@@ -26,7 +26,6 @@ $ docker compose up -d
 >
 > # macOS
 > # Docker Desktop: Settings > Resources > Advanced > set vm.max_map_count=262144
-> # Or see: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#_set_vm_max_map_count_to_at_least_262144
 > ```
 
 Next, bootstrap the instance (this will install all Python dependencies and

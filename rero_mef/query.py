@@ -3,11 +3,11 @@
 
 """Query factories for REST API."""
 
-from elasticsearch_dsl.query import Q
 from flask import current_app, request
 from invenio_records_rest.errors import InvalidQueryRESTError, SearchPaginationRESTError
 from invenio_records_rest.facets import default_facets_factory
 from invenio_records_rest.sorter import default_sorter_factory
+from opensearch_dsl.query import Q
 
 
 def rest_search_factory(self, search, query_parser=None):
@@ -31,7 +31,7 @@ def rest_search_factory(self, search, query_parser=None):
 
 
 def and_search_factory(self, search, query_parser=None):
-    """Parse query using elasticsearch DSL query.
+    """Parse query using search DSL query.
 
     :param self: REST view.
     :param search: Elastic search DSL search instance.
@@ -127,7 +127,7 @@ def mef_ui_query_parser(qstr=None):
     arriving from rero-ils's autocomplete.
 
     :param qstr: the raw search term (or ``None``/empty for a match-all).
-    :returns: an elasticsearch_dsl ``Q`` query.
+    :returns: an opensearch_dsl ``Q`` query.
     """
     if not qstr:
         return Q()

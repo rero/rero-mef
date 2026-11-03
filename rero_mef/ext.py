@@ -3,10 +3,10 @@
 
 """RERO MEF invenio module declaration."""
 
-from elasticsearch.exceptions import ConnectionError as ESConnectionError
-from elasticsearch.exceptions import NotFoundError
 from invenio_indexer.signals import before_record_index
 from invenio_search import current_search_client
+from opensearchpy.exceptions import ConnectionError as OSConnectionError
+from opensearchpy.exceptions import NotFoundError
 
 from rero_mef.concepts.listener import enrich_concept_data
 from rero_mef.listener import enrich_mef_data
@@ -43,7 +43,7 @@ class REROMEFAPP:
         """Register signal handlers for data enrichment.
 
         Connects enrichment functions to the before_record_index signal to enhance concept and place data before
-        indexing in Elasticsearch.
+        indexing in Search.
 
         :param app: Flask application instance.
         """
@@ -80,11 +80,11 @@ class REROMEFAPP:
                 return
 
             try:
-                # Probe connectivity — ES may not be running during image build.
+                # Probe connectivity — OpenSearch may not be running during image build.
                 search_client.indices.exists_alias(name=alias_name)
-            except ESConnectionError:
+            except OSConnectionError:
                 app.logger.info(
-                    "Skipping %s alias setup: Elasticsearch is not reachable.",
+                    "Skipping %s alias setup: OpenSearch is not reachable.",
                     alias_name,
                 )
                 return
