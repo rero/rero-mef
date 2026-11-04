@@ -15,6 +15,7 @@ from datetime import timedelta
 
 from celery.schedules import crontab
 from invenio_records_rest.facets import terms_filter
+from sentry_sdk.scrubber import DEFAULT_DENYLIST, EventScrubber
 
 from .agents import AgentViafRecord
 from .agents.gnd.models import AgentGndIdentifier
@@ -265,6 +266,11 @@ RERO_OAI_RETRIES = 5
 RERO_OAI_RETRY_STATUS_CODES = [423, 429, 503]
 #: Seconds to wait when the response states no `Retry-After`.
 RERO_OAI_RETRY_AFTER = 60
+#: Sentry sends the local variables of a failure, the OAI parameters with the GND access token among them. Its
+#: default scrubber neither knows that key nor looks into nested dictionaries.
+LOGGING_SENTRY_INIT_KWARGS = {
+    "event_scrubber": EventScrubber(denylist=[*DEFAULT_DENYLIST, "accesstoken", "access_token"], recursive=True)
+}
 
 MAX_RESULT_WINDOW = 100000000
 #: Largest page of the REST search endpoints. Whole exports go through `/updated` or deep paging.

@@ -840,6 +840,10 @@ def harvestname(name, from_date, until_date, arguments, quiet, enqueue, test_md5
             actions = ", ".join([f"{action.value}={count}" for action, count in action_count.items()])
             mef_actions = ", ".join([f"{action.value}={count}" for action, count in mef_action_count.items()])
             click.echo(f"Count: {count} agent: {actions} mef: {mef_actions}")
+            if count == -1:
+                # A failed harvest must fail its job, or the scheduler reports it as a success.
+                click.secho(f"Harvest {name} failed", fg="red", err=True)
+                sys.exit(1)
 
 
 @oaiharvester.command()
