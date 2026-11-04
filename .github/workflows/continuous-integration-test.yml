@@ -12,7 +12,6 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.14"]
-        dependencies: ['dev', 'deploy']
     steps:
 
     - name: Checkout code
@@ -32,13 +31,7 @@ jobs:
     - name: Set up Python
       run: uv python install ${{ matrix.python-version }}
 
-    - name: Bootstrap
-      if: ${{ matrix.dependencies == 'dev' }}
-      run: |
-        uv run ./scripts/bootstrap --ci
-
     - name: Bootstrap deploy
-      if: ${{ matrix.dependencies == 'deploy' }}
       run: |
         uv run ./scripts/bootstrap --ci --deploy E2E=yes
 
@@ -46,11 +39,9 @@ jobs:
       run: uv run poe run_tests
 
     - name: Coverage XML
-      if: ${{ matrix.dependencies == 'dev' }}
       run: uv run coverage xml
 
     - name: Coveralls
-      if: ${{ matrix.dependencies == 'dev' }}
       uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
       with:
         format: cobertura
