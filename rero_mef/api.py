@@ -20,8 +20,6 @@ from invenio_search import current_search
 from invenio_search.engine import search
 from jsonschema.exceptions import ValidationError
 from kombu.compat import Consumer
-from opensearchpy.exceptions import NotFoundError
-from opensearchpy.helpers import bulk
 from sqlalchemy import func
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm.exc import NoResultFound
@@ -551,7 +549,7 @@ class EntityRecord(Record):
         indexer = self.get_indexer_class()
         try:
             indexer().delete(self)
-        except NotFoundError:
+        except search.NotFoundError:
             current_app.logger.warning(f"Can not delete from index {self.__class__.__name__}: {self.pid}")
 
     @property
@@ -895,7 +893,7 @@ class EntityIndexer(RecordIndexer):
 
             search_bulk_kwargs = search_bulk_kwargs or {}
 
-            count = bulk(
+            count = search.helpers.bulk(
                 self.client,
                 self._actionsiter(consumer.iterqueue()),
                 stats_only=stats_only,

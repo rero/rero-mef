@@ -70,11 +70,11 @@ def test_all_mef_search_invalid_query(client):
 
 def test_all_mef_search_index_not_found(client):
     """Return 404 when the OpenSearch index or alias is missing at query time."""
-    from opensearchpy.exceptions import NotFoundError
+    from invenio_search.engine import search
 
     fake = mock.MagicMock()
     fake.extra.return_value = fake
-    fake.__getitem__.return_value.execute.side_effect = NotFoundError(404, "index_not_found", {})
+    fake.__getitem__.return_value.execute.side_effect = search.NotFoundError(404, "index_not_found", {})
 
     with (
         mock.patch("rero_mef.views._ensure_all_mef_alias", return_value=True),

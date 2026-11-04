@@ -20,7 +20,7 @@ from flask import (
 from invenio_cache import current_cache
 from invenio_records_rest.errors import InvalidQueryRESTError
 from invenio_search import current_search_client
-from opensearchpy.exceptions import NotFoundError
+from invenio_search.engine import search
 
 from .agents import AgentMefRecord
 from .all_mef import AllMefSearch
@@ -66,7 +66,7 @@ def _ensure_all_mef_alias():
     try:
         if current_search_client.indices.exists_alias(name=alias_name):
             return True
-    except NotFoundError:
+    except search.NotFoundError:
         pass
     except Exception:
         current_app.logger.exception("Unexpected error checking all_mef alias existence")
@@ -76,7 +76,7 @@ def _ensure_all_mef_alias():
         try:
             if current_search_client.indices.exists(index=target):
                 return True
-        except NotFoundError:
+        except search.NotFoundError:
             pass
         except Exception:
             current_app.logger.exception("Unexpected error checking index existence for %s", target)
@@ -261,9 +261,9 @@ def all_mef_search():
     if cached := current_cache.get(cache_key):
         return jsonify(cached)
 
-    search = AllMefSearch()
+    mef_search = AllMefSearch()
     try:
-        search, _ = and_search_factory(None, search, query_parser=mef_ui_query_parser)
+        mef_search, _ = and_search_factory(None, mef_search, query_parser=mef_ui_query_parser)
     except InvalidQueryRESTError as e:
         return jsonify(
             {
@@ -272,11 +272,11 @@ def all_mef_search():
             }
         ), 400
 
-    search = search.extra(track_total_hits=True)
-    search = search[(page - 1) * size : page * size]
+    mef_search = mef_search.extra(track_total_hits=True)
+    mef_search = mef_search[(page - 1) * size : page * size]
     try:
-        response = search.execute().to_dict()
-    except NotFoundError:
+        response = mef_search.execute().to_dict()
+    except search.NotFoundError:
         return jsonify(
             {
                 "status": 404,

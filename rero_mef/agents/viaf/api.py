@@ -14,7 +14,7 @@ import click
 import requests
 from flask import current_app
 from invenio_search.api import RecordsSearch
-from opensearch_dsl.query import Q
+from invenio_search.engine import dsl
 
 from rero_mef.extensions import MD5Extension
 from rero_mef.filter import exists_filter
@@ -756,7 +756,7 @@ class AgentViafRecord(EntityRecord):
             entity_pid_name = f"{record_class.name}_pid"
             if verbose:
                 click.echo(f"Get pids from VIAF with {entity_pid_name} ...")
-            query = AgentViafSearch().filter("bool", should=[Q("exists", field=entity_pid_name)])
+            query = AgentViafSearch().filter("bool", should=[dsl.Q("exists", field=entity_pid_name)])
             progress = progressbar(
                 items=query.source(["pid", entity_pid_name]).scan(),
                 length=query.count(),

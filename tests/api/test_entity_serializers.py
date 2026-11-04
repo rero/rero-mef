@@ -71,17 +71,17 @@ def test_query_syntax_error_returns_400(client, agent_mef_record):
     """A query_string that raises SyntaxError is caught and returned as 400."""
     from unittest import mock
 
-    from opensearch_dsl.query import Q
+    from invenio_search.engine import dsl
 
     # Patch _default_parser inside and_search_factory to raise SyntaxError
-    original_q = Q
+    original_q = dsl.Q
 
     def bad_q(*args, **kwargs):
         if args and args[0] == "query_string":
             raise SyntaxError("bad query")
         return original_q(*args, **kwargs)
 
-    with mock.patch("rero_mef.query.Q", side_effect=bad_q):
+    with mock.patch.object(dsl, "Q", side_effect=bad_q):
         url = url_for("invenio_records_rest.mef_list") + "?q=bad"
         res = client.get(url)
 

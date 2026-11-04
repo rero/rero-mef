@@ -8,7 +8,7 @@ from datetime import UTC, datetime
 
 from dateutil import parser
 from flask import current_app
-from opensearch_dsl import Q
+from invenio_search.engine import dsl
 
 from .api import Action, EntityIndexer, EntityRecord
 from .utils import generate, get_entity_class, get_entity_search_class, progressbar
@@ -103,8 +103,8 @@ class EntityMefRecord(EntityRecord):
 
         :returns: Generator of MEF pids without entity links and without VIAF.
         """
-        must_not = [Q("exists", field="viaf_pid")]
-        must_not.extend(Q("exists", field=entity) for entity in cls.entities)
+        must_not = [dsl.Q("exists", field="viaf_pid")]
+        must_not.extend(dsl.Q("exists", field=entity) for entity in cls.entities)
         query = cls.search().filter("bool", must_not=must_not)
         for hit in query.source("pid").scan():
             yield hit.pid
@@ -117,7 +117,7 @@ class EntityMefRecord(EntityRecord):
         """
         query = cls.search().exclude("exists", field="viaf_pid")
         for pid_type in current_app.config.get(cls.mef_type, []):
-            query = query.filter("bool", should=[Q("exists", field=pid_type)])
+            query = query.filter("bool", should=[dsl.Q("exists", field=pid_type)])
         for hit in query.source("pid").scan():
             yield hit.pid
 
