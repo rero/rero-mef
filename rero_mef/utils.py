@@ -11,6 +11,7 @@
 import gc
 import json
 import os
+import re
 import time
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
@@ -82,6 +83,16 @@ def _log_oai_failure(name, spec, dates, err):
             f"OAI harvest failed: {name} spec({spec}): {dates['from']} .. {dates['until']}: {err}",
             exc_info=err,
         )
+
+
+ACCESS_TOKEN_PARAM = re.compile(r"(accessToken=)[^&\s]+")
+
+
+def _without_access_token(err):
+    # A request error states the URL it failed on, the access token of the source included.
+    if isinstance(err, requests.RequestException):
+        return type(err)(ACCESS_TOKEN_PARAM.sub(r"\1***", str(err)), response=err.response)
+    return err
 
 
 # Hours can not be retrieved by get_info_by_oai_name
@@ -214,9 +225,9 @@ class MyOAIItemIterator(OAIItemIterator):
                 oaiexceptions.OAIError,
                 XMLSyntaxError,
             ) as err:
-                last_error = err
+                last_error = _without_access_token(err)
                 # Transient failures are breadcrumbs only; the caller reports the final one.
-                current_app.logger.warning(f"Sickle harvest attempt {count + 1}/5 failed: {err}")
+                current_app.logger.warning(f"Sickle harvest attempt {count + 1}/5 failed: {last_error}")
                 # Wait 60 seconds before retrying to avoid overwhelming the server
                 if count < 4:
                     sleep(60)
@@ -546,7 +557,7 @@ def oai_get_record(id_, name, transformation, access_token=None, identifier=None
 
     if access_token:
         params["accessToken"] = access_token
-        full_url = f"{full_url}&accessToken={access_token}"
+        full_url = f"{full_url}&accessToken=***"
 
     try:
         record = request.GetRecord(**params)

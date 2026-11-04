@@ -7,6 +7,7 @@ Retry attempts are warnings; only the final failure is an error, tagged so an ou
 alerted on in Sentry.
 """
 
+import json
 import logging
 from unittest import mock
 
@@ -15,6 +16,7 @@ import requests
 import sentry_sdk
 from flask import Flask
 
+from rero_mef.config import LOGGING_SENTRY_INIT_KWARGS
 from rero_mef.utils import MyOAIItemIterator, _log_oai_failure
 
 DATES = {"from": "2026-10-09", "until": "2026-10-11"}
@@ -33,7 +35,7 @@ def sentry_events():
     def capture(event, hint):
         events.append(event)
 
-    sentry_sdk.init(dsn="https://key@sentry.invalid/1", before_send=capture)
+    sentry_sdk.init(dsn="https://key@sentry.invalid/1", before_send=capture, **LOGGING_SENTRY_INIT_KWARGS)
     yield events
     sentry_sdk.init()
 
@@ -67,6 +69,21 @@ def test_failure_without_http_response_has_no_status_tag(app_context, sentry_eve
     assert event["tags"]["oai.set"] == ""
 
 
+def test_sentry_event_has_no_access_token(app_context, sentry_events):
+    def harvest(params, access_token):
+        raise http_error(502)
+
+    try:
+        harvest({"verb": "ListRecords", "accessToken": "secret"}, access_token="secret")
+    except requests.HTTPError as err:
+        _log_oai_failure("concepts.gnd", None, DATES, err)
+
+    [event] = sentry_events
+    frame_vars = [frame["vars"] for frame in event["exception"]["values"][0]["stacktrace"]["frames"]]
+    assert frame_vars[-1]
+    assert "secret" not in json.dumps(frame_vars, default=str)
+
+
 def test_retry_attempts_are_warnings(app_context, caplog):
     iterator = MyOAIItemIterator.__new__(MyOAIItemIterator)
     iterator.params = {"verb": "ListRecords"}
@@ -78,3 +95,24 @@ def test_retry_attempts_are_warnings(app_context, caplog):
 
     assert [record.levelno for record in caplog.records] == [logging.WARNING] * 5
     assert all(record.exc_info is None for record in caplog.records)
+
+
+def test_access_token_stays_out_of_the_logs(app_context, caplog):
+    url = "https://services.dnb.de/oai/repository?verb=ListRecords&accessToken=secret&set=authorities"
+    response = requests.Response()
+    response.status_code = 502
+    iterator = MyOAIItemIterator.__new__(MyOAIItemIterator)
+    iterator.params = {"verb": "ListRecords", "accessToken": "secret"}
+    iterator.resumption_token = None
+    iterator.sickle = mock.Mock(
+        harvest=mock.Mock(side_effect=requests.HTTPError(f"502 Server Error for url: {url}", response=response))
+    )
+
+    with mock.patch("rero_mef.utils.sleep"), pytest.raises(requests.HTTPError) as error:
+        iterator._next_response()
+
+    assert "secret" not in str(error.value)
+    assert "accessToken=***&set=authorities" in str(error.value)
+    assert error.value.response is response
+    assert error.value.__context__ is None
+    assert "secret" not in caplog.text
