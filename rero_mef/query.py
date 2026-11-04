@@ -7,7 +7,7 @@ from flask import current_app, request
 from invenio_records_rest.errors import InvalidQueryRESTError, SearchPaginationRESTError
 from invenio_records_rest.facets import default_facets_factory
 from invenio_records_rest.sorter import default_sorter_factory
-from opensearch_dsl.query import Q
+from invenio_search.engine import dsl
 
 
 def rest_search_factory(self, search, query_parser=None):
@@ -58,8 +58,8 @@ def and_search_factory(self, search, query_parser=None):
         complexity here for a problem the sort direction already caused.
         """
         if not qstr:
-            return Q()
-        return Q(
+            return dsl.Q()
+        return dsl.Q(
             "query_string",
             query=qstr,
             default_operator="AND",
@@ -121,19 +121,19 @@ def mef_ui_query_parser(qstr=None):
     consumers such as rero-ils's ``MEFProxyFactory``, which already builds
     one (see ``MEFProxyMixin._get_query_params`` in rero-ils), it only has
     the bare term typed into the search box. Builds that same clause here,
-    then hands it to the exact same unrestricted ``Q()`` construction as
+    then hands it to the exact same unrestricted ``dsl.Q()`` construction as
     :func:`and_search_factory`'s ``_default_parser`` (no ``fields``), so a
     term typed into the MEF UI ranks results identically to the same term
     arriving from rero-ils's autocomplete.
 
     :param qstr: the raw search term (or ``None``/empty for a match-all).
-    :returns: an opensearch_dsl ``Q`` query.
+    :returns: a search DSL ``Q`` query.
     """
     if not qstr:
-        return Q()
+        return dsl.Q()
     escaped = _escape_query_string(qstr)
     query = (
         f'(idref.authorized_access_point:"{escaped}" OR gnd.authorized_access_point:"{escaped}")^10 '
         f'OR (autocomplete_name:"{escaped}" OR "{escaped}")^4 OR ({escaped})'
     )
-    return Q("query_string", query=query, default_operator="AND")
+    return dsl.Q("query_string", query=query, default_operator="AND")

@@ -24,7 +24,7 @@ from invenio_oauth2server.cli import process_scopes, process_user
 from invenio_oauth2server.models import Client, Token
 from invenio_records_rest.utils import obj_or_import_string
 from invenio_search import current_search_client
-from opensearchpy.exceptions import NotFoundError
+from invenio_search.engine import search
 from sqlitedict import SqliteDict
 from werkzeug.local import LocalProxy
 from werkzeug.security import gen_salt
@@ -1204,7 +1204,7 @@ def all_mef_alias():
     try:
         existing_mapping = current_search_client.indices.get_alias(name=alias_name)
         current_members = set(existing_mapping.keys())
-    except NotFoundError:
+    except search.NotFoundError:
         current_members = set()
 
     actions = [{"remove": {"index": old, "alias": alias_name}} for old in current_members - desired] + [

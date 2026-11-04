@@ -10,7 +10,7 @@ from flask import current_app
 from invenio_db import db
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 from invenio_search import RecordsSearch
-from opensearchpy.exceptions import NotFoundError
+from invenio_search.engine import search
 
 from ..utils import get_entity_class, get_entity_search_class, get_mefs_endpoints, progressbar
 
@@ -171,7 +171,7 @@ class Monitoring:
         """
         try:
             result = RecordsSearch(index=index).query().count()
-        except NotFoundError:
+        except search.NotFoundError:
             result = f"No >>{index}<< in ES"
         return result
 
@@ -277,7 +277,7 @@ class Monitoring:
                 entity_class = get_entity_class(entity)
                 try:
                     mef_count = mef_search().filter("exists", field=entity_class.name).count()
-                except NotFoundError:
+                except search.NotFoundError:
                     mef_count = f"No >>{mef['mef_class'].search.Meta.index}<< in ES"
                 db_count = entity_class.count()
                 checks[entity] = {
