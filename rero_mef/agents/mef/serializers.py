@@ -8,11 +8,11 @@ from invenio_records_rest.links import default_links_factory_with_additional
 from invenio_records_rest.schemas import RecordSchemaJSONV1
 from invenio_records_rest.serializers.json import JSONSerializer
 from invenio_records_rest.serializers.response import (
-    record_responsify,
     search_responsify,
 )
 
 from ...api_mef import _INDEX_ONLY_FIELDS
+from ...rest import mef_record_responsify
 from ...utils import get_entity_classes
 
 
@@ -83,5 +83,5 @@ class ReroMefSerializer(JSONSerializer):
 json_ = ReroMefSerializer(RecordSchemaJSONV1)
 """JSON v1 serializer."""
 
-json_agent_mef_response = record_responsify(json_, "application/rero+json")
+json_agent_mef_response = mef_record_responsify(json_, "application/rero+json")
 json_agent_mef_search = search_responsify(json_, "application/rero+json")
