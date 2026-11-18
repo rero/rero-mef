@@ -3,6 +3,8 @@
 
 """Test api."""
 
+from celery import current_app as current_celery_app
+
 from rero_mef.agents import (
     AgentIdrefIndexer,
     AgentIdrefRecord,
@@ -44,6 +46,17 @@ def test_entityrecord_api(app, agent_idref_record):
     AgentIdrefIndexer().bulk_index(list(AgentIdrefRecord.get_all_ids()))
     indexed, failed = process_bulk_queue(stats_only=True)
     assert indexed >= 1
+    assert failed == 0
+
+
+def test_process_bulk_queue_reopens_a_closed_connection(app, agent_idref_record):
+    """A broker connection left closed in the pool, e.g. by a failed task, does not fail the next task."""
+    with current_celery_app.pool.acquire(block=True) as conn:
+        conn._close()
+
+    AgentIdrefIndexer().bulk_index([agent_idref_record.id])
+    indexed, failed = process_bulk_queue(stats_only=True)
+    assert indexed == 1
     assert failed == 0
 
 
