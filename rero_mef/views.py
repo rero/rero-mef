@@ -53,7 +53,7 @@ def _ensure_all_mef_alias():
     """Check whether the all_mef alias or at least one backing index exists.
 
     Does not create or modify any aliases; alias management is handled by the
-    ``all_mef_alias`` CLI command and the application extension at startup.
+    ``all_mef_alias`` CLI command.
 
     :returns: True if the alias or a backing index is reachable, False if none
         of them exist.
