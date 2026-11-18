@@ -882,6 +882,8 @@ class EntityIndexer(RecordIndexer):
         :returns: Indexing statistics (success count, failure count) if stats_only is True, otherwise detailed results.
         """
         with current_celery_app.pool.acquire(block=True) as conn:
+            # A connection of the pool can be dead, e.g. after a task that failed with it.
+            conn.ensure_connection(max_retries=current_app.config.get("CELERY_BROKER_CONNECTION_MAX_RETRIES", 10))
             consumer = Consumer(
                 connection=conn,
                 queue=self.mq_queue.name,
