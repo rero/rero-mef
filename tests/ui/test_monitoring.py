@@ -3,6 +3,8 @@
 
 """Test monitoring."""
 
+import logging
+from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -375,8 +377,6 @@ def test_last_snapshot_returns_none_when_no_hits():
 
 def test_last_snapshot_returns_none_and_logs_on_exception(caplog):
     """Returns None and logs the exception when the search call fails."""
-    import logging
-
     client = _make_client(raise_on_search=True)
     with caplog.at_level(logging.ERROR, logger="rero_mef.monitoring.tasks"):
         result = _last_snapshot(client, "node1")
@@ -455,8 +455,6 @@ def test_index_os_stats_document_structure():
 
 def test_index_os_stats_rates_computed_from_prev_snapshot():
     """Rates are non-zero when a previous snapshot provides a baseline."""
-    from datetime import UTC, datetime, timedelta
-
     prev_ts = (datetime.now(UTC) - timedelta(seconds=60)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
     prev_src = {
         "@timestamp": prev_ts,
