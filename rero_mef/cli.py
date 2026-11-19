@@ -1241,45 +1241,35 @@ def manual_confirm_user(user):
         click.secho(f'User "{user}" was already confirmed.', fg="yellow")
 
 
+#: The indexed entity types, checked by `reindex_missing` before any is reindexed.
+INDEXED_ENTITIES = ["aggnd", "aidref", "agrero", "mef", "viaf", "cidref", "corero", "comef", "pidref", "plmef"]
+
+
 @utils.command()
 @click.option(
-    "-e",
-    "--entity",
-    "entities",
-    multiple=True,
-    default=[
-        "aggnd",
-        "aidref",
-        "agrero",
-        "mef",
-        "viaf",
-        "cidref",
-        "corero",
-        "comef",
-        "pidref",
-        "plmef",
-    ],
+    "-e", "--entity", "entities", multiple=True, type=click.Choice(INDEXED_ENTITIES), default=INDEXED_ENTITIES
 )
+@click.option("-d", "--delay", default=1, show_default=True, help="Recent minutes to ignore.")
 @click.option("-v", "--verbose", "verbose", is_flag=True, default=False)
 @with_appcontext
-def reindex_missing(entities, verbose):
-    """Reindex entities missing in ES.
+def reindex_missing(entities, delay, verbose):
+    """Reindex the entities missing in the index.
 
-    :param entities: entity type to compair too.
+    :param entities: entity types to reindex.
+    :param delay: recent minutes to ignore.
     :param verbose: Verbose.
     """
     for entity in entities:
-        click.secho(f"Reindex missing {entity} from ES.", fg="green")
-        get_entity_class(entity)
-        pids_es, pids_db, pids_es_double, index = Monitoring().get_es_db_missing_pids(doc_type=entity, verbose=verbose)
+        click.secho(f"Reindex missing {entity} from the index.", fg="green")
+        entity_class = get_entity_class(entity)
+        pids_search, pids_db, pids_search_double = Monitoring(time_delta=delay).get_search_db_missing_pids(entity)
         if verbose:
-            click.secho(f"  {entity} ES: {len(pids_es)} DB: {len(pids_db)} Double:{len(pids_es_double)}")
-            progress_bar = progressbar(items=pids_db, length=len(pids_db), verbose=True)
-            for pid in progress_bar:
-                if rec := entity.get_record_by_pid(pid):
-                    rec.reindex()
-                else:
-                    click.secho(f"  {entity} record not found: {pid}", fg="red")
+            click.secho(f"  {entity} search: {len(pids_search)} DB: {len(pids_db)} Double:{len(pids_search_double)}")
+        for pid in progressbar(items=pids_db, length=len(pids_db), verbose=verbose):
+            if rec := entity_class.get_record_by_pid(pid):
+                rec.reindex()
+            else:
+                click.secho(f"  {entity} record not found: {pid}", fg="red")
 
 
 @utils.command()

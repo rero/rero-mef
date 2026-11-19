@@ -6,66 +6,15 @@
 import click
 from flask import current_app
 from flask.cli import with_appcontext
-from invenio_db import db
-from invenio_search import current_search_client
-from redis import Redis
 
 from ..cli_logging import ensure_single_stream_handler
 from .api import Monitoring
-from .utils import DB_CONNECTION_COUNTS_QUERY, DB_CONNECTION_QUERY
 
 
 @click.group()
 def monitoring():
     """Monitoring commands."""
     ensure_single_stream_handler()
-
-
-@monitoring.command("es_db_counts")
-@click.option(
-    "-m",
-    "--missing",
-    "missing",
-    is_flag=True,
-    default=False,
-    help="display missing pids",
-)
-@click.option(
-    "-d",
-    "--delay",
-    "delay",
-    default=1,
-    help="Get ES and DB counts from delay minutes in the past.",
-)
-@with_appcontext
-def es_db_counts_cli(missing, delay):
-    """Print ES and DB counts.
-
-    Prints a table representation of database and search counts. Columns: 1. database count minus search
-    count 2. document type 3. database count 4. search index 5. search count
-    """
-    missing_doc_types = []
-    mon = Monitoring(time_delta=delay)
-    msg_head = f"DB - ES  {'type':>6} {'count':>10}"
-    msg_head += f"  {'index':>25} {'count_es':>10}\n"
-    msg_head += f"{'':-^64s}"
-    click.echo(msg_head)
-    info = mon.info(with_deleted=False, difference_db_es=False)
-    for doc_type in sorted(info):
-        db_es = info[doc_type].get("db-es")
-        db_es_display = "" if db_es is None else db_es
-        msg = f"{db_es_display:>7}  {doc_type:>6} {info[doc_type].get('db', ''):>10}"
-        index = info[doc_type].get("index", "")
-        if index:
-            msg += f"  {index:>25} {info[doc_type].get('es', ''):>10}"
-        if db_es not in [0, "", None]:
-            click.secho(msg, fg="red")
-        else:
-            click.echo(msg)
-        if missing and index:
-            missing_doc_types.append(doc_type)
-    for missing_doc_type in missing_doc_types:
-        mon.print_missing(missing_doc_type)
 
 
 @monitoring.command("dangling_pids")
@@ -128,87 +77,3 @@ def mef_counts_cli(delay):
             click.secho(msg, fg="red")
         else:
             click.echo(msg)
-
-
-@monitoring.command("es_db_missing")
-@click.argument("doc_type")
-@click.option(
-    "-d",
-    "--delay",
-    "delay",
-    default=1,
-    help="Get ES and DB counts from delay minutes in the past.",
-)
-@with_appcontext
-def es_db_missing_cli(doc_type, delay):
-    """Print missing pids informations."""
-    Monitoring(time_delta=delay).print_missing(doc_type)
-
-
-@monitoring.command()
-@with_appcontext
-def es():
-    """Displays elastic search cluster info."""
-    for key, value in current_search_client.cluster.health().items():
-        click.echo(f"{key:<33}: {value}")
-
-
-@monitoring.command()
-@with_appcontext
-def redis():
-    """Displays redis info."""
-    url = current_app.config.get("ACCOUNTS_SESSION_REDIS_URL", "redis://localhost:6379")
-    redis_client = Redis.from_url(url)
-    for key, value in redis_client.info().items():
-        click.echo(f"{key:<33}: {value}")
-
-
-@monitoring.command("es_indices")
-@with_appcontext
-def es_indices():
-    """Displays Search indices info."""
-    click.echo(current_search_client.cat.indices(s="index"))
-
-
-@monitoring.command("db_connection_counts")
-@with_appcontext
-def db_connection_counts():
-    """Display DB connection counts."""
-    try:
-        max_conn, used, res_for_super, free = db.session.execute(DB_CONNECTION_COUNTS_QUERY).first()
-    except Exception as error:
-        raise click.ClickException(str(error)) from error
-    click.secho(f"max: {max_conn}, used: {used}, res_super: {res_for_super}, free: {free}")
-
-
-@monitoring.command("db_connections")
-@with_appcontext
-def db_connections():
-    """Display DB connections."""
-    try:
-        results = db.session.execute(DB_CONNECTION_QUERY).fetchall()
-    except Exception as error:
-        raise click.ClickException(str(error)) from error
-    for (
-        _,
-        application_name,
-        client_addr,
-        client_port,
-        backend_start,
-        xact_start,
-        query_start,
-        wait_event,
-        state,
-        left,
-    ) in results:
-        click.secho(
-            f"application_name: {application_name}\n"
-            f"client_addr: {client_addr}\n"
-            f"client_port: {client_port}\n"
-            f"backend_start: {backend_start}\n"
-            f"xact_start: {xact_start}\n"
-            f"query_start: {query_start}\n"
-            f"wait_event: {wait_event}\n"
-            f"state: {state}\n"
-            f"left: {left}\n"
-        )
