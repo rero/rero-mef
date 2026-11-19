@@ -155,8 +155,8 @@ CELERY_BEAT_SCHEDULE = {
         "task": "rero_mef.tasks.repair_stale_associations",
         "schedule": crontab(minute=0, hour=0),
     },
-    "os-monitor": {
-        "task": "rero_mef.monitoring.tasks.index_os_stats",
+    "search-monitor": {
+        "task": "rero_invenio_base.modules.monitoring.tasks.index_search_stats",
         "schedule": timedelta(minutes=1),
     },
 }
