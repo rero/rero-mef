@@ -839,6 +839,10 @@ def harvestname(name, from_date, until_date, arguments, quiet, enqueue, test_md5
                 viaf_online=viaf_online,
                 **arguments,
             )
+            if count < 0:
+                # The failure is already logged and sent to Sentry; the exit code makes the cronjob fail too.
+                click.secho(f"Harvest {name} failed", fg="red", err=True)
+                sys.exit(1)
             actions = ", ".join([f"{action.value}={count}" for action, count in action_count.items()])
             mef_actions = ", ".join([f"{action.value}={count}" for action, count in mef_action_count.items()])
             click.echo(f"Count: {count} agent: {actions} mef: {mef_actions}")
