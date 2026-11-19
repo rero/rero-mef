@@ -20,14 +20,11 @@ from invenio_accounts.cli import commit, users
 from invenio_db import db
 from invenio_oaiharvester.cli import oaiharvester
 from invenio_oaiharvester.models import OAIHarvestConfig
-from invenio_oauth2server.cli import process_scopes, process_user
-from invenio_oauth2server.models import Client, Token
 from invenio_records_rest.utils import obj_or_import_string
 from invenio_search import current_search_client
 from invenio_search.engine import search
 from sqlitedict import SqliteDict
 from werkzeug.local import LocalProxy
-from werkzeug.security import gen_salt
 
 from .agents import AgentMefRecord
 from .cli_logging import ensure_single_stream_handler
@@ -697,16 +694,6 @@ def init_oai_harvest_config(configfile, update):
             update=update,
         )
         click.echo(msg)
-
-
-@oaiharvester.command()
-@with_appcontext
-def schedules():
-    """List harvesting schedules."""
-    celery_ext = current_app.extensions.get("invenio-celery")
-    for key, value in celery_ext.celery.conf.beat_schedule.items():
-        click.echo(key + "\t", nl=False)
-        click.echo(value)
 
 
 @oaiharvester.command("info")
@@ -1449,68 +1436,6 @@ def rebuild_concept_association(record_types, reindex, from_pid, prune):
         click.secho("Delete the MEF records without any entity", fg="green")
         prune_orphan_mef()
     click.secho("Concept associations rebuilt.", fg="green")
-
-
-def create_personal(name, user_id, scopes=None, is_internal=False, access_token=None):
-    """Create a personal access token.
-
-    A token that is bound to a specific user and which doesn't expire, i.e. similar to the concept of an API key.
-
-    :param name: Client name.
-    :param user_id: User ID.
-    :param scopes: The list of permitted scopes. (Default: ``None``)
-    :param is_internal: If ``True`` it's a internal access token. (Default: ``False``)
-    :param access_token: personalized access_token.
-    :returns: A new access token.
-    """
-    with db.session.begin_nested():
-        scopes = " ".join(scopes) if scopes else ""
-
-        client = Client(
-            name=name,
-            user_id=user_id,
-            is_internal=True,
-            is_confidential=False,
-            _default_scopes=scopes,
-        )
-        client.gen_salt()
-
-        if not access_token:
-            access_token = gen_salt(current_app.config.get("OAUTH2SERVER_TOKEN_PERSONAL_SALT_LEN"))
-        token = Token(
-            client_id=client.client_id,
-            user_id=user_id,
-            access_token=access_token,
-            expires=None,
-            _scopes=scopes,
-            is_personal=True,
-            is_internal=is_internal,
-        )
-
-        db.session.add(client)
-        db.session.add(token)
-
-    return token
-
-
-@utils.command("tokens_create")
-@click.option("-n", "--name", required=True)
-@click.option("-u", "--user", required=True, callback=process_user, help="User ID or email.")
-@click.option("-s", "--scope", "scopes", multiple=True, callback=process_scopes)
-@click.option("-i", "--internal", is_flag=True)
-@click.option(
-    "-t",
-    "--access_token",
-    "access_token",
-    required=False,
-    help="personalized access_token.",
-)
-@with_appcontext
-def tokens_create(name, user, scopes, internal, access_token):
-    """Create a personal OAuth token."""
-    token = create_personal(name, user.id, scopes=scopes, is_internal=internal, access_token=access_token)
-    db.session.commit()
-    click.secho(token.access_token, fg="blue")
 
 
 @utils.command()
