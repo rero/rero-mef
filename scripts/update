@@ -21,8 +21,8 @@ fi
 script_path=$(dirname "$0")
 ./"$script_path"/bootstrap
 
-uv run invenio  index create --verbose concepts_idref-idref-concept-v0.0.1 -b rero_mef/concepts/idref/mappings/v7/concepts_idref/idref-concept-v0.0.1.json
-invenio utils update_mapping
+uv run invenio  index create --verbose concepts_idref-idref-concept-v0.0.1 -b rero_mef/concepts/idref/mappings/os-v2/concepts_idref/idref-concept-v0.0.1.json
+invenio rero search index update-mapping
 invenio alembic upgrade
 
 invenio oaiharvester initconfig ./data/oaisources.yml
