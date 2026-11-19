@@ -6,10 +6,11 @@
 import click
 from celery import shared_task
 from flask import current_app
+from rero_invenio_base.modules.monitoring import set_timestamp
 
 from .api import Action, EntityIndexer
 from .stale import ASSOCIATION_PAIRS, audit, repair
-from .utils import get_entity_class, set_timestamp
+from .utils import get_entity_class
 
 
 @shared_task(ignore_result=True)

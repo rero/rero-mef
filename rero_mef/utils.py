@@ -27,7 +27,6 @@ import sentry_sdk
 import sqlalchemy
 from dateutil import parser
 from flask import current_app
-from invenio_cache.proxies import current_cache
 from invenio_db import db
 from invenio_oaiharvester.api import get_info_by_oai_name
 from invenio_oaiharvester.errors import (
@@ -1041,34 +1040,6 @@ def append_fixtures_new_identifiers(identifier, pids, pid_type):
             .pid_value
         )
         identifier._set_sequence(max_pid)
-
-
-def set_timestamp(name, **kwargs):
-    """Set timestamp in current cache.
-
-    Allows to timestamp functionality and monitoring of the changed timestamps externaly via url requests.
-
-    :param name: name of time stamp.
-    :returns: time of time stamp
-    """
-    time_stamps = current_cache.get("timestamps") or {}
-    utc_now = datetime.now(UTC)
-    time_stamps[name] = {}
-    time_stamps[name]["time"] = utc_now
-    for key, value in kwargs.items():
-        time_stamps[name][key] = value
-    current_cache.set("timestamps", time_stamps)
-    return utc_now
-
-
-def get_timestamp(name):
-    """Get timestamp in current cache.
-
-    :param name: name of time stamp.
-    :returns: time of time stamp
-    """
-    time_stamps = current_cache.get("timestamps")
-    return time_stamps.get(name) if time_stamps else None
 
 
 class JsonWriter:

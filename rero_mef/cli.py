@@ -20,14 +20,11 @@ from invenio_accounts.cli import commit, users
 from invenio_db import db
 from invenio_oaiharvester.cli import oaiharvester
 from invenio_oaiharvester.models import OAIHarvestConfig
-from invenio_oauth2server.cli import process_scopes, process_user
-from invenio_oauth2server.models import Client, Token
 from invenio_records_rest.utils import obj_or_import_string
 from invenio_search import current_search_client
 from invenio_search.engine import search
 from sqlitedict import SqliteDict
 from werkzeug.local import LocalProxy
-from werkzeug.security import gen_salt
 
 from .agents import AgentMefRecord
 from .cli_logging import ensure_single_stream_handler
@@ -699,16 +696,6 @@ def init_oai_harvest_config(configfile, update):
         click.echo(msg)
 
 
-@oaiharvester.command()
-@with_appcontext
-def schedules():
-    """List harvesting schedules."""
-    celery_ext = current_app.extensions.get("invenio-celery")
-    for key, value in celery_ext.celery.conf.beat_schedule.items():
-        click.echo(key + "\t", nl=False)
-        click.echo(value)
-
-
 @oaiharvester.command("info")
 @with_appcontext
 def oaiharvester_info():
@@ -1273,26 +1260,27 @@ def manual_confirm_user(user):
         "plmef",
     ],
 )
+@click.option("-d", "--delay", default=1, show_default=True, help="Recent minutes to ignore.")
 @click.option("-v", "--verbose", "verbose", is_flag=True, default=False)
 @with_appcontext
-def reindex_missing(entities, verbose):
-    """Reindex entities missing in ES.
+def reindex_missing(entities, delay, verbose):
+    """Reindex the entities missing in the index.
 
-    :param entities: entity type to compair too.
+    :param entities: entity types to reindex.
+    :param delay: recent minutes to ignore.
     :param verbose: Verbose.
     """
     for entity in entities:
-        click.secho(f"Reindex missing {entity} from ES.", fg="green")
-        get_entity_class(entity)
-        pids_es, pids_db, pids_es_double, index = Monitoring().get_es_db_missing_pids(doc_type=entity, verbose=verbose)
+        click.secho(f"Reindex missing {entity} from the index.", fg="green")
+        entity_class = get_entity_class(entity)
+        pids_search, pids_db, pids_search_double = Monitoring(time_delta=delay).get_search_db_missing_pids(entity)
         if verbose:
-            click.secho(f"  {entity} ES: {len(pids_es)} DB: {len(pids_db)} Double:{len(pids_es_double)}")
-            progress_bar = progressbar(items=pids_db, length=len(pids_db), verbose=True)
-            for pid in progress_bar:
-                if rec := entity.get_record_by_pid(pid):
-                    rec.reindex()
-                else:
-                    click.secho(f"  {entity} record not found: {pid}", fg="red")
+            click.secho(f"  {entity} search: {len(pids_search)} DB: {len(pids_db)} Double:{len(pids_search_double)}")
+        for pid in progressbar(items=pids_db, length=len(pids_db), verbose=verbose):
+            if rec := entity_class.get_record_by_pid(pid):
+                rec.reindex()
+            else:
+                click.secho(f"  {entity} record not found: {pid}", fg="red")
 
 
 @utils.command()
@@ -1449,68 +1437,6 @@ def rebuild_concept_association(record_types, reindex, from_pid, prune):
         click.secho("Delete the MEF records without any entity", fg="green")
         prune_orphan_mef()
     click.secho("Concept associations rebuilt.", fg="green")
-
-
-def create_personal(name, user_id, scopes=None, is_internal=False, access_token=None):
-    """Create a personal access token.
-
-    A token that is bound to a specific user and which doesn't expire, i.e. similar to the concept of an API key.
-
-    :param name: Client name.
-    :param user_id: User ID.
-    :param scopes: The list of permitted scopes. (Default: ``None``)
-    :param is_internal: If ``True`` it's a internal access token. (Default: ``False``)
-    :param access_token: personalized access_token.
-    :returns: A new access token.
-    """
-    with db.session.begin_nested():
-        scopes = " ".join(scopes) if scopes else ""
-
-        client = Client(
-            name=name,
-            user_id=user_id,
-            is_internal=True,
-            is_confidential=False,
-            _default_scopes=scopes,
-        )
-        client.gen_salt()
-
-        if not access_token:
-            access_token = gen_salt(current_app.config.get("OAUTH2SERVER_TOKEN_PERSONAL_SALT_LEN"))
-        token = Token(
-            client_id=client.client_id,
-            user_id=user_id,
-            access_token=access_token,
-            expires=None,
-            _scopes=scopes,
-            is_personal=True,
-            is_internal=is_internal,
-        )
-
-        db.session.add(client)
-        db.session.add(token)
-
-    return token
-
-
-@utils.command("tokens_create")
-@click.option("-n", "--name", required=True)
-@click.option("-u", "--user", required=True, callback=process_user, help="User ID or email.")
-@click.option("-s", "--scope", "scopes", multiple=True, callback=process_scopes)
-@click.option("-i", "--internal", is_flag=True)
-@click.option(
-    "-t",
-    "--access_token",
-    "access_token",
-    required=False,
-    help="personalized access_token.",
-)
-@with_appcontext
-def tokens_create(name, user, scopes, internal, access_token):
-    """Create a personal OAuth token."""
-    token = create_personal(name, user.id, scopes=scopes, is_internal=internal, access_token=access_token)
-    db.session.commit()
-    click.secho(token.access_token, fg="blue")
 
 
 @utils.command()

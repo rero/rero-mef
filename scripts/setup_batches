@@ -31,9 +31,9 @@ OAI_SOURCES=(agents.gnd agents.idref concepts.idref concepts.gnd places.idref pl
 token_line() {
   if [ -z "${3}" ]
   then
-      echo "utils tokens_create -n ${1} -u ${2}"
+      echo "rero utils token-create -n ${1} -u ${2}"
   else
-      echo "utils tokens_create -n ${1} -u ${2} -t ${3}"
+      echo "rero utils token-create -n ${1} -u ${2} -t ${3}"
   fi
 }
 
