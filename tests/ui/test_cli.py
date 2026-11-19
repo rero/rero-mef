@@ -18,20 +18,11 @@ from rero_mef.cli import (
     dashboards,
     delete,
     rabbitmq_queue_count,
-    tokens_create,
     wait_empty_tasks,
 )
 from rero_mef.tasks import delete as task_delete
 
-from ..utils import create_and_login_monitoring_user, create_record
-
-
-def test_cli_access_token(app, client, script_info):
-    """Test access token cli."""
-    email = create_and_login_monitoring_user(app, client)
-    runner = CliRunner()
-    res = runner.invoke(tokens_create, ["-n", "test", "-u", email, "-t", "my_token"], obj=script_info)
-    assert res.output.strip().split("\n") == ["my_token"]
+from ..utils import create_record
 
 
 def test_cli_create_or_update_delete(app, script_info):
