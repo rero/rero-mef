@@ -27,11 +27,21 @@ def test_get_multiple_missing_pids(app, agent_mef_data, agent_viaf_record):
         missing_pids,
         none_pids,
     ) = AgentMefRecord.get_multiple_missing_pids(record_types=["aidref", "aggnd", "agrero"])
+    mef_pids = sorted([m_record_1.pid, m_record_2.pid])
     assert pids == {"aggnd": {}, "agrero": {}, "aidref": {}}
     assert multiple_pids == {
-        "aggnd": {"12391664X": [m_record_2.pid, m_record_1.pid]},
-        "agrero": {"A023655346": [m_record_2.pid, m_record_1.pid]},
-        "aidref": {"069774331": [m_record_2.pid, m_record_1.pid]},
+        "aggnd": {"12391664X": mef_pids},
+        "agrero": {"A023655346": mef_pids},
+        "aidref": {"069774331": mef_pids},
     }
     assert missing_pids == {"aggnd": [], "agrero": [], "aidref": []}
     assert none_pids == {"aggnd": [], "agrero": [], "aidref": []}
+
+    # one type reads only the MEF records holding it, with the same result
+    assert AgentMefRecord.get_multiple_missing_pids(record_types=["aidref"]) == (
+        {"aidref": {}},
+        {"aidref": {"069774331": mef_pids}},
+        {"aidref": []},
+        {"aidref": []},
+    )
+    assert AgentMefRecord.get_multiple_missing_pids() == ({}, {}, {}, {})

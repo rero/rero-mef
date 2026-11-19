@@ -151,11 +151,17 @@ class EntityMefRecord(EntityRecord):
             except Exception:
                 current_app.logger.error(f"Record type not found: {record_type}")
 
-        # Get all pids from MEF
+        if not entities:
+            return pids, multiple_pids, missing_pids, none_pids
+
+        # Get the pids of the MEF records holding one of the types
+        mef_search = cls.search().filter(
+            "bool", should=[dsl.Q("exists", field=info["name"]) for info in entities.values()], minimum_should_match=1
+        )
         date = datetime.now(UTC)
         progress = progressbar(
-            items=cls.search().params(preserve_order=True).sort({"_updated": {"order": "desc"}}).source(sources).scan(),
-            length=cls.search().count(),
+            items=mef_search.source(sources).params(size=10000).scan(),
+            length=mef_search.count(),
             verbose=verbose,
         )
         for hit in progress:
@@ -171,20 +177,21 @@ class EntityMefRecord(EntityRecord):
                         none_pids[record_type].append(mef_pid)
         # Get all entities pids and compare with MEF pids
         for record_type, info in entities.items():
+            entity_search = info["search"].filter("range", _created={"lte": date})
             progress = progressbar(
-                items=info["search"]
-                .params(preserve_order=True)
-                .sort({"pid": {"order": "asc"}})
-                .filter("range", _created={"lte": date})
-                .source("pid")
-                .scan(),
-                length=info["search"].filter("range", _created={"lte": date}).count(),
+                items=entity_search.source("pid").params(size=10000).scan(),
+                length=entity_search.count(),
                 verbose=verbose,
             )
             for hit in progress:
                 pid = hit.pid
                 if not pids[record_type].pop(pid, None):
                     missing_pids[record_type].append(pid)
+            # the scans follow no order, the results are sorted for stable reports
+            missing_pids[record_type].sort()
+            none_pids[record_type].sort()
+            for mef_pids in multiple_pids[record_type].values():
+                mef_pids.sort()
         return pids, multiple_pids, missing_pids, none_pids
 
     @classmethod
