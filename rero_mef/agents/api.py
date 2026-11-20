@@ -94,6 +94,12 @@ class AgentRecord(EntityRecord):
         if mef_records:
             # Multiple MEF records found: consolidate them
             # Keep the first MEF record and merge/discard the others
+            mef_record = mef_records[0]
+            cluster = (
+                {(entity["source"], entity["pid"]) for entity in viaf_records[0].get_entities_pids()}
+                if viaf_records
+                else set()
+            )
             for mef in mef_records[1:]:
                 # Remove this agent's reference from duplicate MEF records
                 if old_ref := mef.pop(self.name, None):
@@ -102,10 +108,19 @@ class AgentRecord(EntityRecord):
                     if old_pid != self.pid:
                         old_pids.add(old_pid)
                         mef_actions[old_pid] = Action.DELETE
-                mef.update(data=mef, dbcommit=dbcommit, reindex=reindex)
-                mef_actions[mef.pid] = Action.DISCARD
+                if viaf_pid and mef.get("viaf_pid") == viaf_pid:
+                    # The other sources of the cluster belong to the kept record too: moving only this agent left
+                    # them in a second record with the same VIAF pid, which nothing ever merged afterwards.
+                    for name in mef.entities:
+                        ref = mef.get(name)
+                        if ref and not mef_record.get(name) and (name, ref["$ref"].split("/")[-1]) in cluster:
+                            mef_record[name] = mef.pop(name)
+                    mef.pop("viaf_pid")
+                if mef.replace_or_delete(dbcommit=dbcommit, reindex=reindex) is None:
+                    mef_actions[mef.pid] = Action.DELETE
+                else:
+                    mef_actions[mef.pid] = Action.DISCARD
             # Update first MEF record
-            mef_record = mef_records[0]
             old_ref = mef_record.get(self.name)
             old_pid = old_ref["$ref"].split("/")[-1] if old_ref else None
             if old_pid != self.pid:

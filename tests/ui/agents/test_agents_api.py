@@ -222,8 +222,8 @@ def test_create_agent_record_with_viaf_links(
         {"pid": gnd_record.pid, "source": "gnd", "record_class": AgentGndRecord},
         {"pid": rero_record.pid, "source": "rero", "record_class": AgentReroRecord},
     ]
-    mef_record_rero = AgentMefRecord.get_record_by_pid(mef_record_rero.pid)
-    assert "rero" not in mef_record_rero
+    # The RERO agent moved back to the MEF record of the cluster: its own record held nothing else.
+    assert AgentMefRecord.get_record_by_pid(mef_record_rero.pid) is None
 
     # VIAF delete
     _, action, mef_actions = viaf_record.delete(dbcommit=True, delindex=True)
