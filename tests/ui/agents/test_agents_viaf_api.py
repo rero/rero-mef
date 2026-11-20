@@ -183,7 +183,8 @@ def test_create_mef_and_agents(app, agent_viaf_record, agent_gnd_record, agent_r
             "source": "gnd",
         },
         "A023655346": {
-            "MEF": {mef_pid: Action.UPDATE, str(int(mef_pid) + 1): Action.DISCARD},
+            # The record of the RERO agent held nothing else: deleted once the agent moved back.
+            "MEF": {mef_pid: Action.UPDATE, str(int(mef_pid) + 1): Action.DELETE},
             "action": Action.NOT_ONLINE,
             "source": "rero",
         },
@@ -193,7 +194,7 @@ def test_create_mef_and_agents(app, agent_viaf_record, agent_gnd_record, agent_r
             "source": "rero",
         },
     }
-    assert AgentMefRecord.count() == 4
+    assert AgentMefRecord.count() == 3
     info = monitor.check_mef()
     assert info == {
         "aggnd": {"db": 1, "index": "aggnd", "mef": 1, "mef-db": 0},
@@ -228,23 +229,21 @@ def test_create_mef_and_agents(app, agent_viaf_record, agent_gnd_record, agent_r
     assert "gnd" in mef_record
     assert "idref" in mef_record
     assert "rero" in mef_record
+    # The first agent already brings the whole cluster together: the other sources of the old record move with
+    # it, and the records left without any source are deleted instead of keeping the VIAF pid of the cluster.
     assert actions == {
         "069774331": {
-            "MEF": {mef_pid: Action.DISCARD, mef_pid_new: Action.UPDATE},
+            "MEF": {mef_pid: Action.DELETE, mef_pid_new: Action.UPDATE},
             "action": Action.NOT_ONLINE,
             "source": "idref",
         },
         "12391664X": {
-            "MEF": {
-                mef_pid: Action.DISCARD,
-                str(int(mef_pid) + 2): Action.DISCARD,
-                mef_pid_new: Action.UPDATE,
-            },
+            "MEF": {str(int(mef_pid) + 2): Action.DELETE, mef_pid_new: Action.UPDATE},
             "action": Action.NOT_ONLINE,
             "source": "gnd",
         },
         "A023655346": {
-            "MEF": {mef_pid: Action.DISCARD, mef_pid_new: Action.UPDATE},
+            "MEF": {mef_pid_new: Action.UPDATE},
             "action": Action.NOT_ONLINE,
             "source": "rero",
         },
@@ -257,7 +256,9 @@ def test_create_mef_and_agents(app, agent_viaf_record, agent_gnd_record, agent_r
             "source": "rero",
         },
     }
-    assert AgentMefRecord.count() == 5
+    assert AgentMefRecord.get_record_by_pid(mef_pid) is None
+    assert AgentMefRecord.get_mef(agent_viaf_record.pid, agent_viaf_record.name, pid_only=True) == [mef_pid_new]
+    assert AgentMefRecord.count() == 2
     info = monitor.check_mef()
     assert info == {
         "aggnd": {"db": 1, "index": "aggnd", "mef": 1, "mef-db": 0},
@@ -275,15 +276,8 @@ def test_create_mef_and_agents(app, agent_viaf_record, agent_gnd_record, agent_r
     _, action, mef_actions = rec.delete(dbcommit=True, delindex=True)
     assert action == Action.DELETE
 
-    # {'1': {'viaf': {'66739143': Action.DELETE}},
-    #  '4': {'gnd': {'12391664X': Action.DELETE},
-    #        'idref': {'069774331': Action.UPDATE},
-    #        'rero': {'A023655346': Action.DELETE},
-    #        'viaf': {'66739143': Action.DELETE}},
-    #  '6': {'gnd': {'12391664X': Action.CREATE}},
-    #  '7': {'rero': {'A023655346': Action.CREATE}}}
-
-    assert mef_actions[mef_pid] == {"viaf": {agent_viaf_record.pid: Action.DELETE}}
+    # Only one MEF record still carries the VIAF pid of the cluster.
+    assert mef_pid not in mef_actions
     assert mef_actions[mef_pid_new]["viaf"] == {agent_viaf_record.pid: Action.DELETE}
 
     mef_record = AgentMefRecord.get_record_by_pid(mef_pid_new)
