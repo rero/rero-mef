@@ -91,6 +91,8 @@ class AgentRecord(EntityRecord):
         ref_string = build_ref_string(entity_type="agents", entity_name=self.name, entity_pid=self.pid)
         viaf_pid = viaf_records[0].pid if viaf_records else None
         old_pids = set()
+        displaced = []
+        duplicates = []
         if mef_records:
             # Multiple MEF records found: consolidate them
             # Keep the first MEF record and merge/discard the others
@@ -112,14 +114,26 @@ class AgentRecord(EntityRecord):
                     # The other sources of the cluster belong to the kept record too: moving only this agent left
                     # them in a second record with the same VIAF pid, which nothing ever merged afterwards.
                     for name in mef.entities:
-                        ref = mef.get(name)
-                        if ref and not mef_record.get(name) and (name, ref["$ref"].split("/")[-1]) in cluster:
-                            mef_record[name] = mef.pop(name)
+                        if not (ref := mef.get(name)):
+                            continue
+                        ref_pid = ref["$ref"].split("/")[-1]
+                        # a source VIAF does not link (RERO) follows the others when the kept record has none
+                        linked = name in viaf_records[0].sources_used
+                        if linked and (name, ref_pid) not in cluster:
+                            continue
+                        if occupant := mef_record.get(name):
+                            occupant_pid = occupant["$ref"].split("/")[-1]
+                            if occupant_pid == ref_pid:
+                                mef.pop(name)
+                                continue
+                            if not linked:
+                                continue
+                            # the cluster-listed reference takes the slot, its displaced agent gets its own MEF record
+                            displaced.append((viaf_records[0].sources_used[name], occupant_pid))
+                            mef_actions[occupant_pid] = Action.DELETE
+                        mef_record[name] = mef.pop(name)
                     mef.pop("viaf_pid")
-                if mef.replace_or_delete(dbcommit=dbcommit, reindex=reindex) is None:
-                    mef_actions[mef.pid] = Action.DELETE
-                else:
-                    mef_actions[mef.pid] = Action.DISCARD
+                duplicates.append(mef)
             # Update first MEF record
             old_ref = mef_record.get(self.name)
             old_pid = old_ref["$ref"].split("/")[-1] if old_ref else None
@@ -132,6 +146,13 @@ class AgentRecord(EntityRecord):
                 mef_record["viaf_pid"] = viaf_pid
             mef_record = mef_record.update(data=mef_record, dbcommit=dbcommit, reindex=reindex)
             mef_actions[mef_record.pid] = Action.UPDATE
+            # Duplicates are written only once the kept record holds the moved references, so a reference is
+            # never dropped from a duplicate before it is persisted on the kept record.
+            for mef in duplicates:
+                if mef.replace_or_delete(dbcommit=dbcommit, reindex=reindex) is None:
+                    mef_actions[mef.pid] = Action.DELETE
+                else:
+                    mef_actions[mef.pid] = Action.DISCARD
         else:
             # No MEF record create one.
             mef_data = {self.name: {"$ref": ref_string}}
@@ -158,8 +179,8 @@ class AgentRecord(EntityRecord):
         # Recursion depth is bounded: old_pids are agents that were displaced
         # from a duplicate MEF record; once they get their own fresh MEF record
         # (no existing duplicates to consolidate), the recursion terminates.
-        for old_pid in old_pids:
-            old_rec = self.get_record_by_pid(old_pid)
+        for record_cls, old_pid in [(type(self), pid) for pid in old_pids] + displaced:
+            old_rec = record_cls.get_record_by_pid(old_pid)
             if old_rec is None:
                 current_app.logger.warning(
                     "create_or_update_mef: displaced agent %s not found, skipping",
@@ -246,7 +267,7 @@ def get_unlinked_agents(relink=False, dbcommit=False, reindex=False, progress=Fa
     entity_by_name = {}
     for entity_type in entity_types:
         entity_cls = get_entity_class(entity_type)
-        if hasattr(entity_cls, "viaf_source_code"):
+        if getattr(entity_cls, "viaf_source_code", None):
             entity_by_name[entity_cls.name] = entity_cls
 
     if not entity_by_name:

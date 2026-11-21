@@ -33,8 +33,9 @@ class AgentReroRecord(AgentRecord):
     fetcher = rero_id_fetcher
     provider = AgentReroProvider
     name = "rero"
-    viaf_source_code = "RERO"
-    viaf_pid_name = "rero_pid"
+    # RERO is obsolete and not linked through VIAF (see ``AgentViafRecord.sources``)
+    viaf_source_code = None
+    viaf_pid_name = None
     model_cls = AgentReroMetadata
     search = AgentReroSearch
 
