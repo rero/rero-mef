@@ -108,6 +108,7 @@ batch_sample_load() {
     echo "fixtures create-or-update ${ENTITY} ${DATA_PATH}/${ENTITY}.json -v"
   done
   echo "utils repair_stale_associations"
+  echo "utils repair_type_conflicts"
 }
 
 # The MEF dashboard, where an OpenSearch Dashboards answers at

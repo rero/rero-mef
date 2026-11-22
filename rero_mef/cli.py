@@ -50,6 +50,7 @@ from .tasks import create_or_update as task_create_or_update
 from .tasks import delete as task_delete
 from .tasks import process_bulk_queue as task_process_bulk_queue
 from .tasks import repair_stale_associations as task_repair_stale_associations
+from .tasks import repair_type_conflicts as task_repair_type_conflicts
 from .utils import (
     JsonWriter,
     add_oai_source,
@@ -1245,6 +1246,20 @@ def repair_stale_associations(dry_run, verbose):
     found = task_repair_stale_associations(dry_run=dry_run, verbose=verbose)
     for record_type, count in found.items():
         click.secho(f"{record_type}: {count} stale{' (dry run)' if dry_run else ''}", fg="yellow" if count else "green")
+
+
+@utils.command("repair_type_conflicts")
+@click.option("-n", "--dry-run", "dry_run", is_flag=True, default=False, help="Only report what would be repaired.")
+@click.option("-v", "--verbose", "verbose", is_flag=True, default=False)
+@with_appcontext
+def repair_type_conflicts(dry_run, verbose):
+    """Repair the `type_conflict` flags of the MEF records the redirects no longer support.
+
+    A load indexes a MEF record before the record its source redirects to may be loaded, and never revisits it.
+    """
+    found = task_repair_type_conflicts(dry_run=dry_run, verbose=verbose)
+    for mef_type, count in found.items():
+        click.secho(f"{mef_type}: {count} stale{' (dry run)' if dry_run else ''}", fg="yellow" if count else "green")
 
 
 @users.command("confirm")

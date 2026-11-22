@@ -156,6 +156,12 @@ CELERY_BEAT_SCHEDULE = {
         "task": "rero_mef.tasks.repair_stale_associations",
         "schedule": crontab(minute=0, hour=0),
     },
+    # The same for the `type_conflict` flag, which a harvest leaves stale when it brings the target of a redirect
+    # after the MEF record pointing to it. It only reads the redirecting records, so it ends well before 01:00 UTC.
+    "repair-type-conflicts": {
+        "task": "rero_mef.tasks.repair_type_conflicts",
+        "schedule": crontab(minute=30, hour=0),
+    },
     "os-monitor": {
         "task": "rero_mef.monitoring.tasks.index_os_stats",
         "schedule": timedelta(minutes=1),
