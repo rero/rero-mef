@@ -5,7 +5,6 @@
 include .dockerignore
 include .editorconfig
 include .tx/config
-include docker/haproxy/Dockerfile
 include docker/nginx/Dockerfile
 include Dockerfile
 include scripts/bootstrap

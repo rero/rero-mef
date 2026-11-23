@@ -27,9 +27,6 @@ services:
     # `max_wal_senders=0`; `autovacuum` stays on, or there is no ANALYZE and the
     # queries fall back to sequential scans. An unclean stop can corrupt the
     # database, which then has to be recreated by a new setup.
-    #
-    # Deliberately not in docker-services.yml, the base of the
-    # docker-compose.full.yml production example.
     command: >
       postgres
       -c fsync=off
