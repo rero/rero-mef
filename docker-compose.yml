@@ -1,32 +1,35 @@
 # SPDX-FileCopyrightText: Fondation RERO+
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+# The healthchecks order `init`, so that `docker compose up -d` waits for the stack.
 services:
-  # The four healthchecks below exist to order `gate`, which is what makes
-  # `docker compose up -d` wait for the whole stack.
   cache:
-    extends:
-      file: docker-services.yml
-      service: cache
+    image: redis:8
+    restart: "unless-stopped"
+    read_only: true
+    command: redis-server --save "" --appendonly no
+    ports:
+      - "${CACHE_PORT:-6379}:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 5s
       retries: 12
   db:
-    extends:
-      file: docker-services.yml
-      service: db
+    image: postgres:17-alpine
+    restart: "unless-stopped"
+    environment:
+      - "POSTGRES_USER=rero-mef"
+      - "POSTGRES_PASSWORD=rero-mef"
+      - "POSTGRES_DB=rero-mef"
+    ports:
+      - "${DB_PORT:-5432}:5432"
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "rero-mef"]
       interval: 5s
       timeout: 5s
       retries: 12
-    # This stack serves the test suite and `scripts/setup`, whose data is always
-    # thrown away, so durability is traded for speed. `wal_level=minimal` requires
-    # `max_wal_senders=0`; `autovacuum` stays on, or there is no ANALYZE and the
-    # queries fall back to sequential scans. An unclean stop can corrupt the
-    # database, which then has to be recreated by a new setup.
+    # Throwaway data: durability is traded for speed.
     command: >
       postgres
       -c fsync=off
@@ -35,9 +38,12 @@ services:
       -c wal_level=minimal
       -c max_wal_senders=0
   mq:
-    extends:
-      file: docker-services.yml
-      service: mq
+    # 4.3 denies the transient queues of `celery inspect` and Flower.
+    image: rabbitmq:4.2-management
+    restart: "unless-stopped"
+    ports:
+      - "${MQ_ADMIN_PORT:-15672}:15672"
+      - "${MQ_PORT:-5672}:5672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -45,29 +51,34 @@ services:
       retries: 6
       start_period: 30s
   os:
-    extends:
-      file: docker-services.yml
-      service: os
-    # The colour is not part of the test: `_cluster/health` answers 200 whatever
-    # the state, and one node cannot assign the replica the `record` template asks
-    # for, so this cluster is yellow by construction.
+    build: ./docker/opensearch/
+    image: rero-mef-os
+    restart: "unless-stopped"
+    environment:
+      - "bootstrap.memory_lock=true"
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.type=single-node"
+      - "indices.query.bool.max_clause_count=3000"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    # Twice the heap: with 1g the node was killed during the tests.
+    mem_limit: 2g
+    ports:
+      - "${OS_PORT:-9200}:9200"
+      - "${OS_TRANSPORT_PORT:-9300}:9300"
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:9200/_cluster/health"]
       interval: 5s
       timeout: 5s
       retries: 12
       start_period: 20s
-  dashboards:
-    extends:
-      file: docker-services.yml
-      service: dashboards
-  # Brings the development indices down to one shard and no replica. The `record`
-  # template is sized for production, which here means 96 shards and as many
-  # unassignable replicas for a few thousand documents.
-  #
-  # Order 100 merges with `record` and overrides only these two settings, so the
-  # analyzers and `max_result_window` of the mappings survive. The test suite
-  # wipes all templates, so tests/conftest.py puts this one back itself.
+  # One shard and no replica for the development indices, merged into the `record`
+  # template. tests/conftest.py restores it after the tests wipe the templates.
   init:
     image: curlimages/curl
     depends_on:
@@ -88,14 +99,7 @@ services:
       - "Content-Type: application/json"
       - "-d"
       - '{"index_patterns":["*-*"],"order":100,"settings":{"number_of_shards":1,"number_of_replicas":0}}'
-  # `docker compose up -d` returns as soon as the containers are *started*, so a
-  # setup launched right after could hit a refused connection or miss the template.
-  # Depending on the healthchecks and on `init` makes `up -d` itself block, and
-  # return 1 rather than hang when something never comes up.
-  #
-  # Replaces docker/wait-for-services.sh, unreferenced since .travis.yml went.
-  # `docker compose wait init` cannot do this job -- it fails once `init` has
-  # exited -- and `up -d --wait` treats an exited one-shot as a failure.
+  # Makes `up -d` wait for `init`: `up -d --wait` fails on an exited one-shot.
   gate:
     image: curlimages/curl
     entrypoint: ["true"]
