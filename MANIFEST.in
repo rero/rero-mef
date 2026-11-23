@@ -16,7 +16,6 @@ include scripts/update
 recursive-include docker *.cfg *.conf *.crt *.ini *.key *.pem *.sh
 
 # added by check_manifest.py
-include *.base
 include *.lock
 include *.md
 include *.sh

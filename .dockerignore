@@ -15,8 +15,10 @@ docker-compose.yml
 docker-compose-dev.yml
 
 Procfile*
+celerybeat-schedule*
 
 .certs
 
 # Local harvest dumps (gigabytes)
 data/marc_xml
+coverage.xml

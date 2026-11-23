@@ -1,26 +1,37 @@
 # SPDX-FileCopyrightText: Fondation RERO+
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-ARG VERSION=latest
-FROM rero/rero-mef-base:${VERSION}
+FROM python:3.14-slim-bookworm
 
 LABEL maintainer="software@rero.ch"
 LABEL description="MEF (Multilingual Entity File) server with records for persons, works, etc. for reuse in integrated library systems (ILS)."
 
-USER 0
+RUN apt-get update -y && apt-get upgrade -y \
+    && apt-get install --no-install-recommends -y vim-tiny curl procps \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir --upgrade pip uv
 
-COPY ./ ${WORKING_DIR}/src
+ENV WORKING_DIR=/invenio
+ENV INVENIO_INSTANCE_PATH=${WORKING_DIR}/var/instance
+RUN useradd invenio --uid 1000 --home ${WORKING_DIR} \
+    && mkdir -p ${INVENIO_INSTANCE_PATH} ${WORKING_DIR}/src \
+    && chown -R invenio:invenio ${WORKING_DIR} \
+    && chmod -R go+w ${WORKING_DIR}
 WORKDIR ${WORKING_DIR}/src
-
-RUN chown -R invenio:invenio ${WORKING_DIR}
-
 USER 1000
 
-ENV LANG=C.UTF-8
+# Without UV_NO_SYNC, `uv run` would install the dev group.
+ENV LANG=C.UTF-8 \
+    UV_NO_CACHE=1 \
+    UV_NO_SYNC=1
+
+COPY --chown=invenio:invenio pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-group dev --group prod --no-install-project
+
+COPY --chown=invenio:invenio ./ ./
 RUN uv run --no-sync ./scripts/bootstrap --deploy
 
-# The REST API server, behind nginx. A deployment sizes it with the same variables.
-# The access log leaves out the query string: the monitoring passes its token in it.
+# The access log leaves out the query string, which holds the monitoring token.
 ENV GRANIAN_INTERFACE=wsgi \
     GRANIAN_HOST=0.0.0.0 \
     GRANIAN_PORT=5001 \
