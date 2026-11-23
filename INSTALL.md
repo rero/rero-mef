@@ -90,22 +90,3 @@ Run the test suite via the provided script:
 ```console
 $ uv run poe run_tests
 ```
-
-## Production environment
-
-You can use simulate a full production environment using the
-`docker-compose.full.yml`. You can start it like this:
-
-```console
-$ docker build --rm -t rero-mef-base:latest -f Dockerfile.base .
-$ docker compose -f docker-compose.full.yml up -d
-```
-
-In addition to the normal `docker-compose.yml`, this one will start:
-
-- HAProxy (load balancer)
-- Nginx (web frontend)
-- rero-mef-ui (user interface, built from `../rero-mef-ui`)
-- Granian (REST API container)
-- Celery (background task worker)
-- Flower (Celery monitoring)
