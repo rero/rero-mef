@@ -3,12 +3,22 @@
 
 """Common pytest fixtures and plugins."""
 
+import atexit
 import os
 import shutil
 import tempfile
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
+import dotenv
 import pytest
+
+#: The tests ignore `.env`: its `INVENIO_*` variables would override the settings of the tests and send a run to the
+#: development stack. Those it names are removed from the environment, and `load_dotenv`, which `rero_mef.celery` and
+#: the Flask CLI call, does nothing.
+for key in dotenv.dotenv_values():
+    if key.startswith("INVENIO_"):
+        os.environ.pop(key, None)
+dotenv.load_dotenv = lambda *args, **kwargs: False
 
 #: Instance folder of a test run. A development instance states the ports of the stack it serves in its
 #: `invenio.cfg`, and `rero_mef.celery` builds an application from that folder the moment it is imported, `.env`
@@ -19,6 +29,8 @@ import pytest
 INSTANCE_PATH = os.environ.get("TEST_INSTANCE_PATH") or tempfile.mkdtemp(prefix="rero-mef-tests-")
 os.makedirs(INSTANCE_PATH, exist_ok=True)
 os.environ["INVENIO_INSTANCE_PATH"] = INSTANCE_PATH
+if not os.environ.get("TEST_INSTANCE_PATH"):
+    atexit.register(shutil.rmtree, INSTANCE_PATH, ignore_errors=True)
 
 #: Search hosts of a test run. pytest-invenio reads `SEARCH_HOSTS` for the test application; the application
 #: `rero_mef.celery` builds on import gets none of that, so the same value is stated for it as well. Both then
@@ -26,14 +38,6 @@ os.environ["INVENIO_INSTANCE_PATH"] = INSTANCE_PATH
 SEARCH_HOSTS = os.environ.get("SEARCH_HOSTS") or '[{"host": "localhost", "port": 9200}]'
 os.environ["SEARCH_HOSTS"] = SEARCH_HOSTS
 os.environ["INVENIO_SEARCH_HOSTS"] = SEARCH_HOSTS
-
-
-@pytest.fixture(scope="session", autouse=True)
-def remove_instance_path():
-    """Take the instance folder of this run away with it, leaving a stated one alone."""
-    yield
-    if not os.environ.get("TEST_INSTANCE_PATH"):
-        shutil.rmtree(INSTANCE_PATH, ignore_errors=True)
 
 
 pytest_plugins = (
