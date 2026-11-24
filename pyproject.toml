@@ -61,7 +61,7 @@ dependencies = [
     "pymarc>=5.2.0",
     "sqlitedict>=2.1.0",
     # "rero-invenio-base>=2.0.0",
-    "rero-invenio-base @ git+https://github.com/rerowep/rero-invenio-base@wep-monitoring",
+    "rero-invenio-base @ git+https://github.com/rerowep/rero-invenio-base@wep-scheduler",
     "dojson>=1.7.0"
 ]
 
