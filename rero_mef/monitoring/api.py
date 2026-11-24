@@ -1,71 +1,19 @@
 # SPDX-FileCopyrightText: Fondation RERO+
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-"""Monitoring utilities."""
+"""Monitoring of the MEF records, beside the shared monitoring of rero-invenio-base."""
 
-from datetime import UTC, datetime, timedelta
-
-import click
 from flask import current_app
 from invenio_db import db
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
-from invenio_search import RecordsSearch
 from invenio_search.engine import search
+from rero_invenio_base.modules.monitoring import Monitoring as BaseMonitoring
 
-from ..utils import get_entity_class, get_entity_search_class, get_mefs_endpoints, progressbar
+from ..utils import get_entity_class, get_entity_search_class, get_mefs_endpoints
 
 
-class Monitoring:
-    """Monitoring class.
-
-    The main idea here is to check the consistency between the database and the search index. We need to check that all
-    documents presents in the database are also present in the search index and vice versa.
-    """
-
-    def __init__(self, time_delta=0):
-        """Initialize Monitoring instance.
-
-        :param time_delta: Minutes to subtract from DB/ES creation time.
-        """
-        self.time_delta = int(time_delta)
-
-    def __str__(self):
-        """Table representation of database and search differences.
-
-        :return: string representation of database and search
-        differences. Following columns are in the string: 1. database count minus search count 2. document type
-        3. database count 4. search index 5. search count
-        """
-        result = ""
-        msg_head = f"DB - ES  {'type':>6} {'count':>10}"
-        msg_head += f"  {'index':>25} {'count_es':>10}\n"
-        msg_head += f"{'':-^64s}\n"
-
-        for doc_type, info in sorted(self.info().items()):
-            db_es_display = info.get("db-es")
-            db_es_str = "" if db_es_display is None else db_es_display
-            msg = f"{db_es_str:>7}  {doc_type:>6} {info.get('db', ''):>10}"
-            if index := info.get("index", ""):
-                msg += f"  {index:>25} {info.get('es', ''):>10}"
-            result += msg + "\n"
-        return msg_head + result
-
-    @classmethod
-    def get_db_count(cls, doc_type, with_deleted=False):
-        """Get database count.
-
-        Get count of items in the database for the given document type.
-
-        :param doc_type: document type.
-        :param with_deleted: count also deleted items.
-        :return: item count.
-        """
-        if not current_app.config.get("RECORDS_REST_ENDPOINTS").get(doc_type):
-            return f"No >>{doc_type}<< in DB"
-        query = PersistentIdentifier.query.filter_by(pid_type=doc_type)
-        if not with_deleted:
-            query = query.filter_by(status=PIDStatus.REGISTERED)
-        return query.count()
+class Monitoring(BaseMonitoring):
+    """Compare the database with the index, and check the MEF records and their sources."""
 
     @classmethod
     def get_dangling_pids(cls, doc_type):
@@ -160,111 +108,6 @@ class Monitoring:
         current_app.logger.warning(f"DANGLING PIDS: {doc_type} found {len(pid_values)}, removed {removed}")
         return sorted(set(pid_values) - set(cls.get_dangling_pids(doc_type)))
 
-    @classmethod
-    def get_es_count(cls, index):
-        """Get search count.
-
-        Get count of items in search for the given index.
-
-        :param index: index.
-        :return: items count.
-        """
-        try:
-            result = RecordsSearch(index=index).query().count()
-        except search.NotFoundError:
-            result = f"No >>{index}<< in ES"
-        return result
-
-    def get_es_db_missing_pids(self, doc_type, with_deleted=False, verbose=False):
-        """Get ES and DB counts."""
-        endpoint = current_app.config.get("RECORDS_REST_ENDPOINTS").get(doc_type, {})
-        index = endpoint.get("search_index")
-        pids_es_double = []
-        pids_es = []
-        pids_db = []
-        if index:
-            date = datetime.now(UTC) - timedelta(minutes=self.time_delta)
-            pids_es = {}
-            query = RecordsSearch(index=index).filter("range", _created={"lte": date})
-            progress = progressbar(items=query.source("pid").scan(), length=query.count(), verbose=verbose)
-            for hit in progress:
-                if pids_es.get(hit.pid):
-                    pids_es_double.append(hit.pid)
-                pids_es[hit.pid] = 1
-            agent_class = get_entity_class(doc_type)
-            pids_db = []
-            progress = progressbar(
-                items=agent_class.get_all_pids(
-                    with_deleted=with_deleted,
-                    date=date,
-                ),
-                length=agent_class.count(with_deleted=with_deleted),
-                verbose=verbose,
-            )
-            for pid in progress:
-                if pids_es.get(pid):
-                    pids_es.pop(pid)
-                else:
-                    pids_db.append(pid)
-            pids_es = list(pids_es)
-        return pids_es, pids_db, pids_es_double, index
-
-    def info(self, with_deleted=False, difference_db_es=False):
-        """Info.
-
-        Get count details for all records rest endpoints in JSON format.
-
-        :param with_deleted: count also deleted items in database.
-        :return: dictionary with database, search and database minus search count information.
-        """
-        info = {}
-        for doc_type, endpoint in current_app.config.get("RECORDS_REST_ENDPOINTS").items():
-            info[doc_type] = {}
-            count_db = self.get_db_count(doc_type, with_deleted=with_deleted)
-            info[doc_type]["db"] = count_db
-            if index := endpoint.get("search_index", ""):
-                count_es = self.get_es_count(index)
-                db_es = count_db - count_es if isinstance(count_db, int) and isinstance(count_es, int) else None
-                info[doc_type]["index"] = index
-                info[doc_type]["es"] = count_es
-                info[doc_type]["db-es"] = db_es
-                if db_es == 0 and difference_db_es:
-                    (
-                        missing_in_db,
-                        missing_in_es,
-                        pids_es_double,
-                        index,
-                    ) = self.get_es_db_missing_pids(doc_type=doc_type, with_deleted=with_deleted)
-                    if index:
-                        if missing_in_db:
-                            info[doc_type]["db-"] = list(missing_in_db)
-                        if missing_in_es:
-                            info[doc_type]["es-"] = list(missing_in_es)
-        return info
-
-    def check(self, with_deleted=False, difference_db_es=False):
-        """Compaire search with database counts.
-
-        :param with_deleted: count also deleted items in database.
-        :return: dictionary with all document types with a difference in database and search counts.
-        """
-        checks = {}
-        for info, data in self.info(with_deleted=with_deleted, difference_db_es=difference_db_es).items():
-            db_es = data.get("db-es", "")
-            if db_es is None:
-                checks.setdefault(info, {})
-                checks[info]["es_error"] = "unavailable"
-            elif isinstance(db_es, (int, float)) and db_es != 0:
-                checks.setdefault(info, {})
-                checks[info]["db_es"] = db_es
-            if data.get("db-"):
-                checks.setdefault(info, {})
-                checks[info]["db-"] = len(data.get("db-"))
-            if data.get("es-"):
-                checks.setdefault(info, {})
-                checks[info]["es-"] = len(data.get("es-"))
-        return checks
-
     def check_mef(self):
         """Compaire MEF and entities counts.
 
@@ -278,7 +121,7 @@ class Monitoring:
                 try:
                     mef_count = mef_search().filter("exists", field=entity_class.name).count()
                 except search.NotFoundError:
-                    mef_count = f"No >>{mef['mef_class'].search.Meta.index}<< in ES"
+                    mef_count = f"No >>{mef['mef_class'].search.Meta.index}<< in search"
                 db_count = entity_class.count()
                 checks[entity] = {
                     "mef": mef_count,
@@ -287,44 +130,3 @@ class Monitoring:
                     "index": entity,
                 }
         return checks
-
-    def missing(self, doc_type, with_deleted=False):
-        """Get missing pids.
-
-        Get missing pids in database and search and find duplicate pids in search.
-
-        :param doc_type: doc type to get missing pids.
-        :return: dictionary with all missing pids.
-        """
-        (
-            missing_in_db,
-            missing_in_es,
-            pids_es_double,
-            index,
-        ) = self.get_es_db_missing_pids(doc_type=doc_type, with_deleted=with_deleted)
-        if index:
-            return {
-                "DB": list(missing_in_db),
-                "ES": list(missing_in_es),
-                "ES duplicate": pids_es_double,
-            }
-        return {"ERROR": f"Document type not found: {doc_type}"}
-
-    def print_missing(self, doc_type):
-        """Print missing pids for the given document type.
-
-        :param doc_type: doc type to print.
-        """
-        missing = self.missing(doc_type=doc_type)
-        if "ERROR" in missing:
-            click.secho(f"Error: {missing['ERROR']}", fg="yellow")
-        else:
-            if missing.get("ES duplicate"):
-                click.secho(
-                    f"ES duplicate {doc_type}: {', '.join(missing['ES duplicate'])}",
-                    fg="red",
-                )
-            if missing.get("ES"):
-                click.secho(f"ES missing {doc_type}: {', '.join(missing['ES'])}", fg="red")
-            if missing.get("DB"):
-                click.secho(f"DB missing {doc_type}: {', '.join(missing['DB'])}", fg="red")
