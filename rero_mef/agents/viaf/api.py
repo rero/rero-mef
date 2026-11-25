@@ -25,7 +25,7 @@ from rero_mef.utils import (
 )
 from rero_mef.version import __version__
 
-from .. import AgentGndRecord, AgentIdrefRecord, AgentMefRecord, AgentReroRecord
+from .. import AgentGndRecord, AgentIdrefRecord, AgentMefRecord
 from ..api import Action, EntityIndexer, EntityRecord
 from .fetchers import viaf_id_fetcher
 from .minters import viaf_id_minter
@@ -104,11 +104,9 @@ class AgentViafRecord(EntityRecord):
             "info": "German National Library",
             "record_class": AgentGndRecord,
         },
-        "RERO": {
-            "name": "rero",
-            "info": "RERO - Library Network of Western Switzerland",
-            "record_class": AgentReroRecord,
-        },
+        # RERO is obsolete and VIAF does not cluster it any more: its pid is still read, but it never links a
+        # RERO agent to a cluster, so VIAF neither moves nor splits RERO agents in MEF records.
+        "RERO": {"name": "rero", "info": "RERO - Library Network of Western Switzerland"},
         "SZ": {"name": "sz", "info": "Swiss National Library"},
         "BNE": {"name": "bne", "info": "National Library of Spain"},
         "BNF": {"name": "bnf", "info": "National Library of France"},
@@ -258,7 +256,8 @@ class AgentViafRecord(EntityRecord):
         for mef_record in AgentMefRecord.get_mef(self.pid, self.name):
             changed = False
             for agent in mef_record.get_entities_records():
-                if agent.pid not in viaf_agents_pids:
+                # sources VIAF does not link (RERO) stay in their MEF record
+                if agent.name in self.sources_used and agent.pid not in viaf_agents_pids:
                     mef_record.pop(agent.name)
                     old_agents[agent.pid] = agent
                     actions = set_actions(
@@ -633,7 +632,8 @@ class AgentViafRecord(EntityRecord):
         if isinstance(agent, AgentViafRecord):
             return [cls.get_record_by_pid(agent.get("pid"))]
         pid = agent.get("pid")
-        viaf_pid_name = agent.viaf_pid_name
+        if not (viaf_pid_name := agent.viaf_pid_name):
+            return []
         query = (
             AgentViafSearch()
             .filter({"term": {viaf_pid_name: pid}})

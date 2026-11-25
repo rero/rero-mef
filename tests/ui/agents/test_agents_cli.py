@@ -30,7 +30,7 @@ def test_create_csv_viaf_mef(script_info, tmpdir):
     assert res.output.strip().split("\n") == [
         "Create VIAF CSV files.",
         f"  VIAF input file: {viaf_text_file}",
-        "  Number of VIAF records created: 859.",
+        "  Number of VIAF records created: 746.",
     ]
     viaf_metadata = join(output_directory, "viaf_metadata.csv")
     viaf_pidstore = join(output_directory, "viaf_pidstore.csv")
@@ -40,20 +40,18 @@ def test_create_csv_viaf_mef(script_info, tmpdir):
         metadata_count = 0
         for line in in_file:
             metadata_count += 1
-        assert metadata_count == 859
+        assert metadata_count == 746
         data = line.strip().split("\t")
         # don't use the first two lines with dates.
+        # the last cluster lists only RERO, not linked through VIAF any more: the file ends before it.
         assert data[3:] == [
             (
-                '{"bne_pid": "XX871391", '
-                '"wiki": ['
-                '"https://ar.wikipedia.org/wiki/\\\\u0642\\\\u0627\\\\u064a'
-                '_\\\\u0633\\\\u062a\\\\u064a\\\\u0631\\\\u0646", '
-                '"https://de.wikipedia.org/wiki/Guy_Stern", '
-                '"https://en.wikipedia.org/wiki/Guy_Stern"'
-                "], "
-                '"rero_pid": "A003863577", '
-                '"pid": "108685760", '
+                '{"gnd_pid": "12742508X", '
+                '"gnd": "http://d-nb.info/gnd/12742508X", '
+                '"wiki": ["https://no.wikipedia.org/wiki/Thorvald_Bogsrud"], '
+                '"wiki_pid": "Q12006228", '
+                '"isni_pid": "0000000015514275", '
+                '"pid": "10868125", '
                 '"$schema": "https://mef.rero.ch/schemas/viaf/viaf-v0.0.1.json"}'
             ),
             "1",

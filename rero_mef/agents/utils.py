@@ -56,16 +56,16 @@ def init_entity_pids(input_directory, verbose):
         try:
             if viaf_pid_name := agent_classe.viaf_pid_name:
                 viaf_entity_pid_names[viaf_pid_name] = name
-                file_name = os.path.join(input_directory, f"{agent}_pidstore.csv")
-                if os.path.exists(file_name):
-                    if verbose:
-                        click.echo(f"  Read pids from: {file_name}")
-                    length = number_records_in_file(file_name, "csv")
-                    pids[name] = {}
-                    progress = progressbar(items=open(file_name), length=length, verbose=verbose)
-                    for line in progress:
-                        pid = line.split("\t")[3]
-                        pids[name][pid] = 1
+            file_name = os.path.join(input_directory, f"{agent}_pidstore.csv")
+            if os.path.exists(file_name):
+                if verbose:
+                    click.echo(f"  Read pids from: {file_name}")
+                length = number_records_in_file(file_name, "csv")
+                pids[name] = {}
+                progress = progressbar(items=open(file_name), length=length, verbose=verbose)
+                for line in progress:
+                    pid = line.split("\t")[3]
+                    pids[name][pid] = 1
         except Exception as err:
             click.secho(err, fg="red")
     return pids, viaf_entity_pid_names

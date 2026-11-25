@@ -25,18 +25,20 @@ def add_links(pid, record):
         number = f"-{idx}" if idx else ""
         links[f"mef{number}"] = "{scheme}://{host}/api/agents/mef/" + str(mef_pid)
 
-    with contextlib.suppress(Exception):
-        query = (
-            AgentViafSearch()
-            .filter({"term": {record.viaf_pid_name: pid.pid_value}})
-            .params(preserve_order=True)
-            .sort({"_updated": {"order": "desc"}})
-            .source("pid")
-        )
-        viaf_pid = next(query.scan()).pid
-        links["viaf"] = "{scheme}://{host}/api/agents/viaf/" + str(viaf_pid)
-        viaf_url = current_app.config.get("RERO_MEF_VIAF_BASE_URL")
-        links["viaf.org"] = f"{viaf_url}/viaf/{viaf_pid!s}"
+    # agents VIAF does not link (RERO) have no VIAF links
+    if record.viaf_pid_name:
+        with contextlib.suppress(Exception):
+            query = (
+                AgentViafSearch()
+                .filter({"term": {record.viaf_pid_name: pid.pid_value}})
+                .params(preserve_order=True)
+                .sort({"_updated": {"order": "desc"}})
+                .source("pid")
+            )
+            viaf_pid = next(query.scan()).pid
+            links["viaf"] = "{scheme}://{host}/api/agents/viaf/" + str(viaf_pid)
+            viaf_url = current_app.config.get("RERO_MEF_VIAF_BASE_URL")
+            links["viaf.org"] = f"{viaf_url}/viaf/{viaf_pid!s}"
     link_factory = default_links_factory_with_additional(links)
     return link_factory(pid)
 
