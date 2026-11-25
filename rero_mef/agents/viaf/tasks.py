@@ -12,11 +12,12 @@ import uuid
 
 import click
 from celery import shared_task
+from rero_invenio_base.modules.monitoring import set_timestamp
 from sqlitedict import SqliteDict
 
 from ...api import Action
 from ...extensions import MD5Extension
-from ...utils import progressbar, set_timestamp
+from ...utils import progressbar
 from .api import (
     AgentViafRecord,
     AgentViafSearch,

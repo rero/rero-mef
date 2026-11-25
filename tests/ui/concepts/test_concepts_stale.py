@@ -13,12 +13,13 @@ import json
 from copy import deepcopy
 
 from click.testing import CliRunner
+from rero_invenio_base.modules.monitoring import get_timestamp
 
 from rero_mef.cli import repair_stale_associations as cli_repair_stale_associations
 from rero_mef.concepts import ConceptGndRecord, ConceptIdrefRecord, ConceptMefRecord
 from rero_mef.stale import _expected_partner, audit, repair
 from rero_mef.tasks import repair_stale_associations
-from rero_mef.utils import build_ref_string, get_timestamp
+from rero_mef.utils import build_ref_string
 
 
 def test_expected_partner_follows_the_rules():

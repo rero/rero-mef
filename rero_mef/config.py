@@ -134,6 +134,8 @@ BROKER_URL = "amqp://guest:guest@localhost:5672/"
 CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672/"
 #: URL of backend for result storage (default is Redis).
 CELERY_RESULT_BACKEND = "redis://localhost:6379/2"
+#: Scheduler keeping the tasks in the database, switched on and off with `invenio rero scheduler`.
+CELERY_BEAT_SCHEDULER = "rero_invenio_base.modules.scheduler.DatabaseScheduler"
 #: Scheduled tasks configuration (aka cronjobs).
 CELERY_BEAT_SCHEDULE = {
     # We can not run scheduled bulk indexing during initial setup.
@@ -148,16 +150,43 @@ CELERY_BEAT_SCHEDULE = {
     # A harvest only reprocesses the record that changed, so a link stays stored after a second record starts
     # claiming its identifier. The harvests run three times a day, so the audit runs daily too; it costs three index
     # scans and repairs only what diverges, nothing when the file is clean. 00:00 UTC is the one quiet window: after
-    # the last concept harvest of the day (concepts_idref 20:30 UTC, concepts_gnd 17:30) and an hour before rero-ils
+    # the last concept harvest of the day (concepts_idref 19:30 UTC, concepts_gnd 18:30) and an hour before rero-ils
     # pulls from us, its `celery.sync-entities` running daily at 01:00 UTC. A repair landing after that pull would
     # sit here unseen for a day.
     "repair-stale-associations": {
         "task": "rero_mef.tasks.repair_stale_associations",
         "schedule": crontab(minute=0, hour=0),
     },
-    "os-monitor": {
-        "task": "rero_mef.monitoring.tasks.index_os_stats",
+    "search-monitor": {
+        "task": "rero_invenio_base.modules.monitoring.tasks.index_search_stats",
         "schedule": timedelta(minutes=1),
+    },
+    # The OAI harvests, switched off until the data is loaded: `invenio rero scheduler enable-tasks -n <name>`. Each
+    # runs three times a day, six hours apart, in an hour of its own from 04:30 to 21:30 UTC: never with the other
+    # source of its type and outside the backups (02:00-04:00 UTC). The agents go first, away from the VIAF refresh.
+    **{
+        f"harvest-{name.replace('.', '-')}": {
+            "task": f"rero_mef.{name}.tasks.process_records_from_dates",
+            "schedule": crontab(minute=30, hour=hours),
+            "kwargs": {"test_md5": True, "viaf_online": True},
+            "enabled": False,
+        }
+        for name, hours in (
+            ("agents.gnd", "4,10,16"),
+            ("agents.idref", "5,11,17"),
+            ("concepts.gnd", "6,12,18"),
+            ("concepts.idref", "7,13,19"),
+            ("places.gnd", "8,14,20"),
+            ("places.idref", "9,15,21"),
+        )
+    },
+    # Refreshes the oldest VIAF records within the daily quota of viaf.org. It updates the agents, so it runs between
+    # the last agent harvest of the day (17:30 UTC) and the first of the next (04:30 UTC).
+    "viaf-refresh": {
+        "task": "rero_mef.agents.viaf.tasks.process_viaf_refresh",
+        "schedule": crontab(minute=0, hour=22),
+        "kwargs": {"batch_size": 1200, "update_agents": True},
+        "enabled": False,
     },
 }
 CELERY_BROKER_HEARTBEAT = 0
