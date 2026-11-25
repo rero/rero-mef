@@ -15,12 +15,18 @@ The audit reads the search index only: three scans build the same picture
 `get_association_record` would, and the winner is decided by the rules
 themselves rather than a copy of them, so it cannot drift. Only the records
 whose stored partner disagrees are reprocessed.
+
+The `type_conflict` flag of a MEF record goes stale the same way: it is computed when the MEF record is indexed, from
+the type of the record its source redirects to, and nothing reindexes it when that target arrives later, changes type
+or goes away.
 """
 
 import collections
 
 from flask import current_app
+from invenio_search.engine import dsl
 
+from .listener import _detect_type_conflict
 from .utils import get_entity_class, get_entity_search_class
 
 #: Entity families to audit, as (side that owns the decision, other side, MEF class name).
@@ -28,6 +34,16 @@ ASSOCIATION_PAIRS = (
     ("cidref", "cognd", "comef"),
     ("pidref", "plgnd", "plmef"),
 )
+
+#: MEF record types, with the source record types whose redirects decide their `type_conflict` flag.
+TYPE_CONFLICT_SOURCES = {
+    "mef": ("aggnd", "aidref", "agrero"),
+    "comef": ("cognd", "cidref", "corero"),
+    "plmef": ("plgnd", "pidref"),
+}
+
+#: Redirect PIDs per `terms` clause, well below the OpenSearch default `index.max_terms_count` (65536).
+TERMS_BATCH_SIZE = 1000
 
 
 def _association_index(record_type):
@@ -152,4 +168,64 @@ def repair(own_type, divergent, verbose=False):
             )
     if repaired:
         record_cls.flush_indexes()
+    return repaired
+
+
+def audit_type_conflicts(mef_type):
+    """Compare the `type_conflict` flags a MEF index holds with the flags the redirects give now.
+
+    Only a source holding a `redirect_to` can raise the flag, so only the MEF records of those sources are
+    recomputed, with every MEF record flagged now: its flag may have to be cleared.
+
+    :param mef_type: MEF record type.
+    :returns: List of (mef pid, stored flag, expected flag), one per divergent record.
+    """
+    should = [dsl.Q("term", type_conflict=True)]
+    for record_type in TYPE_CONFLICT_SOURCES[mef_type]:
+        hits = (
+            get_entity_search_class(record_type)()
+            .filter("term", relation_pid__type="redirect_to")
+            .source(["pid"])
+            .scan()
+        )
+        pids = [hit.pid for hit in hits]
+        field = f"{get_entity_class(record_type).name}.pid"
+        should.extend(
+            dsl.Q("terms", **{field: pids[start : start + TERMS_BATCH_SIZE]})
+            for start in range(0, len(pids), TERMS_BATCH_SIZE)
+        )
+    hits = (
+        get_entity_search_class(mef_type)()
+        .filter("bool", should=should, minimum_should_match=1)
+        .source(["pid", "type_conflict"])
+        .scan()
+    )
+    mef_cls = get_entity_class(mef_type)
+    divergent = []
+    for hit in hits:
+        stored = bool(hit.to_dict().get("type_conflict"))
+        if (record := mef_cls.get_record_by_pid(hit.pid)) and (expected := _detect_type_conflict(record)) != stored:
+            divergent.append((hit.pid, stored, expected))
+    return divergent
+
+
+def repair_type_conflicts(mef_type, divergent, verbose=False):
+    """Reindex the MEF records whose `type_conflict` flag has gone stale, which recomputes it.
+
+    :param mef_type: MEF record type.
+    :param divergent: Result of :func:`audit_type_conflicts`.
+    :param verbose: Log every record.
+    :returns: Number of records reindexed.
+    """
+    mef_cls = get_entity_class(mef_type)
+    repaired = 0
+    for pid, stored, expected in divergent:
+        if not (record := mef_cls.get_record_by_pid(pid)):
+            continue
+        record.reindex()
+        repaired += 1
+        if verbose:
+            current_app.logger.info(f"TYPE CONFLICT REPAIRED: {mef_type} {pid} | {stored} -> {expected}")
+    if repaired:
+        mef_cls.flush_indexes()
     return repaired

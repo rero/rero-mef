@@ -8,7 +8,8 @@ from celery import shared_task
 from flask import current_app
 
 from .api import Action, EntityIndexer
-from .stale import ASSOCIATION_PAIRS, audit, repair
+from .stale import ASSOCIATION_PAIRS, TYPE_CONFLICT_SOURCES, audit, audit_type_conflicts, repair
+from .stale import repair_type_conflicts as repair_type_conflict_records
 from .utils import get_entity_class, set_timestamp
 
 
@@ -126,4 +127,33 @@ def repair_stale_associations(dry_run=False, verbose=False):
         current_app.logger.info(message)
         repaired[own_type] = repair(own_type, divergent, verbose=verbose)
     set_timestamp("repair_stale_associations", found=found, repaired=repaired, dry_run=dry_run)
+    return found
+
+
+@shared_task(ignore_result=True)
+def repair_type_conflicts(dry_run=False, verbose=False):
+    """Repair the MEF records whose `type_conflict` flag the redirects no longer support.
+
+    The flag is computed when the MEF record is indexed, from the record its source redirects to, so it goes stale
+    when that target is loaded later, changes type or is deleted. See :mod:`rero_mef.stale`.
+
+    :param dry_run: Only report what would be repaired.
+    :param verbose: Log every record.
+    :returns: Dict MEF record type -> number of stale flags found.
+    """
+    found = {}
+    repaired = {}
+    for mef_type in TYPE_CONFLICT_SOURCES:
+        divergent = audit_type_conflicts(mef_type)
+        found[mef_type] = len(divergent)
+        repaired[mef_type] = 0
+        if not divergent:
+            continue
+        message = f"STALE TYPE CONFLICTS: {mef_type} {len(divergent)}"
+        if dry_run:
+            current_app.logger.info(f"{message} (dry run)")
+            continue
+        current_app.logger.info(message)
+        repaired[mef_type] = repair_type_conflict_records(mef_type, divergent, verbose=verbose)
+    set_timestamp("repair_type_conflicts", found=found, repaired=repaired, dry_run=dry_run)
     return found
